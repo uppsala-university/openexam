@@ -44,6 +44,14 @@ $decoded = $exam->decoded;
         padding: 10px;
         border-bottom: 5px solid #999999;        
     }
+
+    div.student-answer-box {
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+        margin-top: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
 </style>
 
 <div class="hero-unit">
@@ -182,86 +190,89 @@ $decoded = $exam->decoded;
                                                                             $("#<?= $question->id ?>-corrected").parent().find('.st-ans-ul').css('background-color', '#F9F9F9');
                                                                     </script>
                                                             <?php endif; ?>
-                                                            <div class="q-part-txt-student-ans" style="padding-top: 20px">
-                                                                <?php $ansData = json_decode($qSpecAns->answer, true); ?>
-                                                                <span style="color:#990000;"><i class="fa fa-arrow-circle-right"></i></span> 
-                                                                <span style="color:#000; font-weight:bold">Student's answer</span>
-                                                                <?php
-                                                                if (isset($correctAns[$question->id][$qPartTitle])) {
-                                                                        $correctAnsPart = $correctAns[$question->id][$qPartTitle];
-                                                                } else {
-                                                                        $correctAnsPart = array();
-                                                                }
 
-                                                                ?>
-                                                                <?php $totalCorrect = 0; ?>
-                                                                <?php if (count($ansData[$qPartTitle]['ans'])): ?>
-                                                                        <ul class="st-ans-ul" style="margin: 5px 0 0 30px; list-style:none; background-color:#F5FAF5; padding:5px; border-left:5px solid #f0f0f0; max-width:95%">
-                                                                            <?php foreach ($ansData[$qPartTitle]['ans'] as $stAns): ?>
-                                                                                    <?php if ($qPart['ans_area']['type'] == 'choicebox'): ?>
-                                                                                            <li style="color:<?= (in_array($stAns, $correctAnsPart) ? 'green' : 'red') ?>">
-                                                                                                <i class="fa fa-<?= (in_array($stAns, $correctAnsPart) ? 'check' : 'times') ?>"></i> 
-                                                                                                <?= $stAns ?>
-                                                                                                <?php in_array($stAns, $correctAnsPart) ? ++$totalCorrect : --$totalCorrect; ?>
-                                                                                            </li>
-                                                                                    <?php elseif ($qPart['ans_area']['type'] == 'canvas'): ?>
-                                                                                            <li><img src="<?= $stAns['canvasUrl'] ?>" max-width="50%" /></li>
-                                                                                    <?php else: ?>
-                                                                                            <li><?= $stAns ?></li>
-                                                                                    <?php endif; ?>
-                                                                                    <?php if (empty($ansData[$qPartTitle]['ans'][0])): ?>
-                                                                                            <li><i>Student did not answer this question.</i></li>
-                                                                                    <?php endif; ?>
-                                                                            <?php endforeach; ?>
+                                                            <div class="student-answer-box">
+                                                                <div class="q-part-txt-student-ans">
+                                                                    <?php $ansData = json_decode($qSpecAns->answer, true); ?>
+                                                                    <span style="color:#990000;"><i class="fa fa-arrow-circle-right"></i></span> 
+                                                                    <span style="color:#000; font-weight:bold">Student's answer</span>
+                                                                    <?php
+                                                                    if (isset($correctAns[$question->id][$qPartTitle])) {
+                                                                            $correctAnsPart = $correctAns[$question->id][$qPartTitle];
+                                                                    } else {
+                                                                            $correctAnsPart = array();
+                                                                    }
+
+                                                                    ?>
+                                                                    <?php $totalCorrect = 0; ?>
+                                                                    <?php if (count($ansData[$qPartTitle]['ans'])): ?>
+                                                                            <ul class="st-ans-ul" style="margin: 5px 0 0 30px; list-style:none; background-color:#F5FAF5; padding:5px; border-left:5px solid #f0f0f0; max-width:95%">
+                                                                                <?php foreach ($ansData[$qPartTitle]['ans'] as $stAns): ?>
+                                                                                        <?php if ($qPart['ans_area']['type'] == 'choicebox'): ?>
+                                                                                                <li style="color:<?= (in_array($stAns, $correctAnsPart) ? 'green' : 'red') ?>">
+                                                                                                    <i class="fa fa-<?= (in_array($stAns, $correctAnsPart) ? 'check' : 'times') ?>"></i> 
+                                                                                                    <?= $stAns ?>
+                                                                                                    <?php in_array($stAns, $correctAnsPart) ? ++$totalCorrect : --$totalCorrect; ?>
+                                                                                                </li>
+                                                                                        <?php elseif ($qPart['ans_area']['type'] == 'canvas'): ?>
+                                                                                                <li><img src="<?= $stAns['canvasUrl'] ?>" max-width="50%" /></li>
+                                                                                        <?php else: ?>
+                                                                                                <li><?= $stAns ?></li>
+                                                                                        <?php endif; ?>
+                                                                                        <?php if (empty($ansData[$qPartTitle]['ans'][0])): ?>
+                                                                                                <li><i>Student did not answer this question.</i></li>
+                                                                                        <?php endif; ?>
+                                                                                <?php endforeach; ?>
+                                                                                <?php
+                                                                                if ($totalCorrect < 0) {
+                                                                                        $totalCorrect = 0;
+                                                                                }
+
+                                                                                ?>
+                                                                            </ul>
+                                                                    <?php else: ?>
+                                                                            <span style="background-color:#FEFF99"><i>Student did not answer this question part.</i></span>
+                                                                    <?php endif; ?>
+                                                                </div>
+                                                                <?php if ($qPart['ans_area']['type'] == 'choicebox' && count($correctAnsPart) && $totalCorrect && $totalCorrect != count($correctAnsPart)) : ?>
+                                                                        <div style="color:orange; margin-left:35px"><i class="fa fa-warning"></i>  Student's answer is partially correct </div>
+                                                                <?php endif; ?>
+
+                                                                <div class="q-part-student-score" style="padding-left: 35px; margin-top: 10px; display: <?= $qPart['q_points'] == 0 ? 'none' : '' ?>">
+                                                                    <i class="fa fa-certificate" style="color:#D84B4B"></i>
+                                                                    <span style="color:#000;">
+                                                                        Points:
+                                                                        <span style="margin-left: 15px">
                                                                             <?php
-                                                                            if ($totalCorrect < 0) {
-                                                                                    $totalCorrect = 0;
+                                                                            // 
+                                                                            // Fill in score if max is zero on this question part.
+                                                                            // 
+                                                                            if (isset($qPart['q_points']) && $qPart['q_points'] == 0 && !isset($scoreData[$qPartTitle])) {
+                                                                                    $scoreData[$qPartTitle] = 0;
+                                                                                    printf("<script>resyncableResults.push('%d')</script>\n", $result->answer_id);
+                                                                            }
+
+                                                                            // 
+                                                                            // Define answer result score. Make sure to watch out for floatval('') == 0 ...
+                                                                            // 
+                                                                            if (isset($scoreData[$qPartTitle])) {
+                                                                                    $score = floatval($scoreData[$qPartTitle]);
+                                                                            } elseif ($qPart['ans_area']['type'] == 'choicebox') {
+                                                                                    $score = round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2);
+                                                                            } else {
+                                                                                    $score = '';
                                                                             }
 
                                                                             ?>
-                                                                        </ul>
-                                                                <?php else: ?>
-                                                                        <span style="background-color:#FEFF99"><i>Student did not answer this question part.</i></span>
-                                                                <?php endif; ?>
-                                                            </div>
-                                                            <?php if ($qPart['ans_area']['type'] == 'choicebox' && count($correctAnsPart) && $totalCorrect && $totalCorrect != count($correctAnsPart)) : ?>
-                                                                    <div style="color:orange; margin-left:35px"><i class="fa fa-warning"></i>  Student's answer is partially correct </div>
-                                                            <?php endif; ?>
-
-                                                            <div class="q-part-student-score" style="padding-bottom: 10px; padding-left:35px; display: <?= $qPart['q_points'] == 0 ? 'none' : '' ?>">
-                                                                <i class="fa fa-certificate" style="color:#D84B4B"></i>
-                                                                <span style="color:#000">
-                                                                    Points:<br />
-                                                                    <span style="margin-left: 15px">
-                                                                        <?php
-                                                                        // 
-                                                                        // Fill in score if max is zero on this question part.
-                                                                        // 
-                                                                        if (isset($qPart['q_points']) && $qPart['q_points'] == 0 && !isset($scoreData[$qPartTitle])) {
-                                                                                $scoreData[$qPartTitle] = 0;
-                                                                                printf("<script>resyncableResults.push('%d')</script>\n", $result->answer_id);
-                                                                        }
-
-                                                                        // 
-                                                                        // Define answer result score. Make sure to watch out for floatval('') == 0 ...
-                                                                        // 
-                                                                        if (isset($scoreData[$qPartTitle])) {
-                                                                                $score = floatval($scoreData[$qPartTitle]);
-                                                                        } elseif ($qPart['ans_area']['type'] == 'choicebox') {
-                                                                                $score = round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2);
-                                                                        } else {
-                                                                                $score = '';
-                                                                        }
-
-                                                                        ?>
-                                                                        <?php if (!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
-                                                                                <input type="text" class="q-points changeable" ans-id="<?= $qSpecAns->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" style="height: 12px; border-radius: 0px; width: 50px" value="<?= $score ?>" max-pt="<?= floatval($qPart['q_points']) ?>">								
-                                                                        <?php else: ?>
-                                                                                <?= floatval($scoreData[$qPartTitle]) ?>
-                                                                        <?php endif; ?>	
-                                                                        [Max: <?= floatval($qPart['q_points']) ?>]
+                                                                            <?php if (!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
+                                                                                    <input type="text" class="q-points changeable" ans-id="<?= $qSpecAns->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" style="height: 12px; border-radius: 0px; width: 50px" value="<?= $score ?>" max-pt="<?= floatval($qPart['q_points']) ?>">								
+                                                                            <?php else: ?>
+                                                                                    <?= floatval($scoreData[$qPartTitle]) ?>
+                                                                            <?php endif; ?>	
+                                                                        </span>
+                                                                        <span style="color: #4285f4; float: right; margin-right: 10px">[Max: <?= floatval($qPart['q_points']) ?>]</span>
                                                                     </span>
-                                                                </span>
+                                                                </div>
                                                             </div>
 
                                                             <?php if (count($qSpecificAns)): ?>
@@ -344,7 +355,7 @@ $decoded = $exam->decoded;
                                                                                     <span style="color:#4285f4">Part <?= $qPartTitle ?>:</span>
                                                                                 </div>
                                                                         <?php endif; ?>
-                                                                        <div class="st-ans-part-content" style="background-color:#dedede; border">
+                                                                        <div class="st-ans-part-content">
                                                                             <ul class="st-ans-ul" style="margin: 5px 0 0 30px; list-style:none; background-color:<?= (!$decoded && !count($scoreData)) ? '#F5FAF5' : '#F9F9F9' ?>; padding:5px; border-left:5px solid #f0f0f0; max-width:95%">
                                                                                 <?php $totalCorrect = 0; ?>
                                                                                 <?php
@@ -385,10 +396,10 @@ $decoded = $exam->decoded;
                                                                             </ul>
                                                                         </div>
 
-                                                                        <div class="q-part-student-score" style="padding-top: 10px; padding-left:35px; display: <?= $questParts[$qPartTitle]['q_points'] == 0 ? 'none' : '' ?>">
+                                                                        <div class="q-part-student-score" style="padding-top: 10px; padding-left: 35px; margin-bottom: 10px; display: <?= $questParts[$qPartTitle]['q_points'] == 0 ? 'none' : '' ?>">
                                                                             <i class="fa fa-certificate" style="color:#D84B4B"></i>
                                                                             <span style="color:#000;">
-                                                                                Points:<br />
+                                                                                Points:
                                                                                 <?php
                                                                                 // 
                                                                                 // Fill in score if max is zero on this question part.
@@ -405,8 +416,7 @@ $decoded = $exam->decoded;
                                                                                 <?php else: ?>
                                                                                         <?= floatval($scoreData[$qPartTitle]) ?>
                                                                                 <?php endif; ?>
-
-                                                                                [Max: <?= $questParts[$qPartTitle]['q_points'] ?>]
+                                                                                <span style="color: #4285f4; float: right; margin-right: 10px">[Max: <?= $questParts[$qPartTitle]['q_points'] ?>]</span>
                                                                             </span>
                                                                         </div>
 
@@ -459,7 +469,8 @@ $decoded = $exam->decoded;
             <div style="position: fixed; top: 55px; right: 55px; padding: 10px; background-color: white; border-radius: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2); z-index: 2">
                 <input type="button" style="text-shadow: none; background-color: rgb(64, 192, 64); font-size: 20px; padding: 8px" class="save-all-result" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>" value="Save all results »">
                 <div style="padding-left: 10px; padding-top: 5px">
-                    <input type="checkbox" class="hide-completed"><span style="margin-left: 10px">Hide fully corrected answers</span>
+                    <input type="checkbox" class="hide-completed"><span style="margin-left: 10px">Hide fully corrected answers</span><br>
+                    <input type="checkbox" class="hide-resources"><span style="margin-left: 10px">Hide media and resource files</span>
                 </div>
             </div>
     <?php endif; ?>

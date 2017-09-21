@@ -603,6 +603,12 @@ if ($exam->decoded) {
                 });
             });
 
+            $(document).on('change', '.hide-resources', function () {
+                $('div.q-part-resources').each(function () {
+                    $(this).toggle(500);
+                });
+            });
+
             $(document).on('change', '.changeable', function () {
                 if (resyncableResults.indexOf($(this).attr('ans-id')) < 0) {
                     resyncableResults.push($(this).attr('ans-id'));
