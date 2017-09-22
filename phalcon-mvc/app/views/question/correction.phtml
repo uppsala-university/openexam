@@ -412,10 +412,14 @@ if ($exam->decoded) {
                                     <?php endif; ?>
                                     <?php if ($exam->show_percent): ?>
                                             <td class="cc aa">
-                                                <?= floatval(array_sum($avgScore) / count($avgScore)) ?> (<?= floatval($totalExamScore) ?>)
+                                                <?php if (is_array($avgScore)) : ?>
+                                                        <?= floatval(array_sum($avgScore) / count($avgScore)) ?> (<?= floatval($totalExamScore) ?>)
+                                                <?php endif; ?>
                                             </td>
                                             <td class="cc aa">
-                                                <?= sprintf("%1.1f", array_sum($avgPercentage) / count($avgPercentage)) ?>%
+                                                <?php if (is_array($avgPercentage)) : ?>
+                                                        <?= sprintf("%1.1f", array_sum($avgPercentage) / count($avgPercentage)) ?>%
+                                                <?php endif; ?>
                                             </td>
                                     <?php endif; ?>
                                     <?php if ($exam->show_grades): ?>
