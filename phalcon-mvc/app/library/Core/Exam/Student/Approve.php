@@ -22,6 +22,7 @@ use OpenExam\Models\Exam;
 use OpenExam\Models\Lock;
 use OpenExam\Models\Student;
 use Phalcon\Mvc\User\Component;
+use UUP\Authentication\Authenticator\DomainAuthenticator;
 use UUP\Authentication\Restrictor\AddressRestrictor;
 
 /**
@@ -45,9 +46,15 @@ class Approve extends Component
          */
         private $_student;
         /**
+         * The remote IP-address.
          * @var string 
          */
-        private $_remote;
+        private $_addr;
+        /**
+         * The remote hostname.
+         * @var string 
+         */
+        private $_host;
 
         /**
          * Constructor.
@@ -59,7 +66,8 @@ class Approve extends Component
                 $this->_lock = false;
                 $this->_exam = $exam;
                 $this->_student = $student;
-                $this->_remote = $this->request->getClientAddress(true);
+                $this->_addr = $this->request->getClientAddress(true);
+                $this->_host = gethostbyaddr($this->_addr);
         }
 
         /**
@@ -69,7 +77,8 @@ class Approve extends Component
         {
                 unset($this->_exam);
                 unset($this->_lock);
-                unset($this->_remote);
+                unset($this->_addr);
+                unset($this->_host);
                 unset($this->_student);
         }
 
@@ -130,9 +139,9 @@ class Approve extends Component
                 // for remote computer.
                 // 
                 if ($this->_lock->status != Lock::STATUS_APPROVED) {
-                        $this->logger->access->debug(sprintf("Continue open exam check for %s from %s (lock not approved: %s)", $this->_student->user, $this->_remote, $this->_lock->status));
+                        $this->logger->access->debug(sprintf("Continue open exam check for %s from %s (lock not approved: %s)", $this->_student->user, $this->_addr, $this->_lock->status));
                         return false;
-                } elseif ($this->_lock->computer->ipaddr != $this->_remote) {
+                } elseif ($this->_lock->computer->ipaddr != $this->_addr) {
                         throw new SecurityException(sprintf("This exam is already locked to %s (%s) in %s, %s", $this->_lock->computer->hostname, $this->_lock->computer->ipaddr, $this->_lock->computer->room->name, $this->_lock->computer->room->description), SecurityException::ACCESS);
                 }
 
@@ -143,10 +152,10 @@ class Approve extends Component
         }
 
         /**
-         * Verify remote IP-address.
+         * Verify IP-address or hostname of peer.
          * 
-         * This function verifies that remote IP-address are allowed through
-         * address access list. Return true if permitted, otherwise false if
+         * This function verifies that remote IP-address or hostname are allowed 
+         * by the exam access list. Return true if permitted, otherwise false if
          * the connection is pending approval.
          * 
          * @return boolean
@@ -174,20 +183,51 @@ class Approve extends Component
                         return true;
                 }
 
-                $addresses = array();
+                // 
+                // The list containing allowed hostname and IP-addresses:
+                // 
+                $allowed = array(
+                        'host' => array(),
+                        'addr' => array()
+                );
+
+                // 
+                // Assume regexp pattern are delimited by a '|' character:
+                // 
                 foreach ($accesslist as $access) {
-                        $addresses[] = $access->addr;
+                        if ($access->addr[0] == '|') {
+                                $allowed['host'][] = $access->addr;
+                        } else {
+                                $allowed['addr'][] = $access->addr;
+                        }
                 }
 
                 // 
-                // Check address restriction:
+                // Check IP-address restriction:
                 // 
-                $restrictor = new AddressRestrictor($addresses);
-                if ($restrictor->match($this->_remote)) {
-                        return true;
-                } else {
-                        return false;
+                if ($this->_addr) {
+                        $restrictor = new AddressRestrictor($allowed['addr']);
+                        if ($restrictor->match($this->_addr)) {
+                                return true;
+                        }
                 }
+
+                // 
+                // Check hostname restriction:
+                // 
+                if ($this->_host) {
+                        foreach ($allowed['host'] as $accept) {
+                                $restrictor = new DomainAuthenticator($accept);
+                                if ($restrictor->match($this->_host)) {
+                                        return true;
+                                }
+                        }
+                }
+
+                // 
+                // Neither hostname or IP-address matched:
+                // 
+                return false;
         }
 
         /**
