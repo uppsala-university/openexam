@@ -499,5 +499,21 @@
     Other options are of course to setup redis in some location aware setup and use a 
     special cache service, but its out of scope in this documentation.
 
+** TROUBLESHOOT:
+
+    o) GHOST DATA:
+
+    If you experience problem related to "ghost data" make sure that the mysqlnd_qc 
+    extension is not enabled. This typical manifest itself by sticky data being picked 
+    up (even tough cache been cleaned and data removed from database) and result in error 
+    messages about uniqueness violation.
+
+    Test if you are affected by reading a session model, updating/saving it and then read 
+    it back. If database log shows a single read or if session data is out of sync, then you 
+    might suffer by external query cache. 
+
+    Notice that this is out of control for the system. It's model and data cache can only
+    invalidate data that are under its control.
+
 
 // Anders Lövgren, 2014-08-25
