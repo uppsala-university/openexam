@@ -223,6 +223,10 @@
             This is the same as disable cache. All queries are direct on database and no
             query results are cached.
 
+        o) mutable:
+            Same as request except that cached keys are cleaned up on update, insert or
+            delete on a table.
+
         o) readonce:
             Cache entries are read once. The query result gets cached and is deleted
             upon being fetched next time.
@@ -237,7 +241,7 @@
             cached and left to the cache backend to cleanup when the TTL for each cache
             entry expires.
 
-    The default mediator handler is request and gives a good mix between keeping cache
+    The default mediator handler is mutable and gives a good mix between keeping cache
     in sync with database while giving sufficient performance for frequent access to the
     same query data. The complex handler has under some rare conditions left dangling cache 
     entries (that being said, it might have be solved during the mediator handlers rework).

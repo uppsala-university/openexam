@@ -382,6 +382,8 @@ class Mediator extends Proxy
                                 return new Mediator\Complex($adapter, $cache);
                         case 'direct':
                                 return new Mediator\Direct($adapter, $cache);
+                        case 'mutable':
+                                return new Mediator\Mutable($adapter, $cache);
                         case 'readonce':
                                 return new Mediator\ReadOnce($adapter, $cache);
                         case 'request':

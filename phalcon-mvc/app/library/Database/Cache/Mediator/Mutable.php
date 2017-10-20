@@ -5,8 +5,8 @@
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
 // unless otherwise explicit stated elsewhere.
 // 
-// File:    Request.php
-// Created: 2017-09-14 14:09:00
+// File:    Mutable.php
+// Created: 2017-10-20 15:36:07
 // 
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
@@ -16,14 +16,15 @@ namespace OpenExam\Library\Database\Cache\Mediator;
 use OpenExam\Library\Database\Cache\Backend\Native as NativeCache;
 
 /**
- * The request mediator.
+ * The mutable mediator.
  * 
  * All result sets from queries are cached for the duration of the request.
- * When terminating, all cached keys (and its data) are removed.
+ * When terminating, all cached keys (and its data) are removed. If any 
+ * table is modified, then the cache is flushed.
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class Request extends MediatorHandler implements MediatorInterface
+class Mutable extends MediatorHandler implements MediatorInterface
 {
 
         /**
@@ -43,9 +44,30 @@ class Request extends MediatorHandler implements MediatorInterface
                 $this->_store = new Storage\Shared();
         }
 
+        /**
+         * Destructor.
+         */
         public function __destruct()
         {
                 $this->flush();
+        }
+
+        public function delete($table, $whereCondition = null, $placeholders = null, $dataTypes = null)
+        {
+                $this->flush();
+                return parent::delete($table, $whereCondition, $placeholders, $dataTypes);
+        }
+
+        public function insert($table, array $values, $fields = null, $dataTypes = null)
+        {
+                $this->flush();
+                return parent::insert($table, $values, $fields, $dataTypes);
+        }
+
+        public function update($table, $fields, $values, $whereCondition = null, $dataTypes = null)
+        {
+                $this->flush();
+                return parent::update($table, $fields, $values, $whereCondition, $dataTypes);
         }
 
         public function setCache($cache)

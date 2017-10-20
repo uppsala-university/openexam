@@ -59,7 +59,7 @@ class Factory implements InjectionAwareInterface
         /**
          * Default mediator handler.
          */
-        const MEDIATOR_TYPE = 'request';
+        const MEDIATOR_TYPE = 'mutable';
         /**
          * MySQL adapter identifier.
          */
