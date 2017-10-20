@@ -101,7 +101,7 @@ class SessionAdapterTest extends TestCase
                 $session->created = time();
                 $session->updated = null;
                 self::assertTrue($this->_object->write($session->session_id, $session->data));
-                $actual = Session::findFirstBySessionId($session->session_id);
+                $actual = Session::findFirst("session_id = '$session->session_id'");
                 self::assertEquals($actual->created, $session->created);
                 self::assertEquals($actual->updated, $session->updated);
 
@@ -110,7 +110,7 @@ class SessionAdapterTest extends TestCase
                 $session->data = "data2";       // update
                 $session->updated = time();
                 self::assertTrue($this->_object->write($session->session_id, $session->data));
-                $actual = Session::findFirstBySessionId($session->session_id);
+                $actual = Session::findFirst("session_id = '$session->session_id'");
                 self::assertEquals($actual->created, $session->created);
                 self::assertEquals($actual->updated, $session->updated);
 
@@ -118,7 +118,7 @@ class SessionAdapterTest extends TestCase
 
                 $session->data = "data2";       // noop
                 self::assertTrue($this->_object->write($session->session_id, $session->data));
-                $actual = Session::findFirstBySessionId($session->session_id);
+                $actual = Session::findFirst("session_id = '$session->session_id'");
                 self::assertEquals($actual->created, $session->created);
                 self::assertEquals($actual->updated, $session->updated);
 

@@ -17,6 +17,7 @@ use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Core\Pattern;
 use OpenExam\Library\Model\Behavior\Student as StudentBehavior;
 use OpenExam\Library\Model\Behavior\Transform\DateTimeNull;
+use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
 use OpenExam\Library\Model\Validation\Sequence as SequenceValidator;
 use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
@@ -35,6 +36,11 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  */
 class Student extends Role
 {
+
+        /**
+         * Guard against problematic methods use.
+         */
+        use ExamModelGuard;
 
         /**
          * The object ID.

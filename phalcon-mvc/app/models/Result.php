@@ -14,6 +14,8 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\Transform\FilterText;
+use OpenExam\Library\Model\Guard\Answer as AnswerModelGuard;
+use OpenExam\Library\Model\Guard\Corrector as CorrectorModelGuard;
 use Phalcon\Mvc\Model\Validator\Inclusionin;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
@@ -26,6 +28,12 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  */
 class Result extends ModelBase
 {
+
+        /**
+         * Guard against problematic methods use.
+         */
+        use AnswerModelGuard;
+        use CorrectorModelGuard;
 
         /**
          * Correction of answer is waiting to be done.

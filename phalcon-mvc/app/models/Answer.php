@@ -14,6 +14,8 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\Transform\FilterText;
+use OpenExam\Library\Model\Guard\Question as QuestionModelGuard;
+use OpenExam\Library\Model\Guard\Student as StudentModelGuard;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
@@ -28,6 +30,12 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  */
 class Answer extends ModelBase
 {
+
+        /**
+         * Guard against problematic methods use.
+         */
+        use QuestionModelGuard;
+        use StudentModelGuard;
 
         /**
          * This object ID.

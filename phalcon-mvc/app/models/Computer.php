@@ -13,6 +13,7 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Guard\Room as RoomModelGuard;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
@@ -27,6 +28,11 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  */
 class Computer extends ModelBase
 {
+
+        /**
+         * Guard against problematic methods use.
+         */
+        use RoomModelGuard;
 
         /**
          * This object ID.
@@ -113,7 +119,7 @@ class Computer extends ModelBase
 
         /**
          * Get table column map.
-         * @return type
+         * @return array
          */
         public function columnMap()
         {

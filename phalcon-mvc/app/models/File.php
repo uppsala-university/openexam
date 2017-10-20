@@ -14,6 +14,7 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\Transform\Remove;
+use OpenExam\Library\Model\Guard\Answer as AnswerModelGuard;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
@@ -26,6 +27,11 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  */
 class File extends ModelBase
 {
+
+        /**
+         * Guard against problematic methods use.
+         */
+        use AnswerModelGuard;
 
         /**
          * The object ID.

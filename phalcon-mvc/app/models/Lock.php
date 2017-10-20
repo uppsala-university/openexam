@@ -13,6 +13,9 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Guard\Computer as ComputerModelGuard;
+use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
+use OpenExam\Library\Model\Guard\Student as StudentModelGuard;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
 use Phalcon\Mvc\Model\Validator\Inclusionin;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
@@ -29,6 +32,13 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  */
 class Lock extends ModelBase
 {
+
+        /**
+         * Guard against problematic methods use.
+         */
+        use ComputerModelGuard;
+        use ExamModelGuard;
+        use StudentModelGuard;
 
         /**
          * The lock is pending (waiting for approval).
@@ -140,7 +150,7 @@ class Lock extends ModelBase
                         'message' => "The exam lock already exist"
                     )
                 ));
-                
+
                 if ($this->validationHasFailed() == true) {
                         return false;
                 }

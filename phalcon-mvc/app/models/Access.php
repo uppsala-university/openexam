@@ -13,6 +13,7 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
@@ -48,6 +49,11 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  */
 class Access extends ModelBase
 {
+
+        /**
+         * Guard against problematic methods use.
+         */
+        use ExamModelGuard;
 
         /**
          * The object ID.

@@ -15,6 +15,7 @@ namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\Generate\Ownership;
 use OpenExam\Library\Model\Behavior\Transform\Remove;
+use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
 use Phalcon\Mvc\Model\Validator\Inclusionin;
 
 /**
@@ -36,6 +37,11 @@ use Phalcon\Mvc\Model\Validator\Inclusionin;
  */
 class Resource extends ModelBase
 {
+
+        /**
+         * Guard against problematic methods use.
+         */
+        use ExamModelGuard;
 
         /**
          * Resource is not shared.

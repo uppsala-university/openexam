@@ -13,6 +13,7 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Guard\Session as SessionModelGuard;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
@@ -24,6 +25,11 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  */
 class Session extends ModelBase
 {
+
+        /**
+         * Guard against problematic methods use.
+         */
+        use SessionModelGuard;
 
         /**
          * The object ID.

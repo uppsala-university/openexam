@@ -13,6 +13,8 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
+
 /**
  * The decoder model.
  * 
@@ -23,6 +25,11 @@ namespace OpenExam\Models;
  */
 class Decoder extends Role
 {
+
+        /**
+         * Guard against problematic methods use.
+         */
+        use ExamModelGuard;
 
         /**
          * This object ID.

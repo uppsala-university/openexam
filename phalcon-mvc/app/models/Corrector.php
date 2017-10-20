@@ -13,6 +13,8 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Guard\Question as QuestionModelGuard;
+
 /**
  * The corrector model.
  * 
@@ -23,6 +25,11 @@ namespace OpenExam\Models;
  */
 class Corrector extends Role
 {
+
+        /**
+         * Guard against problematic methods use.
+         */
+        use QuestionModelGuard;
 
         /**
          * The object ID.

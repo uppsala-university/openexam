@@ -20,6 +20,8 @@ use OpenExam\Library\Model\Behavior\Generate\UUID;
 use OpenExam\Library\Model\Behavior\Question as QuestionBehavior;
 use OpenExam\Library\Model\Behavior\Transform\FilterText;
 use OpenExam\Library\Model\Behavior\Transform\Remove;
+use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
+use OpenExam\Library\Model\Guard\Topic as TopicModelGuard;
 use OpenExam\Library\Security\Roles;
 use Phalcon\DI as PhalconDI;
 use Phalcon\Mvc\Model;
@@ -42,6 +44,12 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  */
 class Question extends ModelBase
 {
+
+        /**
+         * Guard against problematic methods use.
+         */
+        use ExamModelGuard;
+        use TopicModelGuard;
 
         /**
          * This question is active.

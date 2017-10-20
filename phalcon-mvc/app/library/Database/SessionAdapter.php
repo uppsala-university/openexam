@@ -103,7 +103,7 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                 if ($this->_session != null && $this->_session->session_id == $sessionId) {
                         return true;
                 } elseif (isset($sessionId)) {
-                        $this->_session = SessionModel::findFirstBySessionId($sessionId);
+                        $this->_session = SessionModel::findFirst("session_id = '$sessionId'");
                 }
 
                 if ($this->_session == null) {

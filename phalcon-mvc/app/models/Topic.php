@@ -16,6 +16,7 @@ namespace OpenExam\Models;
 use OpenExam\Library\Model\Behavior\Generate\Maximum;
 use OpenExam\Library\Model\Behavior\Generate\Unique;
 use OpenExam\Library\Model\Behavior\Generate\UUID;
+use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
@@ -42,6 +43,11 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  */
 class Topic extends ModelBase
 {
+
+        /**
+         * Guard against problematic methods use.
+         */
+        use ExamModelGuard;
 
         /**
          * The object ID.

@@ -169,6 +169,7 @@ class Performance extends ModelBase
 
         /**
          * The table column map.
+         * @return array 
          */
         public function columnMap()
         {
