@@ -12,6 +12,12 @@
 
 $decoded = $exam->decoded;
 
+if (strtotime($exam->endtime) < time()) {
+        $exam->show_save = true;
+} else {
+        $exam->show_save = false;
+}
+
 ?>
 
 <?= Phalcon\Tag::stylesheetLink("css/pdf-rendering.css"); ?>
@@ -64,6 +70,9 @@ $decoded = $exam->decoded;
     input.q-points:required:invalid {
         background-color: #feff99;
     }    
+    .savable {
+        display: <?= $exam->show_save ? '' : 'none' ?>
+    }
 </style>
 
 <div class="hero-unit">
@@ -250,7 +259,7 @@ $decoded = $exam->decoded;
                                                                         <div style="color:orange; margin-left:35px"><i class="fa fa-warning"></i>  Student's answer is partially correct </div>
                                                                 <?php endif; ?>
 
-                                                                <div class="q-part-student-score" style="padding-left: 35px; margin-top: 10px; display: <?= $qPart['q_points'] == 0 ? 'none' : '' ?>">
+                                                                <div class="q-part-student-score savable" style="padding-left: 35px; margin-top: 10px; display: <?= $qPart['q_points'] == 0 ? 'none' : '' ?>">
                                                                     <i class="fa fa-certificate" style="color:#D84B4B"></i>
                                                                     <span style="color:#000;">
                                                                         Points:
@@ -290,12 +299,12 @@ $decoded = $exam->decoded;
                                                             <?php if (count($qSpecificAns)): ?>
                                                                     <?php if (!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
                                                                             <?php if (count($questParts) == $qPartCounter): ?>
-                                                                                    <div style="padding-bottom: 10px; padding-left:35px">
+                                                                                    <div class="savable" style="padding-bottom: 10px; padding-left:35px">
                                                                                         <i class="fa fa-comments"></i>
                                                                                         Comments:<br />
                                                                                         <textarea class="changeable" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?= $qSpecAns->id ?>"><?= $result->comment ?></textarea>
                                                                                     </div>
-                                                                                    <div style="padding-bottom: 10px; padding-left: 45px;">
+                                                                                    <div class="savable" style="padding-bottom: 10px; padding-left: 45px;">
                                                                                         <input style="text-shadow:none; background-color:#40c040; font-size:11px" type="button" class="save-result ans-id<?= $qSpecAns->id ?>" ans-id="<?= $qSpecAns->id ?>" value="Save result for this question" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
                                                                                     </div>
                                                                             <?php endif; ?>
@@ -408,7 +417,7 @@ $decoded = $exam->decoded;
                                                                             </ul>
                                                                         </div>
 
-                                                                        <div class="q-part-student-score" style="padding-top: 10px; padding-left: 35px; margin-bottom: 10px; display: <?= $questParts[$qPartTitle]['q_points'] == 0 ? 'none' : '' ?>">
+                                                                        <div class="q-part-student-score savable" style="padding-top: 10px; padding-left: 35px; margin-bottom: 10px; display: <?= $questParts[$qPartTitle]['q_points'] == 0 ? 'none' : '' ?>">
                                                                             <i class="fa fa-certificate" style="color:#D84B4B"></i>
                                                                             <span style="color:#000;">
                                                                                 Points:
@@ -434,13 +443,13 @@ $decoded = $exam->decoded;
 
                                                                         <?php if (!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
                                                                                 <?php if (count($ansData) == $qPartCounter): ?>
-                                                                                        <div style="padding-top: 10px; padding-left:35px">
+                                                                                        <div class="savable" style="padding-top: 10px; padding-left:35px">
                                                                                             <i class="fa fa-comments"></i>
                                                                                             Comments:<br />
                                                                                             <textarea class="changeable" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?= $answer->id ?>"><?= $result->comment ?></textarea>
                                                                                         </div>
 
-                                                                                        <div style="padding-top: 10px; padding-left: 45px;">
+                                                                                        <div class="savable" style="padding-top: 10px; padding-left: 45px;">
                                                                                             <input style="text-shadow:none; background-color:#40c040; font-size:11px" type="button" class="save-result ans-id<?= $answer->id ?>" ans-id="<?= $answer->id ?>" value="Save this result" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
                                                                                         </div>
                                                                                 <?php endif; ?>
@@ -478,8 +487,8 @@ $decoded = $exam->decoded;
         </div>
     </div>
     <?php if ($decoded == false) : ?>
-            <div style="position: fixed; top: 55px; right: 55px; padding: 10px; background-color: white; border-radius: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2); z-index: 2">
-                <input type="button" style="text-shadow: none; background-color: rgb(64, 192, 64); font-size: 20px; padding: 8px" class="save-all-result" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>" value="Save all results »">
+            <div style="position: fixed; top: 55px; right: 70px; padding: 10px; background-color: whitesmoke; border-radius: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2); z-index: 2">
+                <input type="button" style="text-shadow: none; background-color: rgb(64, 192, 64); font-size: 20px; padding: 8px" class="save-all-result savable" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>" value="Save all results »">
                 <div style="padding-left: 10px; padding-top: 5px">
                     <input type="checkbox" class="hide-completed"><span style="margin-left: 10px">Hide fully corrected answers</span><br>
                     <input type="checkbox" class="hide-resources"><span style="margin-left: 10px">Hide media and resource files</span>

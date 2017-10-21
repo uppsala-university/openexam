@@ -56,6 +56,12 @@ if (!$exam->getState()->isCorrected()) {
         }
 }
 
+if (strtotime($exam->endtime) < time()) {
+        $exam->show_save = true;
+} else {
+        $exam->show_save = false;
+}
+
 // 
 // Use config defaults for undefined display options:
 // 
@@ -85,7 +91,11 @@ if ($exam->decoded) {
 <div id="container" class="left_menu_space" style="width:100%">
     <div id="centerColWide" style="width:95%">
         <div id="mainview">
-            <?php if (!$exam->decoded): ?>
+            <?php if (!$exam->show_save): ?>
+                    <h3>Exam status</h3>
+                    <p>Following table shows all answers from students to questions for the examination <strong>"<?= $exam->name ?>"</strong>. </p>
+                    <p>You can view the student's answers by student (rows), by question (column) or individual (by index). This exam is not yet finished, so you can only monitor the answering progress for students on this exam.</p>
+            <?php elseif (!$exam->decoded): ?>
                     <h3>Exam correction</h3>
                     <p>Following table shows all answers from students to questions for the examination <strong>"<?= $exam->name ?>"</strong>. </p>
                     <p>Correct answers by student (rows), by question (column) or individual (by index). You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of.</p>
