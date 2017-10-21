@@ -13,17 +13,15 @@
 
 namespace OpenExam\Library\Core\Exam\Student;
 
+use OpenExam\Library\Core\Exam\Access;
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Model\Exception as ModelException;
 use OpenExam\Library\Security\Exception as SecurityException;
-use OpenExam\Models\Access as AccessModel;
 use OpenExam\Models\Computer;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Lock;
 use OpenExam\Models\Student;
 use Phalcon\Mvc\User\Component;
-use UUP\Authentication\Authenticator\DomainAuthenticator;
-use UUP\Authentication\Restrictor\AddressRestrictor;
 
 /**
  * Approve student access on exam.
@@ -50,11 +48,6 @@ class Approve extends Component
          * @var string 
          */
         private $_addr;
-        /**
-         * The remote hostname.
-         * @var string 
-         */
-        private $_host;
 
         /**
          * Constructor.
@@ -67,7 +60,6 @@ class Approve extends Component
                 $this->_exam = $exam;
                 $this->_student = $student;
                 $this->_addr = $this->request->getClientAddress(true);
-                $this->_host = gethostbyaddr($this->_addr);
         }
 
         /**
@@ -78,7 +70,6 @@ class Approve extends Component
                 unset($this->_exam);
                 unset($this->_lock);
                 unset($this->_addr);
-                unset($this->_host);
                 unset($this->_student);
         }
 
@@ -164,64 +155,24 @@ class Approve extends Component
         public function isAllowed()
         {
                 // 
-                // Get allowed IP-addresses (single, range or masked network):
+                // Use access list validator to simplify checking:
                 // 
-                if (($accesslist = AccessModel::find(array(
-                            'columns'    => 'addr',
-                            'conditions' => 'exam_id = ?0',
-                            'bind'       => array($this->_exam->id)
-                    ))) === false) {
-                        throw new ModelException(sprintf("Failed lookup access list for exam (id=%d)", $this->_exam->id));
-                }
+                $access = new Access($this->_exam);
 
                 // 
                 // Warn about empty access list. Users should be encourage to
                 // explicit define access list.
                 // 
-                if (count($accesslist) == 0) {
+                if ($access->isMissing()) {
                         $this->logger->access->warning(sprintf("The exam %d has no remote address access list", $this->_exam->id));
                         return true;
                 }
 
                 // 
-                // The list containing allowed hostname and IP-addresses:
+                // Check if access is allowed using any access check:
                 // 
-                $allowed = array(
-                        'host' => array(),
-                        'addr' => array()
-                );
-
-                // 
-                // Assume regexp pattern are delimited by a '|' character:
-                // 
-                foreach ($accesslist as $access) {
-                        if ($access->addr[0] == '|') {
-                                $allowed['host'][] = $access->addr;
-                        } else {
-                                $allowed['addr'][] = $access->addr;
-                        }
-                }
-
-                // 
-                // Check IP-address restriction:
-                // 
-                if ($this->_addr) {
-                        $restrictor = new AddressRestrictor($allowed['addr']);
-                        if ($restrictor->match($this->_addr)) {
-                                return true;
-                        }
-                }
-
-                // 
-                // Check hostname restriction:
-                // 
-                if ($this->_host) {
-                        foreach ($allowed['host'] as $accept) {
-                                $restrictor = new DomainAuthenticator($accept);
-                                if ($restrictor->match($this->_host)) {
-                                        return true;
-                                }
-                        }
+                if ($access->isAllowed($this->_addr)) {
+                        return true;
                 }
 
                 // 
