@@ -357,12 +357,14 @@ keyboard shortcut \'&lt;ctrl&gt; + &lt;alt&gt; + s\'.\n\
         responsive: true,
         zoomType: "window",
         zoomWindowPosition: 10,
-        borderColour: "#dedede",
+        zoomWindowOffetx: -30,
+        borderColour: "black",
         cursor: "crosshair",
         scrollZoom: true,
-        cursor: "pointer",
         zoomWindowFadeIn: 500,
-        zoomWindowFadeOut: 750
+        zoomWindowFadeOut: 750,
+        lensFadeIn: 200,
+        lensFadeOut: 200
     });
 
     $('.img-zoom-inner').elevateZoom({
@@ -372,7 +374,6 @@ keyboard shortcut \'&lt;ctrl&gt; + &lt;alt&gt; + s\'.\n\
         borderColour: "#dedede",
         cursor: "crosshair",
         scrollZoom: true,
-        cursor: "pointer",
         zoomWindowFadeIn: 500,
         zoomWindowFadeOut: 750
     });
