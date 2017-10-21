@@ -95,7 +95,7 @@
 
     <?php if (isset($hide[$type[0]]) && $hide[$type[0]] == 'hide') : ?>
             <div style="position: relative">
-                <img src="<?= $url->get('img/pexels-photo-87216-camera.jpeg') ?>" style="max-width:99%">
+                <img src="<?= $url->get('img/pexels-photo-87216-camera.jpeg') ?>" style="max-width:100%">
                 <div class="resource-file-hidden">
                     <h3>The media content has been hidden on request from teacher</h3>
                 </div>
@@ -109,7 +109,7 @@
                         controls
                         preload="auto"
                         poster="<?= $url->get('img/pexels-photo-318540-video.jpeg') ?>"
-                        width="290" height="215"
+                        width="284" height="215"
                         data-setup='{}'>
                         <source src="<?= $href ?>" type="<?= $mime ?>"></source>
                         <p class="vjs-no-js">
@@ -152,12 +152,12 @@
                             <div class="resource-file-blurred">The media content has been blurred on request from teacher</div>
                             <?php $href = '#' ?>
                     <?php else : ?>
-                            <img src="<?= $href ?>" style=" background-color:#f9f9f9; max-width:99%;">
+                            <img src="<?= $href ?>" style=" background-color:#f9f9f9; max-width:100%;">
                     <?php endif; ?>
             <?php else : ?>
                     <div>
                         <a class="fancybox" rel="fancybox" href="<?= $href ?>" title="<?= $name ?>">
-                            <a class="media {width:320}" href="<?= $href ?>"></a> 
+                            <a class="media {width:284}" href="<?= $href ?>"></a> 
                         </a>    
                     </div>
             <?php endif; ?>
