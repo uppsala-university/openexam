@@ -8,6 +8,13 @@
 <!-- view.phtml specific js -->
 <?= Phalcon\Tag::javascriptInclude('js/views/question/view.js'); ?>
 
+<style>
+    .zoomWindow {
+        box-shadow: 5px 5px 20px rgba(136,136,136,0.8);
+        border-radius: 3px;
+    }        
+</style>
+
 <?php if ($viewMode == 'all'): ?>
         <script type="text/x-mathjax-config">
             MathJax.Hub.Config({
