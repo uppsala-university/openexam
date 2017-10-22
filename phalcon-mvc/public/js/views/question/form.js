@@ -182,7 +182,8 @@ $(document).ready(function () {
                                         .find('.lib_resources_list')
                                         .append('\
                                                     <li>\
-                                                            <i class="fa fa-close"></i>\
+                                                            <i class="fa fa-close resource-item-remove"></i>\
+                                                            <i class="fa fa-pencil resource-item-edit"></i>\
                                                             <a href="' + $(this).attr('file-path') + '" file-path="' + $(this).attr('file-path') + '" target="_blank">' + $(itemTitle).find('input').val() + '</a>\
                                                     </li>'
                                                 );
