@@ -165,18 +165,16 @@ foreach ($exam->students as $student) {
                                         </td>
                                         <td><?= $student->user ?></td>
                                         <td><?= $student->persnr ?></td>
-                                        <td>
-                                            <span style="color:blue; cursor: pointer" class="st-exam-time" for="starttime" exam-date="<?= !empty($exam->starttime) ? date("Y-m-d", strtotime($exam->starttime)) : ""; ?>">
-                                                <?= !empty($student->starttime) ? date("H:i", strtotime($student->starttime)) : "---" ?>
+                                        <td class="st-exam-item-edit" data-name="starttime"><?= $student->starttime ?></td>
+                                        <td class="st-exam-item-edit" data-name="endtime"><?= $student->endtime ?></td>
+                                        <td class="st-exam-item-edit" data-name="code"><?= $student->code ?></td>
+                                        <td class="st-exam-item-edit" data-name="tag"><?= $student->tag ?></td>
+                                        <td class="st-exam-item-save">
+                                            <span class="btn btn-default" style="visibility: hidden">
+                                                <i class="fa fa-save"></i>
+                                                <span>Save</span>
                                             </span>
                                         </td>
-                                        <td>
-                                            <span style="color:blue; cursor: pointer" class="st-exam-time" for="endtime" exam-date="<?= !empty($exam->starttime) ? date("Y-m-d", strtotime($exam->endtime)) : ""; ?>">
-                                                <?= !empty($student->endtime) ? date("H:i", strtotime($student->endtime)) : "---" ?>
-                                            </span>
-                                        </td> 
-                                        <td><?= $student->code ?></td>
-                                        <td><?= $student->tag ?></td>
                                     </tr>
                                     <tr class="st-detail-rows" style="display:none;" id="st-detail-row<?= $student->id ?>">
                                         <td colspan="10" style="background-color:#ffe;"></td>
@@ -253,58 +251,48 @@ foreach ($exam->students as $student) {
                 });
             }
 
-            var updatingStExamTime = false;
-
-            $(document).on('click', '.st-exam-time', function () {
-                var field = $(this).attr('for');
-                var currVal = jQuery.trim($(this).html());
-                if (currVal.indexOf('<input') == -1 && !updatingStExamTime) {
-
-                    $('.st-exam-time-input').each(function (i, elem) {
-                        $(elem).parent().html($(elem).val() === '' ? '---' : $(elem).val());
-                    });
-
-                    $(this).html(
-                            '<input class="st-exam-time-input" name="' + field + '" type="text" value="' + (currVal == '---' ? '' : currVal) + '" placeholder="HH:MM" style="height:13px; width:38px">' +
-                            '<input type="button" value="ok" class="st-exam-time-save">'
-                            );
-                    $(this).find('input[type=text]').focus();
-                }
-                updatingStExamTime = false;
-                return false;
+            // 
+            // Edit student properties inline.
+            // 
+            $(document).on('click', '.st-exam-item-edit', function () {
+                $(this).attr("contenteditable", true);
+                $(this).focus();
+                $(this).parent().find("span.btn").css("visibility", "visible");
             });
 
-            $(document).on('click', '.st-exam-time-save', function () {
+            // 
+            // Save student properties.
+            // 
+            $(document).on('click', '.st-exam-item-save', function () {
+                var data = {};
+                var button = $(this).find("span.btn");
 
-                var stData = [];
-                var stId = $(this).closest('tr').find('td>input[type=checkbox]').val();
-                var currVal = $(this).parent().find('input[type=text]').val();
-                var inputElem = $(this).parent().find("input[type=text]");
+                // 
+                // Add editable item values to data object:
+                // 
+                $(this).parent().find(".st-exam-item-edit").each(function () {
+                    data[$(this).attr('data-name')] = $(this).text();
+                });
 
-                if ($(inputElem).parent().attr('exam-date') == "") {
-                    alert("Failed to save data. Please set start date and time for the exam first.");
-                    currVal = '';
-                } else {
+                // 
+                // Get student ID from data-id attribute:
+                // 
+                data.id = $(this).parent().find(".st-exam-detail").attr("data-id");
+                
+                console.log(JSON.stringify(data));
 
-                    if ($(inputElem).prop('name') === 'starttime') {
-                        stData.push({'id': stId, 'starttime': $(inputElem).parent().attr('exam-date') + " " + currVal});
-                    } else if ($(inputElem).prop('name') === 'endtime') {
-                        stData.push({'id': stId, 'endtime': $(inputElem).parent().attr('exam-date') + " " + currVal});
-                    } else {
-                        alert("Sorry, failed to save data");
-                        return false;
-                    }
-
-                    ajax(
-                            baseURL + 'ajax/core/invigilator/student/update',
-                            JSON.stringify(stData),
-                            function (userData) {
+                // 
+                // Send AJAX request. Hide save button on success.
+                // 
+                ajax(
+                        baseURL + 'ajax/core/invigilator/student/update',
+                        JSON.stringify(data),
+                        function (response) {
+                            if (response === true) {
+                                button.css("visibility", "hidden");
                             }
-                    );
-                }
-
-                $(this).parent().html(currVal === '' ? '---' : currVal);
-                updatingStExamTime = true;
+                        }
+                );
 
             });
 
@@ -314,13 +302,13 @@ foreach ($exam->students as $student) {
             $(document).on("click", "#unlock-student", function () {
                 var dataId = $(this).attr('data-id');
                 var studId = $(this).attr('stud-id');
-                
+
                 ajax(
                         baseURL + 'ajax/core/invigilator/lock/delete',
                         {"id": dataId},
-                function (status) {
-                    $('a[data-id="' + studId + '"]').click();
-                });
+                        function (status) {
+                            $('a[data-id="' + studId + '"]').click();
+                        });
             });
 
             // 
@@ -333,9 +321,9 @@ foreach ($exam->students as $student) {
                 ajax(
                         baseURL + 'ajax/core/invigilator/lock/update',
                         {"id": $(this).attr('data-id'), "status": "approved"},
-                function (status) {
-                    $('a[data-id="' + studId + '"]').click();
-                }
+                        function (status) {
+                            $('a[data-id="' + studId + '"]').click();
+                        }
                 );
             });
 
@@ -400,23 +388,23 @@ foreach ($exam->students as $student) {
                     ajax(
                             baseURL + 'ajax/core/invigilator/student/delete',
                             {"id": $(this).attr('data-id')},
-                    function (status) {
-                        jQuery.each(studentList, function (i, sData) {
-                            if (typeof sData !== 'undefined' && sData.id == $(student).attr('data-id')) {
-                                delete studentList[i];
-                            }
-                        });
-                        // 
-                        // Hide from list:
-                        // 
-                        $(student).parent().slideUp('500', function () {
-                            $(this).remove();
-                        });
-                        if ($('.total-exam-students')) {
-                            $('.total-exam-students').html($('.student-list').find('li').length - 1);
-                        }
+                            function (status) {
+                                jQuery.each(studentList, function (i, sData) {
+                                    if (typeof sData !== 'undefined' && sData.id == $(student).attr('data-id')) {
+                                        delete studentList[i];
+                                    }
+                                });
+                                // 
+                                // Hide from list:
+                                // 
+                                $(student).parent().slideUp('500', function () {
+                                    $(this).remove();
+                                });
+                                if ($('.total-exam-students')) {
+                                    $('.total-exam-students').html($('.student-list').find('li').length - 1);
+                                }
 
-                    }
+                            }
                     );
                 }
             });
