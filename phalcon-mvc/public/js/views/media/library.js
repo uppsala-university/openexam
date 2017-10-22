@@ -67,7 +67,7 @@ $(function () {
                                             .end()
                                             .end()
                                             .find('.lib-img')
-                                            .attr('src', (fType[0] == 'images' ? file.url : baseURL + "img/file-icon.png"))
+                                            .attr('src', (fType[0] == 'image' ? file.url : baseURL + "img/file-icon.png"))
                                             .attr('file-path', file.url)
                                             .end()
                                             .find('.lib-item-title')
