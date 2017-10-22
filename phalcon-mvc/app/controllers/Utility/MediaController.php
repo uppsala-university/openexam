@@ -21,7 +21,7 @@ use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Resource;
 use Phalcon\Mvc\View;
 
-require_once (EXTERN_DIR . 'UploadHandler.php');
+require_once (\EXTERN_DIR . 'UploadHandler.php');
 
 /**
  * Controller for loading media resources
@@ -94,22 +94,22 @@ class MediaController extends GuiController
                 // 
                 // Filter shared resources on mime-type:
                 // 
-                $simages = $sres->filter(function($resource) {
+                $simage = $sres->filter(function($resource) {
                         if ($resource->type == 'image') {
                                 return $resource;
                         }
                 });
-                $svideos = $sres->filter(function($resource) {
+                $svideo = $sres->filter(function($resource) {
                         if ($resource->type == 'video') {
                                 return $resource;
                         }
                 });
-                $saudios = $sres->filter(function($resource) {
+                $saudio = $sres->filter(function($resource) {
                         if ($resource->type == 'audio') {
                                 return $resource;
                         }
                 });
-                $sothers = $sres->filter(function($resource) {
+                $sother = $sres->filter(function($resource) {
                         if (!in_array($resource->type, array('image', 'video', 'audio'))) {
                                 return $resource;
                         }
@@ -118,39 +118,39 @@ class MediaController extends GuiController
                 // 
                 // Filter personal resources on mime-type:
                 // 
-                $pimages = $pres->filter(function($resource) {
+                $pimage = $pres->filter(function($resource) {
                         if ($resource->type == 'image') {
                                 return $resource;
                         }
                 });
-                $pvideos = $pres->filter(function($resource) {
+                $pvideo = $pres->filter(function($resource) {
                         if ($resource->type == 'video') {
                                 return $resource;
                         }
                 });
-                $paudios = $pres->filter(function($resource) {
+                $paudio = $pres->filter(function($resource) {
                         if ($resource->type == 'audio') {
                                 return $resource;
                         }
                 });
-                $pothers = $pres->filter(function($resource) {
+                $pother = $pres->filter(function($resource) {
                         if (!in_array($resource->type, array('image', 'video', 'audio'))) {
                                 return $resource;
                         }
                 });
 
                 $this->view->setVar('sres', array(
-                        "images" => $simages,
-                        "videos" => $svideos,
-                        "audios" => $saudios,
-                        "others" => $sothers
+                        "image" => $simage,
+                        "video" => $svideo,
+                        "audio" => $saudio,
+                        "other" => $sother
                 ));
 
                 $this->view->setVar('pres', array(
-                        "images" => $pimages,
-                        "videos" => $pvideos,
-                        "audios" => $paudios,
-                        "others" => $pothers
+                        "image" => $pimage,
+                        "video" => $pvideo,
+                        "audio" => $paudio,
+                        "other" => $pother
                 ));
 
                 // 
@@ -194,14 +194,14 @@ class MediaController extends GuiController
                 // 
                 // Set target URL and path:
                 // 
-                $uploadDir = $this->config->application->mediaDir . $media[1] . "s/";
+                $uploadDir = $this->config->application->mediaDir . $media[1];
                 $uploadUrl = $this->url->get('utility/media/view/' . $media[1]);
 
                 // 
                 // Upload file:
                 // 
                 $handler = new \UploadHandler(array(
-                        'upload_dir' => $uploadDir,
+                        'upload_dir' => $uploadDir . "/",
                         'upload_url' => $uploadUrl . "/",
                 ));
         }
