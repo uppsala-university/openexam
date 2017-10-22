@@ -1,0 +1,40 @@
+#!/bin/sh
+# 
+# Exam archive maintenance script. The task should be run as web server
+# to have correct permission set on generated files.
+#
+# Author: Anders Lövgren
+# Date:   2017-10-22
+
+# This script directory:
+cwd="$(dirname $(realpath $0))"
+
+# The phalcon directory:
+root="$(realpath $cwd/../../phalcon-mvc)"
+
+# Web server user:
+user="apache"
+
+# Script to run:
+script="$root/script/openexam.php"
+
+# Extra options:
+#options="--verbose --force"
+
+if ! [ -e $script ]; then
+  echo "$0: missing script $script"
+  exit 1
+fi
+if ! [ -d $root ]; then
+  echo "$0: missing application directory $root"
+  exit 1
+fi
+
+# Create new archives:
+/usr/bin/sudo -u $user /usr/bin/php $script --archive --create --all $options $*
+
+# Update existing archives:
+/usr/bin/sudo -u $user /usr/bin/php $script --archive --update $options $*
+
+# Find exams not being archived:
+/usr/bin/sudo -u $user /usr/bin/php $script --archive --missing $options $*
