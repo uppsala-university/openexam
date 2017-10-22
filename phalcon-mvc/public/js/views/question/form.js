@@ -168,6 +168,16 @@ $(document).ready(function () {
                                     $(itemTitle).find('input').val($(this).attr('file-name'));
                                 }
 
+                                // 
+                                // Prefix URL if relative:
+                                // 
+                                if ($(this).attr('file-path')[0] !== '/') {
+                                    $(this).attr('file-path', function (i, href) {
+                                        console.log(baseURL + href);
+                                        return baseURL + href;
+                                    });
+                                }
+
                                 $('#' + $(".ui-tabs-active").attr("aria-controls"))
                                         .find('.lib_resources_list')
                                         .append('\
