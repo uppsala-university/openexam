@@ -48,7 +48,8 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
                                                 <?php if (count($qParts[$qPartTitle]['resources'])): ?>
                                                         <?php foreach ($qParts[$qPartTitle]['resources'] as $rTitle => $rLink): ?>
                                                                 <li> 
-                                                                    <i class="fa fa-close"></i> 
+                                                                    <i class="fa fa-close resource-item-remove"></i> 
+                                                                    <i class="fa fa-pencil resource-item-edit"></i> 
                                                                     <a target="_blank" file-path="<?= $rLink ?>" href="<?= $this->url->get($rLink) ?>"><?= empty($rTitle) ? urldecode(basename($rLink)) : $rTitle ?></a> 
                                                                     </i> 
                                                                 </li>

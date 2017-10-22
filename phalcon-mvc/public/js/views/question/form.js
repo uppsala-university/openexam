@@ -221,12 +221,23 @@ $(document).ready(function () {
         });
     });
 
+    // 
+    // Remove this library resource:
+    // 
+    $('body').on('click', ".resource-item-remove", function () {
+        $(this).parent().remove();
+    });
 
     // 
-    // Delete selected library resource:
+    // Edit name on this library resource:
     // 
-    $('body').on('click', ".q_resources > ul > li > i", function () {
-        $(this).parent().remove();
+    $('body').on('click', ".resource-item-edit", function () {
+        if ($(this).parent().find('a').attr("contenteditable") === undefined) {
+            $(this).parent().find('a').attr("contenteditable", true);
+            $(this).parent().find('a').focus();
+        } else {
+            $(this).parent().find('a').removeAttr("contenteditable");
+        }
     });
 
     // 
