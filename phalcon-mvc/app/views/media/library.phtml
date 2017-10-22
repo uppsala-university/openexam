@@ -78,7 +78,7 @@
                             <?php foreach ($sres[$type] as $resource): ?>
                                     <div class="lib-item lib-shared-<?= $resource->shared ?>" id="lib-item-<?= $resource->id ?>"> 
                                         <a class="select-lib-img darken" href="#"> 
-                                            <img src="<?= $type == 'images' ? $resource->path : $this->url->get('img/file-icon.png') ?>" file-path="<?= $resource->path ?>" class="lib-img" style="background-color:#fff"> 
+                                            <img src="<?= $type == 'image' ? $this->url->get($resource->path) : $this->url->get('img/file-icon.png') ?>" file-path="<?= $resource->path ?>" class="lib-img" style="background-color:#fff"> 
                                             <span>Click to select</span> 
                                         </a>
                                         <div class="title-box">
@@ -106,7 +106,7 @@
                             <?php foreach ($pres[$type] as $resource): ?>
                                     <div class="lib-item lib-shared-personal" id="lib-item-<?= $resource->id ?>"> 
                                         <a class="select-lib-img darken" href="#"> 
-                                            <img src="<?= $type == 'images' ? $resource->path : $this->url->get('img/file-icon.png') ?>" file-path="<?= $resource->path ?>" class="lib-img" style="background-color:#fff"> 
+                                            <img src="<?= $type == 'image' ? $this->url->get($resource->path) : $this->url->get('img/file-icon.png') ?>" file-path="<?= $resource->path ?>" class="lib-img" style="background-color:#fff"> 
                                             <span>Click to select</span> 
                                         </a>
                                         <div class="title-box">
