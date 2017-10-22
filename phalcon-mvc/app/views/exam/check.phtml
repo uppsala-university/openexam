@@ -29,6 +29,7 @@ $security = $check->getSecurity();
 
 <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
     This dialog displays result from checking if exam is ready for use. Control that all requirements are full-filled and press the 'Fix this problem' button to correct any issues.
+    Click on 'Show Progress' to monitor student answer progress during an exam.
 </div>
 
 <div style="padding-bottom: 3px">
@@ -196,9 +197,22 @@ $security = $check->getSecurity();
                     <i class="fa fa-gear"></i>
                     <span>Open Manager</span>
                 </span>
+                <span style="padding:2px; font-size:11px; min-width: 10em" class="btn btn-success" id="show-progress">
+                    <i class="fa fa-tasks"></i>
+                    <span>Show Progress</span>
+                </span>
             </center>		
         </div>   
-
+<?php elseif ($role == Roles::INVIGILATOR) : ?>
+        <hr>
+        <div class="st-line">
+            <center>
+                <span style="padding:2px; font-size:11px; min-width: 10em" class="btn btn-success" id="show-progress">
+                    <i class="fa fa-tasks"></i>
+                    <span>Show Progress</span>
+                </span>
+            </center>		
+        </div>   
 <?php endif; ?>
 
 <script>
@@ -253,6 +267,11 @@ $security = $check->getSecurity();
 
             $('body').on('click', "#open-manager", function () {
                 var url = baseURL + '/exam/update/' + examId + '/creator';
+                document.location = url;
+            });
+
+            $('body').on('click', "#show-progress", function () {
+                var url = baseURL + '/exam/' + examId + '/correction';
                 document.location = url;
             });
 
