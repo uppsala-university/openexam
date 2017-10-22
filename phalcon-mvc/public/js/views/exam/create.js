@@ -114,10 +114,10 @@ $(document).ready(function () {
     // 
     var sortQuestions = function () {
 
-        cntr = 1;
-        tmpJson = {};
-        tmpJson = JSON.parse(JSON.stringify(qsJson));
-        qArr = [];
+        var cntr = 1;
+        var tmpJson = {};
+        var tmpJson = JSON.parse(JSON.stringify(qsJson));
+        var qArr = [];
         $('.sortable-qs').each(function (index, element) {
 
             if ($(element).find('li').filter(':visible').length) {
@@ -168,9 +168,9 @@ $(document).ready(function () {
         // 
         // Send AJAX request to delete this record:
         // 
-        model = $(this).closest('.menuLevel1').parent().find('a').attr('data-model');
-        reqUrl = baseURL + 'ajax/core/' + role + '/' + model + '/delete';
-        thisItem = $(this);
+        var model = $(this).closest('.menuLevel1').parent().find('a').attr('data-model');
+        var reqUrl = baseURL + 'ajax/core/' + role + '/' + model + '/delete';
+        var thisItem = $(this);
         ajax(reqUrl, {"id": $(this).attr('data-ref')}, function (json) {
             $(thisItem).closest('li').remove();
         });
@@ -277,7 +277,7 @@ $(document).ready(function () {
         var qNo = $(this).closest('.qs_area_line').attr('q-no');
         if (confirm("Are you sure you want to delete question no. " + qNo + "?")) {
 
-            qAreaLine = $(this).closest('.qs_area_line');
+            var qAreaLine = $(this).closest('.qs_area_line');
 
             // 
             // Delete from database and then from JSON:
@@ -360,20 +360,20 @@ $(document).ready(function () {
     $(document).on('click', '.save-exam-settings', function () {
         var examDesc;
 
-        settingBox = $(this).closest('.exam-settings-box');
-        examTitle = $(settingBox).find('input[name="exam-title"]').val();
+        var settingBox = $(this).closest('.exam-settings-box');
+        var examTitle = $(settingBox).find('input[name="exam-title"]').val();
 
         if (CKEDITOR.instances['exam-desc']) {
             examDesc = CKEDITOR.instances['exam-desc'].getData();
         }
 
-        org = $(settingBox).find('input[name="unit"]').val();
-        start = $(settingBox).find('input[name="start"]').val();
-        end = $(settingBox).find('input[name="end"]').val();
-        grades = $(settingBox).find('textarea[name="grade"]').val();
-        code = $(settingBox).find('input[name="exam-code"]').val();
-        course = $(settingBox).find('input[name="exam-course-code"]').val();
-        details = 0;
+        var org = $(settingBox).find('input[name="unit"]').val();
+        var start = $(settingBox).find('input[name="start"]').val();
+        var end = $(settingBox).find('input[name="end"]').val();
+        var grades = $(settingBox).find('textarea[name="grade"]').val();
+        var code = $(settingBox).find('input[name="exam-code"]').val();
+        var course = $(settingBox).find('input[name="exam-course-code"]').val();
+        var details = 0;
 
         $(settingBox).find('input[name="details[]"]:checked').each(function (index, element) {
             details += Number($(element).val());
@@ -451,7 +451,7 @@ $(document).ready(function () {
     function loadQuestionDialog(qId)
     {
         var action = (qId ? 'update' : 'create');
-        qDbId = (qId ? qsJson[qId]["questId"] : 0);
+        var qDbId = (qId ? qsJson[qId]["questId"] : 0);
 
         $.ajax({
             type: "POST",
@@ -502,9 +502,8 @@ $(document).ready(function () {
     // 
     var saveQuestionToExam = function (qId) {
 
-        /////////// Create Json object for Q ///////////
-        //	initializations
-        ///////////////////////////////////////////////
+        var qIndex;
+        
         if (!qId) {
             qIndex = ++totalQs;
             qsJson[qIndex] = {};
@@ -525,7 +524,7 @@ $(document).ready(function () {
             // 
             // Make questiom part title e.g a/b/c:
             // 
-            qPartTitle = String.fromCharCode(96 + (index + 1));
+            var qPartTitle = String.fromCharCode(96 + (index + 1));
 
             // 
             // Initiate js object that will populate later on:
@@ -580,7 +579,7 @@ $(document).ready(function () {
             // 
             // Find and sum up score for this part:
             // 
-            qPartScore = $(qPart).find('.q-part-points').val().parsefloat();
+            var qPartScore = $(qPart).find('.q-part-points').val().parsefloat();
             qJson[qPartTitle]["q_points"] = qPartScore;
             totalScore += qPartScore;
 
@@ -595,9 +594,9 @@ $(document).ready(function () {
         // Use selected topic or default:
         // 
         if ($('#q-topic-sel').length) {
-            topicId = $('#q-topic-sel').val();
+            var topicId = $('#q-topic-sel').val();
         } else {
-            topicId = $('.topic-name').first().attr('data-id');
+            var topicId = $('.topic-name').first().attr('data-id');
         }
 
         // 
@@ -775,7 +774,7 @@ $(document).ready(function () {
                 // 
                 // Get answer fields:
                 // 
-                ansTypeHtml = '';
+                var ansTypeHtml = '';
                 if (ansType == 'textbox') {
                     ansTypeHtml = '<input disabled type="text" style="width:350px">';
 

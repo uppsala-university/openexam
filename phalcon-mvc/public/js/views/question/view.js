@@ -58,7 +58,7 @@ function syncAnswers(async, redirectToAfterSync)
             if (ansType == 'textbox') {
                 console.log("saving text box data");
 
-                ansData = $(answers).val();
+                var ansData = $(answers).val();
                 if (ansData.trim()) {
                     console.log("not empty:" + ansData);
                     ansJson[qPartName]["ans"].push(ansData);
@@ -125,7 +125,7 @@ function syncAnswers(async, redirectToAfterSync)
             }
         }).done(function (respJson) {
             if (typeof respJson.success == "undefined") {
-                failMsg = "\Failed to save your answer!\r\n\Please report to invigilator immediately. Don't refresh or close this page or you may loose your latest changes!\r\n";
+                var failMsg = "\Failed to save your answer!\r\n\Please report to invigilator immediately. Don't refresh or close this page or you may loose your latest changes!\r\n";
                 if (async) {
                     failMsg += "Error source:   \n------------------\n" + JSON.stringify(respJson) + "\r\n";
                     failMsg += "Answer recovery:\n------------------\nHit Ctrl+A and Ctrl+C in the text editor to copy your answer. Paste copied text into another text editor (i.e. notepad) and save to disk before reloading the page.";

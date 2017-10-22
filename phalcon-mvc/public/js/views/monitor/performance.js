@@ -286,7 +286,7 @@ function Counter(addr, key, parent) {
 // 
 // The monitor (counter container) object.
 // 
-counters = (function () {
+var counters = (function () {
     var _url, _limit = 20, _interval = 5, _source = '', _counter = '', _milestone = '', _monitor, _context, _counters = [], _timer = null, _delta = true, _last;
 
     // 

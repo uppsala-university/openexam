@@ -110,7 +110,7 @@ $(document).ready(function () {
                 }
             }, 500);
 
-    if (formJs == 'loaded') {
+    if (formJs === 'loaded') {
         return;
     } else {
         formJs = 'loaded';
@@ -224,7 +224,7 @@ $(document).ready(function () {
     // 
     $(document).on('click', '.del-corrector', function () {
 
-        delCorrector = $(this);
+        var delCorrector = $(this);
         if ($('.q_corrector_list').find('li').length > 1) {
 
             if (qId) {

@@ -230,7 +230,7 @@ $(document).ready(function () {
                         data: data,
                         url: baseURL + 'exam/replicate/' + examId,
                         success: function (response) {
-                            resp = jQuery.parseJSON(response);
+                            var resp = jQuery.parseJSON(response);
                             if (resp.status == 'success') {
                                 location.href = baseURL + 'exam/update/' + resp.exam_id + '/creator';
                             } else {
@@ -380,9 +380,9 @@ $(document).ready(function () {
         $(examListingArea).find('.exam-progress').hide();   // TODO: display exam progress.
 
         $.each(examData, function (i, exam) {
-            start = exam.starttime ? exam.starttime.split(" ") : ["0000:00:00", "00:00"];
-            ends = exam.endtime ? exam.endtime.split(" ") : ["0000:00:00", "00:00"];
-            examName = exam.name == '' || exam.name == ' ' ? 'Untitled exam' : exam.name;
+            var start = exam.starttime ? exam.starttime.split(" ") : ["0000:00:00", "00:00"];
+            var ends = exam.endtime ? exam.endtime.split(" ") : ["0000:00:00", "00:00"];
+            var examName = exam.name == '' || exam.name == ' ' ? 'Untitled exam' : exam.name;
             var examItem = $(examListingArea).find('.exam-list').find('li').not(':first').first().clone();
             $(examItem).attr('data-id', exam.id);
             $(examItem).find('.exam-name').html(examName + (exam.code != '' && exam.code != null ? " (" + exam.code + ")" : ""));
@@ -435,8 +435,8 @@ $(document).ready(function () {
                 }
 
                 if (showBtn) {
-                    target = btnProp["target"].indexOf('/') >= 0 ? baseURL + (btnProp["target"].replace("{exam-id}", exam.id)) : '#';
-                    btnClass = btnProp["target"].indexOf('/') >= 0 ? "" : btnProp["target"] + " prevent";
+                    var target = btnProp["target"].indexOf('/') >= 0 ? baseURL + (btnProp["target"].replace("{exam-id}", exam.id)) : '#';
+                    var btnClass = btnProp["target"].indexOf('/') >= 0 ? "" : btnProp["target"] + " prevent";
                     $(examItem)
                             .find('.exam-show-options')
                             .append('<a class="' + btnClass + '" href="' + target + '" data-id="' + exam.id + '">' + $('#' + btnKey).html() + '</a>');
@@ -454,8 +454,8 @@ $(document).ready(function () {
             var totalPgs = Math.ceil(examData.length / examPerPage);
             var pagination = $(examListingArea).find('.pagination');
             $(pagination).find('li').not(':first').remove();
-            for (i = 1; i <= totalPgs; i++) {
-                pageItem = $(pagination).find('li').first().removeClass('active').clone();
+            for (var i = 1; i <= totalPgs; i++) {
+                var pageItem = $(pagination).find('li').first().removeClass('active').clone();
                 $(pageItem).find('a').html(i);
                 $(pageItem).attr('offset', ((i - 1) * examPerPage));
                 if (i == 1) {

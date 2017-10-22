@@ -10,7 +10,7 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-diagnostics = (function () {
+var diagnostics = (function () {
     var _timer = null, _details = 0, _interval = 30;
 
     // 

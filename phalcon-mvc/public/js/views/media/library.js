@@ -172,7 +172,7 @@ $(function () {
 
     refreshSettingsTooltips();
 
-    if (libJs == 'loaded') {
+    if (libJs === 'loaded') {
         return;
     } else {
         libJs = 'loaded';

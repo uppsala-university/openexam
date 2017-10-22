@@ -4,7 +4,7 @@
 	/*----------------------------------------------------------*/ 
 	/*	Sync answers in database every 30 seconds	    */
 	/*----------------------------------------------------------*/
-	testCounter = 0;
+	var testCounter = 0;
 	// autosave answers every 30 seconds if something has got changed
 	setInterval(function() {
 		
