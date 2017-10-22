@@ -54,7 +54,7 @@ class ArchiveTask extends MainTask implements TaskInterface
                                 '--create [--exam=num] [--start=date] [--end=date] [--all] [--force]',
                                 '--delete [--exam=num] [--start=date] [--end=date] [--all] [--force]',
                                 '--update [--exam=num] [--start=date] [--end=date] [--all] [--force]',
-                                '--list [--missing|--verify]',
+                                '--list|--missing|--verify',
                         ),
                         'options'  => array(
                                 '--create'     => 'Create exam archive files.',
@@ -73,19 +73,23 @@ class ArchiveTask extends MainTask implements TaskInterface
                         ),
                         'examples' => array(
                                 array(
+                                        'descr'   => 'List all archived exams',
+                                        'command' => '--list'
+                                ),
+                                array(
                                         'descr'   => 'Create archives for all exams',
                                         'command' => '--create --all'
                                 ),
                                 array(
                                         'descr'   => 'Delete archives for all exams',
-                                        'command' => '--create --exam=27386'
+                                        'command' => '--delete --all'
                                 ),
                                 array(
                                         'descr'   => 'Find exams not being archived',
-                                        'command' => '--list --missing'
+                                        'command' => '--missing'
                                 ),
                                 array(
-                                        'descr'   => 'Create archive for year 2017 overwriting existing',
+                                        'descr'   => 'Create archives for year 2017 overwriting existing',
                                         'command' => '--create --start=2017-01-01 --end=2017-12-31 --force'
                                 ),
                                 array(
