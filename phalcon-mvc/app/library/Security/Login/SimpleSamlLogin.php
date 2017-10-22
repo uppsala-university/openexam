@@ -14,13 +14,13 @@
 namespace OpenExam\Library\Security\Login;
 
 use OpenExam\Library\Catalog\Attribute\Profile;
+use OpenExam\Library\Catalog\Attribute\Profile\Swamid as SwamidProfile;
 use OpenExam\Library\Catalog\Attribute\Provider as AttributeProvider;
 use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Security\Login\Base\RemoteLogin;
 use OpenExam\Models\User;
 use Phalcon\Config;
 use UUP\Authentication\Authenticator\SimpleSamlAuthenticator;
-use OpenExam\Library\Catalog\Attribute\Profile\Swamid as SwamidProfile;
 
 /**
  * Simple SAML login (i.e. discovery in SWAMID).

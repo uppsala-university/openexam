@@ -41,7 +41,7 @@ abstract class ControllerBase extends Controller
                 // Add profiling check point:
                 // 
                 $this->profiler->add("controller");
-                
+
                 // 
                 // Force use of locale service:
                 // 

@@ -20,10 +20,12 @@ use OpenExam\Library\Model\Audit\History;
 use OpenExam\Library\Model\Filter;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
+use PDOException;
 use Phalcon\Db\AdapterInterface;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\TransactionInterface;
 use Phalcon\Mvc\ModelInterface;
+use const MODEL_ALWAYS_USE_MASTER_CONNECTION;
 
 /**
  * Base class for all models.
@@ -351,7 +353,7 @@ class ModelBase extends Model
                         while ($adapter->getTransactionLevel() > $txlevel) {
                                 try {
                                         $adapter->rollback();
-                                } catch (\PDOException $e) {
+                                } catch (PDOException $e) {
                                         // ignore
                                 }
                         }

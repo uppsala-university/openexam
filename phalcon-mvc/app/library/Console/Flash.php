@@ -13,12 +13,14 @@
 
 namespace OpenExam\Library\Console;
 
+use Phalcon\Flash\Direct;
+
 /**
  * Custom flash message service for console.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Flash extends \Phalcon\Flash\Direct
+class Flash extends Direct
 {
 
         public function __construct()

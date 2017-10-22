@@ -83,7 +83,7 @@ class MainTask extends PhalconTask implements TaskInterface
 
         public function helpAction()
         {
-                printf("No default action defined, see --help.\n");                
+                printf("No default action defined, see --help.\n");
         }
 
 }

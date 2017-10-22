@@ -55,7 +55,7 @@ class Division extends OrganizationUnit
                         return $result;
                 }
         }
-        
+
         /**
          * Check if this object might have child object.
          * @return boolean

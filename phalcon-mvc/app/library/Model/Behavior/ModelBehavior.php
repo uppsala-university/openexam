@@ -16,6 +16,7 @@ namespace OpenExam\Library\Model\Behavior;
 use OpenExam\Library\DI\Logger;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Library\Security\User;
+use Phalcon\DiInterface;
 use Phalcon\Mvc\Model\Behavior;
 use Phalcon\Mvc\Model\BehaviorInterface;
 

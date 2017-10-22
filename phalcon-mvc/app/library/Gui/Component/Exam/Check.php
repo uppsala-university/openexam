@@ -15,6 +15,7 @@ namespace OpenExam\Library\Gui\Component\Exam;
 
 use OpenExam\Library\Core\Exam\Check as ExamStatusCheck;
 use OpenExam\Library\Gui\Component;
+use OpenExam\Models\Exam;
 
 /**
  * Exam check status component.

@@ -13,6 +13,8 @@
 
 namespace OpenExam\Library\Catalog\Service\Adapter\Uppdok;
 
+use OpenExam\Library\Catalog\Service\Connection;
+
 if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
         define('INFO_CGI_RECORD_SEPARATOR', "\n");
 }

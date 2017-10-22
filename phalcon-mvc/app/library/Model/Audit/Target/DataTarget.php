@@ -72,7 +72,7 @@ class DataTarget extends Component implements AuditTarget
                         }
 
                         $changes['changes'] = serialize($changes['changes']);
-                        
+
                         $tbl = $this->_options['table'];
                         $sql = "INSERT INTO `$tbl`(type, res, rid, user, time, changes) VALUES(?,?,?,?,?,?)";
                         $sth = $dbh->prepare($sql);

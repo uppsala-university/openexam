@@ -13,6 +13,8 @@
 
 namespace OpenExam\Library\Core\Synchronize;
 
+use Phalcon\Cache\BackendInterface;
+
 /**
  * Multiple mutex lock.
  * 

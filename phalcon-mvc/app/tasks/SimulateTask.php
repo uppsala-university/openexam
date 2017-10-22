@@ -19,6 +19,7 @@ use OpenExam\Models\Question;
 use OpenExam\Models\Session;
 use OpenExam\Models\Student;
 use Phalcon\Mvc\Model\Resultset;
+use const BASE_DIR;
 
 /**
  * System load task.

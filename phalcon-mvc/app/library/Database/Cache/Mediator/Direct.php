@@ -14,6 +14,8 @@
 namespace OpenExam\Library\Database\Cache\Mediator;
 
 use OpenExam\Library\Database\Exception as DatabaseException;
+use Phalcon\Cache\BackendInterface;
+use Phalcon\Db\AdapterInterface;
 
 /**
  * The direct mediator.

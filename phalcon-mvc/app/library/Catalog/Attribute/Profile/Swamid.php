@@ -144,13 +144,13 @@ class Swamid implements Profile
                                 $attr[$key] = $attr[$key][0];
                         }
                 }
-                
+
                 $attrmap = array_combine(array_keys($attr), array_keys($attr));
                 $attrmap = array_replace($attrmap, self::$attrmap);
-                
+
                 $user = new User();
                 $user->assign($attr, $attrmap);
-                
+
                 return $user;
         }
 

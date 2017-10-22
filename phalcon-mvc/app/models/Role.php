@@ -17,8 +17,8 @@ use OpenExam\Library\Catalog\DirectoryService;
 use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Core\Pattern;
 use OpenExam\Models\ModelBase;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
 use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
+use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
  * Base class for all role models.

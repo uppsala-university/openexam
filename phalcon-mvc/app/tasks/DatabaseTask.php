@@ -14,6 +14,7 @@
 namespace OpenExam\Console\Tasks;
 
 use OpenExam\Library\Database\Migration;
+use Phalcon\Migrations;
 
 /**
  * Database task.
@@ -160,7 +161,7 @@ class DatabaseTask extends MainTask implements TaskInterface
                         $this->flash->write();
                 }
 
-                \Phalcon\Migrations::generate($options);
+                Migrations::generate($options);
                 $this->flash->success("Database migration generated successful.");
         }
 

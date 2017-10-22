@@ -16,6 +16,7 @@ namespace OpenExam\Library\Model\Audit;
 use OpenExam\Library\Model\Audit\Config\AuditConfig;
 use OpenExam\Library\Model\Audit\Config\ServiceConfig;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
+use PDO;
 use Phalcon\Mvc\ModelInterface;
 use Phalcon\Mvc\User\Component;
 
@@ -114,7 +115,7 @@ class Service extends Component
                 $sth = $dbh->prepare($sql);
                 $res = $sth->execute();
 
-                $arr = $sth->fetchAll(\PDO::FETCH_ASSOC);
+                $arr = $sth->fetchAll(PDO::FETCH_ASSOC);
                 return $arr;
         }
 

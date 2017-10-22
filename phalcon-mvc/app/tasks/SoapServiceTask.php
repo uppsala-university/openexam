@@ -15,6 +15,7 @@ namespace OpenExam\Console\Tasks;
 
 use OpenExam\Library\Security\Capabilities;
 use OpenExam\Library\WebService\Soap\ServiceGenerator;
+use const CONFIG_DIR;
 
 /**
  * SOAP service task.

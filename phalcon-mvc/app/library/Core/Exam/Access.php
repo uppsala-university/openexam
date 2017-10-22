@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Core\Exam;
 
+use InvalidArgumentException;
 use OpenExam\Models\Exam;
 use UUP\Authentication\Authenticator\DomainAuthenticator;
 use UUP\Authentication\Authenticator\HostnameAuthenticator;

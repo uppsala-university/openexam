@@ -35,4 +35,5 @@ class ImportStudentsSylk extends ImportStudents
                 $this->_reader = new PHPExcel_Reader_SYLK();
                 $this->_reader->setReadDataOnly(true);
         }
+
 }

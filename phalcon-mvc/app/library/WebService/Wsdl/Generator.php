@@ -13,6 +13,9 @@
 
 namespace OpenExam\Library\WebService\Wsdl;
 
+use WSDL_Gen as ExternalGenerator;
+use const EXTERN_DIR;
+
 require_once (EXTERN_DIR . 'WSDL_Gen.php');
 
 /**
@@ -20,7 +23,7 @@ require_once (EXTERN_DIR . 'WSDL_Gen.php');
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class Generator extends \WSDL_Gen
+class Generator extends ExternalGenerator
 {
 
         /**

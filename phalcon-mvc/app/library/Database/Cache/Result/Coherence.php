@@ -120,7 +120,7 @@ class Coherence
                 if ($this->_resolve == 0) {
                         return true;
                 }
-                
+
                 // 
                 // Perform entry validation if not yet done:
                 // 
@@ -130,14 +130,14 @@ class Coherence
                 if ($entry->isInvalid() == false) {
                         return true;    // Nothing to do
                 }
-                
+
                 // 
                 // Requires table indexes:
                 // 
                 if (!is_array($entry->tables)) {
                         throw new Exception("Table indexes is missing");
                 }
-                
+
                 // 
                 // Resolve conflict using prefered strategy:
                 // 
@@ -286,7 +286,7 @@ class Coherence
          * @return boolean
          */
         public function housekeep($table, &$active, &$remove)
-        {                
+        {
                 // 
                 // Make sure we are dealing with arrays:
                 // 

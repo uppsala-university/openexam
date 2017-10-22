@@ -14,6 +14,7 @@
 namespace OpenExam\Controllers\Service;
 
 use OpenExam\Controllers\ServiceController;
+use OpenExam\Library\Monitor\Performance\Profiler;
 use OpenExam\Library\Security\Exception as SecurityException;
 use OpenExam\Library\WebService\Common\ServiceHandler;
 use OpenExam\Library\WebService\Common\ServiceRequest;

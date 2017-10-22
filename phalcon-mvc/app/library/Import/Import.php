@@ -97,7 +97,7 @@ interface Import
          * keeping need to be done.
          */
         function close();
-        
+
         /**
          * Get import data.
          * @return ImportData

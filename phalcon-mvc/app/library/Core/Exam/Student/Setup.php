@@ -13,6 +13,8 @@
 
 namespace OpenExam\Library\Core\Exam\Student;
 
+use OpenExam\Models\Exam;
+use OpenExam\Models\Student;
 use Phalcon\Mvc\User\Component;
 
 /**

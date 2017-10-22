@@ -15,13 +15,14 @@ namespace OpenExam\Library\Gui\Component\Exam;
 
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Gui\Component;
+use Phalcon\Mvc\User\Component as PhalconComponent;
 
 /**
  * Exam progress component.
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class Progress extends \Phalcon\Mvc\User\Component implements Component
+class Progress extends PhalconComponent implements Component
 {
 
         /**

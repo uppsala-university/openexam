@@ -103,7 +103,7 @@ class DirectoryManager extends Component implements DirectoryService
                                                 if ($backend->connected()) {
                                                         $backend->close();
                                                 }
-                                        } catch (Exception $exception) {
+                                        } catch (\Exception $exception) {
                                                 $this->report($exception, $service, $name);
                                         } finally {
                                                 unset($backend);
@@ -551,7 +551,7 @@ class DirectoryManager extends Component implements DirectoryService
 
         /**
          * Report exception.
-         * @param Exception $exception The exception to report.
+         * @param \Exception $exception The exception to report.
          * @param DirectoryService $service The directory service.
          * @param string $name The directory service name (from config).
          */

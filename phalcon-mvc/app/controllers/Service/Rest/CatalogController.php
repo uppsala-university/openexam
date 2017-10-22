@@ -62,7 +62,7 @@ use OpenExam\Library\WebService\Handler\CatalogHandler;
  * curl -XGET  ${BASEURL}/rest/catalog/principal -d \
  *      '{"data":{"gn":"Anders"},"params":{"attr":["principal","mail","uid"],"domain":"example.com","limit":5}}'
  * 
- * @see \OpenExam\Controllers\Service\Ajax\CatalogController
+ * @see OpenExam\Controllers\Service\Ajax\CatalogController
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class CatalogController extends RestController

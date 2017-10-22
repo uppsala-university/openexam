@@ -13,8 +13,11 @@
 
 namespace OpenExam\Library\Catalog\Attribute;
 
+use OpenExam\Library\Catalog\Principal;
+use OpenExam\Models\User;
+
 /**
- * The atribute profile interface.
+ * The attribute profile interface.
  * 
  * Profiles are factory objects that given SAML attributes array as input 
  * creates user principal objects and user models. These factories provides

@@ -161,7 +161,7 @@ class Settings extends Component
                                 throw new Exception($this->_settings->getMessages()[0]);
                         }
                 }
-                
+
                 $this->_dirty = false;
         }
 
@@ -174,7 +174,7 @@ class Settings extends Component
                         $this->_settings = new Setting();
                         $this->_settings->user = $this->_principal;
                 }
-                
+
                 $this->_dirty = false;
         }
 
@@ -197,7 +197,7 @@ class Settings extends Component
                 if ($this->_settings->delete() == false) {
                         throw new Exception($this->_settings->getMessages()[0]);
                 }
-                
+
                 $this->_dirty = false;
         }
 

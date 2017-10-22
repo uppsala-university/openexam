@@ -831,7 +831,7 @@ EOL
 EOL
                 );
                 $this->_service->addMethod($method);
-                
+
                 // 
                 // The deleteType(type) method:
                 // 

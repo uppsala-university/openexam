@@ -24,6 +24,7 @@ use OpenExam\Library\Import\Students\ImportStudentsExcel97;
 use OpenExam\Library\Import\Students\ImportStudentsGnumeric;
 use OpenExam\Library\Import\Students\ImportStudentsHtml;
 use OpenExam\Library\Import\Students\ImportStudentsOpenDocument;
+use OpenExam\Library\Import\Students\ImportStudentsSylk;
 use OpenExam\Library\Import\Students\ImportStudentsTextCsv;
 use OpenExam\Library\Import\Students\ImportStudentsTextTab;
 use Phalcon\Mvc\User\Component;
@@ -153,7 +154,7 @@ class FileImport extends Component
                                         return new ImportStudentsHtml();
                                 case "slk":
                                 case "sylk":
-                                        return new Students\ImportStudentsSylk();
+                                        return new ImportStudentsSylk();
                                 default:
                                         throw new ImportException(sprintf(_("Don't know how import *.%s files."), $extension), Error::NOT_ACCEPTABLE);
                         }

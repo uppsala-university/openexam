@@ -13,6 +13,10 @@
 
 namespace OpenExam\Library\Database;
 
+use Phalcon\Config;
+use Phalcon\Migrations;
+use Phalcon\Script\ScriptException;
+
 /**
  * Database install and migration class.
  * 
@@ -39,7 +43,7 @@ class Migration
         /**
          * Run the migration.
          * 
-         * @param \Phalcon\Config $config Using database and application settings.
+         * @param Config $config Using database and application settings.
          * @param string $version The version to upgrade to (default to latest).
          * @param bool $force Force database migration to version even if already migrated.
          */
@@ -66,8 +70,8 @@ class Migration
                 foreach (self::$_order as $table) {
                         try {
                                 $options['tableName'] = $table;
-                                \Phalcon\Migrations::run($options);
-                        } catch (\Phalcon\Script\ScriptException $e) {
+                                Migrations::run($options);
+                        } catch (ScriptException $e) {
                                 if (strstr($e->getMessage(), "Migration class was not found")) {
                                         printf("Notice: %s (trapped by %s)\n", $e->getMessage(), __CLASS__);
                                 } else {

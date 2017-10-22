@@ -14,6 +14,7 @@
 namespace OpenExam\Controllers\Service;
 
 use OpenExam\Controllers\ServiceController;
+use OpenExam\Library\Monitor\Performance\Profiler;
 
 /**
  * Common base class for SOAP controllers.

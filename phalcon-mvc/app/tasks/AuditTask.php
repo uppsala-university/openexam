@@ -13,6 +13,9 @@
 
 namespace OpenExam\Console\Tasks;
 
+use PDO;
+use Phalcon\Db;
+
 /**
  * Audit trails task.
  *
@@ -216,7 +219,7 @@ class AuditTask extends MainTask implements TaskInterface
                 }
 
                 $this->flash->notice($model);
-                while ($row = $sth->fetch(\PDO::FETCH_ASSOC)) {
+                while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
                         if ($this->_options['decode']) {
                                 $row['changes'] = unserialize($row['changes']);
                         }
@@ -276,7 +279,7 @@ class AuditTask extends MainTask implements TaskInterface
                 }
 
                 $res = $dbh->query($sql);
-                $obj = $res->fetch(\Phalcon\Db::FETCH_OBJ);
+                $obj = $res->fetch(Db::FETCH_OBJ);
 
                 self::setUnit($obj);
 

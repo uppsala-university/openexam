@@ -52,7 +52,7 @@ class StatisticsController extends GuiController
                         'name' => $statistics->getName(),
                         'data' => $statistics->getSummary()
                 );
-                
+
                 unset($statistics);
 
                 $this->view->disable();
@@ -80,7 +80,7 @@ class StatisticsController extends GuiController
                 }
 
                 unset($statistics);
-                
+
                 $this->view->disable();
                 $this->response->setJsonContent($content);
                 $this->response->send();
@@ -109,7 +109,7 @@ class StatisticsController extends GuiController
 
                 unset($statistics);
                 unset($users);
-                
+
                 $this->view->disable();
                 $this->response->setJsonContent($content);
                 $this->response->send();
@@ -128,7 +128,7 @@ class StatisticsController extends GuiController
                         'size' => $exams->getSize(),
                         'data' => $exams->getData()
                 );
-                
+
                 unset($statistics);
                 unset($exams);
 
@@ -156,7 +156,7 @@ class StatisticsController extends GuiController
                         'data' => $users->getData(),
                         'name' => $users->getName()
                 );
-                
+
                 unset($statistics);
                 unset($users);
 
@@ -187,7 +187,7 @@ class StatisticsController extends GuiController
 
                 unset($statistics);
                 unset($users);
-                
+
                 $this->view->disable();
                 $this->response->setJsonContent($content);
                 $this->response->send();
@@ -215,7 +215,7 @@ class StatisticsController extends GuiController
 
                 unset($statistics);
                 unset($users);
-                
+
                 $this->view->disable();
                 $this->response->setJsonContent($content);
                 $this->response->send();

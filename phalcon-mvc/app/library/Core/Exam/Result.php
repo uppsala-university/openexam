@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Core\Exam;
 
+use OpenExam\Library\Core\Error;
 use OpenExam\Library\Model\Exception as ModelException;
 use OpenExam\Library\Render\Renderer;
 use OpenExam\Models\Exam;
@@ -232,7 +233,7 @@ class Result extends Component
                 // Page(s) that goes into generated PDF:
                 //
                 $settings = array(array('page' => $source));
-                
+
                 // 
                 // Retry on HTTP 400 (Bad Request).
                 //                 
@@ -240,7 +241,7 @@ class Result extends Component
 
                         $render = $this->render->getRender(Renderer::FORMAT_PDF);
                         $render->save($target, $settings);
-                        
+
                         if (file_exists($target) && filesize($target) > self::MIN_FILE_SIZE) {
                                 return true;
                         } else {

@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Monitor\Performance\Collector\Apache;
 
+use DirectoryIterator;
 use OpenExam\Library\Console\Command;
 use OpenExam\Library\Monitor\Exception;
 
@@ -86,7 +87,7 @@ class Sockets
                         try {
                                 $directory = sprintf("/proc/%d/fd", $pid);
 
-                                if (!($iterator = new \DirectoryIterator($directory))) {
+                                if (!($iterator = new DirectoryIterator($directory))) {
                                         continue;
                                 }
                                 if (!$iterator->isReadable()) {

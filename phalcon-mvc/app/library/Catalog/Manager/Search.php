@@ -13,6 +13,8 @@
 
 namespace OpenExam\Library\Catalog\Manager;
 
+use OpenExam\Library\Catalog\DirectoryManager;
+
 /**
  * The directory search interface.
  * @author Anders Lövgren (QNET/BMC CompDept)

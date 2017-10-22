@@ -60,7 +60,7 @@ class SystemLogin extends HostnameAuthenticator
         {
                 parent::__construct($accept);
                 parent::control(self::SUFFICIENT);
-                
+
                 if (file_exists($token)) {
                         $this->_token = trim(file_get_contents($token));
                 } elseif ($token[0] != '/') {

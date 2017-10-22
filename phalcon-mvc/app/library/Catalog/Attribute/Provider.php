@@ -13,6 +13,9 @@
 
 namespace OpenExam\Library\Catalog\Attribute;
 
+use OpenExam\Library\Catalog\Principal;
+use OpenExam\Models\User;
+
 /**
  * User attribute provider.
  * @author Anders Lövgren (QNET/BMC CompDept)

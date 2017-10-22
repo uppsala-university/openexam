@@ -14,6 +14,7 @@
 namespace OpenExam\Library\Database\Adapter\Deferred;
 
 use OpenExam\Library\Database\Adapter\Factory\AdapterFactory;
+use Phalcon\Config;
 use Phalcon\Db\Adapter\Pdo\Mysql as MysqlAdapter;
 use Phalcon\Db\AdapterInterface;
 use Phalcon\Db\Dialect\MySQL as MysqlDialect;

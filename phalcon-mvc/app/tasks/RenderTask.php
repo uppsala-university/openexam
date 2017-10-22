@@ -47,12 +47,12 @@ class RenderTask extends MainTask implements TaskInterface
                                 '--verbose' => 'Be more verbose.',
                                 '--dry-run' => 'Just print whats going to be done.'
                         ),
-                        'aliases' => array(
-                                '--png'     => 'Same as --type=png',
-                                '--jpg'     => 'Same as --type=jpg',
-                                '--jpeg'    => 'Same as --type=jpg',
-                                '--bmp'     => 'Same as --type=bmp',
-                                '--svg'     => 'Same as --type=svg',                                
+                        'aliases'  => array(
+                                '--png'  => 'Same as --type=png',
+                                '--jpg'  => 'Same as --type=jpg',
+                                '--jpeg' => 'Same as --type=jpg',
+                                '--bmp'  => 'Same as --type=bmp',
+                                '--svg'  => 'Same as --type=svg',
                         ),
                         'examples' => array(
                                 array(

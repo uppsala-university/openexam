@@ -182,7 +182,6 @@ class Enumerator
                                 return $this->_service->getAttributes($attrib);
                         }
                 }
-                
         }
 
 }

@@ -159,7 +159,7 @@ class WorkGroup extends OrganizationUnit
         {
                 return false;
         }
-        
+
         protected function createCacheKey()
         {
                 return sprintf("organization-orggrp-%s", md5($this->_division . $this->_department . $this->_name));

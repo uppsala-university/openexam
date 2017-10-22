@@ -197,7 +197,7 @@ abstract class Command
 
                 return $files;
         }
-        
+
         /**
          * Get source code files.
          * @return array

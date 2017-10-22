@@ -13,8 +13,8 @@
 
 namespace OpenExam\Library\Catalog\Service\Adapter;
 
-use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Catalog\Connection as ServiceConnection;
+use OpenExam\Library\Catalog\Principal;
 use OpenExam\Models\User;
 use Phalcon\Mvc\Model\Criteria;
 

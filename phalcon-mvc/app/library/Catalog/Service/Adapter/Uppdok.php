@@ -14,9 +14,9 @@
 namespace OpenExam\Library\Catalog\Service\Adapter;
 
 use OpenExam\Library\Catalog\Principal;
+use OpenExam\Library\Catalog\Service\Adapter;
 use OpenExam\Library\Catalog\Service\Adapter\Uppdok\Connection;
 use OpenExam\Library\Catalog\Service\Adapter\Uppdok\Data;
-use OpenExam\Library\Catalog\Service\Adapter;
 use OpenExam\Library\Catalog\ServiceConnection;
 
 /**

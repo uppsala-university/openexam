@@ -15,6 +15,7 @@ namespace OpenExam\Library\WebService\Soap;
 
 use OpenExam\Library\WebService\Wsdl\ServiceDescription;
 use Phalcon\Mvc\User\Component;
+use SoapFault;
 use SoapServer;
 
 /**
@@ -95,7 +96,7 @@ class SoapService extends Component
         public function __construct($class, $location = null, $namespace = null)
         {
                 if (!extension_loaded('soap')) {
-                        throw new \SoapFault("Receiver", "Server can't handle SOAP request.");
+                        throw new SoapFault("Receiver", "Server can't handle SOAP request.");
                 }
                 $this->_class = $class;
                 $this->_location = $location;

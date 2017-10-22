@@ -20,6 +20,7 @@ use OpenExam\Library\Import\ImportData;
 use PDO;
 use Phalcon\Db\Adapter\Pdo as DbAdapter;
 use Phalcon\Mvc\User\Component;
+use RuntimeException;
 
 /**
  * Insert import data.

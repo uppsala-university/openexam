@@ -16,6 +16,7 @@ namespace OpenExam\Library\Database;
 use OpenExam\Library\Core\Error;
 use OpenExam\Library\Model\Exception as ModelException;
 use OpenExam\Models\Session as SessionModel;
+use Phalcon\Config;
 use Phalcon\Session\Adapter as AdapterBase;
 use Phalcon\Session\AdapterInterface;
 
@@ -53,7 +54,7 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                 if (!isset($options)) {
                         throw new Exception("No configuration given");
                 }
-                if ($options instanceof \Phalcon\Config) {
+                if ($options instanceof Config) {
                         $options = $options->toArray();
                 }
 

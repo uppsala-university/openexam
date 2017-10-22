@@ -15,6 +15,7 @@ namespace OpenExam\Library\Database\Cache\Mediator;
 
 use OpenExam\Library\Database\Cache\Backend\Indexed as IndexedCache;
 use Phalcon\Cache\BackendInterface;
+use Phalcon\Db\AdapterInterface;
 
 /**
  * The complex mediator.

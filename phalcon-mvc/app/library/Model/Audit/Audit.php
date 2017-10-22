@@ -237,7 +237,7 @@ class Audit extends ModelBehavior
                                 'new' => $value
                         );
                 }
-                
+
                 if (count($data['changes']) == 0) {
                         return false;
                 } else {
@@ -269,7 +269,7 @@ class Audit extends ModelBehavior
                                 );
                         }
                 }
-                
+
                 if (count($data['changes']) == 0) {
                         return false;
                 } else {
@@ -293,7 +293,7 @@ class Audit extends ModelBehavior
                                 'new' => null
                         );
                 }
-                
+
                 if (count($data['changes']) == 0) {
                         return false;
                 } else {

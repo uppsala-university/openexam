@@ -14,6 +14,8 @@
 namespace OpenExam\Library\Database\Cache\Mediator;
 
 use OpenExam\Library\Database\Cache\Backend\Native as NativeCache;
+use Phalcon\Cache\BackendInterface;
+use Phalcon\Db\AdapterInterface;
 
 /**
  * The request mediator.

@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Monitor\Performance\Counter;
 
+use OpenExam\Library\Monitor\Performance;
 use OpenExam\Library\Monitor\Performance\Counter;
 
 /**

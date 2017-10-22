@@ -13,8 +13,10 @@
 
 namespace OpenExam\Console\Tasks;
 
+use FilesystemIterator;
 use OpenExam\Library\Core\Exam\Archive;
 use OpenExam\Models\Exam;
+use Phalcon\Mvc\Model\Resultset\Simple as SimpleResultSet;
 
 /**
  * Use this task to archive exams.
@@ -184,7 +186,7 @@ class ArchiveTask extends MainTask implements TaskInterface
         {
                 $this->setOptions($params, 'list');
 
-                $iterator = new \FilesystemIterator($this->_destdir);
+                $iterator = new FilesystemIterator($this->_destdir);
                 foreach ($iterator as $file) {
                         if ($file->isFile()) {
                                 $this->flash->success(sprintf("%s\t%d", $file->getBasename(), $file->getSize()));

@@ -290,7 +290,7 @@ class ImportStudents extends ImportBase
         {
                 foreach ($this->_students as $key => $val) {
                         if (is_numeric($key[0])) {
-                                if(($principal = $this->catalog->getPrincipal($key, Principal::ATTR_PNR, null, Principal::ATTR_PN))) {
+                                if (($principal = $this->catalog->getPrincipal($key, Principal::ATTR_PNR, null, Principal::ATTR_PN))) {
                                         $user = $principal->principal;
                                         $val = $this->_students[$key];
                                         unset($this->_students[$key]);

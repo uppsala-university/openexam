@@ -14,6 +14,7 @@
 namespace OpenExam\Library\Security\Login;
 
 use OpenExam\Library\Security\Login\Base\RemoteLogin;
+use Phalcon\Config;
 use UUP\Authentication\Authenticator\CasAuthenticator;
 
 /**

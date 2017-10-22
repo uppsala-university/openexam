@@ -30,7 +30,7 @@ class Replace extends ModelBehavior
         public function notify($type, ModelInterface $model)
         {
                 if (($options = $this->getOptions($type))) {
-                        
+
                         $field = $options['field'];
                         $input = $model->$field;
 

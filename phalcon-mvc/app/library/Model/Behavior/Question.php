@@ -14,6 +14,7 @@
 namespace OpenExam\Library\Model\Behavior;
 
 use OpenExam\Library\Model\Exception;
+use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Corrector;
 use OpenExam\Models\Question as QuestionModel;
 use Phalcon\Mvc\ModelInterface;
@@ -39,7 +40,7 @@ class Question extends ModelBehavior
                                 // 
                                 // Don't add exam creator as question corrector.
                                 // 
-                                if ($role == \OpenExam\Library\Security\Roles::CREATOR) {
+                                if ($role == Roles::CREATOR) {
                                         if ($user->getPrincipalName() == $model->exam->creator) {
                                                 return;
                                         }

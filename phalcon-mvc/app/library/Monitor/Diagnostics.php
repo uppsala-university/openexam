@@ -16,8 +16,8 @@ namespace OpenExam\Library\Monitor;
 use OpenExam\Library\Monitor\Diagnostics\Authenticator as AuthServiceCheck;
 use OpenExam\Library\Monitor\Diagnostics\Catalog as CatalogServiceCheck;
 use OpenExam\Library\Monitor\Diagnostics\Database as DatabaseServiceCheck;
-use OpenExam\Library\Monitor\Diagnostics\WebServer as WebServerCheck;
 use OpenExam\Library\Monitor\Diagnostics\ServiceCheck;
+use OpenExam\Library\Monitor\Diagnostics\WebServer as WebServerCheck;
 
 /**
  * System diagnostics.

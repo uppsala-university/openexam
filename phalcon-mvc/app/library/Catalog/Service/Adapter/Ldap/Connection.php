@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Catalog\Service\Adapter\Ldap;
 
+use OpenExam\Library\Catalog\Exception;
 use OpenExam\Library\Catalog\Service\Connection as ServiceConnection;
 
 /**

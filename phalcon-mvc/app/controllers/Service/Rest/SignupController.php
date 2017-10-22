@@ -76,7 +76,7 @@ class SignupController extends RestController
                 parent::initialize();
                 $this->_handler = new SignupHandler($this->getRequest(), $this->user, $this->config->signup);
         }
-        
+
         /**
          * Destructor.
          */
@@ -190,7 +190,7 @@ class SignupController extends RestController
                                 $action => true
                         );
                 }
-                
+
                 return $result;
         }
 

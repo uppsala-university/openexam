@@ -1,7 +1,5 @@
 <?php
 
-use OpenExam\Library\Render\Exception;
-
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -14,6 +12,8 @@ use OpenExam\Library\Render\Exception;
 // 
 
 namespace OpenExam\Library\Render\Extension;
+
+use OpenExam\Library\Render\Exception;
 
 /**
  * Base class for page render implementations.

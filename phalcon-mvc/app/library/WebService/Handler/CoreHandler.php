@@ -16,7 +16,9 @@ namespace OpenExam\Library\WebService\Handler;
 use OpenExam\Library\Core\Handler\CoreHandler as BackendHandler;
 use OpenExam\Library\Security\Capabilities;
 use OpenExam\Library\Security\Exception as SecurityException;
+use OpenExam\Library\Security\User;
 use OpenExam\Library\WebService\Common\ServiceHandler;
+use OpenExam\Library\WebService\Common\ServiceRequest;
 use OpenExam\Library\WebService\Common\ServiceResponse;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
 
@@ -30,6 +32,7 @@ use OpenExam\Plugins\Security\Model\ObjectAccess;
  */
 class CoreHandler extends ServiceHandler
 {
+
         /**
          * @var Capabilities 
          */
@@ -109,7 +112,7 @@ class CoreHandler extends ServiceHandler
                 // reporting.
                 // 
                 $this->_user->setPrimaryRole($role);
-                
+
                 // 
                 // Static check if capabilities allow this action:
                 // 

@@ -71,7 +71,7 @@ class Principal implements Search
                 if (!is_array($inject)) {
                         $inject = array($inject);
                 }
-                
+
                 $this->_needle = $needle;
                 $this->_attrib = $attrib;
                 $this->_domain = $domain;

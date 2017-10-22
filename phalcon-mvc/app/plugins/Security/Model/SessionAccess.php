@@ -40,7 +40,7 @@ class SessionAccess extends ObjectAccess
                                 "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getResourceName(), $user->getPrincipalName()
                         ));
                 }
-                
+
                 // 
                 // Perform access control in a trusted context:
                 // 

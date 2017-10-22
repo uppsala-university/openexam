@@ -90,7 +90,7 @@ class Test extends CollectorBase
                         }
                         return false;
                 }
-                
+
                 $model = new Performance();
                 $model->data = $data;
                 $model->mode = Performance::MODE_TEST;
@@ -116,7 +116,7 @@ class Test extends CollectorBase
                         }
                         return false;
                 }
-                
+
 
                 $this->_iteration++;
                 return true;
