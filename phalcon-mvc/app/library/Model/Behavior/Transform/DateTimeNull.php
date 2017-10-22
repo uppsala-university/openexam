@@ -14,6 +14,7 @@
 namespace OpenExam\Library\Model\Behavior\Transform;
 
 use OpenExam\Library\Model\Behavior\ModelBehavior;
+use OpenExam\Library\Model\Exception;
 use Phalcon\Mvc\ModelInterface;
 
 /**
@@ -37,7 +38,7 @@ class DateTimeNull extends ModelBehavior
          * Receives notifications from the Models Manager
          *
          * @param string $type The event type.
-         * @param StudentModel $model The target model.
+         * @param ModelInterface $model The target model.
          */
         public function notify($type, ModelInterface $model)
         {
@@ -73,6 +74,8 @@ class DateTimeNull extends ModelBehavior
                                         if ($input === 'null') {
                                                 $value = $input = null;
                                         } elseif ($input === '0000-00-00 00:00:00') {
+                                                $value = $input = null;
+                                        } elseif (strlen(trim($input)) == 0) {
                                                 $value = $input = null;
                                         }
                                 }
