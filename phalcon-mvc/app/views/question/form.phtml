@@ -49,7 +49,7 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
                                                         <?php foreach ($qParts[$qPartTitle]['resources'] as $rTitle => $rLink): ?>
                                                                 <li> 
                                                                     <i class="fa fa-close"></i> 
-                                                                    <a target="_blank" file-path="<?= $rLink ?>" href="<?= $rLink ?>"><?= empty($rTitle) ? urldecode(basename($rLink)) : $rTitle ?></a> 
+                                                                    <a target="_blank" file-path="<?= $rLink ?>" href="<?= $this->url->get($rLink) ?>"><?= empty($rTitle) ? urldecode(basename($rLink)) : $rTitle ?></a> 
                                                                     </i> 
                                                                 </li>
                                                         <?php endforeach; ?>
