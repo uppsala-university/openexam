@@ -1,16 +1,16 @@
 // JavaScript Document specific to Exam create
 // @Author Ahsan Shahzad [MedfarmDoIT]
 
-
-
-/*----------------------------------------------*/
-/*	Media library related event bindings		*/
-/*----------------------------------------------*/
+/**
+ * Media library related event bindings
+ */
 
 $(function () {
     'use strict';
 
-    // initialize tabs
+    // 
+    // Initialize tabs:
+    // 
     $('#media_types').tabs();
 
     var url = baseURL + 'utility/media/upload';
@@ -25,15 +25,18 @@ $(function () {
 
                 if (typeof file.url != 'undefined') {
 
-                    // add this image in selected library image area
+                    // 
+                    // Add this image in selected library image area:
+                    // 
                     var thumbnail = ((file.type.indexOf('image') < 0) ? baseURL + "img/file-icon.png" : file.url);
-                    var newItem = $("#selected-lib-img >li:first").clone()
+                    var newItem = $("#selected-lib-img >li:first").clone();
                     newItem.attr('media-id', '')
                             .find('img')
                             .attr('src', thumbnail)
                             .end()
                             .find('.title-box')
                             .attr('file-path', file.url)
+                            .attr('file-name', file.name)
                             .end()
                             .show();
 
@@ -43,14 +46,18 @@ $(function () {
                     if (confirm("File '" + file.name + "' has been uploaded successfully. \n\r Do you want to save this file in your file library for using it in future as well? "))
                     {
                         var fType = file.type.split('/');
-                        // send ajax request to insert this upload in resource table
+                        // 
+                        // Send AJAX request to insert this upload in resource table:
+                        // 
                         ajax(
                                 baseURL + 'ajax/core/contributor/resource/create',
                                 {"exam_id": examId, "name": file.name, "path": file.url, "type": fType[0], "subtype": fType[1], "user": user},
                                 function (rData) {
                                     var tabId = ($('#' + fType[0] + '-tab').length) ? '#' + fType[0] + '-tab' : '#other-files-tab';
 
-                                    // show this image in library on right side
+                                    // 
+                                    // Show this image in library on right side:
+                                    // 
                                     var newItem = $(tabId).find(".recent-uploads").clone();
                                     newItem.attr('id', 'lib-item-' + rData.id)
                                             .find('.selected-lib-img')
@@ -74,7 +81,9 @@ $(function () {
                                     newItem.addClass('lib-shared-' + rData.shared);
                                     $(tabId).find(".lib-tab-area").append(newItem);
 
-                                    // update media id of image previously added on left side
+                                    // 
+                                    // Update media ID of image previously added on left side:
+                                    // 
                                     $('#lib-items-added')
                                             .find('.title-box[file-path="' + file.url + '"]')
                                             .closest('li')
@@ -98,8 +107,9 @@ $(function () {
     }).prop('disabled', !$.support.fileInput)
             .parent().addClass($.support.fileInput ? undefined : 'disabled');
 
-
-    // attach settings tooltip on all library items
+    // 
+    // Attach settings tooltip on all library items:
+    // 
     var refreshSettingsTooltips = function () {
         $(".lib-item-settings > i").each(function (i, tagElement) {
 
@@ -158,7 +168,8 @@ $(function () {
             }
         });
 
-    }
+    };
+
     refreshSettingsTooltips();
 
     if (libJs == 'loaded') {
@@ -199,22 +210,33 @@ $(function () {
 
     $("#selected-lib-img").sortable();
 
-    /** update title and share settings **/
+    // 
+    // Update title and share settings.
+    // 
     $(document).on('click', '.update-lib-item-details', function () {
-        // grab data
+
+        // 
+        // Grab data:
+        // 
         var title = $(this).parent().find('.update-lib-item-title').val();
         var shared = $(this).parent().find('.update-lib-item-shared').val();
         var mediaId = $(this).attr('media-id');
 
-        // send ajax request to save data
+        // 
+        // Send AJAX request to save data:
+        // 
         ajax(
                 baseURL + 'ajax/core/contributor/resource/update',
                 {"id": mediaId, "name": title, "shared": shared},
                 function (rData) {
-                    // update dom as per the changes
+                    // 
+                    // Update DOM as per the changes:
+                    // 
                     $('#lib-item-' + mediaId).find('.lib-item-title').html(title);
                     $('#lib-items-added > ul').find('li[media-id="lib-item-' + mediaId + '"] > .title-box').find('input').val(title);
-                    // close tooltip
+                    //
+                    // Close tooltip:
+                    // 
                     closeToolTips();
                 }
         );
@@ -222,19 +244,28 @@ $(function () {
     });
 
     $(document).on('click', '.del-lib-item-details', function () {
-        // grab data
+
+        // 
+        // Grab data:
+        // 
         var mediaId = $(this).attr('media-id');
 
         if (confirm('Are you sure you want to delete this library file?')) {
-            // send ajax request to save data
+            // 
+            // Send AJAX request to save data:
+            // 
             ajax(
                     baseURL + 'ajax/core/contributor/resource/delete',
                     {"id": mediaId},
                     function (rData) {
-                        // update dom as per the changes
+                        // 
+                        // Update DOM as per the changes:
+                        // 
                         $('#lib-item-' + mediaId).remove();
                         $('#lib-items-added > ul').find('li[media-id="lib-item-' + mediaId + '"]').remove();
-                        // close tooltip
+                        // 
+                        // Close tooltip:
+                        // 
                         closeToolTips();
                     }
             );
@@ -242,6 +273,7 @@ $(function () {
     });
 
     $(document).on('click', '#selected-lib-img li i', function () {
+
         $('#' + $(this).parent().attr('media-id'))
                 .find('.selected-lib-img')
                 .removeClass('selected-lib-img')

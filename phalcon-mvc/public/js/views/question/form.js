@@ -1,8 +1,6 @@
 // JavaScript Document specific to Exam create
 // @Author Ahsan Shahzad [MedfarmDoIT]
 
-
-/*======== var initialization ==========*/
 var qPartTabs = $("#qPartTabs").tabs();
 var tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close'>Remove Tab</span></li>";
 var libJs = '';
@@ -61,9 +59,9 @@ var addQuestPartTab = function () {
     });
 }
 
-/*------------------------------------------*/
-/*	Events binding area                 */
-/*------------------------------------------*/
+/**
+ * Events binding area.
+ */
 $(document).ready(function () {
 
     // 
@@ -163,12 +161,19 @@ $(document).ready(function () {
                         "Add selected resources to question": function () {
                             $('#selected-lib-img > li:visible > .title-box').each(function (index, itemTitle) {
 
+                                // 
+                                // Use filename if name was not given:
+                                // 
+                                if ($(itemTitle).find('input').val().length === 0) {
+                                    $(itemTitle).find('input').val($(this).attr('file-name'));
+                                }
+
                                 $('#' + $(".ui-tabs-active").attr("aria-controls"))
                                         .find('.lib_resources_list')
                                         .append('\
                                                     <li>\
                                                             <i class="fa fa-close"></i>\
-                                                            <a href="#" file-path="' + $(this).attr('file-path') + '" target="_blank">' + $(itemTitle).find('input').val() + '</a>\
+                                                            <a href="' + $(this).attr('file-path') + '" file-path="' + $(this).attr('file-path') + '" target="_blank">' + $(itemTitle).find('input').val() + '</a>\
                                                     </li>'
                                                 );
                             });
@@ -229,11 +234,11 @@ $(document).ready(function () {
                 ajax(
                         baseURL + 'ajax/core/creator/corrector/delete',
                         {"id": $(delCorrector).parent().find('span').attr('data-rec')},
-                function (status) {
-                    $(delCorrector).parent().slideUp(500, function () {
-                        $(this).remove();
-                    });
-                }
+                        function (status) {
+                            $(delCorrector).parent().slideUp(500, function () {
+                                $(this).remove();
+                            });
+                        }
                 );
             } else {
                 $(this).parent().slideUp(500, function () {
