@@ -13,8 +13,10 @@
 
 namespace OpenExam\Console\Tasks;
 
-use OpenExam\Library\Render\RenderImage;
-use OpenExam\Library\Render\RenderPdfDocument;
+use OpenExam\Library\Render\Command\RenderImage as RenderImageCommand;
+use OpenExam\Library\Render\Command\RenderPdfDocument as RenderPdfDocumentCommand;
+use OpenExam\Library\Render\Extension\RenderImage as RenderImageExtension;
+use OpenExam\Library\Render\Extension\RenderPdfDocument as RenderPdfDocumentExtension;
 
 /**
  * Render service task.
@@ -38,29 +40,33 @@ class RenderTask extends MainTask implements TaskInterface
                                 '--pdf|--image --output=file --page=url'
                         ),
                         'options'  => array(
-                                '--pdf'     => 'Render PDF document',
-                                '--image'   => 'Render image file',
-                                '--output'  => 'Save output to file.',
-                                '--page'    => 'Render local file or URL (can be used multiple times if --type=pdf).',
-                                '--type'    => 'Type of image (png, jpg, bmp or svg).',
-                                '--force'   => 'Force action even if already applied.',
-                                '--verbose' => 'Be more verbose.',
-                                '--dry-run' => 'Just print whats going to be done.'
+                                '--pdf'         => 'Render PDF document',
+                                '--image'       => 'Render image file',
+                                '--output=file' => 'Save output to file.',
+                                '--page=url'    => 'Render local file or URL (can be used multiple times if --type=pdf).',
+                                '--globals'     => 'Start input of global render options (can be used multiple times).',
+                                '--type=mime'   => 'Type of image (png, jpg, bmp or svg).',
+                                '--method=type' => 'Use render method (command or extension).',
+                                '--force'       => 'Force action even if already applied.',
+                                '--verbose'     => 'Be more verbose.',
+                                '--dry-run'     => 'Just print whats going to be done.'
                         ),
                         'aliases'  => array(
-                                '--png'  => 'Same as --type=png',
-                                '--jpg'  => 'Same as --type=jpg',
-                                '--jpeg' => 'Same as --type=jpg',
-                                '--bmp'  => 'Same as --type=bmp',
-                                '--svg'  => 'Same as --type=svg',
+                                '--png'       => 'Same as --type=png',
+                                '--jpg'       => 'Same as --type=jpg',
+                                '--jpeg'      => 'Same as --type=jpg',
+                                '--bmp'       => 'Same as --type=bmp',
+                                '--svg'       => 'Same as --type=svg',
+                                '--command'   => 'Same as --method=command',
+                                '--extension' => 'Same as --method=extension'
                         ),
                         'examples' => array(
                                 array(
-                                        'descr'   => 'Render local file as PNG image:',
+                                        'descr'   => 'Render local file as PNG image',
                                         'command' => '--image --type=png --output=result.png --page=input.html'
                                 ),
                                 array(
-                                        'descr'   => 'Render pages as PDF document:',
+                                        'descr'   => 'Render pages as PDF document',
                                         'command' => '--pdf --page=input1.html --page=input2.html --globals --p1=v1 --p2=v2 --output=result.pdf'
                                 )
                         )
@@ -82,17 +88,16 @@ class RenderTask extends MainTask implements TaskInterface
         public function imageAction($params = array())
         {
                 $this->setOptions($params, 'image');
-                if ($this->_options['type']) {
-                        $this->_options['globals']['fmt'] = $this->_options['type'];
-                } else {
-                        foreach (array('png', 'jpg', 'jpeg', 'bmp', 'svg') as $type) {
-                                if ($this->_options[$type]) {
-                                        $this->_options['globals']['fmt'] = $type;
-                                }
-                        }
+
+                if ($this->_options['extension']) {
+                        $render = new RenderImageExtension($this->_options['globals']);
+                        $render->save($this->_options['output'], array('in' => $this->_options['page'][0]['page']));
                 }
-                $render = new RenderImage($this->_options['globals']);
-                $render->save($this->_options['output'], array('in' => $this->_options['page'][0]['page']));
+                if ($this->_options['command']) {
+                        $render = new RenderImageCommand("wkhtmltoimage");
+                        $render->setOptions($this->_options['globals']);
+                        $render->save($this->_options['output'], array('in' => $this->_options['page'][0]['page']));
+                }
         }
 
         /**
@@ -102,8 +107,16 @@ class RenderTask extends MainTask implements TaskInterface
         public function pdfAction($params = array())
         {
                 $this->setOptions($params, 'pdf');
-                $render = new RenderPdfDocument($this->_options['globals']);
-                $render->save($this->_options['output'], $this->_options['page']);
+
+                if ($this->_options['extension']) {
+                        $render = new RenderPdfDocumentExtension($this->_options['globals']);
+                        $render->save($this->_options['output'], $this->_options['page']);
+                }
+                if ($this->_options['command']) {
+                        $render = new RenderPdfDocumentCommand("wkhtmltopdf");
+                        $render->setOptions($this->_options['globals']);
+                        $render->save($this->_options['output'], $this->_options['page']);
+                }
         }
 
         /**
@@ -116,12 +129,12 @@ class RenderTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->_options = array('verbose' => false, 'force' => false, 'dry-run' => false, 'page' => array(), 'globals' => array());
+                $this->_options = array('verbose' => false, 'force' => false, 'dry-run' => false, 'page' => array(), 'globals' => array(), 'command' => true);
 
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'force', 'dry-run', 'type', 'page', 'output', 'globals', 'png', 'jpg', 'jpeg', 'bmp', 'svg');
+                $options = array('verbose', 'force', 'dry-run', 'type', 'page', 'output', 'globals', 'png', 'jpg', 'jpeg', 'bmp', 'svg', 'method', 'extension', 'command');
                 $current = $action;
 
                 // 
@@ -160,6 +173,10 @@ class RenderTask extends MainTask implements TaskInterface
                         } else {
                                 throw new Exception("Unknown task action/parameters '$option'");
                         }
+                }
+
+                if ($this->_options['extension']) {
+                        $this->_options['command'] = false;
                 }
         }
 
