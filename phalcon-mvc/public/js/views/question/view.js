@@ -40,6 +40,14 @@ function syncAnswers(async, redirectToAfterSync)
             var answers = $(qPart).find('.q-part-ans-type').find('.changeable');
 
             // 
+            // The answer type should be explicit set, but assume it's a textarea if missing:
+            // 
+            if (ansType === undefined || ansType.length === 0) {
+                ansType = "textarea";
+                console.log("empty answer type (assuming textarea)")
+            }
+
+            // 
             // Initialize json obj attr
             // 
             ansJson[qPartName] = {};
@@ -49,50 +57,42 @@ function syncAnswers(async, redirectToAfterSync)
             // 
             // Make JSON as per ansType
             // 
-            if (ansType == 'textbox') {
-                console.log("saving text box data");
-
+            if (ansType === 'textbox') {
                 var ansData = $(answers).val();
                 if (ansData.trim()) {
-                    console.log("not empty:" + ansData);
                     ansJson[qPartName]["ans"].push(ansData);
                     $('#ansBkp' + qPartName).html(ansData);
                 } else {
-                    console.log("its empty .. so sending old value:" + $('#ansBkp' + qPartName).html());
                     ansJson[qPartName]["ans"].push($('#ansBkp' + qPartName).html());
                 }
-            } else if (ansType == 'textarea') {
-                console.log("saving text area data");
+            } else if (ansType === 'textarea') {
                 ansData = CKEDITOR.instances[$(answers).attr('id')].getData();
 
                 if (ansData.trim()) {
-                    console.log("not empty:" + ansData);
                     ansJson[qPartName]["ans"].push(ansData);
                     $('#ansBkp' + qPartName).html(ansData);
                 } else {
-                    console.log("its empty .. so sending old value:" + $('#ansBkp' + qPartName).html());
                     ansJson[qPartName]["ans"].push($('#ansBkp' + qPartName).html());
                 }
-            } else if (ansType == 'choicebox') {
+            } else if (ansType === 'choicebox') {
                 $(answers).each(function (index, opt) {
                     if ($(opt).is(':checked')) {
                         ansJson[qPartName]["ans"].push($(opt).val());
                     }
                 });
 
-            } else if (ansType == 'canvas') {
+            } else if (ansType === 'canvas') {
                 var canvasId = $(answers).attr('id');
                 var canvasJson = canvasData[canvasId];
 
-                if (typeof (canvasElem[canvasId]) != 'undefined' && canvasElem[canvasId].getImage()) {
+                if (typeof (canvasElem[canvasId]) !== 'undefined' && canvasElem[canvasId].getImage()) {
 
                     var canvasUrl = canvasElem[canvasId].getImage().toDataURL();
                     ansJson[qPartName]["ans"].push({"canvasJson": canvasJson, "canvasUrl": canvasUrl});
 
                 }
             } else {
-                ansData = CKEDITOR.instances[$(answers).attr('id')].getData();
-                ansJson[qPartName]["ans"].push(ansData);
+                throw new Error("Unknown answer type " + ansType);
             }
 
         });
@@ -119,7 +119,7 @@ function syncAnswers(async, redirectToAfterSync)
             }
         }).done(function (respJson) {
             if (typeof respJson.success == "undefined") {
-                var failMsg = "\Failed to save your answer!\r\n\Please report to invigilator immediately. Don't refresh or close this page or you may loose your latest changes!\r\n";
+                var failMsg = "Failed to save your answer!\r\n\Please report to invigilator immediately. Don't refresh or close this page or you may loose your latest changes!\r\n";
                 if (async) {
                     failMsg += "Error source:   \n------------------\n" + JSON.stringify(respJson) + "\r\n";
                     failMsg += "Answer recovery:\n------------------\nHit Ctrl+A and Ctrl+C in the text editor to copy your answer. Paste copied text into another text editor (i.e. notepad) and save to disk before reloading the page.";
@@ -137,7 +137,15 @@ function syncAnswers(async, redirectToAfterSync)
         });
     } catch (err) {
         console.log(err);
-        alert("Something went wrong in system. Please don't refresh/close web page window and contact your invigilator immediately." + JSON.stringify(err));
+
+        var failMsg = "Something went wrong!\r\nPlease don't refresh/close web page window and contact your invigilator immediately.\r\n";
+        failMsg += err.stack;
+
+        if (async) {
+            alert(failMsg);
+        } else {
+            return failMsg;
+        }
     }
 }
 
