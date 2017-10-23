@@ -120,8 +120,11 @@
                                                                 </div>                                                                        
                                                         <?php endif; ?>
 
-                                                        <div style="color:#F45956; padding-top:15px">Your Answer:</div>
                                                         <?php if (!empty($answerData[$qPart]['ans'][0])): ?>
+                                                                <div style="color:#0f74a8; padding-top:15px; padding-bottom: 5px">
+                                                                    <i class="fa fa-check-square-o" aria-hidden="true"></i>
+                                                                    Your Answer:
+                                                                </div>
                                                                 <div style="background-color:#F4F4F4; border-left: 5px solid #dedede; padding:10px">
                                                                     <?php if (count($answerData[$qPart]['ans']) > 1): ?>
                                                                             <ul>
@@ -138,7 +141,13 @@
                                                                     <?php endif; ?>
                                                                 </div>
                                                         <?php else: ?>
-                                                                <i>You haven't answered this part.</i>
+                                                                <div style="color:#f45956; padding-top:15px; padding-bottom: 5px">
+                                                                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                                                    Your Answer:
+                                                                </div>
+                                                                <div style="border-left: 5px solid #f45956; padding:10px">
+                                                                    <i>You haven't answered this part.</i>
+                                                                </div>
                                                         <?php endif; ?>
                                                 <?php else: ?>
                                                         <div class="form-group q-part-ans-type" data-id="<?= $qPartData['ans_area']['type'] ?>">
@@ -234,7 +243,7 @@
                                             <?php endif; ?>
                                     <?php else: ?>
                                             <a href="<?= $this->url->get('exam/' . $exam->id . '/question/' . ($qObj->id)) ?>">
-                                                <button class="btn btn-xs btn-success btn-prev"><i class="icon-pencil"></i> Change your Answer for this question </button>
+                                                <button class="btn btn-xs btn-success btn-prev"><i class="icon-pencil"></i> Change your answer </button>
                                             </a>
                                     <?php endif; ?>
                                 </div>
