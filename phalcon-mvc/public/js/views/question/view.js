@@ -24,22 +24,16 @@ setInterval(function () {
 function syncAnswers(async, redirectToAfterSync)
 {
     redirectToAfterSync = typeof redirectToAfterSync !== 'undefined' ? redirectToAfterSync : false;
+
     if (redirectToAfterSync && !dirtybit) {
         location.href = redirectToAfterSync;
         return;
     }
+    if (ansId === 'None!') {
+        return;     // Running in test case mode.
+    }
 
     try {
-        var failed = false;
-        if (ansId === 'None!') {
-            if (!async) {
-                return;
-            } else {
-                if (redirectToAfterSync) {
-                    location.href = redirectToAfterSync;
-                }
-            }
-        }
         $('.q-part').each(function (index, qPart) {
             var qPartName = $(qPart).attr('data-id');
             var ansType = $(qPart).find('.q-part-ans-type').attr('data-id');
