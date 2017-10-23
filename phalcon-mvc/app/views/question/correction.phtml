@@ -251,6 +251,9 @@ if ($exam->decoded) {
                                             if (!$answer) {
                                                     $cc = 'na';
                                                     $cLink = false;
+                                            } elseif (!$answer->answered) {
+                                                    $cc = 'na';
+                                                    $cLink = false;
                                             } elseif (is_object($result) && $result->count() && in_array($result->correction, array('completed', 'finalized'))) {
                                                     $cc = 'ac';
                                             } elseif (!in_array($this->user->getPrincipalName(), $qCorrectorList)) {
