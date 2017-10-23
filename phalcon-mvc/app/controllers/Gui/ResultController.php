@@ -13,6 +13,7 @@
 
 namespace OpenExam\Controllers\Gui;
 
+use Exception;
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
 use OpenExam\Library\Core\Exam\Result as ResultHandler;
@@ -132,10 +133,10 @@ class ResultController extends GuiController
                 // Check required parameters:
                 // 
                 if (empty($eid)) {
-                        throw new \Exception("The exam ID is missing", Error::PRECONDITION_FAILED);
+                        throw new Exception("The exam ID is missing", Error::PRECONDITION_FAILED);
                 }
                 if (empty($sid)) {
-                        throw new \Exception("The student ID is missing", Error::PRECONDITION_FAILED);
+                        throw new Exception("The student ID is missing", Error::PRECONDITION_FAILED);
                 }
 
                 // 
@@ -309,7 +310,7 @@ class ResultController extends GuiController
                                 return;
                         }
                         if (!($data = $this->request->getPost('score_board'))) {
-                                throw new \Exception("Failed to generate Excel (HTML) Spreadsheet.");
+                                throw new Exception("Failed to generate Excel (HTML) Spreadsheet.");
                         }
 
                         file_put_contents($source, utf8_decode($data));

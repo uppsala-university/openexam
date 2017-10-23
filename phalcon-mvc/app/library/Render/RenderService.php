@@ -13,6 +13,10 @@
 
 namespace OpenExam\Library\Render;
 
+use OpenExam\Library\Render\Command\RenderImage as RenderImageCommand;
+use OpenExam\Library\Render\Command\RenderPdfDocument as RenderPdfDocumentCommand;
+use OpenExam\Library\Render\Extension\RenderImage as RenderImageExtension;
+use OpenExam\Library\Render\Extension\RenderPdfDocument as RenderPdfDocumentExtension;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -99,21 +103,21 @@ class RenderService extends Component
         {
                 if ($type == Renderer::FORMAT_IMAGE) {
                         if ($this->config->render->method == 'command') {
-                                return new Command\RenderImage(
+                                return new RenderImageCommand(
                                     $this->config->render->command->image
                                 );
                         } else {
-                                return new Extension\RenderImage(
+                                return new RenderImageExtension(
                                     $this->config->render->extension->image
                                 );
                         }
-                } elseif ($type == \OpenExam\Library\Render\Renderer::FORMAT_PDF) {
+                } elseif ($type == Renderer::FORMAT_PDF) {
                         if ($this->config->render->method == 'command') {
-                                return new Command\RenderPdfDocument(
+                                return new RenderPdfDocumentCommand(
                                     $this->config->render->command->pdf
                                 );
                         } else {
-                                return new Extension\RenderPdfDocument(
+                                return new RenderPdfDocumentExtension(
                                     $this->config->render->extension->pdf
                                 );
                         }

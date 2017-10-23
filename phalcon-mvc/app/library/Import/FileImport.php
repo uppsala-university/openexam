@@ -28,6 +28,7 @@ use OpenExam\Library\Import\Students\ImportStudentsSylk;
 use OpenExam\Library\Import\Students\ImportStudentsTextCsv;
 use OpenExam\Library\Import\Students\ImportStudentsTextTab;
 use Phalcon\Mvc\User\Component;
+use function _;
 
 /**
  * File upload support class.

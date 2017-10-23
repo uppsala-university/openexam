@@ -24,6 +24,7 @@ use Phalcon\Mvc\Model\Transaction\Failed as TransactionFailed;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Phalcon\Mvc\Model\TransactionInterface;
 use Phalcon\Mvc\User\Component;
+use stdClass;
 
 /**
  * Core service handler.
@@ -312,7 +313,7 @@ class CoreHandler extends Component
                         foreach ($model->dump() as $key => $val) {
                                 if (!is_object($val)) {
                                         $dump[$key] = $val;
-                                } elseif ($val instanceof \stdClass) {
+                                } elseif ($val instanceof stdClass) {
                                         $dump[$key] = $val;
                                 }
                         }

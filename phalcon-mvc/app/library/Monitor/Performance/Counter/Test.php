@@ -13,12 +13,13 @@
 
 namespace OpenExam\Library\Monitor\Performance\Counter;
 
+use OpenExam\Library\Monitor\Performance\Collector\Test;
 use OpenExam\Library\Monitor\Performance\Counter;
 
 /**
  * Test performance counter.
  *
- * @see \OpenExam\Library\Monitor\Performance\Collector\Test
+ * @see Test
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Test extends CounterBase implements Counter

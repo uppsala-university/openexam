@@ -13,8 +13,15 @@
 
 namespace OpenExam\Library\Database\Cache;
 
+use OpenExam\Library\Database\Cache\Backend\Indexed as IndexedBackend;
+use OpenExam\Library\Database\Cache\Mediator\Complex as ComplexMediator;
+use OpenExam\Library\Database\Cache\Mediator\Direct as DirectMediator;
 use OpenExam\Library\Database\Cache\Mediator\MediatorHandler;
 use OpenExam\Library\Database\Cache\Mediator\MediatorInterface;
+use OpenExam\Library\Database\Cache\Mediator\Mutable as MutableMediator;
+use OpenExam\Library\Database\Cache\Mediator\ReadOnce as ReadOnceMediator;
+use OpenExam\Library\Database\Cache\Mediator\Request as RequestMediator;
+use OpenExam\Library\Database\Cache\Mediator\Simple as SimpleMediator;
 use OpenExam\Library\Database\Cache\Result\Serializable as SerializableResultSet;
 use OpenExam\Library\Database\Exception as DatabaseException;
 use Phalcon\Cache\BackendInterface;
@@ -84,7 +91,7 @@ class Mediator extends Proxy
         {
                 if ($this->_handler->canCache() &&
                     $this->_handler->hasCache()) {
-                        if ($this->_handler->getCache() instanceof Backend\Indexed) {
+                        if ($this->_handler->getCache() instanceof IndexedBackend) {
                                 return true;
                         } else {
                                 return false;
@@ -379,17 +386,17 @@ class Mediator extends Proxy
         {
                 switch ($type) {
                         case 'complex':
-                                return new Mediator\Complex($adapter, $cache);
+                                return new ComplexMediator($adapter, $cache);
                         case 'direct':
-                                return new Mediator\Direct($adapter, $cache);
+                                return new DirectMediator($adapter, $cache);
                         case 'mutable':
-                                return new Mediator\Mutable($adapter, $cache);
+                                return new MutableMediator($adapter, $cache);
                         case 'readonce':
-                                return new Mediator\ReadOnce($adapter, $cache);
+                                return new ReadOnceMediator($adapter, $cache);
                         case 'request':
-                                return new Mediator\Request($adapter, $cache);
+                                return new RequestMediator($adapter, $cache);
                         case 'simple':
-                                return new Mediator\Simple($adapter, $cache);
+                                return new SimpleMediator($adapter, $cache);
                         default:
                                 throw new DatabaseException(sprintf("Unknown database mediator %s", $type));
                 }

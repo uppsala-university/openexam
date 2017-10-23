@@ -13,6 +13,8 @@
 
 namespace OpenExam\Library\Console;
 
+use Exception;
+
 /**
  * Runs command in the console (shell).
  *
@@ -199,15 +201,15 @@ class Command
 
         /**
          * Change working directory.
-         * @throws \Exception
+         * @throws Exception
          */
         private function changeDirectory()
         {
                 if (!file_exists($this->_cwd)) {
-                        throw new \Exception("The working directory don't exist");
+                        throw new Exception("The working directory don't exist");
                 }
                 if (chdir($this->_cwd)) {
-                        throw new \Exception("Failed change working directory");
+                        throw new Exception("Failed change working directory");
                 }
         }
 
@@ -250,7 +252,7 @@ class Command
          * getStatus() and hasError()/getError() to find out the cause.
          * 
          * @return boolean Return true if successful.
-         * @throws \Exception
+         * @throws Exception
          */
         public function execute()
         {

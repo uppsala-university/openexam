@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\WebService\Soap;
 
+use Exception;
 use OpenExam\Library\WebService\Wsdl\ServiceDescription;
 use Phalcon\Mvc\User\Component;
 use SoapFault;
@@ -259,7 +260,7 @@ class SoapService extends Component
                 //
                 try {
                         $server->handle();
-                } catch (\Exception $exception) {
+                } catch (Exception $exception) {
                         $server->fault("Receiver", $exception->getMessage());
                         throw $exception;       // Handle exception upstream
                 }

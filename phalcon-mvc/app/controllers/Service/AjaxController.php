@@ -13,6 +13,7 @@
 
 namespace OpenExam\Controllers\Service;
 
+use Exception;
 use OpenExam\Controllers\ServiceController;
 use OpenExam\Library\Monitor\Performance\Profiler;
 use OpenExam\Library\WebService\Common\Exception as ServiceException;
@@ -46,7 +47,7 @@ class AjaxController extends ServiceController
 
         /**
          * The exception handler.
-         * @param \Exception $exception
+         * @param Exception $exception
          */
         public function exceptionAction($exception)
         {

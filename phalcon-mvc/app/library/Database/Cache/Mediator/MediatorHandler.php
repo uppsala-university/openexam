@@ -225,5 +225,5 @@ abstract class MediatorHandler implements MediatorInterface
         {
                 return $this->_exclude;
         }
-        
+
 }

@@ -16,6 +16,7 @@ namespace OpenExam\Library\Core\Exam;
 use OpenExam\Library\Database\Exception as DatabaseException;
 use OpenExam\Models\Exam;
 use Phalcon\Mvc\User\Component;
+use ReflectionObject;
 
 /**
  * Represents the exam state.
@@ -312,7 +313,7 @@ class State extends Component
                 }
 
                 $this->_flags = array();
-                $reflection = new \ReflectionObject($this);
+                $reflection = new ReflectionObject($this);
                 foreach ($reflection->getConstants() as $name => $value) {
                         if ($name == 'CACHE_LIFETIME') {
                                 continue;

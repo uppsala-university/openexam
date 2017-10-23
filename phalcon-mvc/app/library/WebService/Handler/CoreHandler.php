@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\WebService\Handler;
 
+use Exception;
 use OpenExam\Library\Core\Handler\CoreHandler as BackendHandler;
 use OpenExam\Library\Security\Capabilities;
 use OpenExam\Library\Security\Exception as SecurityException;
@@ -99,7 +100,7 @@ class CoreHandler extends ServiceHandler
          * @param string $role The requested role.
          * @param string $type The requested model.
          * @param string $action The requested action.
-         * @throws \Exception
+         * @throws Exception
          * @return ServiceResponse 
          */
         private function action($role, $type, $action)

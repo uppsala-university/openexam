@@ -13,7 +13,9 @@
 
 namespace OpenExam\Library\Catalog\Service\Adapter\Uppdok;
 
-use OpenExam\Library\Catalog\Service\Connection;
+use const INFO_CGI_FIELD_SEPARATOR;
+use const INFO_CGI_FIELD_USER;
+use const INFO_CGI_RECORD_SEPARATOR;
 
 if (!defined('INFO_CGI_RECORD_SEPARATOR')) {
         define('INFO_CGI_RECORD_SEPARATOR', "\n");

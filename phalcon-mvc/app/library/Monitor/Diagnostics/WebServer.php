@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Monitor\Diagnostics;
 
+use OpenExam\Library\Monitor\Exception;
 use Phalcon\Mvc\User\Component;
 
 /**

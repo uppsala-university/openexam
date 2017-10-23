@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Database\Adapter\Deferred;
 
+use Exception;
 use OpenExam\Library\Database\Adapter\Factory\AdapterFactory;
 use Phalcon\Config;
 use Phalcon\Db\AdapterInterface;
@@ -59,7 +60,7 @@ abstract class DeferredAdapter implements AdapterFactory
                                 try {
                                         $this->_adapter = $this->createAdapter($this->_config);
                                         return $this->_adapter;
-                                } catch (\Exception $exception) {
+                                } catch (Exception $exception) {
                                         if (--$this->_params->retry < 0) {
                                                 throw $exception;
                                         } else {

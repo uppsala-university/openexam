@@ -13,6 +13,13 @@
 
 namespace OpenExam\Library\Catalog;
 
+use OpenExam\Library\Catalog\Manager\Search\Attribute as ManagerSearchAttribute;
+use OpenExam\Library\Catalog\Manager\Search\Attributes as ManagerSearchAttributes;
+use OpenExam\Library\Catalog\Manager\Search\Groups as ManagerSearchGroups;
+use OpenExam\Library\Catalog\Manager\Search\Members as ManagerSearchMembers;
+use OpenExam\Library\Catalog\Manager\Search\Principal as ManagerSearchPrincipal;
+use OpenExam\Library\Catalog\Manager\Search\Principals as ManagerSearchPrincipals;
+
 /**
  * Directory manager search.
  *
@@ -54,7 +61,7 @@ class DirectorySearch implements DirectoryQuery
          */
         public function getGroups($principal, $attributes = null)
         {
-                $search = new Manager\Search\Groups($principal, $attributes);
+                $search = new ManagerSearchGroups($principal, $attributes);
                 $result = $search->getResult($this->_manager);
 
                 return $result;
@@ -70,7 +77,7 @@ class DirectorySearch implements DirectoryQuery
          */
         public function getMembers($group, $domain = null, $attributes = null)
         {
-                $search = new Manager\Search\Members($group, $domain, $attributes);
+                $search = new ManagerSearchMembers($group, $domain, $attributes);
                 $result = $search->getResult($this->_manager);
 
                 return $result;
@@ -90,7 +97,7 @@ class DirectorySearch implements DirectoryQuery
          */
         public function getAttribute($attribute, $principal = null)
         {
-                $search = new Manager\Search\Attribute($attribute, $principal);
+                $search = new ManagerSearchAttribute($attribute, $principal);
                 $result = $search->getResult($this->_manager);
 
                 return $result;
@@ -109,7 +116,7 @@ class DirectorySearch implements DirectoryQuery
          */
         public function getAttributes($attribute, $principal = null)
         {
-                $search = new Manager\Search\Attributes($attribute, $principal);
+                $search = new ManagerSearchAttributes($attribute, $principal);
                 $result = $search->getResult($this->_manager);
 
                 return $result;
@@ -126,7 +133,7 @@ class DirectorySearch implements DirectoryQuery
          */
         public function getPrincipals($needle, $attrib = null, $options = null)
         {
-                $search = new Manager\Search\Principals($this->_manager, $needle, $attrib, $options);
+                $search = new ManagerSearchPrincipals($this->_manager, $needle, $attrib, $options);
                 $result = $search->getResult($this->_manager);
 
                 return $result;
@@ -144,7 +151,7 @@ class DirectorySearch implements DirectoryQuery
          */
         public function getPrincipal($needle, $attrib = null, $domain = null, $inject = null)
         {
-                $search = new Manager\Search\Principal($this->_manager, $needle, $attrib, $domain, $inject);
+                $search = new ManagerSearchPrincipal($this->_manager, $needle, $attrib, $domain, $inject);
                 $result = $search->getResult($this->_manager);
 
                 return $result;

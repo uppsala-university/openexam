@@ -13,6 +13,7 @@
 
 namespace OpenExam\Controllers\Gui;
 
+use Exception;
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
 use OpenExam\Library\Core\Exam\Staff;
@@ -45,17 +46,17 @@ class QuestionController extends GuiController
                 // Sanitize:
                 // 
                 if (!($eid = $this->request->getPost('exam_id', "int"))) {
-                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
                 if (!($role = $this->request->getPost('role', "string"))) {
-                        throw new \Exception("Missing required role", Error::PRECONDITION_FAILED);
+                        throw new Exception("Missing required role", Error::PRECONDITION_FAILED);
                 }
 
                 // 
                 // Try to find exam in request parameter:
                 // 
                 if (!($exam = Exam::findFirst($eid))) {
-                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
                 // 
@@ -90,20 +91,20 @@ class QuestionController extends GuiController
                 // Sanitize:
                 // 
                 if (!($qid = $this->request->getPost('q_id', "int"))) {
-                        throw new \Exception("Missing or invalid question ID", Error::PRECONDITION_FAILED);
+                        throw new Exception("Missing or invalid question ID", Error::PRECONDITION_FAILED);
                 }
                 if (!($role = $this->request->getPost('role', "string"))) {
-                        throw new \Exception("Missing required role", Error::PRECONDITION_FAILED);
+                        throw new Exception("Missing required role", Error::PRECONDITION_FAILED);
                 }
 
                 // 
                 // Fetch data for view:
                 // 
                 if (!($question = Question::findFirst($qid))) {
-                        throw new \Exception("Failed fetch question model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch question model", Error::BAD_REQUEST);
                 }
                 if (!($exam = Exam::findFirst($question->exam_id))) {
-                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
                 // 
@@ -171,7 +172,7 @@ class QuestionController extends GuiController
                         $exam = Exam::findFirst($eid);
                 }
                 if (!$exam) {
-                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
                 // 
@@ -193,7 +194,7 @@ class QuestionController extends GuiController
                                                 $this->logger->access->debug("Approved exam access for student");
                                                 break;
                                         case Access::OPEN_DENIED:
-                                                throw new \Exception("Access denied for exam", Error::FORBIDDEN);
+                                                throw new Exception("Access denied for exam", Error::FORBIDDEN);
                                         case Access::OPEN_PENDING:
                                                 $this->dispatcher->forward(array(
                                                         'controller' => 'exam',
@@ -221,7 +222,7 @@ class QuestionController extends GuiController
                                             'exam' => $eid
                                 )))
                             )) {
-                                throw new \Exception("You are not authorized to access this question", Error::FORBIDDEN);
+                                throw new Exception("You are not authorized to access this question", Error::FORBIDDEN);
                         }
 
                         // 
@@ -279,7 +280,7 @@ class QuestionController extends GuiController
                                                     'question_id' => $questions[0]->id,
                                                     'answered'    => 0
                                             ))) {
-                                                throw new \Exception("Failed insert empty answer (%s)", $answer->getMessages()[0]);
+                                                throw new Exception("Failed insert empty answer (%s)", $answer->getMessages()[0]);
                                         }
                                 }
 
@@ -364,7 +365,7 @@ class QuestionController extends GuiController
                 // Load exam data:
                 // 
                 if (!($exam = Exam::findFirst($eid))) {
-                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
                 // 
@@ -401,7 +402,7 @@ class QuestionController extends GuiController
                                         $this->correctionLoadAnswer($exam, $loadBy[2]);
                                         break;
                                 default:
-                                        throw new \Exception("Unable to load answers for provided criteria");
+                                        throw new Exception("Unable to load answers for provided criteria");
                         }
 
                         $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
@@ -428,10 +429,10 @@ class QuestionController extends GuiController
                 // Find questions and answers for student:
                 // 
                 if (!($student = Student::findFirst($sid))) {
-                        throw new \Exception("Failed fetch student model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch student model", Error::BAD_REQUEST);
                 }
                 if (!($answers = $student->answers)) {
-                        throw new \Exception("Failed fetch answer models", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch answer models", Error::BAD_REQUEST);
                 }
                 if (!($questions = Question::find(array(
                             'conditions' => "exam_id = :exam: AND status = 'active'",
@@ -440,7 +441,7 @@ class QuestionController extends GuiController
                             ),
                             'order'      => 'slot ASC'
                     )))) {
-                        throw new \Exception("Failed fetch question models", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch question models", Error::BAD_REQUEST);
                 }
 
                 if ($exam->show_code) {
@@ -477,14 +478,14 @@ class QuestionController extends GuiController
                 // Get answer, question and student:
                 // 
                 if (!($answer = Answer::findFirst($aid))) {
-                        throw new \Exception("Failed fetch answer model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch answer model", Error::BAD_REQUEST);
                 }
 
                 if (!($question = $answer->question)) {
-                        throw new \Exception("Failed fetch question model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch question model", Error::BAD_REQUEST);
                 }
                 if (!($student = $answer->student)) {
-                        throw new \Exception("Failed fetch student model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch student model", Error::BAD_REQUEST);
                 }
 
                 if ($exam->show_code) {
@@ -521,10 +522,10 @@ class QuestionController extends GuiController
                 // Find question and its answers:
                 // 
                 if (!($question = Question::findFirst($qid))) {
-                        throw new \Exception("Failed fetch question model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch question model", Error::BAD_REQUEST);
                 }
                 if (!($answers = $question->answers)) {
-                        throw new \Exception("Failed fetch answer model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch answer model", Error::BAD_REQUEST);
                 }
 
                 $this->view->setVars(array(
@@ -577,10 +578,10 @@ class QuestionController extends GuiController
                             ),
                             'order'      => 'slot ASC'
                     )))) {
-                        throw new \Exception("Failed fetch question models", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch question models", Error::BAD_REQUEST);
                 }
                 if (!($students = $exam->students)) {
-                        throw new \Exception("Failed fetch student models", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch student models", Error::BAD_REQUEST);
                 }
 
                 // 

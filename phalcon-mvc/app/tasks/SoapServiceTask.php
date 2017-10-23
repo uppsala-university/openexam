@@ -62,8 +62,8 @@ class SoapServiceTask extends MainTask implements TaskInterface
                                 '--verbose'     => 'Be more verbose.',
                                 '--dry-run'     => 'Just print whats going to be done.'
                         ),
-                        'aliases' => array(
-                                '--all'         => 'Alias for --role=all'                                
+                        'aliases'  => array(
+                                '--all' => 'Alias for --role=all'
                         ),
                         'examples' => array(
                                 array(

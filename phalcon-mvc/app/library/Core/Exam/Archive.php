@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Core\Exam;
 
+use DateTime;
 use OpenExam\Library\Render\Renderer;
 use OpenExam\Models\Exam;
 use Phalcon\Mvc\User\Component;
@@ -121,7 +122,7 @@ class Archive extends Component
                 // 
                 // Required by some browsers for actually caching:
                 // 
-                $expires = new \DateTime();
+                $expires = new DateTime();
                 $expires->modify("+2 months");
 
                 // 

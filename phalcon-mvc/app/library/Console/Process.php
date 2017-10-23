@@ -13,6 +13,8 @@
 
 namespace OpenExam\Library\Console;
 
+use Exception;
+
 /**
  * Interactive process runner.
  * 
@@ -159,10 +161,10 @@ class Process
         public function setBlocking($read = true, $write = true)
         {
                 if (!stream_set_blocking($this->_pipes[1], $read)) {
-                        throw new \Exception("Failed set blocking mode $read on read stream");
+                        throw new Exception("Failed set blocking mode $read on read stream");
                 }
                 if (!stream_set_blocking($this->_pipes[0], $write)) {
-                        throw new \Exception("Failed set blocking mode $read on write stream");
+                        throw new Exception("Failed set blocking mode $read on write stream");
                 }
         }
 
@@ -196,12 +198,12 @@ class Process
         /**
          * Get process status.
          * @return array
-         * @throws \Exception
+         * @throws Exception
          */
         public function getStatus($key = null)
         {
                 if (!($status = proc_get_status($this->_handle))) {
-                        throw new \Exception("Failed get process status");
+                        throw new Exception("Failed get process status");
                 } elseif (!isset($key)) {
                         return $status;
                 } elseif (isset($status[$key])) {
@@ -320,7 +322,7 @@ class Process
 
         /**
          * Open program (execute).
-         * @throws \Exception
+         * @throws Exception
          */
         public function open()
         {
@@ -333,19 +335,19 @@ class Process
                 if (!($this->_handle = proc_open(
                     $this->_command, $descr, $this->_pipes, $this->_cwd, $this->_env
                     ))) {
-                        throw new \Exception("Failed open process");
+                        throw new Exception("Failed open process");
                 }
         }
 
         /**
          * Close program.
          * @return boolean True if successful closed.
-         * @throws \Exception
+         * @throws Exception
          */
         public function close()
         {
                 if (($this->_code = proc_close($this->_handle)) < 0) {
-                        throw new \Exception("Failed close process");
+                        throw new Exception("Failed close process");
                 } else {
                         return $this->_code == 0;
                 }

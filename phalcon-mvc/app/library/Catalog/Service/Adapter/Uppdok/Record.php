@@ -14,6 +14,10 @@
 namespace OpenExam\Library\Catalog\Service\Adapter\Uppdok;
 
 use OpenExam\Library\Catalog\Principal;
+use const INFO_CGI_FIELD_MAIL;
+use const INFO_CGI_FIELD_NAME;
+use const INFO_CGI_FIELD_SOCIAL_NUMBER;
+use const INFO_CGI_FIELD_USER;
 
 if (!defined('INFO_CGI_FIELD_USER')) {
         define('INFO_CGI_FIELD_USER', 1);

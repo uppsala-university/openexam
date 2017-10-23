@@ -14,14 +14,19 @@
 
 namespace OpenExam\Controllers\Utility;
 
+use DateTime;
+use Exception;
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
 use OpenExam\Library\Core\Size;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Resource;
 use Phalcon\Mvc\View;
+use RuntimeException;
+use UploadHandler;
+use const EXTERN_DIR;
 
-require_once (\EXTERN_DIR . 'UploadHandler.php');
+require_once (EXTERN_DIR . 'UploadHandler.php');
 
 /**
  * Controller for loading media resources
@@ -43,7 +48,7 @@ class MediaController extends GuiController
                 // Sanitize:
                 // 
                 if (!($eid = $this->request->get('exam_id', 'int'))) {
-                        throw new \Exception("Expected exam ID", Error::PRECONDITION_FAILED);
+                        throw new Exception("Expected exam ID", Error::PRECONDITION_FAILED);
                 }
 
                 // 
@@ -74,7 +79,7 @@ class MediaController extends GuiController
                             ),
                             'order'      => 'shared,id desc'
                     )))) {
-                        throw new \Exception("Failed fetch shared resources", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch shared resources", Error::BAD_REQUEST);
                 }
 
                 // 
@@ -88,7 +93,7 @@ class MediaController extends GuiController
                             ),
                             'order'      => 'id desc'
                     )))) {
-                        throw new \Exception("Failed fetch personal resources", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch personal resources", Error::BAD_REQUEST);
                 }
 
                 // 
@@ -183,7 +188,7 @@ class MediaController extends GuiController
                                     ini_get('upload_max_filesize')
                         ));
 
-                        throw new \RuntimeException(sprintf("Failed upload file (maximum allowed filesize size is %s)", $maxsize));
+                        throw new RuntimeException(sprintf("Failed upload file (maximum allowed filesize size is %s)", $maxsize));
                 }
 
                 // 
@@ -200,7 +205,7 @@ class MediaController extends GuiController
                 // 
                 // Upload file:
                 // 
-                $handler = new \UploadHandler(array(
+                $handler = new UploadHandler(array(
                         'upload_dir' => $uploadDir . "/",
                         'upload_url' => $uploadUrl . "/",
                 ));
@@ -211,7 +216,7 @@ class MediaController extends GuiController
          * 
          * @param string $type The media file type (e.g image, video).
          * @param string $file The file name.
-         * @throws \Exception
+         * @throws Exception
          */
         public function viewAction($type, $file)
         {
@@ -219,7 +224,7 @@ class MediaController extends GuiController
                 // Sanity check:
                 // 
                 if (empty($type) || empty($file)) {
-                        throw new \Exception('Invalid request', Error::PRECONDITION_FAILED);
+                        throw new Exception('Invalid request', Error::PRECONDITION_FAILED);
                 }
 
                 // 
@@ -227,7 +232,7 @@ class MediaController extends GuiController
                 // 
                 if (strpos($file, '/') != false ||
                     strpos($type, '/') != false) {
-                        throw new \Exception('Invalid character in filename', Error::NOT_ACCEPTABLE);
+                        throw new Exception('Invalid character in filename', Error::NOT_ACCEPTABLE);
                 }
 
                 // 
@@ -236,10 +241,10 @@ class MediaController extends GuiController
                 $path = sprintf("%s/%s/%s", $this->config->application->mediaDir, $type, $file);
 
                 if (!file_exists($path)) {
-                        throw new \Exception("Can't located requested file", Error::NOT_FOUND);
+                        throw new Exception("Can't located requested file", Error::NOT_FOUND);
                 }
                 if (!is_file($path)) {
-                        throw new \Exception("Requested resource is not a file", Error::NOT_FOUND);
+                        throw new Exception("Requested resource is not a file", Error::NOT_FOUND);
                 }
 
                 // 
@@ -253,7 +258,7 @@ class MediaController extends GuiController
                 // 
                 // Required by some browsers for actually caching:
                 // 
-                $expires = new \DateTime();
+                $expires = new DateTime();
                 $expires->modify("+2 months");
 
                 // 

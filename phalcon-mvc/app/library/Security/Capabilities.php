@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Security;
 
+use Exception;
 use OpenExam\Models\ModelBase;
 use Phalcon\Mvc\User\Component;
 
@@ -286,7 +287,7 @@ class Capabilities extends Component
                         }
 
                         return true;    // All check passed
-                } catch (\Exception $ex) {
+                } catch (Exception $ex) {
                         return false;
                 }
         }

@@ -17,6 +17,7 @@ use OpenExam\Library\Core\Error;
 use OpenExam\Library\Import\Exception as ImportException;
 use Phalcon\Http\Request\FileInterface;
 use Phalcon\Mvc\User\Component;
+use function _;
 
 /**
  * The base class for all importers.

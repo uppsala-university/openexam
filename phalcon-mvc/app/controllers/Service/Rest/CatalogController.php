@@ -13,6 +13,7 @@
 
 namespace OpenExam\Controllers\Service\Rest;
 
+use OpenExam\Controllers\Service\Ajax\CatalogController as AjaxCatalogController;
 use OpenExam\Controllers\Service\RestController;
 use OpenExam\Library\WebService\Handler\CatalogHandler;
 
@@ -62,7 +63,7 @@ use OpenExam\Library\WebService\Handler\CatalogHandler;
  * curl -XGET  ${BASEURL}/rest/catalog/principal -d \
  *      '{"data":{"gn":"Anders"},"params":{"attr":["principal","mail","uid"],"domain":"example.com","limit":5}}'
  * 
- * @see OpenExam\Controllers\Service\Ajax\CatalogController
+ * @see AjaxCatalogController
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class CatalogController extends RestController

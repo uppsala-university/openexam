@@ -14,8 +14,8 @@
 namespace OpenExam\Library\Core\Exam\Student;
 
 use Exception;
-use OpenExam\Library\Security\Exception as SecurityException;
 use OpenExam\Library\Model\Exception as ModelException;
+use OpenExam\Library\Security\Exception as SecurityException;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Lock;

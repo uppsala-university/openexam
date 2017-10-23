@@ -14,6 +14,7 @@
 namespace OpenExam\Library\Database\Cache\Mediator;
 
 use OpenExam\Library\Database\Cache\Backend\Native as NativeCache;
+use OpenExam\Library\Database\Cache\Mediator\Storage\Shared as SharedStorage;
 use Phalcon\Cache\BackendInterface;
 use Phalcon\Db\AdapterInterface;
 
@@ -31,7 +32,7 @@ class Mutable extends MediatorHandler implements MediatorInterface
 
         /**
          * The key store.
-         * @var Storage\Shared 
+         * @var SharedStorage
          */
         private $_store;
 
@@ -43,7 +44,7 @@ class Mutable extends MediatorHandler implements MediatorInterface
         public function __construct($adapter, $cache)
         {
                 parent::__construct($adapter, new NativeCache($cache));
-                $this->_store = new Storage\Shared();
+                $this->_store = new SharedStorage();
         }
 
         /**

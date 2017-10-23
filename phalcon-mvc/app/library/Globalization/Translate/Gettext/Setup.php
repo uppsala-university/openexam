@@ -14,6 +14,11 @@
 namespace OpenExam\Library\Globalization\Translate\Gettext;
 
 use OpenExam\Library\Globalization\Exception;
+use OpenExam\Library\Globalization\Translate\Gettext\Command\Clean as CleanCommand;
+use OpenExam\Library\Globalization\Translate\Gettext\Command\Compile as CompileCommand;
+use OpenExam\Library\Globalization\Translate\Gettext\Command\Initialize as InitializeCommand;
+use OpenExam\Library\Globalization\Translate\Gettext\Command\Merge as MergeCommand;
+use OpenExam\Library\Globalization\Translate\Gettext\Command\Update as UpdateCommand;
 use OpenExam\Library\Globalization\Translate\Setup as SetupInterface;
 use Phalcon\Mvc\User\Component;
 
@@ -57,31 +62,31 @@ class Setup extends Component implements SetupInterface
 
         public function clean()
         {
-                $command = new Command\Clean($this->_consumer, $this->_options);
+                $command = new CleanCommand($this->_consumer, $this->_options);
                 $command->process();
         }
 
         public function compile()
         {
-                $command = new Command\Compile($this->_consumer, $this->_options);
+                $command = new CompileCommand($this->_consumer, $this->_options);
                 $command->process();
         }
 
         public function initialize()
         {
-                $command = new Command\Initialize($this->_consumer, $this->_options);
+                $command = new InitializeCommand($this->_consumer, $this->_options);
                 $command->process();
         }
 
         public function merge()
         {
-                $command = new Command\Merge($this->_consumer, $this->_options);
+                $command = new MergeCommand($this->_consumer, $this->_options);
                 $command->process();
         }
 
         public function update()
         {
-                $command = new Command\Update($this->_consumer, $this->_options);
+                $command = new UpdateCommand($this->_consumer, $this->_options);
                 $command->process();
         }
 

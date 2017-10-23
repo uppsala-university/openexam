@@ -13,6 +13,7 @@
 
 namespace OpenExam\Plugins\Security\Model;
 
+use Exception;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Library\Security\User;
 use Phalcon\Events\Event;
@@ -210,7 +211,7 @@ abstract class ObjectAccess extends Plugin
          * 
          * @param callable $callback The callback function.
          * @return bool 
-         * @throws \Exception
+         * @throws Exception
          */
         protected function trustedContextCall($callback)
         {
@@ -234,7 +235,7 @@ abstract class ObjectAccess extends Plugin
                         $result = $callback($role);
                         $this->user->setPrimaryRole($role);
                         return $result;
-                } catch (\Exception $exception) {
+                } catch (Exception $exception) {
                         $this->user->setPrimaryRole($role);
                         throw $exception;
                 }

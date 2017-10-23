@@ -16,6 +16,10 @@ namespace OpenExam\Library\Catalog\Service\Adapter\Uppdok;
 use OpenExam\Library\Catalog\Exception;
 use OpenExam\Library\Catalog\Service\Connection as ServiceConnection;
 use Phalcon\Mvc\User\Component;
+use const INFO_CGI_DEBUG;
+use const INFO_CGI_PORT;
+use const INFO_CGI_SERVER;
+use const INFO_CGI_VERBOSE;
 
 if (!defined('INFO_CGI_SERVER')) {
         define('INFO_CGI_SERVER', 'localhost');

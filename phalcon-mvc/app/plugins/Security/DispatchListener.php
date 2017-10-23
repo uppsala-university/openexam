@@ -13,6 +13,7 @@
 
 namespace OpenExam\Plugins\Security;
 
+use Exception;
 use OpenExam\Library\Monitor\Performance\Profiler;
 use OpenExam\Plugins\Security\Dispatcher\DispatchHandler;
 use Phalcon\Events\Event;
@@ -87,7 +88,7 @@ class DispatchListener extends Plugin
                                 $this->_dispatcher = new DispatchHandler($this, $dispatcher, $target['service']);
                                 return $this->_dispatcher->process();
                         }
-                } catch (\Exception $exception) {
+                } catch (Exception $exception) {
                         $event->stop();
                         $this->beforeException(null, $dispatcher, $exception);
                         return false;
@@ -98,7 +99,7 @@ class DispatchListener extends Plugin
          * Handle dispatch exceptions.
          * @param Event $event The dispatch event.
          * @param Dispatcher $dispatcher The dispatcher object.
-         * @param \Exception $exception
+         * @param Exception $exception
          */
         public function beforeException($event, $dispatcher, $exception)
         {

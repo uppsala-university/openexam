@@ -16,6 +16,7 @@ namespace OpenExam\Library\Import\Project;
 use OpenExam\Library\Core\Error;
 use OpenExam\Library\Import\Exception as ImportException;
 use OpenExam\Library\Import\ImportBase;
+use function _;
 
 /**
  * Import OpenExam project.

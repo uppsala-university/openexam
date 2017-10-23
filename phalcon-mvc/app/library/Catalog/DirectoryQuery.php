@@ -68,7 +68,7 @@ interface DirectoryQuery
          * @param string $principal The user principal name (defaults to caller).
          * @return string|array
          * 
-         * @see getAttributes()
+         * @see DirectoryQuery::getAttributes($attribute, $principal)
          */
         function getAttribute($attribute, $principal = null);
 
@@ -97,7 +97,7 @@ interface DirectoryQuery
          * @param string $principal The user principal name (defaults to caller).
          * @return array
          * 
-         * @see getAttribute()
+         * @see DirectoryQuery::getAttribute($attribute, $principal)
          */
         function getAttributes($attribute, $principal = null);
 

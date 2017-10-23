@@ -14,8 +14,9 @@
 namespace OpenExam\Library\Core\Cache\Backend;
 
 use Phalcon\Cache\Backend;
-use Phalcon\Cache\BackendInterface;
 use Phalcon\Cache\Backend\Prefixable;
+use Phalcon\Cache\BackendInterface;
+use Phalcon\Cache\Exception;
 
 /**
  * Alternative XCache backend.
@@ -79,7 +80,7 @@ class Xcache extends Backend implements BackendInterface
          * @param  string $content
          * @param  int    $lifetime
          * @param  bool   $stopBuffer
-         * @throws \Phalcon\Cache\Exception
+         * @throws Exception
          */
         public function save($keyName = null, $content = null, $lifetime = null, $stopBuffer = true)
         {

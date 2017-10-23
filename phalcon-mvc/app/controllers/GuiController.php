@@ -14,6 +14,7 @@
 
 namespace OpenExam\Controllers;
 
+use Exception;
 use OpenExam\Library\Core\Error;
 use OpenExam\Library\Security\Exception as SecurityException;
 use OpenExam\Library\Security\Roles;
@@ -22,6 +23,7 @@ use Phalcon\Logger;
 use Phalcon\Mvc\Dispatcher;
 use Phalcon\Mvc\Dispatcher\Exception as DispatcherException;
 use Phalcon\Mvc\View;
+use const CONFIG_DIR;
 
 /**
  * Base class for GUI controllers.
@@ -59,7 +61,7 @@ class GuiController extends ControllerBase
 
         /**
          * The exception handler.
-         * @param \Exception $exception
+         * @param Exception $exception
          */
         public function exceptionAction($exception)
         {

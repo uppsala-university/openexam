@@ -13,6 +13,7 @@
 
 namespace OpenExam\Controllers\Gui;
 
+use Exception;
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
 use OpenExam\Library\Core\Exam\Archive;
@@ -60,7 +61,7 @@ class ExamController extends GuiController
                             'conditions' => "published = 'Y'",
                             'order'      => 'starttime DESC'
                     )))) {
-                        throw new \Exception("Failed query student exams");
+                        throw new Exception("Failed query student exams");
                 }
                 // 
                 // Filter student exams on upcoming and ongoing:
@@ -87,7 +88,7 @@ class ExamController extends GuiController
                 if (!($exams['creator'] = Exam::find(array(
                             'order' => 'created DESC'
                     )))) {
-                        throw new \Exception("Failed query creator exams");
+                        throw new Exception("Failed query creator exams");
                 }
 
                 // 
@@ -97,7 +98,7 @@ class ExamController extends GuiController
                 if (!($exams['contributor'] = Exam::find(array(
                             'order' => 'created DESC'
                     )))) {
-                        throw new \Exception("Failed query contributor exams");
+                        throw new Exception("Failed query contributor exams");
                 }
 
                 // 
@@ -107,7 +108,7 @@ class ExamController extends GuiController
                 if (!($exams['invigilator'] = Exam::find(array(
                             'order' => 'created DESC'
                     )))) {
-                        throw new \Exception("Failed query invigilator exams");
+                        throw new Exception("Failed query invigilator exams");
                 }
 
                 // 
@@ -117,7 +118,7 @@ class ExamController extends GuiController
                 if (!($exams['corrector'] = Exam::find(array(
                             'order' => 'created DESC'
                     )))) {
-                        throw new \Exception("Failed query corrector exams");
+                        throw new Exception("Failed query corrector exams");
                 }
 
                 // 
@@ -127,7 +128,7 @@ class ExamController extends GuiController
                 if (!($exams['decoder'] = Exam::find(array(
                             'order' => 'created DESC'
                     )))) {
-                        throw new \Exception("Failed query decoder exams");
+                        throw new Exception("Failed query decoder exams");
                 }
 
                 // 
@@ -179,7 +180,7 @@ class ExamController extends GuiController
                             'creator' => $this->user->getPrincipalName(),
                             'grades'  => 'U:0&#13;&#10;G:50&#13;&#10;VG:75'
                     )) == false) {
-                        throw new \Exception(
+                        throw new Exception(
                         sprintf("Failed to initialize exam (%s)", $exam->getMessages()[0])
                         );
                 }
@@ -203,10 +204,10 @@ class ExamController extends GuiController
                 // Sanitize:
                 // 
                 if (!($eid = $this->filter->sanitize($eid, "int"))) {
-                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
                 if (!($role = $this->filter->sanitize($role, "string"))) {
-                        throw new \Exception("Missing required role", Error::PRECONDITION_FAILED);
+                        throw new Exception("Missing required role", Error::PRECONDITION_FAILED);
                 }
 
                 // 
@@ -215,14 +216,14 @@ class ExamController extends GuiController
                 if ($this->capabilities->hasPermission($role, 'exam', ObjectAccess::READ)) {
                         $this->user->setPrimaryRole($role);
                 } else {
-                        throw new \Exception("Invalid URL.", Error::BAD_REQUEST);
+                        throw new Exception("Invalid URL.", Error::BAD_REQUEST);
                 }
 
                 // 
                 // Fetch data:
                 // 
                 if (!($exam = Exam::findFirst($eid))) {
-                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
                 // 
@@ -258,16 +259,16 @@ class ExamController extends GuiController
                 // 
 
                 if (!($eid = $this->filter->sanitize($eid, "int"))) {
-                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
                 if (!$this->user->roles->acquire(Roles::CREATOR, $eid) &&
                     !$this->user->roles->acquire(Roles::ADMIN, $eid)) {
-                        throw new \Exception("Only creator or admins can replicate exams", Error::FORBIDDEN);
+                        throw new Exception("Only creator or admins can replicate exams", Error::FORBIDDEN);
                 }
 
                 if (!($oldExam = Exam::findFirst($eid))) {
-                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
                 // 
@@ -293,7 +294,7 @@ class ExamController extends GuiController
                                     "orgunit" => $oldExam->orgunit,
                                     "grades"  => $oldExam->grades
                             )) == false) {
-                                throw new \Exception(
+                                throw new Exception(
                                 sprintf("Failed save new exam (%s)", $newExam->getMessages()[0])
                                 );
                         }
@@ -363,7 +364,7 @@ class ExamController extends GuiController
                                                             "grades"    => $oldTopic->grades,
                                                             "depend"    => $oldTopic->depend
                                                     )) == false) {
-                                                        throw new \Exception(
+                                                        throw new Exception(
                                                         sprintf("Failed duplicate topic (%s)", $newTopic->getMessages()[0])
                                                         );
                                                 }
@@ -413,7 +414,7 @@ class ExamController extends GuiController
                                                             "comment"  => $oldQuest->comment,
                                                             "grades"   => $oldQuest->grades
                                                     )) == false) {
-                                                        throw new \Exception(
+                                                        throw new Exception(
                                                         sprintf("Failed duplicate question (%s)", $newQuest->getMessages()[0])
                                                         );
                                                 }
@@ -433,7 +434,7 @@ class ExamController extends GuiController
                                                                     "question_id" => $newQuest->id,
                                                                     "user"        => $oldCorrector->user
                                                             )) == false) {
-                                                                throw new \Exception(
+                                                                throw new Exception(
                                                                 sprintf("Failed duplicate corrector (%s)", $newCorrector->getMessages()[0])
                                                                 );
                                                         }
@@ -477,7 +478,7 @@ class ExamController extends GuiController
                                                                     "exam_id" => $newExam->id,
                                                                     "user"    => $member->user
                                                             )) == false) {
-                                                                throw new \Exception(
+                                                                throw new Exception(
                                                                 sprintf("Failed duplicate role (%s)", $newRole->getMessages()[0])
                                                                 );
                                                         }
@@ -492,7 +493,7 @@ class ExamController extends GuiController
                         }
                 } catch (TransactionFailed $exception) {
                         throw $exception;
-                } catch (\Exception $exception) {
+                } catch (Exception $exception) {
                         $transaction->rollback($exception->getMessage());
                 } finally {
                         if ($transactionManager->has()) {
@@ -522,7 +523,7 @@ class ExamController extends GuiController
                 // Sanitize:
                 // 
                 if (!($eid = $this->dispatcher->getParam("examId", "int"))) {
-                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
                 // 
@@ -590,7 +591,7 @@ class ExamController extends GuiController
                 // Sanitize:
                 // 
                 if (!($eid = $this->request->get('exam_id', "int"))) {
-                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
                 // 
@@ -602,14 +603,14 @@ class ExamController extends GuiController
                                     'exam' => $eid
                             )
                     )))) {
-                        throw new \Exception("Failed find target exam", Error::PRECONDITION_FAILED);
+                        throw new Exception("Failed find target exam", Error::PRECONDITION_FAILED);
                 }
 
                 // 
                 // Check if exam is examinatable (students can be managed):
                 // 
                 if (!$exam->getState()->has(State::EXAMINATABLE)) {
-                        throw new \Exception(
+                        throw new Exception(
                         "It's no longer possible to manage student's data.", Error::METHOD_NOT_ALLOWED
                         );
                 }
@@ -640,14 +641,14 @@ class ExamController extends GuiController
                 // Sanitize:
                 // 
                 if (!($eid = $this->request->get('exam_id', "int"))) {
-                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
                 // 
                 // Try to find exam in request parameter:
                 // 
                 if (!($exam = Exam::findFirst($eid))) {
-                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
                 // 
@@ -679,14 +680,14 @@ class ExamController extends GuiController
                 // Sanitize:
                 // 
                 if (($eid = $this->request->getPost("exam_id", "int")) == null) {
-                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
                 // 
                 // Try to find exam in request parameter:
                 // 
                 if (($exam = Exam::findFirst($eid)) == false) {
-                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
                 // 
@@ -723,7 +724,7 @@ class ExamController extends GuiController
         /**
          * View for displaying exam details (i.e. state).
          * @param int $eid The exam ID.
-         * @throws \Exception
+         * @throws Exception
          */
         public function detailsAction($eid)
         {
@@ -731,14 +732,14 @@ class ExamController extends GuiController
                 // Sanitize:
                 // 
                 if (!($eid = $this->filter->sanitize($eid, "int"))) {
-                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
                 // 
                 // Try to find exam in request parameter:
                 // 
                 if (($exam = Exam::findFirst($eid)) == false) {
-                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
                 // 
@@ -767,7 +768,7 @@ class ExamController extends GuiController
                                     'endtime' => strftime("%F", time() - 604800)
                             )
                     )))) {
-                        throw new \Exception("Failed query student exams");
+                        throw new Exception("Failed query student exams");
                 }
 
                 // 
@@ -818,11 +819,11 @@ class ExamController extends GuiController
                 // Sanitize:
                 // 
                 if (($eid = $this->request->getPost("exam_id", "int")) == null) {
-                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
                 if ($this->request->hasPost('readonly')) {
                         if (($readonly = $this->request->getPost("readonly", "int")) == null) {
-                                throw new \Exception("Missing readonly parameter", Error::PRECONDITION_FAILED);
+                                throw new Exception("Missing readonly parameter", Error::PRECONDITION_FAILED);
                         }
                 }
 
@@ -846,7 +847,7 @@ class ExamController extends GuiController
                 // Try to find exam in request parameter:
                 // 
                 if (($exam = Exam::findFirst($eid)) == false) {
-                        throw new \Exception("Failed fetch exam model", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
                 $this->view->setVar('check', new Check($exam));
@@ -893,14 +894,14 @@ class ExamController extends GuiController
                 // Sanitize request parameters:
                 // 
                 if (!($eid = $this->filter->sanitize($eid, "int"))) {
-                        throw new \Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
                 // 
                 // Check required parameters:
                 // 
                 if (empty($eid)) {
-                        throw new \Exception("The exam ID is missing", Error::PRECONDITION_FAILED);
+                        throw new Exception("The exam ID is missing", Error::PRECONDITION_FAILED);
                 }
 
                 // 
@@ -929,7 +930,7 @@ class ExamController extends GuiController
                                 $handler->create();
                         }
                         if (!$handler->verify()) {
-                                throw new \Exception("Failed generate/verify PDF archive");
+                                throw new Exception("Failed generate/verify PDF archive");
                         } else {
                                 $handler->send();
                                 exit(0);

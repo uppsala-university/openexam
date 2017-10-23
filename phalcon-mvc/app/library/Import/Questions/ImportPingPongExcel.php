@@ -16,6 +16,7 @@ namespace OpenExam\Library\Import\Questions;
 use OpenExam\Library\Core\Error;
 use OpenExam\Library\Import\Exception as ImportException;
 use stdClass;
+use function _;
 
 /**
  * Questions import from PING-PONG.

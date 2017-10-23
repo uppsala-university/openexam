@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Model\Behavior;
 
+use Exception;
 use OpenExam\Library\DI\Logger;
 use OpenExam\Library\Security\Roles;
 use OpenExam\Library\Security\User;
@@ -86,7 +87,7 @@ class ModelBehavior extends Behavior implements BehaviorInterface
                 try {
                         $this->setup($dependencyInjector);
                         $result = $callback($this->user, $this->role);
-                } catch (\Exception $exception) {
+                } catch (Exception $exception) {
                         $this->logger->access->error($exception->getMessage());
                         throw $exception;
                 } finally {

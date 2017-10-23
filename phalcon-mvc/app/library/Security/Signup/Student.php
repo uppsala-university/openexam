@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Security\Signup;
 
+use Exception;
 use OpenExam\Library\Model\Exception as ModelException;
 use OpenExam\Library\Security\Exception as SecurityException;
 use OpenExam\Library\Security\Roles;
@@ -53,7 +54,7 @@ class Student extends SignupBase
 
         /**
          * Register all available exams on current selected student.
-         * @throws \Exception
+         * @throws Exception
          * @throws ModelException
          */
         public function register()
@@ -66,7 +67,7 @@ class Student extends SignupBase
         /**
          * Assign exam to current selected user.
          * @param int $index The exam ID.
-         * @throws \Exception
+         * @throws Exception
          * @throws ModelException
          */
         public function assign($index)
@@ -96,7 +97,7 @@ class Student extends SignupBase
                                         throw new ModelException($student->getMessages()[0]);
                                 }
                         }
-                } catch (\Exception $exception) {
+                } catch (Exception $exception) {
                         $this->user->setPrimaryRole($role);
                         throw $exception;
                 }

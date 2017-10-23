@@ -13,6 +13,7 @@
 
 namespace OpenExam\Library\Core\Exam;
 
+use Exception;
 use OpenExam\Library\Core\Error;
 use OpenExam\Library\Model\Exception as ModelException;
 use OpenExam\Library\Render\Renderer;
@@ -122,7 +123,7 @@ class Result extends Component
                 $target = sprintf("%s.zip", self::getPath($this->_exam->id));
                 if (file_exists($target)) {
                         if (!unlink($target)) {
-                                throw new \Exception("Failed unlink result archive.");
+                                throw new Exception("Failed unlink result archive.");
                         }
                 }
                 unset($target);
@@ -130,7 +131,7 @@ class Result extends Component
                 $target = sprintf("%s.xls", self::getPath($this->_exam->id));
                 if (file_exists($target)) {
                         if (!unlink($target)) {
-                                throw new \Exception("Failed unlink result spreadsheet.");
+                                throw new Exception("Failed unlink result spreadsheet.");
                         }
                 }
                 unset($target);
@@ -138,7 +139,7 @@ class Result extends Component
                 $target = sprintf("%s", self::getPath($this->_exam->id));
                 if (file_exists($target)) {
                         if (!rmdir($target)) {
-                                throw new \Exception("Failed delete result directory.");
+                                throw new Exception("Failed delete result directory.");
                         }
                 }
                 unset($target);
@@ -159,7 +160,7 @@ class Result extends Component
                 $target = sprintf("%s.pdf", self::getPath($this->_exam->id, $student->id));
                 if (file_exists($target)) {
                         if (!unlink($target)) {
-                                throw new \Exception("Failed unlink student result.");
+                                throw new Exception("Failed unlink student result.");
                         }
                 }
                 unset($target);
@@ -171,7 +172,7 @@ class Result extends Component
          * 
          * @param int|Student $sid The student ID or model.
          * @return boolean True if new file was created.
-         * @throws \Exception
+         * @throws Exception
          */
         public function createFile($sid)
         {
@@ -225,7 +226,7 @@ class Result extends Component
                 // 
                 if (!file_exists(dirname($target))) {
                         if (!mkdir(dirname($target), 0777, true)) {
-                                throw new \Exception("Failed create destination directory.");
+                                throw new Exception("Failed create destination directory.");
                         }
                 }
 
@@ -250,13 +251,13 @@ class Result extends Component
                 }
 
                 if (!file_exists($target)) {
-                        throw new \Exception("Failed create PDF document (target is missing).");
+                        throw new Exception("Failed create PDF document (target is missing).");
                 }
                 if (filesize($target) < self::MIN_FILE_SIZE) {
                         if (!unlink($target)) {
-                                throw new \Exception("Failed create PDF document (permission problem).");
+                                throw new Exception("Failed create PDF document (permission problem).");
                         } else {
-                                throw new \Exception("Failed create PDF document (failed generate file).");
+                                throw new Exception("Failed create PDF document (failed generate file).");
                         }
                 }
         }
@@ -305,7 +306,7 @@ class Result extends Component
                 // Create new ZIP-archive:
                 // 
                 if (!($zip->open($target, ZipArchive::CREATE))) {
-                        throw new \Exception($zip->getStatusString());
+                        throw new Exception($zip->getStatusString());
                 } else {
                         unset($target);
                 }
@@ -318,7 +319,7 @@ class Result extends Component
                         $local = sprintf("%s-%s.pdf", $student->code, $student->user);
 
                         if (!$zip->addFile($input, $local)) {
-                                throw new \Exception($zip->getStatusString());
+                                throw new Exception($zip->getStatusString());
                         }
 
                         unset($input);
@@ -534,21 +535,21 @@ class Result extends Component
          * Download source to local file.
          * 
          * @param string $source The source URL.
-         * @throws \Exception
+         * @throws Exception
          */
         private function downloadSource(&$source)
         {
                 if (!($content = file_get_contents($source))) {
-                        throw new \Exception("Failed download content.");
+                        throw new Exception("Failed download content.");
                 }
                 if (!($tmpfile = tempnam(sys_get_temp_dir(), 'result-source'))) {
-                        throw new \Exception("Failed create temporary file.");
+                        throw new Exception("Failed create temporary file.");
                 } else {
                         $dstfile = sprintf("%s.html", $tmpfile);
                         unlink($tmpfile);
                 }
                 if (!(file_put_contents($dstfile, $content))) {
-                        throw new \Exception("Failed save content.");
+                        throw new Exception("Failed save content.");
                 } else {
                         $source = $dstfile;
                 }

@@ -13,6 +13,8 @@
 
 namespace OpenExam\Library\Core;
 
+use Exception;
+
 /**
  * Error class.
  * 
@@ -75,7 +77,7 @@ class Error
 
         /**
          * The wrapped exception.
-         * @var \Exception 
+         * @var Exception 
          */
         private $_exception;
         /**
@@ -164,7 +166,7 @@ class Error
 
         /**
          * Constructor
-         * @param \Exception $exception
+         * @param Exception $exception
          */
         public function __construct($exception)
         {
@@ -190,7 +192,7 @@ class Error
 
         /**
          * Get wrapped exception.
-         * @return \Exception
+         * @return Exception
          */
         public function getException()
         {

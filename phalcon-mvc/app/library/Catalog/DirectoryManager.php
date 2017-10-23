@@ -13,6 +13,10 @@
 
 namespace OpenExam\Library\Catalog;
 
+use Exception;
+use OpenExam\Library\Catalog\Attribute\Enumerator as AttributeEnumerator;
+use OpenExam\Library\Catalog\Manager\Search\Principal as ManagerSearchPrincipal;
+use OpenExam\Library\Catalog\Manager\Search\Principals as ManagerSearchPrincipals;
 use OpenExam\Library\Catalog\Service\Adapter;
 use OpenExam\Library\Catalog\Service\Connection;
 use Phalcon\Mvc\User\Component;
@@ -38,7 +42,7 @@ use Phalcon\Mvc\User\Component;
  * @method array|string getSocialNumber(string $principal = null, boolean $single = true) Get social number of user (Principal::ATTR_PNR).
  * @method array|string getUID(string $principal = null, boolean $single = true) Get username of user (Principal::ATTR_UID).
  *
- * @property-read Attribute\Enumerator $attrib Get attribute enumerator.
+ * @property-read AttributeEnumerator $attrib Get attribute enumerator.
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
@@ -76,7 +80,7 @@ class DirectoryManager extends Component implements DirectoryService
         private $_cache;
         /**
          * The attribute enumerator.
-         * @var Attribute\Enumerator 
+         * @var AttributeEnumerator 
          */
         private $_enumerator;
 
@@ -87,7 +91,7 @@ class DirectoryManager extends Component implements DirectoryService
         public function __construct($services = array())
         {
                 $this->_services = $services;
-                $this->_enumerator = new Attribute\Enumerator($this);
+                $this->_enumerator = new AttributeEnumerator($this);
                 $this->_filter = array(Principal::ATTR_PN, Principal::ATTR_UID, Principal::ATTR_NAME, Principal::ATTR_MAIL);
         }
 
@@ -103,7 +107,7 @@ class DirectoryManager extends Component implements DirectoryService
                                                 if ($backend->connected()) {
                                                         $backend->close();
                                                 }
-                                        } catch (\Exception $exception) {
+                                        } catch (Exception $exception) {
                                                 $this->report($exception, $service, $name);
                                         } finally {
                                                 unset($backend);
@@ -187,7 +191,7 @@ class DirectoryManager extends Component implements DirectoryService
 
         /**
          * Get attributes enumerator.
-         * @return Attribute\Enumerator
+         * @return AttributeEnumerator
          */
         public function getEnumerator()
         {
@@ -487,7 +491,7 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function getPrincipals($needle, $attrib = null, $options = null)
         {
-                $search = new Manager\Search\Principals($this, $needle, $attrib, $options);
+                $search = new ManagerSearchPrincipals($this, $needle, $attrib, $options);
 
                 $attrib = $search->getAttribute();
                 $params = $search->getOptions();
@@ -519,7 +523,7 @@ class DirectoryManager extends Component implements DirectoryService
          */
         public function getPrincipal($needle, $attrib = null, $domain = null, $inject = null)
         {
-                $search = new Manager\Search\Principal($this, $needle, $attrib, $domain, $inject);
+                $search = new ManagerSearchPrincipal($this, $needle, $attrib, $domain, $inject);
 
                 $attrib = $search->getAttribute();
                 $domain = $search->getDomain();
@@ -551,7 +555,7 @@ class DirectoryManager extends Component implements DirectoryService
 
         /**
          * Report exception.
-         * @param \Exception $exception The exception to report.
+         * @param Exception $exception The exception to report.
          * @param DirectoryService $service The directory service.
          * @param string $name The directory service name (from config).
          */
