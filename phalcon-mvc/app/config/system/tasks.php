@@ -39,7 +39,6 @@ if ($config->application->release) {
 // 
 //$config->dbread->params->adapter->cached = false;
 //$config->dbwrite->params->adapter->cached = false;
-
 // 
 // Add namespace for tasks:
 // 
@@ -55,7 +54,7 @@ $loader->register();
 // 
 $ds = include(CONFIG_SYS . "/services.php");
 $di = new Phalcon\DI\FactoryDefault\CLI();
-foreach (array('config', 'dbread', 'dbwrite', 'dbaudit', 'catalog', 'logger', 'cache', 'audit', 'profiler', 'tr') as $service) {
+foreach (array('config', 'dbread', 'dbwrite', 'dbaudit', 'catalog', 'logger', 'cache', 'audit', 'profiler', 'tr', 'render') as $service) {
         $di->set($service, $ds->get($service));
 }
 

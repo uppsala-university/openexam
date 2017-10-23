@@ -46,7 +46,7 @@ class RenderTask extends MainTask implements TaskInterface
                                 '--page=url'    => 'Render local file or URL (can be used multiple times if --type=pdf).',
                                 '--globals'     => 'Start input of global render options (can be used multiple times).',
                                 '--type=mime'   => 'Type of image (png, jpg, bmp or svg).',
-                                '--method=type' => 'Use render method (command or extension).',
+                                '--method=type' => 'Use render method (command, extension or service).',
                                 '--force'       => 'Force action even if already applied.',
                                 '--verbose'     => 'Be more verbose.',
                                 '--dry-run'     => 'Just print whats going to be done.'
@@ -58,7 +58,8 @@ class RenderTask extends MainTask implements TaskInterface
                                 '--bmp'       => 'Same as --type=bmp',
                                 '--svg'       => 'Same as --type=svg',
                                 '--command'   => 'Same as --method=command',
-                                '--extension' => 'Same as --method=extension'
+                                '--extension' => 'Same as --method=extension',
+                                '--service'   => 'Same as --method=service'
                         ),
                         'examples' => array(
                                 array(
@@ -68,6 +69,10 @@ class RenderTask extends MainTask implements TaskInterface
                                 array(
                                         'descr'   => 'Render pages as PDF document',
                                         'command' => '--pdf --page=input1.html --page=input2.html --globals --p1=v1 --p2=v2 --output=result.pdf'
+                                ),
+                                array(
+                                        'descr'   => 'Render Google using the system render service',
+                                        'command' => '--pdf --page=http://www.google.se --output=google.pdf --globals --page-size a4 --grayscale'
                                 )
                         )
                 );
@@ -98,6 +103,11 @@ class RenderTask extends MainTask implements TaskInterface
                         $render->setOptions($this->_options['globals']);
                         $render->save($this->_options['output'], array('in' => $this->_options['page'][0]['page']));
                 }
+                if ($this->_options['service']) {
+                        $render = $this->render->getRender('image');
+                        $render->setOptions($this->_options['globals']);
+                        $render->save($this->_options['output'], array('in' => $this->_options['page'][0]['page']));
+                }
         }
 
         /**
@@ -114,6 +124,11 @@ class RenderTask extends MainTask implements TaskInterface
                 }
                 if ($this->_options['command']) {
                         $render = new RenderPdfDocumentCommand("wkhtmltopdf");
+                        $render->setOptions($this->_options['globals']);
+                        $render->save($this->_options['output'], $this->_options['page']);
+                }
+                if ($this->_options['service']) {
+                        $render = $this->render->getRender('pdf');
                         $render->setOptions($this->_options['globals']);
                         $render->save($this->_options['output'], $this->_options['page']);
                 }
@@ -134,7 +149,7 @@ class RenderTask extends MainTask implements TaskInterface
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'force', 'dry-run', 'type', 'page', 'output', 'globals', 'png', 'jpg', 'jpeg', 'bmp', 'svg', 'method', 'extension', 'command');
+                $options = array('verbose', 'force', 'dry-run', 'type', 'page', 'output', 'globals', 'png', 'jpg', 'jpeg', 'bmp', 'svg', 'method', 'extension', 'command', 'service');
                 $current = $action;
 
                 // 
@@ -177,6 +192,11 @@ class RenderTask extends MainTask implements TaskInterface
 
                 if ($this->_options['extension']) {
                         $this->_options['command'] = false;
+                        $this->_options['service'] = false;
+                }
+                if ($this->_options['service']) {
+                        $this->_options['command'] = false;
+                        $this->_options['extension'] = false;
                 }
         }
 
