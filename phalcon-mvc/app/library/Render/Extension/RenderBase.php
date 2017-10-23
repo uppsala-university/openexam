@@ -16,7 +16,7 @@ namespace OpenExam\Library\Render\Extension;
 use OpenExam\Library\Render\Exception;
 
 /**
- * Base class for page render implementations.
+ * Base class for page render implementations (extension based).
  * 
  * <code>
  * // 
@@ -44,7 +44,7 @@ abstract class RenderBase
          * Global settings.
          * @var array 
          */
-        protected $_globals;
+        private $_globals;
 
         /**
          * Constructor.

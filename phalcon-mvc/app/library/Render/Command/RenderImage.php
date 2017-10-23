@@ -13,38 +13,67 @@
 
 namespace OpenExam\Library\Render\Command;
 
-use OpenExam\Library\Console\Command;
 use OpenExam\Library\Render\Renderer;
 
 /**
  * Image render class.
  * 
+ * This class renders and URL or local HTML file as an image using the  
+ * wkhtmltopdf command line tools (wkhtmltoimage).
+ * 
  * <code>
- * $render = new RenderImage('wkhtmltoimage --format png');
- * $render->send('google.png', array('in' => 'http://www.google.se', true));
+ * // 
+ * // The input URL:
+ * // 
+ * $input = array(
+ *      'in' => 'http://www.google.se'
+ * );
+ * 
+ * // 
+ * // The command to execute:
+ * // 
+ * $command = "wkhtmltoimage --format png --quality 95";
+ * 
+ * // 
+ * // Save image to file:
+ * // 
+ * $render = new RenderImage($command);
+ * $render->save('output.png', $input);
+ * 
+ * // 
+ * // Send image to stdout:
+ * // 
+ * $render = new RenderImage($command);
+ * $render->send('output.png', $input, true);
  * </code>
  *
+ * Global options (command line options) can also be set by calling
+ * the setOptions() method:
+ * 
+ * <code>
+ * $render = new RenderImage("wkhtmltoimage");
+ * $render->setOptions(array(
+ *      'format'  => 'png',
+ *      'quality' => 95
+ * ));
+ * $render->save('output.png', $input);
+ * </code>
+ * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class RenderImage implements Renderer
+class RenderImage extends RenderBase implements Renderer
 {
 
+        /**
+         * The MIME type map.
+         * @var array 
+         */
         private static $_mime = array(
                 'png' => 'image/png',
                 'jpg' => 'image/jpeg',
                 'bmp' => 'image/bmp',
                 'svg' => 'image/svg+xml'
         );
-        /**
-         * The command.
-         * @var string 
-         */
-        private $_command;
-        /**
-         * The MIME type.
-         * @var string 
-         */
-        private $_format;
 
         /**
          * Constructor.
@@ -52,8 +81,8 @@ class RenderImage implements Renderer
          */
         public function __construct($command)
         {
-                $this->_command = $command;
-                $this->_format = 'png';
+                parent::__construct($command);
+                parent::addOption('format', 'png');
         }
 
         /**
@@ -62,9 +91,7 @@ class RenderImage implements Renderer
          */
         public function setFormat($format)
         {
-                if (array_key_exists($format, self::$_mime)) {
-                        $this->_format = $format;
-                }
+                parent::addOption('format', $format);
         }
 
         /**
@@ -76,10 +103,7 @@ class RenderImage implements Renderer
          */
         public function save($filename, $settings)
         {
-                $execute = sprintf("%s %s %s", $this->_command, $settings['in'], $filename);
-                $command = new Command($execute);
-
-                return $command->execute();
+                return parent::render($filename, $settings);
         }
 
         /**
@@ -93,14 +117,10 @@ class RenderImage implements Renderer
         public function send($filename, $settings, $headers = true)
         {
                 if ($headers) {
-                        header(sprintf('Content-type: %s', self::$_mime[$settings['fmt']]));
+                        header(sprintf('Content-type: %s', self::$_mime[$this->_globals['format']]));
                         header(sprintf("Content-Disposition: attachment; filename=\"%s\"", $filename));
                 }
-
-                $execute = sprintf("%s %s -", $this->_command, $settings['in']);
-                $command = new Command($execute);
-
-                return $command->execute();
+                return parent::render("-", $settings);
         }
 
 }

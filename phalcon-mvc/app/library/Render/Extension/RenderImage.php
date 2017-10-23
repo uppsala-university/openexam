@@ -18,6 +18,9 @@ use OpenExam\Library\Render\Renderer;
 /**
  * Image render class.
  * 
+ * This class renders and URL or local HTML file as an image using the PHP 
+ * wrapper extension (phpwkhtmltox) for libwkhtmltox.
+ * 
  * <code>
  * $settings = array(
  *      'in'  => 'http://www.google.com/'

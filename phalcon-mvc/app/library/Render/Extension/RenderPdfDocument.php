@@ -18,6 +18,9 @@ use OpenExam\Library\Render\Renderer;
 /**
  * PDF document render class.
  * 
+ * This class renders and URL or local HTML file as an PDF file using the PHP 
+ * wrapper extension (phpwkhtmltox) for libwkhtmltox.
+ * 
  * <code>
  * $pages = array(
  *      array('page'  => 'http://www.google.com/'),

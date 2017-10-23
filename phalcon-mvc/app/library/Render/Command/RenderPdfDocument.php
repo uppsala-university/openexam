@@ -13,50 +13,58 @@
 
 namespace OpenExam\Library\Render\Command;
 
-use OpenExam\Library\Console\Command;
 use OpenExam\Library\Render\Renderer;
 
 /**
  * PDF document render class.
  *
+ * This class renders and URL or local HTML file as an PDF file using the 
+ * wkhtmltopdf command line tools (wkhtmltopdf).
+ * 
  * <code>
+ * // 
+ * // The URL's to render:
+ * // 
  * $pages = array(
  *      array('page'  => 'http://www.google.com/'),
  *      array('page'  => 'https://se.yahoo.com')
  * );
  * 
  * // 
+ * // The command to execute:
+ * // 
+ * $command = "wkhtmltopdf --page-size a4 --grayscale --enable-javascript";
+ * 
+ * // 
  * // Save PDF document to file:
  * // 
- * $render = new RenderPdfDocument();
- * $render->save('/tmp/output.pdf', $pages);
+ * $render = new RenderPdfDocument($command);
+ * $render->save('output.pdf', $pages);
  * 
  * // 
  * // Send PDF document to stdout:
  * // 
- * $render = new RenderPdfDocument();
- * $render->send('file.pdf', $pages);
+ * $render = new RenderPdfDocument($command);
+ * $render->send('output.pdf', $pages);
+ * </code>
+ * 
+ * Global options (command line options) can also be set by calling
+ * the setOptions() method:
+ * 
+ * <code>
+ * $render = new RenderImage("wkhtmltopdf");
+ * $render->setOptions(array(
+ *      'page-size'         => 'a4',
+ *      'grayscale'         => true,
+ *      'enable-javascript' => true
+ * ));
+ * $render->save('output.png', $input);
  * </code>
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class RenderPdfDocument implements Renderer
+class RenderPdfDocument extends RenderBase implements Renderer
 {
-
-        /**
-         * The command.
-         * @var string 
-         */
-        private $_command;
-
-        /**
-         * Constructor.
-         * @param string $command The command string.
-         */
-        public function __construct($command)
-        {
-                $this->_command = $command;
-        }
 
         /**
          * Save rendered PDF document.
@@ -67,10 +75,7 @@ class RenderPdfDocument implements Renderer
          */
         public function save($filename, $objects)
         {
-                $execute = sprintf("%s %s %s", $this->_command, self::getPages($objects), $filename);
-                $command = new Command($execute);
-
-                return $command->execute();
+                return parent::render($filename, self::getPages($objects));
         }
 
         /**
@@ -88,17 +93,13 @@ class RenderPdfDocument implements Renderer
                         header(sprintf("Content-Disposition: attachment; filename=\"%s\"", $filename));
                 }
 
-                $execute = sprintf("%s %s -", $this->_command, self::getPages($objects));
-                $command = new Command($execute);
-                $command->setBuffered(false);
-
-                return $command->execute();
+                return parent::render("-", self::getPages($objects));
         }
 
         /**
          * Extract pages from settings array.
          * @param array $objects The PDF objects.
-         * @return string
+         * @return array
          */
         private static function getPages($objects)
         {
@@ -108,7 +109,7 @@ class RenderPdfDocument implements Renderer
                         $pages .= " \"" . $obj['page'] . "\"";
                 }
 
-                return $pages;
+                return array('in' => $pages);
         }
 
 }
