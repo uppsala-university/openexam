@@ -214,7 +214,7 @@ class Archive extends Component
         private function getSource($token)
         {
                 $expand = $this->url->get(sprintf("exam/archive/%d", $this->_exam->id));
-                $source = sprintf("http://%s%s?token=%s&user=%s", $this->config->render->server, $expand, $token, $this->_exam->creator);
+                $source = sprintf("http://%s%s?token=%s&user=%s&render=archive", $this->config->render->server, $expand, $token, $this->_exam->creator);
                 return $source;
         }
 

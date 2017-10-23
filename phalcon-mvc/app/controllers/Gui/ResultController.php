@@ -36,12 +36,15 @@ class ResultController extends GuiController
                 parent::initialize();
 
                 // 
-                // This controller is called from task. Configure URL service to
-                // return absolute URL:s instead of relative.
+                // Configure URL service to return full domain if called back from a render task.
                 // 
-                $this->url->setBaseUri(
-                    sprintf("%s://%s/%s", $this->request->getScheme(), $this->request->getServerName(), $this->config->application->baseUri)
-                );
+                if ($this->request->has('token') &&
+                    $this->request->has('render') &&
+                    $this->request->get('render') == 'result') {
+                        $this->url->setBaseUri(
+                            sprintf("%s://%s/%s/", $this->request->getScheme(), $this->request->getServerName(), trim($this->config->application->baseUri, '/'))
+                        );
+                }
         }
 
         /**

@@ -527,7 +527,7 @@ class Result extends Component
         private function getResultUrl($token, $student)
         {
                 $expand = $this->url->get(sprintf("result/%d/view/%d", $this->_exam->id, $student->id));
-                $source = sprintf("http://%s%s?token=%s&user=%s", $this->config->render->server, $expand, $token, $student->user);
+                $source = sprintf("http://%s%s?token=%s&user=%s&render=result", $this->config->render->server, $expand, $token, $student->user);
                 return $source;
         }
 
