@@ -112,9 +112,12 @@ abstract class RenderBase
 
                 foreach ($this->_globals as $key => $val) {
                         if (is_bool($val) && $val == true) {
-                                $options[] = "--$key ";
+                                $val = "";
+                        }
+                        if (strlen($key) == 1) {
+                                $options[] = "-$key $val";
                         } else {
-                                $options[] = "--$key $val ";
+                                $options[] = "--$key $val";
                         }
                 }
 
