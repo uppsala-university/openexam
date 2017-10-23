@@ -220,12 +220,21 @@ if (isset($_COOKIE['sc']) && $_COOKIE['sc'] == 0) {
                 </div>
             </footer>
             <!-- Footer area ends -->
-
         </div>
     </section>
     <!-- main content area ends -->
 
 </div>
+<?php if (!$testMode && $viewMode == 'all'): ?>
+        <div style="position: fixed; z-index: 5000; bottom: 0px; width: 100%; padding: 10px; background-color: rgba(0,0,0,0.7)">
+            <div style="margin: auto; width: 50%; opacity: 1.0">
+                <a class="sync-answer" href="#" hlink="<?= $this->url->get('auth/logout') ?>">
+                    <button class="btn btn-xs btn-success btn-prev" style="height: 42px; font-size:15px"><i class="icon-check"></i> I have previewed my answers and I'm satisfied. Quit my exam.</button>
+                </a>
+
+            </div>
+        </div>
+<?php endif; ?>
 
 <!-- wrapper ends -->
 <script type="text/javascript">
