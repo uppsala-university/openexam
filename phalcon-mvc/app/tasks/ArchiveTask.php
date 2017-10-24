@@ -71,7 +71,11 @@ class ArchiveTask extends MainTask implements TaskInterface
                                 '--all'        => 'Process all exams.',
                                 '--force'      => 'Force generate archives.',
                                 '--verbose'    => 'Be more verbose.',
+                                '--quiet'      => 'Suppress warnings please.',
                                 '--dry-run'    => 'Just print whats going to be done.'
+                        ),
+                        'aliases'  => array(
+                                '--silent' => 'Same as --quiet --verbose=false'
                         ),
                         'examples' => array(
                                 array(
@@ -116,8 +120,10 @@ class ArchiveTask extends MainTask implements TaskInterface
                 $exams = $this->getExams();
                 foreach ($exams as $exam) {
                         $archive = new Archive($exam);
+                        if ($archive->exists() && $this->_options['quiet'] == false) {
+                                $this->flash->warning(sprintf("Skipping create for exam %d because archive exist (see --force)", $exam->id));
+                        }
                         if ($archive->exists() && $this->_options['force'] == false) {
-                                $this->flash->warning(sprintf("Skipped create for exam %d because archive exist (see --force)", $exam->id));
                                 continue;
                         }
                         if ($this->_options['verbose']) {
@@ -293,12 +299,12 @@ class ArchiveTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->_options = array('verbose' => false, 'force' => false, 'dry-run' => false);
+                $this->_options = array('verbose' => false, 'force' => false, 'quiet' => false, 'dry-run' => false);
 
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'force', 'dry-run', 'create', 'delete', 'update', 'list', 'missing', 'verify', 'start', 'end', 'exam', 'all');
+                $options = array('verbose', 'force', 'dry-run', 'create', 'delete', 'update', 'list', 'missing', 'verify', 'start', 'end', 'exam', 'all', 'quiet', 'silent');
                 $current = $action;
 
                 // 
@@ -346,6 +352,11 @@ class ArchiveTask extends MainTask implements TaskInterface
                     !$this->_options['start'] &&
                     !$this->_options['end']) {
                         $this->_options['all'] = true;
+                }
+
+                if ($this->_options['silent']) {
+                        $this->_options['quiet'] = true;
+                        $this->_options['verbose'] = false;
                 }
         }
 

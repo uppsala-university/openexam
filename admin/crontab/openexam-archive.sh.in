@@ -31,7 +31,7 @@ if ! [ -d $root ]; then
 fi
 
 # Create new archives:
-/usr/bin/sudo -u $user /usr/bin/php $script --archive --create --all $options $*
+/usr/bin/sudo -u $user /usr/bin/php $script --archive --create --all --quiet $options $*
 
 # Update existing archives:
 /usr/bin/sudo -u $user /usr/bin/php $script --archive --update $options $*
