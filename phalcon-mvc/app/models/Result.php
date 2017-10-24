@@ -16,6 +16,7 @@ namespace OpenExam\Models;
 use OpenExam\Library\Model\Behavior\Transform\FilterText;
 use OpenExam\Library\Model\Guard\Answer as AnswerModelGuard;
 use OpenExam\Library\Model\Guard\Corrector as CorrectorModelGuard;
+use OpenExam\Library\Model\Validation\InvalidFormat;
 use Phalcon\Mvc\Model\Validator\Inclusionin;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
@@ -146,6 +147,12 @@ class Result extends ModelBase
                     array(
                         'field'  => 'correction',
                         'domain' => array(self::CORRECTION_WAITING, self::CORRECTION_PARTIAL, self::CORRECTION_COMPLETED, self::CORRECTION_FINALIZED)
+                    )
+                ));
+                $this->validate(new InvalidFormat(
+                    array(
+                        'field' => 'score',
+                        'input' => '{}'
                     )
                 ));
                 $this->validate(new Uniqueness(
