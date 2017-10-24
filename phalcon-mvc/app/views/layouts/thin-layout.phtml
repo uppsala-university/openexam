@@ -203,9 +203,9 @@ if (isset($_COOKIE['sc']) && $_COOKIE['sc'] == 0) {
     <!-- main navigation ends -->
 
     <!-- main content area -->
-    <section id='content'>
-        <div class='container'>
-            <div class='row' id='content-wrapper'>
+    <section id="content">
+        <div class="container">
+            <div class="row" id="content-wrapper" style="font-size: 13px; line-height: 16px; text-align: left; font-weight: normal; font-family: Arial; color: rgb(51, 51, 51);">
                 <?= $this->getContent() ?>  
             </div>
 
@@ -251,6 +251,7 @@ if (isset($_COOKIE['sc']) && $_COOKIE['sc'] == 0) {
                 // 
                 font_family: "Arial",
                 font_weight: "normal",
+                font_size: 13,
                 line_height_step: 3,
                 text_align: "left",
                 color: "#333333",
