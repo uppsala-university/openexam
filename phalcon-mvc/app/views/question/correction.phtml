@@ -774,13 +774,20 @@ if ($exam->decoded) {
                     });
 
                     // 
-                    // Send AJAX request to update student's score:
+                    // This code is knwon to have caused problem by inserting empty scores ({}).
                     // 
-                    if (resId !== 0) {
-                        resultsUpdate.push({id: resId, "answer_id": ansId, "score": JSON.stringify(resultJson), "comment": correctorComents, "corrector_id": correctorId, "correction": correctionStatus});
+                    var stringJson = JSON.stringify(resultJson);
+                    
+                    if (stringJson !== '{}') {
+                        if (resId !== 0) {
+                            resultsUpdate.push({id: resId, "answer_id": ansId, "score": stringJson, "comment": correctorComents, "corrector_id": correctorId, "correction": correctionStatus});
+                        } else {
+                            resultsCreate.push({"answer_id": ansId, "score": stringJson, "comment": correctorComents, "corrector_id": correctorId, "correction": correctionStatus});
+                            totalCreated++;
+                        }
                     } else {
-                        resultsCreate.push({"answer_id": ansId, "score": JSON.stringify(resultJson), "comment": correctorComents, "corrector_id": correctorId, "correction": correctionStatus});
-                        totalCreated++;
+                            alert("Failed to serialize JSON data. Please retry again and contact system manager if problem persists.");
+                            return;
                     }
 
                     if (correctionStatus !== 'partial') {
@@ -797,6 +804,9 @@ if ($exam->decoded) {
                     }
                 });
 
+                // 
+                // Send AJAX request to create student's score:
+                //                 
                 if (resultsCreate.length) {
                     ajax(
                             baseURL + 'ajax/core/corrector/result/create',
@@ -835,6 +845,9 @@ if ($exam->decoded) {
                     );
                 }
 
+                // 
+                // Send AJAX request to update student's score:
+                // 
                 if (resultsUpdate.length) {
                     ajax(
                             baseURL + 'ajax/core/corrector/result/update',
