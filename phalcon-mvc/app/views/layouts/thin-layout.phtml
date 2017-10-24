@@ -106,7 +106,7 @@ if (isset($_COOKIE['sc']) && $_COOKIE['sc'] == 0) {
         <?php if ($testMode): ?>
                 <a href="<?= $this->url->get('exam/index') ?>" class="toggle-nav btn url">
                     <i class="icon-ok-circle" style="color:#F4E374"> 
-                        <span style='color:#fff; font-family:"open sans","Lucida Grande",Lucida,Verdana,Helvetica,sans-serif'>Finish Test mode and return back</span>
+                        <span style='color:#fff; font-family:"open sans","Lucida Grande",Lucida,Verdana,Helvetica,sans-serif'>Finish test mode and return back</span>
                     </i>
                 </a>
         <?php endif; ?>
@@ -226,12 +226,11 @@ if (isset($_COOKIE['sc']) && $_COOKIE['sc'] == 0) {
 
 </div>
 <?php if (!$testMode && $viewMode == 'all'): ?>
-        <div style="position: fixed; z-index: 5000; bottom: 0px; width: 100%; padding: 10px; background-color: rgba(0,0,0,0.75)">
+        <div style="position: fixed; bottom: 0px; width: 100%; padding: 10px; background-color: rgba(0,0,0,0.75)">
             <div style="float: right; margin-right: 20px">
                 <a class="sync-answer" href="#" hlink="<?= $this->url->get('auth/logout') ?>">
                     <button class="btn btn-inverse" style="height: 42px; font-size:15px"><i class="icon-check"></i> I have previewed my answers and I'm satisfied. Quit my exam.</button>
                 </a>
-
             </div>
         </div>
 <?php endif; ?>

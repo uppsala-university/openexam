@@ -32,18 +32,19 @@
     <!-- question title row -->
     <?php if ($testMode): ?>
             <div class="alert alert-info alert-dismissable" style="margin:15px 0px;">  
-                <strong>Test mode activated.</strong> <br />
-                You are currently previewing these questions in test mode. Please note that your Answers will <strong>not</strong> be saved.<br />
-                If you see any issues, please feel free to <a href="#">contact us</a>.
-                Click <a href="<?= $this->url->get('exam/index') ?>">here</a> to return back on exam management page.
+                <strong>Test mode activated.</strong> <br/>
+                You are currently previewing the student view in test mode. Please note that answers will <strong>not</strong> be saved.<br/>
             </div>
     <?php endif; ?>
 
     <?php if (!$testMode && $viewMode == 'all'): ?>
             <div class="alert alert-info alert-dismissable" style="margin:15px 0px;">  
                 <a href="#" data-dismiss="alert" class="close">×</a>
-                <p>Careful preview all of your answers before quitting!</p>
-                <p>All answers seen below has been read directly from the database. If something is wrong, then contact the invigilator immediately. Please <a href="<?= $this->url->get('auth/logout') ?>">sign out</a> and close all opened browser windows once you are satisfied with your answers.</p>
+                <p><strong>Careful preview all of your answers before quitting!</strong></p>
+                <p>
+                    All answers seen below has been read directly from the database. If something is wrong, then contact the invigilator immediately.<br>
+                    Please sign out and close all opened browser windows once you are satisfied with your answers.
+                </p>
             </div>
     <?php endif; ?>
 
