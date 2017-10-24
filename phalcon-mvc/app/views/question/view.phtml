@@ -55,6 +55,7 @@
     // 
     $qSize = count($quest);
     $questionNo = 0;
+    $unanswered = 0;
 
     foreach ($quest as $qKey => $qObj):
             if (!$qObj->id) {
@@ -143,6 +144,7 @@
                                                                 </div>
                                                                 <div style="border-left: 5px solid #f45956; padding:10px">
                                                                     <i>You haven't answered this part.</i>
+                                                                    <?php $unanswered++ ?>
                                                                 </div>
                                                         <?php endif; ?>
                                                 <?php else: ?>
@@ -256,6 +258,13 @@
     endforeach;
 
     ?>
+    <?php if ($unanswered > 0) : ?>
+            <div class="alert alert-warning alert-dismissable" style="margin:15px 0px;">  
+                <a href="#" data-dismiss="alert" class="close">×</a>
+                <p><strong>Missed to answer some questions?</strong></p>
+                <p>One or more questions are not yet answered. Please go back and answer all parts if you have missed one.</p>
+            </div>
+    <?php endif; ?>
 </div>
 
 <div class="ans-sync-msg">Saving ... </div>
