@@ -4,6 +4,9 @@
 <?= Phalcon\Tag::javascriptInclude('js/jquery.tablesorter.js'); ?>
 
 <?php
+
+use OpenExam\Library\Gui\Component\DateTime\Relative as DateTime;
+
 $i = 0;
 $stList = array();
 
@@ -11,6 +14,17 @@ foreach ($exam->students as $student) {
         $stList[$i]["id"] = $student->id;
         $stList[$i]["value"] = $student->user . " - " . $student->code;
         $i++;
+}
+
+if (isset($exam->starttime)) {
+        $exam->startdate = strftime('%x', strtotime($exam->starttime));
+} else {
+        $exam->startdate = null;
+}
+if (isset($exam->endtime)) {
+        $exam->enddate = strftime('%x', strtotime($exam->endtime));
+} else {
+        $exam->enddate = null;
 }
 
 ?>
@@ -163,10 +177,29 @@ foreach ($exam->students as $student) {
                                                 <?= $student->display ?>
                                             </a>
                                         </td>
+                                        <?php
+                                        if ($student->starttime) {
+                                                $datetime = new DateTime($exam->starttime, $student->starttime);
+                                                $student->starttime = $datetime->text();
+                                                $student->startdate = $datetime->sdate;
+                                        }
+                                        if ($student->endtime) {
+                                                $datetime = new DateTime($exam->endtime, $student->endtime);
+                                                $student->endtime = $datetime->text();
+                                                $student->enddate = $datetime->sdate;
+                                        }
+                                        if (!isset($student->startdate)) {
+                                                $student->startdate = $exam->startdate;
+                                        }
+                                        if (!isset($student->enddate)) {
+                                                $student->enddate = $exam->enddate;
+                                        }
+
+                                        ?>
                                         <td><?= $student->user ?></td>
                                         <td><?= $student->persnr ?></td>
-                                        <td class="st-exam-item-edit" data-name="starttime"><?= $student->starttime ?></td>
-                                        <td class="st-exam-item-edit" data-name="endtime"><?= $student->endtime ?></td>
+                                        <td class="st-exam-item-edit" data-name="starttime" data-date="<?= $student->startdate ?>"><?= $student->starttime ?></td>
+                                        <td class="st-exam-item-edit" data-name="endtime" data-date="<?= $student->startdate ?>"><?= $student->endtime ?></td>
                                         <td class="st-exam-item-edit" data-name="code"><?= $student->code ?></td>
                                         <td class="st-exam-item-edit" data-name="tag"><?= $student->tag ?></td>
                                         <td class="st-exam-item-save">
@@ -271,15 +304,26 @@ foreach ($exam->students as $student) {
                 // Add editable item values to data object:
                 // 
                 $(this).parent().find(".st-exam-item-edit").each(function () {
-                    data[$(this).attr('data-name')] = $(this).text();
+                    var type = $(this).attr('data-name');
+                    var text = $(this).text().trim();
+                    var date = $(this).attr('data-date');
+
+                    // 
+                    // Prefix date on datetime value if simple time:
+                    // 
+                    if (type === 'starttime' || type === 'endtime') {
+                        if (text.length > 0 && text.indexOf(' ') === -1) {
+                            text = date + ' ' + text;
+                        }
+                    }
+
+                    data[type] = text;
                 });
 
                 // 
                 // Get student ID from data-id attribute:
                 // 
                 data.id = $(this).parent().find(".st-exam-detail").attr("data-id");
-                
-                console.log(JSON.stringify(data));
 
                 // 
                 // Send AJAX request. Hide save button on success.
