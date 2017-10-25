@@ -12,7 +12,7 @@ cwd="$(dirname $(realpath $0))"
 root="$(realpath $cwd/../../phalcon-mvc)"
 
 # Lock file for cron job:
-lock="$cwd/cache/audit.lock"
+lock="$root/cache/audit.lock"
 
 # Web server user:
 user="apache"
