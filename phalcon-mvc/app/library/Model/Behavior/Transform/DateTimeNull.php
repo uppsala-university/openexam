@@ -81,13 +81,6 @@ class DateTimeNull extends ModelBehavior
                                 }
 
                                 // 
-                                // Apply fix for datetime encoded whitespace (is this for real?):
-                                // 
-                                if (is_string($input)) {
-                                        $input = str_replace('_', ' ', $input);
-                                }
-
-                                // 
                                 // Check conversion of datetime string:
                                 // 
                                 if (is_string($input)) {
