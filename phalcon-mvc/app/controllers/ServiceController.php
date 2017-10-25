@@ -80,20 +80,23 @@ abstract class ServiceController extends ControllerBase
                 }
 
                 // 
-                // Payload is either on stdin or in POST/PUT-data:
+                // Payload is either on stdin or in POST/PUT-data. Watch out for
+                // PHP's automatic conversion of whitespace to underscore when 
+                // populating keys in $_POST data.
                 // 
-                if ($this->request->isPost()) {
-                        $input = $this->request->getPost();
-                }
-                if ($this->request->isPut()) {
+                if ($this->request->isPost() ||
+                    $this->request->isPut()) {
                         $stdin = file_get_contents("php://input");
-                        $input = key($this->request->getPut());
                 }
-
-                if (isset($input) && $input == false) {
-                        $input = file_get_contents("php://input");
-                } elseif (is_null($input) && isset($stdin)) {
+                if ($stdin[0] != '{' && $stdin[0] != '[') {
+                        $stdin = false;         // Only accept JSON
+                }
+                if ($stdin) {
                         $input = $stdin;
+                } elseif ($this->request->isPost()) {
+                        $input = $this->request->getPost();
+                } elseif ($this->request->isPut()) {
+                        $input = key($this->request->getPut());
                 }
 
                 // 
@@ -163,9 +166,10 @@ abstract class ServiceController extends ControllerBase
                         }
                 }
 
-                $this->_payload = array($data, $params);
-
-                return $this->_payload;
+                // 
+                // Pack data and params in payload.
+                // 
+                return $this->_payload = array($data, $params);
         }
 
 }
