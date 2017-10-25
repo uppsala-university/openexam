@@ -23,6 +23,7 @@ use OpenExam\Library\Model\Behavior\Transform\DateTimeNull;
 use OpenExam\Library\Model\Behavior\Transform\FilterText;
 use OpenExam\Library\Model\Exception;
 use OpenExam\Library\Model\Filter;
+use OpenExam\Library\Model\Validation\DateTime as DateTimeValidator;
 use OpenExam\Library\Model\Validation\Sequence as SequenceValidator;
 use OpenExam\Library\Security\Roles;
 use Phalcon\DI as PhalconDI;
@@ -299,6 +300,11 @@ class Exam extends ModelBase
                 ));
 
                 $this->addBehavior(new ExamBehavior());
+
+                // 
+                // Required for datetime validator:
+                // 
+                $this->keepSnapshots(true);
         }
 
         /**
@@ -360,6 +366,14 @@ class Exam extends ModelBase
                         "type"    => "datetime"
                     )
                 ));
+                $this->validate(new DateTimeValidator(
+                    array(
+                        "field"   => array("starttime", "endtime"),
+                        "message" => "The datetime value can't be in the past",
+                        "current" => $this->getSnapshotData()
+                    )
+                ));
+
                 if ($this->validationHasFailed() == true) {
                         return false;
                 }

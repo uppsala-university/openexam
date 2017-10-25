@@ -18,6 +18,7 @@ use OpenExam\Library\Core\Pattern;
 use OpenExam\Library\Model\Behavior\Student as StudentBehavior;
 use OpenExam\Library\Model\Behavior\Transform\DateTimeNull;
 use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
+use OpenExam\Library\Model\Validation\DateTime as DateTimeValidator;
 use OpenExam\Library\Model\Validation\Sequence as SequenceValidator;
 use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
@@ -118,6 +119,11 @@ class Student extends Role
                                 'format' => 'Y-m-d H:i:s'
                         )
                 )));
+
+                // 
+                // Required for datetime validator:
+                // 
+                $this->keepSnapshots(true);
         }
 
         /**
@@ -175,6 +181,13 @@ class Student extends Role
                         "field"   => array("starttime", "endtime"),
                         "message" => "Start time can't come after end time",
                         "type"    => "datetime"
+                    )
+                ));
+                $this->validate(new DateTimeValidator(
+                    array(
+                        "field"   => array("starttime", "endtime"),
+                        "message" => "The datetime value can't be in the past",
+                        "current" => $this->getSnapshotData()
                     )
                 ));
 
