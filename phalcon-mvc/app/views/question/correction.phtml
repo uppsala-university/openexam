@@ -224,10 +224,28 @@ if ($exam->decoded) {
 
                                                     $result = $answer->result;
                                                     if (is_object($result) && $result->count()) {
+                                                            // 
+                                                            // Fixes for invalid JSON score data:
+                                                            // 
+                                                            if ($result->score[0] == '{') {
+                                                                    if ($result->score == '{}') {
+                                                                            $result->score = '{"a":0}';
+                                                                            $result->save();
+                                                                    }
+                                                                    if (!($scores = json_decode($result->score, true))) {
+                                                                            $result->score = '{"a":0}';
+                                                                            $result->save();
+                                                                    }
+                                                                    if (!($scores = json_decode($result->score, true))) {
+                                                                            die("Failed decode JSON data");
+                                                                    }
+                                                            }
 
-                                                            foreach (json_decode($result->score, true) as $part => $score):
-                                                                    $qScore += $score;
-                                                            endforeach;
+                                                            if (is_array($scores)) {
+                                                                    foreach ($scores as $part => $score) {
+                                                                            $qScore += $score;
+                                                                    }
+                                                            }
 
                                                             if ($qScore < 0) {
                                                                     $qScore = 0;
@@ -239,9 +257,9 @@ if ($exam->decoded) {
                                             }
 
                                             $qCorrectorList = array();
-                                            foreach ($question->getCorrectors() as $qCorrector) :
+                                            foreach ($question->getCorrectors() as $qCorrector) {
                                                     $qCorrectorList[] = $qCorrector->user;
-                                            endforeach;
+                                            }
 
                                             ?>
 
@@ -777,7 +795,7 @@ if ($exam->decoded) {
                     // This code is knwon to have caused problem by inserting empty scores ({}).
                     // 
                     var stringJson = JSON.stringify(resultJson);
-                    
+
                     if (stringJson !== '{}') {
                         if (resId !== 0) {
                             resultsUpdate.push({id: resId, "answer_id": ansId, "score": stringJson, "comment": correctorComents, "corrector_id": correctorId, "correction": correctionStatus});
@@ -786,8 +804,8 @@ if ($exam->decoded) {
                             totalCreated++;
                         }
                     } else {
-                            alert("Failed to serialize JSON data. Please retry again and contact system manager if problem persists.");
-                            return;
+                        alert("Failed to serialize JSON data. Please retry again and contact system manager if problem persists.");
+                        return;
                     }
 
                     if (correctionStatus !== 'partial') {
