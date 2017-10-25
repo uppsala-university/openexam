@@ -18,24 +18,29 @@ use OpenExam\Library\Gui\Component;
 /**
  * Datetime component.
  * 
+ * @property-read string $edate The end date.
+ * @property-read string $etime The end time.
+ * @property-read string $sdate The start date.
+ * @property-read string $stime The start time.
+ * 
  * @property string $style Set CSS style.
  * @property string $class Set CSS class.
- * @property boolean $string $display The display mode.
+ * @property boolean $display The display mode.
  * @property string $prefix Prefix for CSS classes (defaults to exam).
  * 
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class DateTime implements Component
+abstract class DateTime implements Component
 {
 
-        /**
-         * Arrow between start and end time.
-         */
-        const ARROW = '&rarr;';
         /**
          * Infinity symbol.
          */
         const INFINITY = '&infin;';
+        /**
+         * Arrow between start and end time.
+         */
+        const ARROW = '&rarr;';
         /**
          * Unknown time.
          */
@@ -45,27 +50,27 @@ class DateTime implements Component
          * The start time.
          * @var string 
          */
-        private $_stime;
+        protected $_stime;
         /**
          * The end time.
          * @var string 
          */
-        private $_etime;
+        protected $_etime;
         /**
          * The start date.
          * @var string 
          */
-        private $_sdate;
+        protected $_sdate;
         /**
          * The end date.
          * @var string 
          */
-        private $_edate;
+        protected $_edate;
 
         /**
          * Constructor.
-         * @param int $stime The start time.
-         * @param int $etime The end time.
+         * @param int|string $stime The start time.
+         * @param int|string $etime The end time.
          */
         public function __construct($stime = null, $etime = null)
         {
@@ -96,42 +101,18 @@ class DateTime implements Component
                 }
         }
 
-        public function render()
+        public function __get($name)
         {
-                if (!isset($this->prefix)) {
-                        $this->prefix = 'exam';
+                switch ($name) {
+                        case 'edate':
+                                return $this->_edate;
+                        case 'etime':
+                                return $this->_etime;
+                        case 'sdate':
+                                return $this->_sdate;
+                        case 'stime':
+                                return $this->_stime;
                 }
-                if (!isset($this->display)) {
-                        $this->display = 'inline';
-                }
-                if (!isset($this->class)) {
-                        $this->class = 'datetime';
-                }
-                if (!isset($this->style)) {
-                        $this->style = '';
-                }
-
-                if ($this->display == false) {
-                        $this->display = 'none';
-                }
-
-                printf("<span class=\"%s\" style=\"%s;display:%s\">\n", $this->class, $this->style, $this->display);
-                printf("<i class=\"fa fa-clock-o\"></i>\n ");
-
-                if ($this->_sdate == $this->_edate) {
-                        printf("<span class=\"%s-date\">%s</span>\n", $this->prefix, $this->_sdate);
-                        printf("<span class=\"%s-starts\">%s</span>\n", $this->prefix, $this->_stime);
-                        printf("%s\n", self::ARROW);
-                        printf("<span class=\"%s-starts\">%s</span>\n", $this->prefix, $this->_etime);
-                } else {
-                        printf("<span class=\"%s-date\">%s</span>\n", $this->prefix, $this->_sdate);
-                        printf("<span class=\"%s-starts\">%s</span>\n", $this->prefix, $this->_stime);
-                        printf("%s\n", self::ARROW);
-                        printf("<span class=\"%s-date\">%s</span>\n", $this->prefix, $this->_edate);
-                        printf("<span class=\"%s-starts\">%s</span>\n", $this->prefix, $this->_etime);
-                }
-
-                printf("</span>\n");
         }
 
 }
