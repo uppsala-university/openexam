@@ -43,17 +43,18 @@ if (isset($exam->endtime)) {
                 <h3>Add single or multiple students</h3>
                 <div>
                     <p>
-                        Write identities and anonymous code (optional) of single or multiple students. Separate the identity (username or personal number) and code by space.
-                        The data should be separated by newlines when adding multiple students.
-                        <br />
-                        <small>
-                            Format to add single student: <strong>identity code</strong><br />
-                            Format to add multiple student: <br />
-                            <strong>identity1 code1</strong><br />
-                            <strong>identity1 code2</strong>
-                        </small>
+                        Write identities (username or personal number) and anonymous code (optional, system will generate one if missing) of single or multiple students. 
+                        Separate identity and anonymous code by whitespace.
                     </p>
-                    <textarea id="student_list" placeholder="identity code" style="height:100px; width:480px"></textarea>
+                    <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
+                        Input multiple students at once by separating them with newline:
+                        <br>
+                        <small>
+                            <strong>identity1 code1</strong><br />
+                            <strong>identity1 code2</strong>                        
+                        </small>
+                    </div>
+                    <textarea id="student_list" placeholder="user@example.com 1234ABCD" style="height:100px; width:480px"></textarea>
 
                     <div style="display: block; margin:10px 0px 30px 0px;">   
                         <span id="add_students_btn" class="btn btn-success">
@@ -129,7 +130,12 @@ if (isset($exam->endtime)) {
             </div>
         </div>
         <div id="tabs-2">
-            <h4 style="float:left">Registered students in this exam</h4>
+            <h4>Registered students in this exam</h4>
+
+            <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
+                Click inside the start-/endtime, code or tag cell to begin edit. 
+                When setting individual exam time, use time only (hh:mm) to use same date as exam.
+            </div>
 
             <div style="clear:both"></div>
 
