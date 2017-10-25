@@ -1,11 +1,11 @@
 // JavaScript Document specific to View question
-// @Author Ahsan Shahzad [MedfarmDoIT]
+// @author Ahsan Shahzad [MedfarmDoIT]
+// @author Anders Lövgren BMC-IT
 
 var dirtybit = 0;
 var syncEvery = 10000; // 10 seconds 
 var ansJson = {};
 var totalSyncs = 0;
-var canvasData = [];
 var canvasElem = [];
 
 // 
@@ -80,16 +80,18 @@ function syncAnswers(async, redirectToAfterSync)
                         ansJson[qPartName]["ans"].push($(opt).val());
                     }
                 });
-
             } else if (ansType === 'canvas') {
                 var canvasId = $(answers).attr('id');
-                var canvasJson = canvasData[canvasId];
 
-                if (typeof (canvasElem[canvasId]) !== 'undefined' && canvasElem[canvasId].getImage()) {
+                if (canvasElem[canvasId] !== undefined) {
+                    var canvasId = $(answers).attr('id');
+                    var canvasData = canvasElem[canvasId];
+                    var canvasJson = canvasElem[canvasId].getSnapshotJSON();
 
-                    var canvasUrl = canvasElem[canvasId].getImage().toDataURL();
-                    ansJson[qPartName]["ans"].push({"canvasJson": canvasJson, "canvasUrl": canvasUrl});
-
+                    if (canvasData.getImage()) {
+                        var canvasUrl = canvasData.getImage().toDataURL();
+                        ansJson[qPartName]["ans"].push({"canvasJson": canvasJson, "canvasUrl": canvasUrl});
+                    }
                 }
             } else {
                 throw new Error("Unknown answer type " + ansType);
@@ -150,41 +152,119 @@ function syncAnswers(async, redirectToAfterSync)
 }
 
 // 
+// Create canvas for markup on background image.
+// 
+var canvasGetMarker = function (elementId, backgroundImage) {
+    var painter = LC.init(
+            document.getElementById(elementId),
+            {
+                backgroundShapes: [
+                    LC.createShape(
+                            'Image', {x: 0, y: 0, image: backgroundImage, scale: 1})
+                ],
+                defaultStrokeWidth: 2,
+                secondaryColor: 'transparent',
+                imageURLPrefix: baseURL + 'plugins/canvas/img',
+                imageSize: {width: backgroundImage.width, height: backgroundImage.height}
+            }
+    );
+
+    var zoom = painter.containerEl.children[0].height / backgroundImage.height;
+    painter.setZoom(zoom);
+
+    return painter;
+}
+
+// 
+// Create canvas for drawing.
+// 
+var canvasGetDrawer = function (elementId) {
+    var painter = LC.init(
+            document.getElementById(elementId),
+            {
+                defaultStrokeWidth: 2,
+                secondaryColor: 'transparent',
+                imageURLPrefix: baseURL + 'plugins/canvas/img',
+                imageSize: {width: null, height: null}
+            }
+    );
+
+    return painter;
+}
+
+// 
+// Setup canvas for simple drawing or markup on background image.
+// 
+var canvasSetup = function (elementId, canvasJson, backgroundImage) {
+    // 
+    // Get literally canvas painter:
+    // 
+    if (backgroundImage === undefined) {
+        var painter = canvasGetDrawer(elementId);
+    } else {
+        var painter = canvasGetMarker(elementId, backgroundImage);
+
+    }
+
+    // 
+    // Keep referens for later use during scheduled save:
+    // 
+    canvasElem[elementId] = painter;
+
+    // 
+    // Style paint application:
+    // 
+    var container = document.getElementById(elementId);
+
+    container.style.backgroundColor = "white";
+    container.style.border = "1px solid lightsteelblue";
+    container.querySelector(".lc-picker").style.backgroundColor = "ghostwhite";
+    container.querySelector(".lc-options").style.backgroundColor = "ghostwhite";
+    container.querySelector(".lc-drawing").style.backgroundColor = "whitesmoke";
+
+    // 
+    // Local storage should always be most up to date. If missing and called
+    // with canvas JSON data (from database), then load it instead.
+    // 
+    if (localStorage.getItem(elementId)) {
+        painter.loadSnapshot(JSON.parse(localStorage.getItem(elementId)));
+    } else if (canvasJson !== undefined) {
+        painter.loadSnapshot(JSON.parse(canvasJson));
+        localStorage.setItem(elementId, canvasJson);
+    }
+
+    // 
+    // Set local storage on change for scheduled save to read back:
+    // 
+    painter.on('drawingChange', function () {
+        dirtybit = 1;
+        localStorage.setItem(elementId, JSON.stringify(painter.getSnapshot()));
+    });
+};
+
+// 
 // Initialize canvas (the drawing area).
 // 
-var initCanvas = function (elementId, canvasJson) {
-    $('#' + elementId).literallycanvas({
-        onInit: function (lc) {
-            canvasElem[elementId] = lc;
+var canvasInit = function (elementId, canvasJson, imageUrl) {
 
-            if (localStorage.getItem(elementId) == canvasJson) {
-                if (localStorage.getItem(elementId)) {
-                    lc.loadSnapshotJSON(localStorage.getItem(elementId));
-                    canvasData[elementId] = localStorage.getItem(elementId);
-                }
-            } else {
-                if (localStorage.getItem(elementId) === null) {
-                    lc.loadSnapshotJSON(canvasJson);
-                    canvasData[elementId] = canvasJson;
-                } else {
-                    dirtybit = 1;
-                    lc.loadSnapshotJSON(localStorage.getItem(elementId));
-                    canvasData[elementId] = localStorage.getItem(elementId);
-                }
-            }
+    // 
+    // Setup canvas for painting:
+    // 
+    if (!imageUrl) {
+        canvasSetup(elementId, canvasJson);
+        return;
+    }
 
-            lc.on('drawingChange', function () {
-                dirtybit = 1;
-                canvasData[elementId] = lc.getSnapshotJSON();
-                localStorage.setItem(elementId, lc.getSnapshotJSON());
-            })
-        },
-        defaultStrokeWidth: 2,
-        secondaryColor: 'transparent',
-        imageURLPrefix: baseURL + 'plugins/canvas/img',
-        imageSize: {width: null, height: null}
-    });
-}
+    // 
+    // Setup canvas for markup on background image:
+    // 
+    var backgroundImage = new Image();
+    backgroundImage.onload = function () {
+        canvasSetup(elementId, canvasJson, this);
+    };
+
+    backgroundImage.src = imageUrl;
+};
 
 // 
 // Event binding area.
