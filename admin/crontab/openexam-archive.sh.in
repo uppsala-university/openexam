@@ -12,6 +12,9 @@ cwd="$(dirname $(realpath $0))"
 # The phalcon directory:
 root="$(realpath $cwd/../../phalcon-mvc)"
 
+# Lock file for cron job:
+lock="$cwd/cache/archive.lock"
+
 # Web server user:
 user="apache"
 
@@ -29,6 +32,13 @@ if ! [ -d $root ]; then
   echo "$0: missing application directory $root"
   exit 1
 fi
+if [ -e $lock ]; then
+  echo "$0: lock file exist (previous job not finished?)"
+  exit 1
+fi
+
+# Create lock file:
+touch $lock
 
 # Create new archives:
 /usr/bin/sudo -u $user /usr/bin/php $script --archive --create --all --quiet $options $*
@@ -38,3 +48,6 @@ fi
 
 # Find exams not being archived:
 /usr/bin/sudo -u $user /usr/bin/php $script --archive --missing $options $*
+
+# Cleanup lock file:
+rm -f $lock

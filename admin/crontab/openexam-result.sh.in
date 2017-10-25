@@ -12,6 +12,9 @@ cwd="$(dirname $(realpath $0))"
 # The phalcon directory:
 root="$(realpath $cwd/../../phalcon-mvc)"
 
+# Lock file for cron job:
+lock="$cwd/cache/result.lock"
+
 # Web server user:
 user="apache"
 
@@ -29,9 +32,19 @@ if ! [ -d $root ]; then
   echo "$0: missing application directory $root"
   exit 1
 fi
+if [ -e $lock ]; then
+  echo "$0: lock file exist (previous job not finished?)"
+  exit 1
+fi
+
+# Create lock file:
+touch $lock
 
 # Cleanup old result files:
 /usr/bin/sudo -u $user /usr/bin/php $script --result --delete --days=90 $options $*
 
 # Generate new result files:
 /usr/bin/sudo -u $user /usr/bin/php $script --result --create --days=30 $options $*
+
+# Cleanup lock file:
+rm -f $lock
