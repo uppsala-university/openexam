@@ -162,15 +162,23 @@ var canvasGetMarker = function (elementId, backgroundImage) {
                     LC.createShape(
                             'Image', {x: 0, y: 0, image: backgroundImage, scale: 1})
                 ],
-                defaultStrokeWidth: 2,
+                defaultStrokeWidth: 5,
+                primaryColor: 'red',
                 secondaryColor: 'transparent',
                 imageURLPrefix: baseURL + 'plugins/canvas/img',
                 imageSize: {width: backgroundImage.width, height: backgroundImage.height}
             }
     );
 
-    var zoom = painter.containerEl.children[0].height / backgroundImage.height;
-    painter.setZoom(zoom);
+    var fitWidth = true;
+    var hzoom = painter.containerEl.children[0].height / backgroundImage.height;
+    var wzoom = painter.containerEl.children[0].width / backgroundImage.width;
+
+    if (fitWidth) {
+        painter.setZoom(wzoom);
+    } else {
+        painter.setZoom(hzoom);
+    }
 
     return painter;
 }
