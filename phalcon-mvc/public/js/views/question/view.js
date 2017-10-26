@@ -166,7 +166,10 @@ var canvasGetMarker = function (elementId, backgroundImage) {
                 primaryColor: 'red',
                 secondaryColor: 'transparent',
                 imageURLPrefix: baseURL + 'plugins/canvas/img',
-                imageSize: {width: backgroundImage.width, height: backgroundImage.height}
+                imageSize: {
+                    width: backgroundImage.width,
+                    height: backgroundImage.height
+                }
             }
     );
 
@@ -179,7 +182,14 @@ var canvasGetMarker = function (elementId, backgroundImage) {
     } else {
         painter.setZoom(hzoom);
     }
-
+    
+    // 
+    // Set zoom in/out scale factor (step size) to match difference between zoom 
+    // width and height. Clicking on zoom in/out buttons should now match up nearly 
+    // perfect.
+    // 
+    painter.config.zoomStep = Math.abs(wzoom - hzoom);
+    
     return painter;
 }
 
