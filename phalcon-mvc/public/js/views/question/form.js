@@ -210,6 +210,11 @@ $(document).ready(function () {
             data: {'exam_id': examId},
             success: function (data) {
                 $("#media_selector").html(data);
+                
+                $("#media_selector").find("#audio-tab").parent().find("ul > li > a[href='#audio-tab']").hide();
+                $("#media_selector").find("#video-tab").parent().find("ul > li > a[href='#video-tab']").hide();
+                $("#media_selector").find("#other-tab").parent().find("ul > li > a[href='#other-tab']").hide();
+
                 $("#media_selector").dialog({
                     autoOpen: true,
                     width: "55%",
