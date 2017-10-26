@@ -476,7 +476,7 @@ $(document).ready(function () {
                         "Add new question part": function () {
                             addQuestPartTab();
                         },
-                        "I am done, save this question": function () {
+                        "Save this question": function () {
                             saveQuestionToExam(qId);
                             $(this).dialog('destroy');
                         },
@@ -503,7 +503,7 @@ $(document).ready(function () {
     var saveQuestionToExam = function (qId) {
 
         var qIndex;
-        
+
         if (!qId) {
             qIndex = ++totalQs;
             qsJson[qIndex] = {};
@@ -539,12 +539,12 @@ $(document).ready(function () {
             var qText = jQuery.trim(
                     CKEDITOR.instances[$(qPart).find('.write_q_ckeditor').attr('id')].getData());
             qJson[qPartTitle]["q_text"] = qText;
-            aPartQtxt = aPartQtxt == '' ? qText : aPartQtxt;
+            aPartQtxt = aPartQtxt === '' ? qText : aPartQtxt;
 
             // 
             // Get question resources:
             // 
-            var qResourcesList = $(qPart).find('.q_resources > ul');
+            var qResourcesList = $(qPart).find('.lib_resources > ul');
             if ($(qResourcesList).find('li').length) {
                 qJson[qPartTitle]["resources"] = {};
                 $(qResourcesList).find('li > a').each(function (i, rElem) {
@@ -552,6 +552,15 @@ $(document).ready(function () {
                 });
             } else {
                 qJson[qPartTitle]["resources"] = [];
+            }
+
+            // 
+            // Get canvas background:
+            // 
+            var qCanvasImage = $(qPart).find('.lib_canvas > ul > li > a').first();
+            if (qCanvasImage) {
+                qJson[qPartTitle]["ans_area"]["back"] = {};
+                qJson[qPartTitle]["ans_area"]["back"][qCanvasImage.html()] = qCanvasImage.attr('file-path');
             }
 
             // 
@@ -582,7 +591,6 @@ $(document).ready(function () {
             var qPartScore = $(qPart).find('.q-part-points').val().parsefloat();
             qJson[qPartTitle]["q_points"] = qPartScore;
             totalScore += qPartScore;
-
         });
 
         // 

@@ -169,14 +169,30 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
                                         <div class="ans_type_selector_box_wrap">
                                             <div class="ans_type_selector_box">
                                                 <input type="radio"  class="ans_type_selector" value="canvas" <?= ($qAnsType == 'canvas') ? 'checked="checked"' : '' ?>/>
-                                                <span>Drawing Canvas</span> </div>
+                                                <span>Drawing Canvas</span> 
+                                            </div>
                                             <div class="ans_type" style=" <?= ($qAnsType == 'canvas') ? 'display:block' : 'display:none' ?>">
                                                 <div class="qline_wrapper">
                                                     <?= Phalcon\Tag::image(array("img/canvas.png", "width" => '40%')); ?>
                                                 </div>
+                                                <div class="q_resources lib_canvas">
+                                                    <div class="add_resources"><a class="set_canvas_background" href="#">Select background image</a></div>
+                                                    <ul class="lib_canvas_background">
+                                                        <?php if ($qParts[$qPartTitle]['ans_area']['back']): ?>
+                                                                <?php foreach ($qParts[$qPartTitle]['ans_area']['back'] as $rTitle => $rLink): ?>
+                                                                        <li> 
+                                                                            <i class="fa fa-close resource-item-remove"></i> 
+                                                                            <i class="fa fa-pencil resource-item-edit"></i> 
+                                                                            <a target="_blank" file-path="<?= $rLink ?>" href="<?= $this->url->get($rLink) ?>"><?= empty($rTitle) ? urldecode(basename($rLink)) : $rTitle ?></a> 
+                                                                            </i> 
+                                                                        </li>
+                                                                <?php endforeach; ?>
+                                                        <?php endif; ?>
+                                                    </ul>
+                                                    <div style="clear:both"></div>
+                                                </div>                                                
                                             </div>
                                         </div>
-                                    </div>
                                 </article>
                             </div>
                             <h3>Points</h3>

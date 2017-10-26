@@ -155,7 +155,7 @@
                                                             <?php elseif ($qPartData['ans_area']['type'] == 'canvas'): ?>
                                                                     <?php
                                                                     $drawingJson = trim(json_encode($answerData[$qPart]['ans'][0]['canvasJson']), '"');
-                                                                    $imageUrl = $qPartData['ans_area']['back'] ? $this->url->get($qPartData['ans_area']['back']) : "";
+                                                                    $imageUrl = $qPartData['ans_area']['back'] ? $this->url->get(current($qPartData['ans_area']['back'])) : "";
                                                                     $elementId = sprintf("s%dq%dp%s", $student->id, $qObj->id, $qPart);
 
                                                                     ?>

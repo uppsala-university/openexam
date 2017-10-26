@@ -204,6 +204,64 @@ $(document).ready(function () {
         return false;
     });
 
+    $('body').on('click', '.set_canvas_background', function () {
+        $.ajax({
+            url: baseURL + 'utility/media/library',
+            data: {'exam_id': examId},
+            success: function (data) {
+                $("#media_selector").html(data);
+                $("#media_selector").dialog({
+                    autoOpen: true,
+                    width: "55%",
+                    modal: true,
+                    buttons: {
+                        "Set selected resource as canvas background": function () {
+                            $('#selected-lib-img > li:visible > .title-box').each(function (index, itemTitle) {
+
+                                // 
+                                // Use filename if name was not given:
+                                // 
+                                if ($(itemTitle).find('input').val().length === 0) {
+                                    $(itemTitle).find('input').val($(this).attr('file-name'));
+                                }
+
+                                // 
+                                // Prefix URL if relative:
+                                // 
+                                if ($(this).attr('file-path')[0] !== '/') {
+                                    $(this).attr('file-path', function (i, href) {
+                                        console.log(baseURL + href);
+                                        return baseURL + href;
+                                    });
+                                }
+
+                                $('#' + $(".ui-tabs-active").attr("aria-controls"))
+                                        .find('.lib_canvas_background')
+                                        .empty()
+                                        .append('\
+                                                    <li>\
+                                                            <i class="fa fa-close resource-item-remove"></i>\
+                                                            <i class="fa fa-pencil resource-item-edit"></i>\
+                                                            <a href="' + $(this).attr('file-path') + '" file-path="' + $(this).attr('file-path') + '" target="_blank">' + $(itemTitle).find('input').val() + '</a>\
+                                                    </li>'
+                                                );
+                            });
+                            $(this).dialog('destroy');
+                        },
+                        Cancel: function () {
+                            closeToolTips();
+                            $(this).dialog('destroy');
+                        }
+                    },
+                    close: function () {
+                        closeToolTips();
+                    }
+                });
+            }
+        });
+        return false;
+    });
+
     // 
     // Add or delele new sortable option in option type of questions:
     // 
