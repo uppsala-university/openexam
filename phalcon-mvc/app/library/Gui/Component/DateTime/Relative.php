@@ -37,10 +37,10 @@ class Relative extends DateTime
          */
         public function text()
         {
-                if ($this->_sdate == $this->_edate) {
-                        return sprintf("%s", $this->_etime);
+                if ($this->startdate == $this->enddate) {
+                        return sprintf("%s", $this->endtime);
                 } else {
-                        return sprintf("%s %s", $this->_edate, $this->_etime);
+                        return sprintf("%s %s", $this->enddate, $this->endtime);
                 }
         }
 
@@ -67,11 +67,11 @@ class Relative extends DateTime
 
                 printf("<span class=\"%s\" style=\"%s;display:%s\">\n", $this->class, $this->style, $this->display);
 
-                if ($this->_sdate == $this->_edate) {
-                        printf("<span class=\"%s-end-time\">%s</span>\n", $this->prefix, $this->_etime);
+                if ($this->startdate == $this->enddate) {
+                        printf("<span class=\"%s-end-time\">%s</span>\n", $this->prefix, $this->endtime);
                 } else {
-                        printf("<span class=\"%s-end-date\">%s</span>\n", $this->prefix, $this->_edate);
-                        printf("<span class=\"%s-end-time\">%s</span>\n", $this->prefix, $this->_etime);
+                        printf("<span class=\"%s-end-date\">%s</span>\n", $this->prefix, $this->enddate);
+                        printf("<span class=\"%s-end-time\">%s</span>\n", $this->prefix, $this->endtime);
                 }
 
                 printf("</span>\n");

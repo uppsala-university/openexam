@@ -18,10 +18,14 @@ use OpenExam\Library\Gui\Component;
 /**
  * Datetime component.
  * 
- * @property-read string $edate The end date.
- * @property-read string $etime The end time.
- * @property-read string $sdate The start date.
- * @property-read string $stime The start time.
+ * @property-read int $stime The start time (timestamp).
+ * @property-read int $etime The end time (timestamp).
+ * 
+ * @property-read string $startdate The start date.
+ * @property-read string $starttime The start time.
+ * 
+ * @property-read string $enddate The end date.
+ * @property-read string $endtime The end time.
  * 
  * @property string $style Set CSS style.
  * @property string $class Set CSS class.
@@ -56,23 +60,13 @@ abstract class DateTime implements Component
          * @var string 
          */
         protected $_etime;
-        /**
-         * The start date.
-         * @var string 
-         */
-        protected $_sdate;
-        /**
-         * The end date.
-         * @var string 
-         */
-        protected $_edate;
 
         /**
          * Constructor.
          * @param int|string $stime The start time.
          * @param int|string $etime The end time.
          */
-        public function __construct($stime = null, $etime = null)
+        public function __construct($stime = false, $etime = false)
         {
                 if (is_string($stime)) {
                         $this->_stime = strtotime($stime);
@@ -85,33 +79,39 @@ abstract class DateTime implements Component
                 } else {
                         $this->_etime = $etime;
                 }
-
-                if (isset($this->_stime)) {
-                        $this->_sdate = strftime("%x", $this->_stime);
-                        $this->_stime = strftime("%H:%M", $this->_stime);
-                } else {
-                        $this->_sdate = self::UNKNOWN;
-                }
-
-                if (isset($this->_etime)) {
-                        $this->_edate = strftime("%x", $this->_etime);
-                        $this->_etime = strftime("%H:%M", $this->_etime);
-                } else {
-                        $this->_edate = self::INFINITY;
-                }
         }
 
         public function __get($name)
         {
                 switch ($name) {
-                        case 'edate':
-                                return $this->_edate;
-                        case 'etime':
-                                return $this->_etime;
-                        case 'sdate':
-                                return $this->_sdate;
                         case 'stime':
                                 return $this->_stime;
+                        case 'etime':
+                                return $this->_etime;
+                        case 'startdate':
+                                if ($this->_stime) {
+                                        return $this->startdate = strftime("%x", $this->_stime);
+                                } else {
+                                        return $this->startdate = self::UNKNOWN;
+                                }
+                        case 'starttime':
+                                if ($this->_stime) {
+                                        return $this->starttime = strftime("%H:%M", $this->_stime);
+                                } else {
+                                        return $this->starttime = null;
+                                }
+                        case 'enddate':
+                                if ($this->_etime) {
+                                        return $this->enddate = strftime("%x", $this->_etime);
+                                } else {
+                                        return $this->enddate = self::INFINITY;
+                                }
+                        case 'endtime':
+                                if ($this->_etime) {
+                                        return $this->endtime = strftime("%H:%M", $this->_etime);
+                                } else {
+                                        return $this->endtime = null;
+                                }
                 }
         }
 

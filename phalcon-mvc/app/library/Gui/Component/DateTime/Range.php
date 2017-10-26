@@ -39,10 +39,16 @@ class Range extends DateTime
          */
         public function text()
         {
-                if ($this->_sdate == $this->_edate) {
-                        return sprintf("%s %s -> %s", $this->_sdate, $this->_stime, $this->_etime);
+                if ($this->_stime == false && $this->_etime == false) {
+                        return sprintf("%s -> %s", $this->startdate, $this->enddate);
+                } elseif ($this->_stime == false) {
+                        return sprintf("%s -> %s %s", $this->startdate, $this->enddate, $this->endtime);
+                } elseif ($this->_etime == false) {
+                        return sprintf("%s %s -> %s", $this->startdate, $this->starttime, $this->enddate);
+                } elseif ($this->startdate == $this->enddate) {
+                        return sprintf("%s %s -> %s", $this->startdate, $this->starttime, $this->endtime);
                 } else {
-                        return sprintf("%s %s -> %s", $this->_sdate, $this->_stime, $this->_edate, $this->_etime);
+                        return sprintf("%s %s -> %s %s", $this->startdate, $this->starttime, $this->enddate, $this->endtime);
                 }
         }
 
@@ -74,17 +80,17 @@ class Range extends DateTime
                 printf("<span class=\"%s\" style=\"%s;display:%s\">\n", $this->class, $this->style, $this->display);
 
                 printf("<i class=\"fa fa-clock-o\"></i>\n ");
-                if ($this->_sdate == $this->_edate) {
-                        printf("<span class=\"%s-start-date\">%s</span>\n", $this->prefix, $this->_sdate);
-                        printf("<span class=\"%s-start-time\">%s</span>\n", $this->prefix, $this->_stime);
+                if ($this->startdate == $this->enddate) {
+                        printf("<span class=\"%s-start-date\">%s</span>\n", $this->prefix, $this->startdate);
+                        printf("<span class=\"%s-start-time\">%s</span>\n", $this->prefix, $this->starttime);
                         printf("%s\n", self::ARROW);
-                        printf("<span class=\"%s-end-time\">%s</span>\n", $this->prefix, $this->_etime);
+                        printf("<span class=\"%s-end-time\">%s</span>\n", $this->prefix, $this->endtime);
                 } else {
-                        printf("<span class=\"%s-start-date\">%s</span>\n", $this->prefix, $this->_sdate);
-                        printf("<span class=\"%s-start-time\">%s</span>\n", $this->prefix, $this->_stime);
+                        printf("<span class=\"%s-start-date\">%s</span>\n", $this->prefix, $this->startdate);
+                        printf("<span class=\"%s-start-time\">%s</span>\n", $this->prefix, $this->starttime);
                         printf("%s\n", self::ARROW);
-                        printf("<span class=\"%s-end-date\">%s</span>\n", $this->prefix, $this->_edate);
-                        printf("<span class=\"%s-end-time\">%s</span>\n", $this->prefix, $this->_etime);
+                        printf("<span class=\"%s-end-date\">%s</span>\n", $this->prefix, $this->enddate);
+                        printf("<span class=\"%s-end-time\">%s</span>\n", $this->prefix, $this->endtime);
                 }
 
                 printf("</span>\n");
