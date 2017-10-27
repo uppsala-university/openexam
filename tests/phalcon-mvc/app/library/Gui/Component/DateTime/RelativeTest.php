@@ -17,7 +17,7 @@ class RelativeTest extends TestCase
         public function testText()
         {
                 // 
-                // Test with start and endtime.
+                // Test without start and endtime.
                 // 
                 $sstamp = false;
                 $estamp = false;
@@ -50,7 +50,7 @@ class RelativeTest extends TestCase
                 self::assertNull($actual);
                 self::assertEquals($actual, $expect);
 
-                $expect = sprintf("%s %s", $edate, $etime);
+                $expect = "";
                 $actual = $object->text();
                 self::assertNotNull($actual);
                 self::assertEquals($actual, $expect);
@@ -89,7 +89,7 @@ class RelativeTest extends TestCase
                 self::assertNull($actual);
                 self::assertEquals($actual, $expect);
 
-                $expect = sprintf("%s %s", $edate, $etime);
+                $expect = "";
                 $actual = $object->text();
                 self::assertNotNull($actual);
                 self::assertEquals($actual, $expect);

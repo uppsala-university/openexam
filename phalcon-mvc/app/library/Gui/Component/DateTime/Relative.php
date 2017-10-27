@@ -37,7 +37,9 @@ class Relative extends DateTime
          */
         public function text()
         {
-                if ($this->startdate == $this->enddate) {
+                if (!$this->_etime) {
+                        return "";
+                } elseif ($this->startdate == $this->enddate) {
                         return sprintf("%s", $this->endtime);
                 } else {
                         return sprintf("%s %s", $this->enddate, $this->endtime);
