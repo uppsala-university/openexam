@@ -16,15 +16,15 @@ foreach ($exam->students as $student) {
         $i++;
 }
 
-if (isset($exam->starttime)) {
-        $exam->startdate = strftime('%x', strtotime($exam->starttime));
-} else {
-        $exam->startdate = null;
+$cdt = new DateTime($exam->starttime, $exam->endtime);
+
+if (!$cdt->stime) {
+        $cdt->startdate = strftime('%x', time());
+        $cdt->starttime = strftime('%H:%M', time());
 }
-if (isset($exam->endtime)) {
-        $exam->enddate = strftime('%x', strtotime($exam->endtime));
-} else {
-        $exam->enddate = null;
+if (!$cdt->etime) {
+        $cdt->enddate = strftime('%x', time());
+        $cdt->endtime = strftime('%H:%M', time());
 }
 
 ?>
@@ -133,8 +133,8 @@ if (isset($exam->endtime)) {
             <h4>Registered students in this exam</h4>
 
             <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
-                Click inside the start-/endtime, code or tag cell to begin edit. 
-                When setting individual exam time, use time only (hh:mm) to use same date as exam.
+                Click inside table cells to edit their content. Dates are omitted from display whenever they coincidence with exam start or end date. 
+                Input time as hh:mm with optional date, use the suggested date/time as a guide.
             </div>
 
             <div style="clear:both"></div>
@@ -184,30 +184,32 @@ if (isset($exam->endtime)) {
                                             </a>
                                         </td>
                                         <?php
-                                        if ($student->starttime) {
-                                                $datetime = new DateTime($exam->starttime, $student->starttime);
-                                                $student->starttime = $datetime->text();
-                                                $student->startdate = $datetime->sdate;
+                                        $sdt = new DateTime($exam->starttime, $student->starttime);
+                                        $edt = new DateTime($exam->endtime, $student->endtime);
+
+                                        if ($sdt->etime) {
+                                                $sdt->time = $sdt->endtime;
+                                                $sdt->date = $sdt->enddate;
+                                        } else {
+                                                $sdt->time = $cdt->starttime;
+                                                $sdt->date = $cdt->startdate;
                                         }
-                                        if ($student->endtime) {
-                                                $datetime = new DateTime($exam->endtime, $student->endtime);
-                                                $student->endtime = $datetime->text();
-                                                $student->enddate = $datetime->sdate;
-                                        }
-                                        if (!isset($student->startdate)) {
-                                                $student->startdate = $exam->startdate;
-                                        }
-                                        if (!isset($student->enddate)) {
-                                                $student->enddate = $exam->enddate;
+
+                                        if ($edt->etime) {
+                                                $edt->time = $edt->endtime;
+                                                $edt->date = $edt->enddate;
+                                        } else {
+                                                $edt->time = $cdt->endtime;
+                                                $edt->date = $cdt->enddate;
                                         }
 
                                         ?>
                                         <td><?= $student->user ?></td>
                                         <td><?= $student->persnr ?></td>
-                                        <td class="st-exam-item-edit" data-name="starttime" data-date="<?= $student->startdate ?>"><?= $student->starttime ?></td>
-                                        <td class="st-exam-item-edit" data-name="endtime" data-date="<?= $student->startdate ?>"><?= $student->endtime ?></td>
-                                        <td class="st-exam-item-edit" data-name="code"><?= $student->code ?></td>
-                                        <td class="st-exam-item-edit" data-name="tag"><?= $student->tag ?></td>
+                                        <td class="st-exam-item-edit" data-name="starttime" data-exam-date="<?= $cdt->startdate ?>" data-stud-date="<?= $sdt->date ?>" data-stud-time="<?= $sdt->time ?>"><?= $sdt->text() ?></td>
+                                        <td class="st-exam-item-edit" data-name="endtime" data-exam-date="<?= $cdt->enddate ?>" data-stud-date="<?= $edt->date ?>" data-stud-time="<?= $edt->time ?>"><?= $edt->text() ?></td>
+                                        <td class="st-exam-item-edit" data-name="code" data-stud-code="<?= $student->code ?>"><?= $student->code ?></td>
+                                        <td class="st-exam-item-edit" data-name="tag" data-stud-tag="<?= $student->tag ?>"><?= $student->tag ?></td>
                                         <td class="st-exam-item-save">
                                             <span class="btn btn-default" style="visibility: hidden">
                                                 <i class="fa fa-save"></i>
@@ -228,9 +230,7 @@ if (isset($exam->endtime)) {
 </div>
 
 <script language="javascript">
-        console.log("<?= $_SERVER['SERVER_ADDR']; ?>");
         var studentList = <?= json_encode($stList) ?>;
-
         $(function () {
 
             $('.tablesorter').tablesorter({
@@ -245,13 +245,10 @@ if (isset($exam->endtime)) {
                     }
                 }
             });
-
             $('.tabs').tabs();
-
             $(".accordion").accordion({
                 heightStyle: "content"
             });
-
             if (stEvents == 'loaded') {
                 return;
             } else {
@@ -294,9 +291,82 @@ if (isset($exam->endtime)) {
             // Edit student properties inline.
             // 
             $(document).on('click', '.st-exam-item-edit', function () {
+                if ($(this).attr("contenteditable")) {
+                    return false; // Already editing.
+                }
+
                 $(this).attr("contenteditable", true);
                 $(this).focus();
                 $(this).parent().find("span.btn").css("visibility", "visible");
+
+                var type = $(this).attr('data-name');
+
+                if (type === 'starttime' || type === 'endtime') {
+                    if ($(this).text().length === 0) {
+                        $(this).attr("data-modified", true);
+                    }
+                    var date = $(this).attr('data-stud-date');
+                    var time = $(this).attr('data-stud-time');
+                    $(this).text(date + ' ' + time);
+                }
+            });
+
+            $(document).on('blur', '.st-exam-item-edit', function () {
+                $(this).removeAttr("contenteditable");
+
+                var type = $(this).attr('data-name');
+
+                if (type === 'starttime' || type === 'endtime') {
+                    var part = $(this).text().split(" ");
+
+                    // 
+                    // Check if date is invalid:
+                    // 
+                    if (part.length > 1) {
+                        if (isNaN(Date.parse($(this).text()))) {
+                            $(this).text($(this).attr('data-stud-date') + ' ' + $(this).attr('data-stud-time'));
+                            return false;
+                        }
+                    } else {
+                        if (isNaN(Date.parse($(this).attr('data-exam-date') + ' ' + $(this).text()))) {
+                            $(this).text($(this).attr('data-stud-date') + ' ' + $(this).attr('data-stud-time'));
+                            return false;
+                        }
+                    }
+
+                    if (part.length > 1) {
+                        if ($(this).attr('data-stud-date') !== part[0] || $(this).attr('data-stud-time') !== part[1]) {
+                            $(this).attr("data-modified", true);
+                        }
+                        $(this).attr('data-stud-date', part[0]);
+                        $(this).attr('data-stud-time', part[1]);
+                    } else {
+                        if ($(this).attr('data-stud-time') !== part[0]) {
+                            $(this).attr("data-modified", true);
+                        }
+                        if ($(this).attr('data-stud-date') !== $(this).attr('data-exam-date')) {
+                            $(this).attr("data-modified", true);
+                        }
+                        $(this).attr('data-stud-time', part[0]);
+                        $(this).attr('data-stud-date', $(this).attr('data-exam-date'));
+                    }
+                    if ($(this).attr('data-stud-date') === $(this).attr('data-exam-date')) {
+                        $(this).text($(this).attr('data-stud-time'));
+                    }
+                    if ($(this).attr('data-stud-time').length === 0) {
+                        $(this).attr('data-stud-date', "");
+                    }
+                } else if (type === 'code') {
+                    if ($(this).attr('data-stud-code') !== $(this).text()) {
+                        $(this).attr('data-stud-code', $(this).text());
+                        $(this).attr("data-modified", true);
+                    }
+                } else if (type === 'tag') {
+                    if ($(this).attr('data-stud-tag') !== $(this).text()) {
+                        $(this).attr('data-stud-tag', $(this).text());
+                        $(this).attr("data-modified", true);
+                    }
+                }
             });
 
             // 
@@ -309,21 +379,18 @@ if (isset($exam->endtime)) {
                 // 
                 // Add editable item values to data object:
                 // 
-                $(this).parent().find(".st-exam-item-edit").each(function () {
+                $(this).parent().find(".st-exam-item-edit[data-modified=true]").each(function () {
                     var type = $(this).attr('data-name');
-                    var text = $(this).text().trim();
-                    var date = $(this).attr('data-date');
 
-                    // 
-                    // Prefix date on datetime value if simple time:
-                    // 
                     if (type === 'starttime' || type === 'endtime') {
-                        if (text.length > 0 && text.indexOf(' ') === -1) {
-                            text = date + ' ' + text;
-                        }
+                        data[type] = $(this).attr("data-stud-date") + ' ' + $(this).attr("data-stud-time");
+                    } else if (type === 'code') {
+                        data[type] = $(this).attr("data-stud-code");
+                    } else if (type === 'tag') {
+                        data[type] = $(this).attr("data-stud-tag");
                     }
 
-                    data[type] = text;
+                    data[type] = data[type].trim();
                 });
 
                 // 
@@ -340,10 +407,12 @@ if (isset($exam->endtime)) {
                         function (response) {
                             if (response === true) {
                                 button.css("visibility", "hidden");
+                                $(this).parent().find(".st-exam-item-edit[data-modified=true]").each(function () {
+                                    $(this).removeAttr("data-modified");
+                                });
                             }
                         }
                 );
-
             });
 
             // 
@@ -352,7 +421,6 @@ if (isset($exam->endtime)) {
             $(document).on("click", "#unlock-student", function () {
                 var dataId = $(this).attr('data-id');
                 var studId = $(this).attr('stud-id');
-
                 ajax(
                         baseURL + 'ajax/core/invigilator/lock/delete',
                         {"id": dataId},
@@ -367,7 +435,6 @@ if (isset($exam->endtime)) {
             $(document).on("click", "#approve-student", function () {
                 var dataId = $(this).attr('data-id');
                 var studId = $(this).attr('stud-id');
-
                 ajax(
                         baseURL + 'ajax/core/invigilator/lock/update',
                         {"id": $(this).attr('data-id'), "status": "approved"},
@@ -386,7 +453,6 @@ if (isset($exam->endtime)) {
 
             $(document).on("keyup", "#search-students", function () {
                 var value = jQuery.trim($(this).val());
-
                 $("table tr").each(function (index) {
                     if (index != 0 && !$(this).hasClass('st-detail-rows')) {
 
@@ -401,7 +467,6 @@ if (isset($exam->endtime)) {
                         });
                     }
                 });
-
                 $(".tablesorter").trigger("update");
                 var sorting = [[0, 0], [1, 0]];
                 $(".tablesorter").trigger("sorton", [sorting]);
@@ -410,7 +475,6 @@ if (isset($exam->endtime)) {
             $(document).on('click', '.st-exam-detail', function () {
                 var row = $(this).closest("tr");
                 var sid = $(this).attr('data-id');
-
                 $.ajax({
                     url: baseURL + 'exam/lock',
                     type: 'POST',
@@ -420,7 +484,6 @@ if (isset($exam->endtime)) {
                     $('.st-detail-rows').hide();
                     $('#st-detail-row' + sid).show(500).insertAfter(row).find('td').html(result);
                 });
-
                 return false;
             });
 
@@ -444,6 +507,7 @@ if (isset($exam->endtime)) {
                                         delete studentList[i];
                                     }
                                 });
+
                                 // 
                                 // Hide from list:
                                 // 
@@ -465,6 +529,7 @@ if (isset($exam->endtime)) {
                 var examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
                 if (examId) {
                     stList = jQuery.trim($('#student_list').val()).split("\n");
+
                     //
                     // Prepare data object:
                     // 
@@ -484,6 +549,7 @@ if (isset($exam->endtime)) {
                             stData.push({'exam_id': examId, "user": st[0], "code": st[1]});
                         }
                     });
+
                     // 
                     // Send AJAX request to add these students to the exam:
                     // 
@@ -639,7 +705,6 @@ if (isset($exam->endtime)) {
                     $('input[name="students[]"]:checked').each(function (i, elem) {
                         delStudent.push({'id': $(this).val()});
                     });
-
                     ajax(
                             baseURL + 'ajax/core/invigilator/student/delete',
                             JSON.stringify(delStudent),
@@ -657,6 +722,5 @@ if (isset($exam->endtime)) {
                 var examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
                 window.location.href = baseURL + 'utility/export/students/' + examId + '/download'
             });
-
         });
 </script>
