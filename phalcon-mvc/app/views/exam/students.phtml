@@ -28,6 +28,13 @@ if (!$cdt->etime) {
 }
 
 ?>
+
+<style>
+    td[data-modified="true"] {
+        border: 1px solid #ccff99;
+        background-color: #99ff99;
+    }
+</style>
 <div id="st-mng-wrapper" exam-id="<?= $this->request->getPost('exam_id') ?>">
     <div style="padding-bottom:15px">
         <h3><?= $exam->name ?></h3>
@@ -311,6 +318,9 @@ if (!$cdt->etime) {
                 }
             });
 
+            // 
+            // Refresh display and update attribute values.
+            // 
             $(document).on('blur', '.st-exam-item-edit', function () {
                 $(this).removeAttr("contenteditable");
 
@@ -375,6 +385,7 @@ if (!$cdt->etime) {
             $(document).on('click', '.st-exam-item-save', function () {
                 var data = {};
                 var button = $(this).find("span.btn");
+                var tblrow = $(this).parent();
 
                 // 
                 // Add editable item values to data object:
@@ -407,7 +418,7 @@ if (!$cdt->etime) {
                         function (response) {
                             if (response === true) {
                                 button.css("visibility", "hidden");
-                                $(this).parent().find(".st-exam-item-edit[data-modified=true]").each(function () {
+                                tblrow.find(".st-exam-item-edit[data-modified=true]").each(function () {
                                     $(this).removeAttr("data-modified");
                                 });
                             }
