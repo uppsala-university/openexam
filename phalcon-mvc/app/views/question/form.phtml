@@ -145,7 +145,7 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
                                                                             <div style="padding-top:5px">
                                                                                 <?= $delOpt ?>
                                                                                 <input type="checkbox" class="readable" <?= $checked ? 'checked="checked"' : '' ?>>
-                                                                                <span class="editabletext" default="<?= $optText ?>"><?= $optText ?></span> 
+                                                                                <span contenteditable="true"><?= $optText ?></span> 
                                                                             </div>
                                                                     <?php endforeach; ?>
                                                             <?php else: ?>
@@ -154,7 +154,7 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
                                                                             <div style="padding-top:5px">
                                                                                 <?= $delOpt ?>
                                                                                 <input type="checkbox" class="readable">
-                                                                                <span class="editabletext" default="<?= $optTxt ?>"><?= $optTxt ?></span>
+                                                                                <span class="editabletext" contenteditable="true"><?= $optTxt ?></span>
                                                                             </div>
                                                                     <?php endfor; ?>
                                                             <?php endif; ?>

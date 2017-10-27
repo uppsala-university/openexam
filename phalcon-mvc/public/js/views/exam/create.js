@@ -1,5 +1,6 @@
 // JavaScript Document specific to Exam create
-// @Author Ahsan Shahzad [MedfarmDoIT]
+// @author Ahsan Shahzad [MedfarmDoIT]
+// @author Anders Lövgren (BMC-IT)
 
 /*-- var initialization --*/
 var totalQs = 0;
@@ -177,53 +178,12 @@ $(document).ready(function () {
 
     });
 
-    var charWidth = 8;
-    var textBoxMax = 300;
+    // 
+    // Clear content and remove editable class of inline edit element.
+    // 
     $('body').on("click", ".editabletext", function () {
-        if (!$(this).find(".editabletextbox").length) {
-            var txt = ($(this).attr("default") == $(this).html()) ? "" : $(this).html().replace("<br>", "\n", "g");
-
-            var fontSize = parseFloat(window.getComputedStyle(this, null).getPropertyValue('font-size'));
-
-            var len = (!$(this).attr('editboxsize')) ? (((txt.length * charWidth) >= textBoxMax) ? textBoxMax : (txt.length ? (txt.length * charWidth) : ($(this).attr("default").length * charWidth))) : $(this).attr('editboxsize');
-
-            $(this).attr("old_val", $(this).html());
-
-            if ($(this).hasClass('textarea')) {
-                len = 740;
-                $(this).html('<textarea rows=4 cols=5 class="editabletextbox" style="width:' + len + 'px; border:1px solid #E1E1E1;"></textarea>');
-            } else {
-                $(this).html('<input type="text" class="editabletextbox" style="width:' + len + 'px; font-size:' + fontSize + 'px; border:1px solid #E1E1E1;" />');
-            }
-            $(this).find(".editabletextbox").hide().val(txt).slideDown(300).attr('placeholder', $(this).attr("default")).focus();
-        }
-    });
-
-    $('body').on('blur', '.editabletextbox', function () {
-        // 
-        // Replace field with text:
-        // 
-        var tmp = (!$(this).val().length) ? $(this).parent().attr("default") : $(this).val().replace("\n", "<br />", "g");
-        $(this).parent().html(tmp);
-    });
-
-    $('body').on('keyup', '.editabletextbox', function (e) {
-        if (e.which == 13) { // Enter key
-            if (!$(this).is('textarea')) {
-                $(this).trigger('focusout');
-            }
-        } else if (e.which == 27) { // Escape key. Return previous value
-            $(this).parent().html($(this).parent().attr('old_val'));
-            $('#qtext_tmp').val(formToKurt());
-        }
-    });
-
-    $('body').on('keypress', '.editabletextbox', function (e) {
-        if (e.which == 13) { // Enter key
-            if (!$(this).is('textarea')) {
-                e.preventDefault();
-            }
-        }
+        $(this).removeClass("editabletext");
+        $(this).text("");
     });
 
     // 

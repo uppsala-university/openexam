@@ -275,7 +275,7 @@ $(document).ready(function () {
                 '<div style="padding-top:5px">\
                         <img src="' + baseURL + 'img/cross-circle.png" class="delopt hideable" width="12" height="12"> \
                         <input type="checkbox"> \
-                        <span class="editabletext" default="Option - click to edit">Option - click to edit</span> \
+                        <span class="editabletext" contenteditable="true">Option - click to edit</span> \
                 </div>');
 
     });
