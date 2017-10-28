@@ -145,7 +145,7 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
                                                                             <div style="padding-top:5px">
                                                                                 <?= $delOpt ?>
                                                                                 <input type="checkbox" class="readable" <?= $checked ? 'checked="checked"' : '' ?>>
-                                                                                <span contenteditable="true"><?= $optText ?></span> 
+                                                                                <div contenteditable="true" ckeditor="choice" style="display: inline"><?= $optText ?></div> 
                                                                             </div>
                                                                     <?php endforeach; ?>
                                                             <?php else: ?>
@@ -154,7 +154,7 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
                                                                             <div style="padding-top:5px">
                                                                                 <?= $delOpt ?>
                                                                                 <input type="checkbox" class="readable">
-                                                                                <span class="editabletext" contenteditable="true"><?= $optTxt ?></span>
+                                                                                <div contenteditable="true" ckeditor="choice" style="display: inline" class="editabletext"><?= $optTxt ?></div>
                                                                             </div>
                                                                     <?php endfor; ?>
                                                             <?php endif; ?>
@@ -257,6 +257,38 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
         var role = '<?= $role ?>';
 </script>
 
+<script ckeditor="choice">
+        $(document).find('[ckeditor="choice"]').each(function (index, element) {
+            // 
+            // Use custom config for ckeditor bound on elements having 
+            // ckeditor="choice" as custom attribute.
+            // 
+            CKEDITOR.on('instanceCreated', function (event) {
+                var editor = event.editor;
+                if (editor.element.getAttribute('ckeditor') === "choice") {
+                    editor.on('configLoaded', function () {
+                        editor.config.toolbar = [
+                            {
+                                name: 'clipboard',
+                                groups: ['clipboard', 'undo'],
+                                items: ['Cut', 'Copy', 'Paste', '-', 'Undo', 'Redo']
+                            },
+                            {
+                                name: 'basicstyles',
+                                groups: ['basicstyles', 'cleanup'],
+                                items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript']
+                            },
+                            {
+                                name: 'insert',
+                                items: ['Smiley', 'SpecialChar']
+                            }
+                        ];
+                    });
+                }
+            });
+            CKEDITOR.inline(element);
+        });
+</script>
 <!-- User search support -->
 <?php $this->partial("partials/user-search", array('staff' => $staff)) ?>
 

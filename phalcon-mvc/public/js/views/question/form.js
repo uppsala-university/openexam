@@ -210,7 +210,7 @@ $(document).ready(function () {
             data: {'exam_id': examId},
             success: function (data) {
                 $("#media_selector").html(data);
-                
+
                 $("#media_selector").find("#audio-tab").parent().find("ul > li > a[href='#audio-tab']").hide();
                 $("#media_selector").find("#video-tab").parent().find("ul > li > a[href='#video-tab']").hide();
                 $("#media_selector").find("#other-tab").parent().find("ul > li > a[href='#other-tab']").hide();
@@ -271,13 +271,16 @@ $(document).ready(function () {
     // Add or delele new sortable option in option type of questions:
     // 
     $('body').on('click', '.addNewSortable', function () {
+        var instances = $(document).find('[ckeditor="choice"]').length;
+        var editor = 'editor' + instances;
+
         $(this).closest('.choice_q').find('.question_opts').append(
                 '<div style="padding-top:5px">\
                         <img src="' + baseURL + 'img/cross-circle.png" class="delopt hideable" width="12" height="12"> \
                         <input type="checkbox"> \
-                        <span class="editabletext" contenteditable="true">Option - click to edit</span> \
+                        <div class="editabletext" ckeditor="choice" contenteditable="true" style="display: inline" id="' + editor + '">Option - click to edit</div> \
                 </div>');
-
+         CKEDITOR.inline(editor);
     });
     $('body').on('click', '.delopt', function () {
         $(this).parent().slideUp(500, function () {

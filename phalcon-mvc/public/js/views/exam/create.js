@@ -534,7 +534,7 @@ $(document).ready(function () {
             // 
             if ($(ansType).val() === 'choicebox') {
                 qJson[qPartTitle]["ans_area"]["data"] = {};
-                $(ansType).parent().parent().find('.ans_type').find('.question_opts > div > span').each(function (i, optElement) {
+                $(ansType).parent().parent().find('.ans_type').find('.question_opts > div > div').each(function (i, optElement) {
                     qJson[qPartTitle]["ans_area"]["data"][$(optElement).html()] = $(optElement).parent().find('input').is(':checked');
                 });
             } else if ($(ansType).val() === 'textarea') {
@@ -792,7 +792,8 @@ $(document).ready(function () {
             $('#qs_area').append($(qLine).show());
 
         });
-    }
+    };
+    
     refreshQs();
 
 });
