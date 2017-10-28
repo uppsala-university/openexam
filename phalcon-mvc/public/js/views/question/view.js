@@ -176,20 +176,23 @@ var canvasGetMarker = function (elementId, backgroundImage) {
     var fitWidth = true;
     var hzoom = painter.containerEl.children[0].height / backgroundImage.height;
     var wzoom = painter.containerEl.children[0].width / backgroundImage.width;
+    var zstep = Math.abs(wzoom - hzoom);
+
+    // 
+    // Ensure zoom step isn't to large if image height > width:
+    // 
+    while (zstep > 1) {
+        zstep /= 2;
+    }
 
     if (fitWidth) {
         painter.setZoom(wzoom);
     } else {
         painter.setZoom(hzoom);
     }
-    
-    // 
-    // Set zoom in/out scale factor (step size) to match difference between zoom 
-    // width and height. Clicking on zoom in/out buttons should now match up nearly 
-    // perfect.
-    // 
-    painter.config.zoomStep = Math.abs(wzoom - hzoom);
-    
+
+    painter.config.zoomStep = zstep;
+
     return painter;
 }
 
