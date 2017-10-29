@@ -205,6 +205,16 @@ class Exam extends ModelBase
          * @var string[]
          */
         public $flags;
+        /**
+         * The exam state.
+         * @var State 
+         */
+        private $_state;
+        /**
+         * The exam staff.
+         * @var Staff 
+         */
+        private $_staff;
 
         protected function initialize()
         {
@@ -465,7 +475,11 @@ class Exam extends ModelBase
          */
         public function getStaff()
         {
-                return new Staff($this);
+                if (!isset($this->_staff)) {
+                        return $this->_staff = new Staff($this);
+                } else {
+                        return $this->_staff;
+                }
         }
 
         /**
@@ -474,7 +488,11 @@ class Exam extends ModelBase
          */
         public function getState()
         {
-                return new State($this);
+                if (!isset($this->_state)) {
+                        return $this->_state = new State($this);
+                } else {
+                        return $this->_state;
+                }
         }
 
         /**
