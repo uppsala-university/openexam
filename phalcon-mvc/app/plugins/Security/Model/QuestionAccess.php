@@ -121,6 +121,9 @@ class QuestionAccess extends ObjectAccess
                             // 
                             if ($action != self::READ) {
                                     if ($model->exam->getState()->has(State::PUBLISHED)) {
+                                            if ($this->isRemoved($action, $model)) {
+                                                    return true;
+                                            }
                                             throw new Exception("Questions can't be added, modified or deleted in an published exam", Exception::ACTION);
                                     }
                             }
@@ -134,6 +137,28 @@ class QuestionAccess extends ObjectAccess
 
                             return true;
                     });
+        }
+
+        /**
+         * Question is toggled remove/active.
+         * 
+         * @param string $action The model action.
+         * @param Question $model The model object.
+         * @return boolean
+         */
+        private function isRemoved($action, $model)
+        {
+                if ($action != self::UPDATE) {
+                        return false;
+                }
+                if (!($current = $model->getCurrent())) {
+                        return false;
+                }
+                if ($current->status == 'removed' || $model->status == 'removed') {
+                        return true;
+                }
+
+                return false;
         }
 
 }
