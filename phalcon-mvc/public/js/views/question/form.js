@@ -1,5 +1,6 @@
 // JavaScript Document specific to Exam create
-// @Author Ahsan Shahzad [MedfarmDoIT]
+// @author Ahsan Shahzad [MedfarmDoIT]
+// @author Anders Lövgren (BMC-IT)
 
 var qPartTabs = $("#qPartTabs").tabs();
 var tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close'>Remove Tab</span></li>";
@@ -57,7 +58,14 @@ var addQuestPartTab = function () {
     CKEDITOR.replace('q_text' + tabId, {
         height: '100px'
     });
-}
+
+    // 
+    // Inline ckeditor on elements with ckeditor="choice" attribute:
+    // 
+    $('#' + id).find('[ckeditor="choice"]').each(function (index, element) {
+        CKEDITOR.inline(element);
+    });
+};
 
 /**
  * Events binding area.
@@ -280,7 +288,7 @@ $(document).ready(function () {
                         <input type="checkbox"> \
                         <div class="editabletext" ckeditor="choice" contenteditable="true" style="display: inline" id="' + editor + '">Option - click to edit</div> \
                 </div>');
-         CKEDITOR.inline(editor);
+        CKEDITOR.inline(editor);
     });
     $('body').on('click', '.delopt', function () {
         $(this).parent().slideUp(500, function () {
