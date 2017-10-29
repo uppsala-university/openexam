@@ -51,6 +51,10 @@ class DatabaseTest extends TestCase
                         'dbwrite' => array(
                                 'online'  => true,
                                 'working' => true
+                        ),
+                        'dbaudit' => array(
+                                'online'  => true,
+                                'working' => true
                         )
                 );
 
@@ -73,6 +77,12 @@ class DatabaseTest extends TestCase
                                 'working' => true
                         ),
                         'dbwrite' => array(
+                                'online'  => array(
+                                        '127.0.0.1' => true
+                                ),
+                                'working' => true
+                        ),
+                        'dbaudit' => array(
                                 'online'  => array(
                                         '127.0.0.1' => true
                                 ),
