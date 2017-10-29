@@ -254,9 +254,8 @@ $(document).ready(function () {
                         question.find(".insert-q").show();
                     }
             );
-
-            return false;
         }
+        return false;
     });
 
     // 
@@ -284,8 +283,8 @@ $(document).ready(function () {
                     }
             );
 
-            return false;
         }
+        return false;
     });
 
     // 
