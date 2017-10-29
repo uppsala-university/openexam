@@ -13,7 +13,8 @@
 
 namespace OpenExam\Library\Core\Exam;
 
-use OpenExam\Library\Database\Exception as DatabaseException;
+use OpenExam\Library\Core\Exam\State\Answer as AnswerState;
+use OpenExam\Library\Core\Exam\State\Result as ResultState;
 use OpenExam\Models\Exam;
 use Phalcon\Mvc\User\Component;
 use ReflectionObject;
@@ -125,20 +126,21 @@ class State extends Component
          * Examination has been fully corrected.
          */
         const CORRECTED = 0x10000;
-        /**
-         * Lifetime of cached answered and corrected state.
-         */
-        const CACHE_LIFETIME = 30;
 
-        /**
-         * The cache key.
-         * @var string
-         */
-        private $_ckey;
         /**
          * @var Exam 
          */
         private $_exam;
+        /**
+         * The question answer state.
+         * @var AnswerState 
+         */
+        private $_answer;
+        /**
+         * The result correction state.
+         * @var ResultState 
+         */
+        private $_result;
         /**
          * Bit mask of examination state.
          * @var int 
@@ -157,13 +159,11 @@ class State extends Component
         public function __construct($exam)
         {
                 $this->_exam = $exam;
-                $this->_ckey = $this->createCacheKey();
 
-                if ($this->hasCache()) {
-                        $this->getCache();
-                } else {
-                        $this->setCache();
-                }
+                $this->_answer = new AnswerState($exam, $this->cache);
+                $this->_result = new ResultState($exam, $this->cache);
+
+                $this->refresh();
         }
 
         /**
@@ -171,44 +171,21 @@ class State extends Component
          */
         public function __destruct()
         {
-                unset($this->_ckey);
                 unset($this->_exam);
                 unset($this->_flags);
+                unset($this->_answer);
+                unset($this->_result);
         }
 
         /**
-         * Check if cached data exists.
-         * @return boolean
+         * Reset examination state.
          */
-        private function hasCache()
+        public function reset()
         {
-                return $this->cache->exists($this->_ckey, self::CACHE_LIFETIME);
-        }
+                $this->_answer->reset($this->cache);
+                $this->_result->reset($this->cache);
 
-        /**
-         * Get data from cache.
-         */
-        private function getCache()
-        {
-                $data = $this->cache->get($this->_ckey, self::CACHE_LIFETIME);
-
-                $this->_state = $data['state'];
-                $this->_flags = $data['flags'];
-
-                $data = null;
-        }
-
-        /**
-         * Update object state and refresh cache.
-         */
-        private function setCache()
-        {
                 $this->refresh();
-
-                $this->cache->save($this->_ckey, array(
-                        'state' => $this->_state,
-                        'flags' => $this->_flags
-                    ), self::CACHE_LIFETIME);
         }
 
         /**
@@ -216,6 +193,9 @@ class State extends Component
          */
         public function refresh()
         {
+                $this->_flags = array();
+                $this->_state = 0;
+
                 $this->setState();
                 $this->setFlags();
         }
@@ -281,12 +261,12 @@ class State extends Component
          */
         private function setCorrected()
         {
-                if ($this->getUncorrected() == 0) {
+                if ($this->_result->exist() == false) {
                         $this->_state |= self::CORRECTED;
                 } else {
                         $this->_state &= ~self::CORRECTED;
                 }
-                if (!$this->isAnswered()) {
+                if ($this->_answer->exist() == false) {
                         $this->_state &= ~self::CORRECTED;
                 }
         }
@@ -296,7 +276,7 @@ class State extends Component
          */
         private function setAnswered()
         {
-                if ($this->getAnswered() != 0) {
+                if ($this->_answer->exist()) {
                         $this->_state |= self::ANSWERED;
                 } else {
                         $this->_state &= ~self::ANSWERED;
@@ -308,16 +288,8 @@ class State extends Component
          */
         private function setFlags()
         {
-                if (isset($this->_flags)) {
-                        return $this->_flags;
-                }
-
-                $this->_flags = array();
                 $reflection = new ReflectionObject($this);
                 foreach ($reflection->getConstants() as $name => $value) {
-                        if ($name == 'CACHE_LIFETIME') {
-                                continue;
-                        }
                         if ($this->has($value)) {
                                 $this->_flags[] = strtolower($name);
                         }
@@ -330,15 +302,9 @@ class State extends Component
          */
         private function setState()
         {
-                if (isset($this->_flags)) {
-                        unset($this->_flags);    // Called from refresh
-                }
-
                 // 
-                // Reset state and query answered and corrected state.
+                // Set answered and corrected state.
                 // 
-                $this->_state = 0;
-
                 $this->setAnswered();
                 $this->setCorrected();
 
@@ -406,71 +372,6 @@ class State extends Component
                                 $this->_state &= ~self::REUSABLE;
                         }
                 }
-        }
-
-        /**
-         * Get number of uncorrected answers.
-         * @return int 
-         */
-        private function getUncorrected()
-        {
-                if (!($connection = $this->_exam->getReadConnection())) {
-                        throw new DatabaseException("Failed get read connection");
-                }
-
-                // 
-                // This query will become slow on a heavy loaded server. Use 
-                // result cache if possible.
-                // 
-                if (($resultset = $connection->query("
-        SELECT  COUNT(a.id)
-        FROM    questions q, students s, answers a
-                LEFT JOIN results r ON 
-                (a.id = r.answer_id AND r.correction NOT IN ('waiting','partial'))
-        WHERE   s.exam_id = :examid AND
-                s.id = a.student_id AND
-                q.id = a.question_id AND 
-                q.status != 'removed' AND 
-                a.answered = 'Y' AND
-                r.id IS NULL", array('examid' => $this->_exam->id)))) {
-                        return current($resultset->fetch());
-                } else {
-                        throw new DatabaseException("Failed query uncorrected answers.");
-                }
-        }
-
-        /**
-         * Get number of answers.
-         * @return int
-         */
-        private function getAnswered()
-        {
-                if (!($connection = $this->_exam->getReadConnection())) {
-                        throw new DatabaseException("Failed get read connection");
-                }
-
-                // 
-                // This query will become slow on a heavy loaded server. Use 
-                // result cache if possible.
-                // 
-                if (($resultset = $connection->query("
-        SELECT  COUNT(a.id)
-        FROM    questions q, students s, answers a
-                LEFT JOIN results r ON a.id = r.answer_id
-        WHERE   s.exam_id = :examid AND
-                s.id = a.student_id AND
-                q.id = a.question_id AND 
-                q.status != 'removed' AND 
-                a.answered = 'Y'", array('examid' => $this->_exam->id)))) {
-                        return current($resultset->fetch());
-                } else {
-                        throw new DatabaseException("Failed query answers on exam.");
-                }
-        }
-
-        private function createCacheKey()
-        {
-                return sprintf("state-exam-%d", $this->_exam->id);
         }
 
 }
