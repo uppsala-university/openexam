@@ -160,7 +160,13 @@ if (isset($_COOKIE['sc']) && $_COOKIE['sc'] == 0) {
 <!-- page header ends -->
 
 <!-- page wrapper -->
-<?php $allQs = $exam->getQuestions(array("order" => "slot")); ?>
+<?php
+$allQs = $exam->getQuestions(array(
+        "conditions" => "status = 'active'",
+        "order"      => "slot"
+    ));
+
+?>
 <div id='wrapper'>
     <?php if (isset($viewMode)): ?>
             <div id='main-nav-bg'></div>

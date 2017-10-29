@@ -4840,7 +4840,6 @@ select[name=program] {
 
 #qPartTabs li .ui-icon-close { 
     float: left; 
-    /*margin: 0.4em 0.2em 0 0; */
     cursor: pointer; 
 }
 
@@ -4854,63 +4853,6 @@ select[name=program] {
     padding:10px; 
     border:1px solid #dedede; 
     font-size:11px
-}
-
-.qs_area {
-    padding-bottom:50px
-}
-
-.qs_area_line {
-    padding-bottom:15px
-}
-
-.qs_area_line_q {
-    padding-bottom:15px;
-    border-left: 2px solid #fbeed5; 
-    margin-left:55px; 
-    padding-left:10px;
-    min-height:85px;
-}
-
-.qs_area_line_q p {
-    word-wrap: break-word !important;
-}
-
-.qs_area_line_q .q_head {
-    padding-bottom:8px;
-}
-
-.qs_area_line_q .q_head .q_part_no {
-    color:grey; 
-    padding-right:5px
-}
-
-.qs_area_line_q  .q_fields{
-    padding-left:15px
-}
-
-.q_line_op {
-    padding-top:15px; 
-    font-size:15px; 
-    text-align:center
-}
-
-.qs_area_line_q_no{
-    float:left; 
-    color:  #333333; /*#999999; */
-    font-size: 16px; 
-    padding: 0 15px 15px 0;
-    background-color: #fcf8e3 /*#FFFFD9*/; 
-    border-radius: 5px; 
-    border: 2px solid #fbeed5; 
-    padding: 5px 8px 5px 5px;
-    min-width:40px;
-}
-
-.qs_area_line_q_no .q_score{
-    font-size:10px; 
-    padding-top:5px; 
-    color:#666;
 }
 
 #default_msg_qs {

@@ -236,7 +236,10 @@ class QuestionController extends GuiController
                 // 
                 // Load all questions in this exam for highlighting questions.
                 // 
-                $allQs = $exam->getQuestions(array('order' => 'slot'));
+                $allQs = $exam->getQuestions(array(
+                        'conditions' => "status = 'active'",
+                        'order'      => 'slot'
+                ));
                 $firtstQ = $allQs->getFirst();
 
                 // 

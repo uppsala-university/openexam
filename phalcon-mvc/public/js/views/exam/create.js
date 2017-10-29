@@ -130,7 +130,6 @@ $(document).ready(function () {
             $(element).find('.q').each(function (i, qNo) {
 
                 if ($(qNo).parent().is(':visible')) {
-                    //console.log(qsJson[$(qNo).attr('q-no')]["questId"]+"---"+$(qNo).parent().attr('q-id')+"---->"+$(this).parent().find('.q-txt').html());
                     tmpJson[cntr] = qsJson[$(qNo).attr('q-no')];
                     qArr.push({'id': qsJson[$(qNo).attr('q-no')]["questId"], "slot": (cntr), "topic_id": $(qNo).closest('.sortable-qs').attr('topic-id')});
                     $(qNo).html("Q" + (cntr) + ":").attr('q-no', (cntr));
@@ -228,6 +227,65 @@ $(document).ready(function () {
     $(document).on('click', '.edit-q', function () {
         loadQuestionDialog($(this).closest('.qs_area_line').attr('q-no'));
         return false;
+    });
+
+    // 
+    // Remove question (set status removed):
+    // 
+    $(document).on('click', '.remove-q', function () {
+        if (confirm("Do you want to remove this question from the exam?\r\n"
+                + "You can insert the question back at any time. If you remove the question, then "
+                + "it will no longer be visable and answarable during the exam for students.\r\n"
+                + "Removed questions are no longer included in grading during correction, but any already "
+                + "saved answers are not deleted.")) {
+            var question = $(this).closest('.qs_area_line');
+            var qid = question.attr('q-id');
+            var qbody = question.find('.qs_area_line_q_parts');
+
+            ajax(
+                    baseURL + 'ajax/core/' + role + '/question/update',
+                    {
+                        id: qid,
+                        status: "removed"
+                    },
+                    function (status) {
+                        qbody.addClass("question-removed");
+                        question.find(".remove-q").hide();
+                        question.find(".insert-q").show();
+                    }
+            );
+
+            return false;
+        }
+    });
+
+    // 
+    // Insert question (set status active):
+    // 
+    $(document).on('click', '.insert-q', function () {
+        if (confirm("Do you want to insert this question back on the exam?\r\n"
+                + "If you insert this question, then it will become visible for students during "
+                + "the exam. Any already saved answers will be accessable and during the correction "
+                + "this question will be included in grading during correction.")) {
+            var question = $(this).closest('.qs_area_line');
+            var qid = question.attr('q-id');
+            var qbody = question.find('.qs_area_line_q_parts');
+
+            ajax(
+                    baseURL + 'ajax/core/' + role + '/question/update',
+                    {
+                        id: qid,
+                        status: "active"
+                    },
+                    function (status) {
+                        qbody.removeClass("question-removed");
+                        question.find(".insert-q").hide();
+                        question.find(".remove-q").show();
+                    }
+            );
+
+            return false;
+        }
     });
 
     // 
@@ -660,7 +718,7 @@ $(document).ready(function () {
     }
 
     // 
-    // Reads question data from json object (on page storage) and 
+    // Reads question data from JSON object (on page storage) and 
     // re-populates questions in main question area
     // 
 
@@ -694,8 +752,15 @@ $(document).ready(function () {
             $(qLine).attr('q-no', qNo).find('.q_no').html('Q' + qNo + ':').end();
 
             if (!qData["canUpdate"]) {
-                console.log(qData["canUpdate"]);
                 $(qLine).find('.q_line_op').remove();
+            }
+
+            if (qData.status === "removed") {
+                $(qLine).find('.remove-q').hide();
+                $(qLine).find('.qs_area_line_q_parts').addClass("question-removed");
+            }
+            if (qData.status === "active") {
+                $(qLine).find('.insert-q').hide();
             }
 
             var totalScore = 0;
@@ -704,14 +769,14 @@ $(document).ready(function () {
             // 
             // We have 2 extra nodes in qParts json (on page, not in db): questId, canUpdate
             // 
-            var totalQParts = objectLength(qData) - 2;
+            var totalQParts = objectLength(qData) - 3;
 
             jQuery.each(qData, function (qPartTitle, qPartData) {
 
                 // 
                 // Skip extra node:
                 // 
-                if (qPartTitle === 'questId' || qPartTitle === 'canUpdate') {
+                if (qPartTitle === 'questId' || qPartTitle === 'canUpdate' || qPartTitle === 'status') {
                     if (qPartTitle === 'questId') {
                         $(qLine).attr('q-id', qPartData);
                     }
@@ -793,7 +858,7 @@ $(document).ready(function () {
 
         });
     };
-    
+
     refreshQs();
 
 });

@@ -181,7 +181,6 @@ $(document).ready(function () {
                                 // 
                                 if ($(this).attr('file-path')[0] !== '/') {
                                     $(this).attr('file-path', function (i, href) {
-                                        console.log(baseURL + href);
                                         return baseURL + href;
                                     });
                                 }
@@ -243,7 +242,6 @@ $(document).ready(function () {
                                 // 
                                 if ($(this).attr('file-path')[0] !== '/') {
                                     $(this).attr('file-path', function (i, href) {
-                                        console.log(baseURL + href);
                                         return baseURL + href;
                                     });
                                 }
