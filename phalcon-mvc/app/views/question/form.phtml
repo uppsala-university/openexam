@@ -258,34 +258,50 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
 </script>
 
 <script ckeditor="choice">
+        // 
+        // Use custom config for ckeditor bound on elements having 
+        // ckeditor="choice" as custom attribute.
+        // 
+        CKEDITOR.on('instanceCreated', function (event) {
+            var editor = event.editor;
+            if (editor.element.getAttribute('ckeditor') === "choice") {
+                editor.on('configLoaded', function () {
+                    editor.config.toolbar = [
+                        {
+                            name: 'clipboard',
+                            groups: ['clipboard', 'undo'],
+                            items: ['Cut', 'Copy', 'Paste', '-', 'Undo', 'Redo']
+                        },
+                        {
+                            name: 'basicstyles',
+                            groups: ['basicstyles', 'cleanup'],
+                            items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript']
+                        },
+                        {
+                            name: 'insert',
+                            items: ['Smiley', 'SpecialChar']
+                        }
+                    ];
+                });
+            }
+        });
+
+        // 
+        // Remove standard characters, add greek alphabeth instead:
+        // 
+        CKEDITOR.config.specialChars = [
+            "Α", "Β", "Γ", "Δ", "Ε", "Ζ", "Η", "Θ", "Ι", "Κ", "Λ", "Μ", "Ν", "Ξ", "Ο", "Π", "Ρ", "Σ", "Τ", "Υ", "Φ", "Χ", "Ψ", "Ω",
+            "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι", "κ", "λ", "μ", "ν", "ξ", "ο", "π", "ρ", "σ", "τ", "υ", "φ", "χ", "ψ", "ω",
+            "€", "‘", "’", "“", "”", "–", "—", "¡", "¢", "£", "¤", "¥", "¦", "§", "¨", "©", "ª", "«", "¬", "®", "¯", "°", "²", "³", "´", "µ", "¶", "·", "¸", "¹", "º", "»", "¼", "½", "¾", "¿",
+            "À", "Á", "Â", "Ã", "Ä", "Å", "Æ", "Ç", "È", "É", "Ê", "Ë", "Ì", "Í", "Î", "Ï", "Ð", "Ñ", "Ò", "Ó", "Ô", "Õ", "Ö", "×", "Ø", "Ù", "Ú", "Û", "Ü", "Ý", "Þ", "ß",
+            "à", "á", "â", "ã", "ä", "å", "æ", "ç", "è", "é", "ê", "ë", "ì", "í", "î", "ï", "ð", "ñ", "ò", "ó", "ô", "õ", "ö", "÷", "ø", "ù", "ú", "û", "ü", "ý", "þ", "ÿ",
+            "Œ", "œ", "Ŵ", "Ŷ", "ŵ", "ŷ", "‚", "‛", "„", "…", "™", "►", "•", "→", "⇒", "⇔", "♦", "≈"
+        ];
+
+        // 
+        // Inline ckeditor on elements with ckeditor="choice" attribute:
+        // 
         $(document).find('[ckeditor="choice"]').each(function (index, element) {
-            // 
-            // Use custom config for ckeditor bound on elements having 
-            // ckeditor="choice" as custom attribute.
-            // 
-            CKEDITOR.on('instanceCreated', function (event) {
-                var editor = event.editor;
-                if (editor.element.getAttribute('ckeditor') === "choice") {
-                    editor.on('configLoaded', function () {
-                        editor.config.toolbar = [
-                            {
-                                name: 'clipboard',
-                                groups: ['clipboard', 'undo'],
-                                items: ['Cut', 'Copy', 'Paste', '-', 'Undo', 'Redo']
-                            },
-                            {
-                                name: 'basicstyles',
-                                groups: ['basicstyles', 'cleanup'],
-                                items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript']
-                            },
-                            {
-                                name: 'insert',
-                                items: ['Smiley', 'SpecialChar']
-                            }
-                        ];
-                    });
-                }
-            });
             CKEDITOR.inline(element);
         });
 </script>
