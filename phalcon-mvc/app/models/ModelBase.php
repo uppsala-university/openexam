@@ -148,6 +148,15 @@ class ModelBase extends Model
         }
 
         /**
+         * Get current model.
+         * @return Model
+         */
+        public function getCurrent()
+        {
+                return $this->findFirstById($this->id);
+        }
+
+        /**
          * Get model access control object.
          * @return ObjectAccess
          */
