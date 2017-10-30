@@ -43,6 +43,11 @@ class Result
          * @var int 
          */
         private $_count;
+        /**
+         * The exam model.
+         * @var Exam 
+         */
+        private $_exam;
 
         /**
          * Constructor.
@@ -52,11 +57,12 @@ class Result
         public function __construct($exam, $cache)
         {
                 $this->_ckey = sprintf("state-exam-%d-result", $exam->id);
+                $this->_exam = $exam;
 
                 if ($cache->exists($this->_ckey, self::CACHE_LIFETIME)) {
                         $this->_count = $cache->get($this->_ckey, self::CACHE_LIFETIME);
                 } else {
-                        $this->_count = $this->getUncorrected($exam);
+                        $this->_count = $this->getUncorrected();
                         $cache->save($this->_ckey, $this->_count, self::CACHE_LIFETIME);
                 }
         }
@@ -90,18 +96,18 @@ class Result
          */
         public function reset($cache)
         {
+                $this->_count = $this->getUncorrected();
                 return $cache->delete($this->_ckey);
         }
 
         /**
          * Get number of uncorrected answers.
          * 
-         * @param Exam $exam The exam model.
          * @return int 
          */
-        private function getUncorrected($exam)
+        private function getUncorrected()
         {
-                if (!($connection = $exam->getReadConnection())) {
+                if (!($connection = $this->_exam->getReadConnection())) {
                         throw new DatabaseException("Failed get read connection");
                 }
 
@@ -119,8 +125,8 @@ class Result
                 q.id = a.question_id AND 
                 q.status != 'removed' AND 
                 a.answered = 'Y' AND
-                r.id IS NULL", array('examid' => $exam->id)))) {
-                        return current($resultset->fetch());
+                r.id IS NULL", array('examid' => $this->_exam->id)))) {
+                        return (int) current($resultset->fetch());
                 } else {
                         throw new DatabaseException("Failed query uncorrected answers.");
                 }

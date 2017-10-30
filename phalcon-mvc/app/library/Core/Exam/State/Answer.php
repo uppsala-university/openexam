@@ -31,7 +31,7 @@ class Answer
         /**
          * The cache lifetime.
          */
-        const CACHE_LIFETIME = 60;
+        const CACHE_LIFETIME = 120;
 
         /**
          * The cache key.
@@ -43,6 +43,11 @@ class Answer
          * @var int 
          */
         private $_count;
+        /**
+         * The exam model.
+         * @var Exam 
+         */
+        private $_exam;
 
         /**
          * Constructor.
@@ -52,11 +57,12 @@ class Answer
         public function __construct($exam, $cache)
         {
                 $this->_ckey = sprintf("state-exam-%d-answer", $exam->id);
+                $this->_exam = $exam;
 
                 if ($cache->exists($this->_ckey, self::CACHE_LIFETIME)) {
                         $this->_count = $cache->get($this->_ckey, self::CACHE_LIFETIME);
                 } else {
-                        $this->_count = $this->getAnswered($exam);
+                        $this->_count = $this->getAnswered();
                         $cache->save($this->_ckey, $this->_count, self::CACHE_LIFETIME);
                 }
         }
@@ -89,18 +95,18 @@ class Answer
          */
         public function reset($cache)
         {
+                $this->_count = $this->getAnswered();
                 return $cache->delete($this->_ckey);
         }
 
         /**
          * Get number of answers.
          * 
-         * @param Exam $exam The exam model.
          * @return int
          */
-        private function getAnswered($exam)
+        private function getAnswered()
         {
-                if (!($connection = $exam->getReadConnection())) {
+                if (!($connection = $this->_exam->getReadConnection())) {
                         throw new DatabaseException("Failed get read connection");
                 }
 
@@ -116,8 +122,8 @@ class Answer
                 s.id = a.student_id AND
                 q.id = a.question_id AND 
                 q.status != 'removed' AND 
-                a.answered = 'Y'", array('examid' => $exam->id)))) {
-                        return current($resultset->fetch());
+                a.answered = 'Y'", array('examid' => $this->_exam->id)))) {
+                        return (int) current($resultset->fetch());
                 } else {
                         throw new DatabaseException("Failed query answers on exam.");
                 }
