@@ -2,6 +2,7 @@
  * Application level utility functions
  * 
  * @author Ahsan Shahzad (MedfarmDoIT)
+ * @author Anders Lövgren (BMC-IT)
  **/
 
 
@@ -134,8 +135,6 @@ $(document).ready(function () {
     // Support for localize float point numbers. Uses the language setting in
     // browser to set locale/language for formatting.
     // 
-    // ++ Anders L, 2017-08-17
-    // 
     if (String.prototype.parsefloat === undefined) {
         String.prototype.parsefloat = function () {
             var input = this.replace(',', '.');
@@ -181,4 +180,12 @@ $(document).ready(function () {
             }
         };
     }
+
+    // 
+    // Popup print dialog:
+    // 
+    if (window.location.hash && window.location.hash === '#print') {
+        window.print();
+    }
+
 });
