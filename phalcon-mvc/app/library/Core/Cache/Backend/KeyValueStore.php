@@ -107,6 +107,7 @@ class KeyValueStore
          */
         public function save($keyName = null, $content = null, $lifetime = null, $stopBuffer = true)
         {
+                $this->_store[$keyName] = $content;
                 $this->_backend->save($keyName, $content, $lifetime, $stopBuffer);
         }
 
