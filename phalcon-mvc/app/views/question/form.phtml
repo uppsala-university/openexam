@@ -11,12 +11,22 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
         $exam->show_correctors = false;
 }
 
+if ($exam->published) {
+        $question->is_editable = false;
+} else {
+        $question->is_editable = true;
+}
+
+if ($question->status == 'removed') {
+        $question->is_editable = true;
+}
+
 ?>
 
 <!-- Add / Edit question form that appears in light box -->
 
 <div  id="question-form" style="padding-top:20px; ">
-    <div id="qPartTabs" style="<?= $exam->published ? 'display:none' : ''; ?>">
+    <div id="qPartTabs" style="<?= $question->is_editable ? 'display:block' : 'pointer-events: none; opacity: 0.4;'; ?>">
         <?php $tabCounter = 1 ?>
         <ul id="q-part-tabs" style=" <?= ($totalQParts <= 1 ? "display:none" : "") ?>">
             <li><a href="#q-part-<?= $tabCounter ?>">Part a</a><span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></li>
@@ -253,7 +263,7 @@ if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
 <script language="javascript">
         var tabId = tabCounter = <?= ($totalQParts ? $totalQParts + 1 : 2) ?>;
         var qId = <?= $question->id ? $question->id : 0 ?>;
-        var isExamPublished = <?= (in_array("published", $exam->flags)) ? "1" : "0"; ?>;
+        var qIsEditable = <?= $question->is_editable ? 1 : 0 ?>;
         var role = '<?= $role ?>';
 </script>
 

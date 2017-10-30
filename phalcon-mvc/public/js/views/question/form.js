@@ -100,23 +100,21 @@ $(document).ready(function () {
         }
     });
 
-    setTimeout(
-            function ()
-            {
-                if (isExamPublished) {
-                    $("#question-form-dialog-wrap").dialog("option", "buttons",
-                            [
-                                {
-                                    text: "Cancel",
-                                    click: function () {
-                                        closeToolTips();
-                                        $(this).dialog('destroy');
-                                    }
-                                }
-                            ]
-                            );
-                }
-            }, 500);
+    setTimeout(function () {
+        if (!qIsEditable) {
+            $("#question-form-dialog-wrap").dialog("option", "buttons",
+                    [
+                        {
+                            text: "Cancel",
+                            click: function () {
+                                closeToolTips();
+                                $(this).dialog('destroy');
+                            }
+                        }
+                    ]
+                    );
+        }
+    }, 500);
 
     if (formJs === 'loaded') {
         return;
@@ -288,6 +286,7 @@ $(document).ready(function () {
                 </div>');
         CKEDITOR.inline(editor);
     });
+
     $('body').on('click', '.delopt', function () {
         $(this).parent().slideUp(500, function () {
             $(this).remove();
