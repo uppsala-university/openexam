@@ -296,6 +296,9 @@ class Staff extends Component
                 if (isset($user)) {
                         $role->user = $user;
                 }
+                if (!isset($role->display)) {
+                        $role->display = $role->name;
+                }
 
                 // 
                 // Insert roles data:
