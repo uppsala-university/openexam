@@ -89,7 +89,7 @@ class RenderPdfDocument extends RenderBase implements Renderer
         public function send($filename, $objects, $headers = true)
         {
                 if ($headers) {
-                        header(sprintf('Content-type: %s', 'application/pdf'));
+                        header(sprintf('Content-Type: %s', 'application/pdf; UTF-8'));
                         header(sprintf("Content-Disposition: attachment; filename=\"%s\"", $filename));
                 }
 
