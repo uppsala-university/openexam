@@ -48,12 +48,13 @@ use OpenExam\Library\Core\Exam\Check;
         color: #333333;
         font-size: 16px;
         padding: 0 15px 15px 0;
-        background-color: #fcf8e3;
+        background-color: #ffffee;
         border: 2px solid #fbeed5;
         border-radius: 5px;
         padding: 5px 8px 5px 5px;
-        max-height: 80px;
-        min-width: 70px;
+        max-height: 95px;
+        min-width: 45px;
+        padding: 8px;
     }    
     .qs_area_line_q_no .q_score{
         font-size: 10px; 
@@ -92,6 +93,11 @@ use OpenExam\Library\Core\Exam\Check;
     }
     .edit-q.published > i {
         color: #994276;
+    }
+    .q-tool-item {
+        float: left; 
+        margin-right: 3px;
+        padding: 2px;
     }
 </style>
 
@@ -158,16 +164,18 @@ use OpenExam\Library\Core\Exam\Check;
                     <div class="q_score"></div>
                     <div class="q_line_op">
                         <?php if (in_array("published", $exam->flags)) { ?>
-                                <a href="#" class="view-q"><i class="fa fa-eye" style=""></i></a>
-                                <a href="#" class="edit-q published"><i class="fa fa-pencil"></i></a>
-                                <a href="#" class="remove-q" style="display: none"><i class="fa fa-caret-square-o-right"></i></a>
-                                <a href="#" class="insert-q" style="display: none"><i class="fa fa-caret-square-o-left"></i></a>
+                                <a href="#" class="q-tool-item view-q" title="Preview question"><i class="fa fa-eye"></i></a>
+                                <a href="#" class="q-tool-item edit-q published" title="Edit question"><i class="fa fa-pencil"></i></a>
+                                <br>
+                                <a href="#" class="q-tool-item remove-q" style="display: none" title="Flag question as removed from this exam"><i class="fa fa-caret-square-o-right"></i></a>
+                                <a href="#" class="q-tool-item insert-q" style="display: none" title="Re-add removed question on this exam"><i class="fa fa-caret-square-o-left"></i></a>
                         <?php } else { ?>
-                                <a href="#" class="view-q"><i class="fa fa-eye"></i></a>
-                                <a href="#" class="edit-q editable"><i class="fa fa-pencil"></i></a>
-                                <a href="#" class="remove-q" style="display: none"><i class="fa fa-caret-square-o-right"></i></a>
-                                <a href="#" class="insert-q" style="display: none"><i class="fa fa-caret-square-o-left"></i></a>
-                                <a href="#" class="del-q"><i class="fa fa-close"></i></a>
+                                <a href="#" class="q-tool-item view-q" title="Preview question"><i class="fa fa-eye"></i></a>
+                                <a href="#" class="q-tool-item edit-q editable" title="Edit question"><i class="fa fa-pencil"></i></a>
+                                <br>
+                                <a href="#" class="q-tool-item remove-q" style="display: none" title="Flag question as removed from this exam"><i class="fa fa-caret-square-o-right"></i></a>
+                                <a href="#" class="q-tool-item insert-q" style="display: none" title="Re-add removed question on this exam"><i class="fa fa-caret-square-o-left"></i></a>
+                                <a href="#" class="q-tool-item del-q" title="Delete question from this exam"><i class="fa fa-close"></i></a>
                         <?php } ?>
                     </div>
                 </div>
