@@ -756,10 +756,13 @@ $(document).ready(function () {
 
             if (qData.status === "removed") {
                 $(qLine).find('.remove-q').hide();
+                $(qLine).find('.insert-q').show();
+                $(qLine).find('.edit-q > i').css('color', '#004276');
                 $(qLine).find('.qs_area_line_q_parts').addClass("question-removed");
             }
             if (qData.status === "active") {
                 $(qLine).find('.insert-q').hide();
+                $(qLine).find('.remove-q').show();
             }
 
             var totalScore = 0;
@@ -807,10 +810,10 @@ $(document).ready(function () {
                 // Get answer fields:
                 // 
                 var ansTypeHtml = '';
-                if (ansType == 'textbox') {
+                if (ansType === 'textbox') {
                     ansTypeHtml = '<input disabled type="text" style="width:350px">';
 
-                } else if (ansType == 'choicebox') {
+                } else if (ansType === 'choicebox') {
                     var totalCorrect = 0;
                     jQuery.each(qPartData.ans_area["data"], function (optTitle, optionStatus) {
                         ansTypeHtml += '<div style="padding-top:5px; ' + (optionStatus ? 'color: green; ' : '') + '">\
@@ -823,10 +826,10 @@ $(document).ready(function () {
                         }
                     });
 
-                    if (totalCorrect == 1) {
+                    if (totalCorrect === 1) {
                         ansTypeHtml = ansTypeHtml.replace(new RegExp(/type=\"checkbox\"/g), 'type=\"radio\"');
                     }
-                } else if (ansType == 'canvas') {
+                } else if (ansType === 'canvas') {
                     ansTypeHtml = '<img width="70%" src="' + baseURL + 'img/canvas.png">';
                 } else {
                     ansTypeHtml = '<img width="70%" src="' + baseURL + 'img/ckeditor.png">';
