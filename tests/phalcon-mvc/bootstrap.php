@@ -68,7 +68,11 @@ $loader->addPsr4('OpenExam\\Tests\\', __DIR__ . '/support');
 // 
 // Set authenticated user to unit test runner:
 // 
-if (extension_loaded('posix')) {
+if ($config->phpunit->username) {
+        $di->set('user', new \OpenExam\Library\Security\User(
+            $config->phpunit->username
+        ));
+} elseif (extension_loaded('posix')) {
         $di->set('user', new \OpenExam\Library\Security\User(
             posix_getpwuid(posix_geteuid())['name'], gethostname()
         ));
