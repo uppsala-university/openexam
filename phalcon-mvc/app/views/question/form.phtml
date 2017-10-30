@@ -155,7 +155,7 @@ if ($question->status == 'removed') {
                                                                             <div style="padding-top:5px">
                                                                                 <?= $delOpt ?>
                                                                                 <input type="checkbox" class="readable" <?= $checked ? 'checked="checked"' : '' ?>>
-                                                                                <div contenteditable="true" ckeditor="choice" style="display: inline"><?= $optText ?></div> 
+                                                                                <div contenteditable="true" ckeditor="choice" style="display: inline-block"><?= $optText ?></div> 
                                                                             </div>
                                                                     <?php endforeach; ?>
                                                             <?php else: ?>
@@ -164,7 +164,7 @@ if ($question->status == 'removed') {
                                                                             <div style="padding-top:5px">
                                                                                 <?= $delOpt ?>
                                                                                 <input type="checkbox" class="readable">
-                                                                                <div contenteditable="true" ckeditor="choice" style="display: inline" class="editabletext"><?= $optTxt ?></div>
+                                                                                <div contenteditable="true" ckeditor="choice" style="display: inline-block" class="editabletext"><?= $optTxt ?></div>
                                                                             </div>
                                                                     <?php endfor; ?>
                                                             <?php endif; ?>
