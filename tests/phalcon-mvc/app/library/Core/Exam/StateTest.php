@@ -86,7 +86,8 @@ class StateTest extends TestCase
                 $this->addQuestion();
                 $this->addCorrector();
 
-                $this->_state = new State($this->_exam);
+//                $this->_state = new State($this->_exam);
+                $this->_state = $this->_exam->getState();
         }
 
         /**
@@ -172,7 +173,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() + 120);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 print_r($this->_state->getFlags());
 
@@ -184,11 +185,21 @@ class StateTest extends TestCase
                 self::assertTrue(($this->_state->getState() & State::EDITABLE) != 0);
                 self::assertTrue(($this->_state->getState() & State::EXAMINATABLE) != 0);
                 self::assertTrue(($this->_state->getState() & State::FINISHED) == 0);
-                self::assertTrue(($this->_state->getState() & State::REUSABLE) != 0);
                 self::assertTrue(($this->_state->getState() & State::RUNNING) == 0);
                 self::assertTrue(($this->_state->getState() & State::UPCOMING) != 0);
                 self::assertTrue(($this->_state->getState() & State::ANSWERED) == 0);
                 self::assertTrue(($this->_state->getState() & State::CORRECTED) == 0);
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) != 0);
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) != 0);
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
+                }
 
                 // 
                 // Before examination started (published):
@@ -199,7 +210,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() + 120);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertTrue(($this->_state->getState() & State::CONTRIBUTABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::CORRECTABLE) == 0);
@@ -209,11 +220,21 @@ class StateTest extends TestCase
                 self::assertTrue(($this->_state->getState() & State::EDITABLE) != 0);
                 self::assertTrue(($this->_state->getState() & State::EXAMINATABLE) != 0);
                 self::assertTrue(($this->_state->getState() & State::FINISHED) == 0);
-                self::assertTrue(($this->_state->getState() & State::REUSABLE) != 0);
                 self::assertTrue(($this->_state->getState() & State::RUNNING) == 0);
                 self::assertTrue(($this->_state->getState() & State::UPCOMING) != 0);
                 self::assertTrue(($this->_state->getState() & State::ANSWERED) == 0);
                 self::assertTrue(($this->_state->getState() & State::CORRECTED) == 0);
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) != 0);
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) != 0);
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
+                }
 
                 // 
                 // Ongoing examination (unseen):
@@ -222,7 +243,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() + 60);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertTrue(($this->_state->getState() & State::CONTRIBUTABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::CORRECTABLE) == 0);
@@ -232,11 +253,21 @@ class StateTest extends TestCase
                 self::assertTrue(($this->_state->getState() & State::EDITABLE) != 0);
                 self::assertTrue(($this->_state->getState() & State::EXAMINATABLE) != 0);
                 self::assertTrue(($this->_state->getState() & State::FINISHED) == 0);
-                self::assertTrue(($this->_state->getState() & State::REUSABLE) != 0);
                 self::assertTrue(($this->_state->getState() & State::RUNNING) != 0);
                 self::assertTrue(($this->_state->getState() & State::UPCOMING) == 0);
                 self::assertTrue(($this->_state->getState() & State::ANSWERED) == 0);
                 self::assertTrue(($this->_state->getState() & State::CORRECTED) == 0);
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) != 0);
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) != 0);
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
+                }
 
                 // 
                 // Ongoing examination (seen):
@@ -247,7 +278,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() + 60);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertTrue(($this->_state->getState() & State::CONTRIBUTABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::CORRECTABLE) == 0);
@@ -257,11 +288,21 @@ class StateTest extends TestCase
                 self::assertTrue(($this->_state->getState() & State::EDITABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::EXAMINATABLE) != 0);
                 self::assertTrue(($this->_state->getState() & State::FINISHED) == 0);
-                self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::RUNNING) != 0);
                 self::assertTrue(($this->_state->getState() & State::UPCOMING) == 0);
                 self::assertTrue(($this->_state->getState() & State::ANSWERED) != 0);
                 self::assertTrue(($this->_state->getState() & State::CORRECTED) == 0);
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) != 0);
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
+                }
 
                 // 
                 // Finished examination (not yet corrected):
@@ -270,7 +311,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() - 60);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertTrue(($this->_state->getState() & State::CONTRIBUTABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::CORRECTABLE) != 0);
@@ -280,11 +321,21 @@ class StateTest extends TestCase
                 self::assertTrue(($this->_state->getState() & State::EDITABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::EXAMINATABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::FINISHED) != 0);
-                self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::RUNNING) == 0);
                 self::assertTrue(($this->_state->getState() & State::UPCOMING) == 0);
                 self::assertTrue(($this->_state->getState() & State::ANSWERED) != 0);
                 self::assertTrue(($this->_state->getState() & State::CORRECTED) == 0);
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) != 0);
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
+                }
 
                 // 
                 // Finished examination (corrected):
@@ -295,7 +346,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() - 60);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertTrue(($this->_state->getState() & State::CONTRIBUTABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::CORRECTABLE) != 0);
@@ -305,18 +356,28 @@ class StateTest extends TestCase
                 self::assertTrue(($this->_state->getState() & State::EDITABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::EXAMINATABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::FINISHED) != 0);
-                self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::RUNNING) == 0);
                 self::assertTrue(($this->_state->getState() & State::UPCOMING) == 0);
                 self::assertTrue(($this->_state->getState() & State::ANSWERED) != 0);
                 self::assertTrue(($this->_state->getState() & State::CORRECTED) != 0);
 
                 // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) != 0);
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
+                }
+
+                // 
                 // Finished examination (decoded):
                 // 
                 $this->_exam->decoded = true;
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertTrue(($this->_state->getState() & State::CONTRIBUTABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::CORRECTABLE) == 0);
@@ -326,11 +387,21 @@ class StateTest extends TestCase
                 self::assertTrue(($this->_state->getState() & State::EDITABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::EXAMINATABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::FINISHED) != 0);
-                self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
                 self::assertTrue(($this->_state->getState() & State::RUNNING) == 0);
                 self::assertTrue(($this->_state->getState() & State::UPCOMING) == 0);
                 self::assertTrue(($this->_state->getState() & State::ANSWERED) != 0);
                 self::assertTrue(($this->_state->getState() & State::CORRECTED) != 0);
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) != 0);
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertTrue(($this->_state->getState() & State::REUSABLE) == 0);
+                }
 
                 // 
                 // Test custom state:
@@ -344,17 +415,17 @@ class StateTest extends TestCase
                 $this->_exam->decoded = false;
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertTrue(($this->_state->getState() & State::DRAFT) != 0);
 
-                $this->_exam->lockdown = array('enable' => true);
+                $this->_exam->lockdown = (object) array('enable' => true);
                 $this->_exam->testcase = true;
                 $this->_exam->published = true;
                 $this->_exam->starttime = null;
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertTrue(($this->_state->getState() & State::TESTCASE) != 0);
                 self::assertTrue(($this->_state->getState() & State::LOCKDOWN) != 0);
@@ -378,7 +449,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() + 120);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertTrue($this->_state->has(State::CONTRIBUTABLE));
                 self::assertFalse($this->_state->has(State::CORRECTABLE));
@@ -388,11 +459,21 @@ class StateTest extends TestCase
                 self::assertTrue($this->_state->has(State::EDITABLE));
                 self::assertTrue($this->_state->has(State::EXAMINATABLE));
                 self::assertFalse($this->_state->has(State::FINISHED));
-                self::assertTrue($this->_state->has(State::REUSABLE));
                 self::assertFalse($this->_state->has(State::RUNNING));
                 self::assertTrue($this->_state->has(State::UPCOMING));
                 self::assertFalse($this->_state->has(State::ANSWERED));
                 self::assertFalse($this->_state->has(State::CORRECTED));
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertTrue($this->_state->has(State::REUSABLE));
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue($this->_state->has(State::REUSABLE));
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertFalse($this->_state->has(State::REUSABLE));
+                }
 
                 // 
                 // Before examination started (published):
@@ -403,7 +484,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() + 120);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertFalse($this->_state->has(State::CONTRIBUTABLE));
                 self::assertFalse($this->_state->has(State::CORRECTABLE));
@@ -413,11 +494,21 @@ class StateTest extends TestCase
                 self::assertTrue($this->_state->has(State::EDITABLE));
                 self::assertTrue($this->_state->has(State::EXAMINATABLE));
                 self::assertFalse($this->_state->has(State::FINISHED));
-                self::assertTrue($this->_state->has(State::REUSABLE));
                 self::assertFalse($this->_state->has(State::RUNNING));
                 self::assertTrue($this->_state->has(State::UPCOMING));
                 self::assertFalse($this->_state->has(State::ANSWERED));
                 self::assertFalse($this->_state->has(State::CORRECTED));
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertTrue($this->_state->has(State::REUSABLE));
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue($this->_state->has(State::REUSABLE));
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertFalse($this->_state->has(State::REUSABLE));
+                }
 
                 // 
                 // Ongoing examination (unseen):
@@ -426,7 +517,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() + 60);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertFalse($this->_state->has(State::CONTRIBUTABLE));
                 self::assertFalse($this->_state->has(State::CORRECTABLE));
@@ -436,11 +527,21 @@ class StateTest extends TestCase
                 self::assertTrue($this->_state->has(State::EDITABLE));
                 self::assertTrue($this->_state->has(State::EXAMINATABLE));
                 self::assertFalse($this->_state->has(State::FINISHED));
-                self::assertTrue($this->_state->has(State::REUSABLE));
                 self::assertTrue($this->_state->has(State::RUNNING));
                 self::assertFalse($this->_state->has(State::UPCOMING));
                 self::assertFalse($this->_state->has(State::ANSWERED));
                 self::assertFalse($this->_state->has(State::CORRECTED));
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertTrue($this->_state->has(State::REUSABLE));
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue($this->_state->has(State::REUSABLE));
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertFalse($this->_state->has(State::REUSABLE));
+                }
 
                 // 
                 // Ongoing examination (seen):
@@ -451,7 +552,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() + 60);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertFalse($this->_state->has(State::CONTRIBUTABLE));
                 self::assertFalse($this->_state->has(State::CORRECTABLE));
@@ -461,11 +562,21 @@ class StateTest extends TestCase
                 self::assertFalse($this->_state->has(State::EDITABLE));
                 self::assertTrue($this->_state->has(State::EXAMINATABLE));
                 self::assertFalse($this->_state->has(State::FINISHED));
-                self::assertFalse($this->_state->has(State::REUSABLE));
                 self::assertTrue($this->_state->has(State::RUNNING));
                 self::assertFalse($this->_state->has(State::UPCOMING));
                 self::assertTrue($this->_state->has(State::ANSWERED));
                 self::assertFalse($this->_state->has(State::CORRECTED));
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertFalse($this->_state->has(State::REUSABLE));
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue($this->_state->has(State::REUSABLE));
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertFalse($this->_state->has(State::REUSABLE));
+                }
 
                 // 
                 // Finished examination (not yet corrected):
@@ -474,7 +585,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() - 60);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertFalse($this->_state->has(State::CONTRIBUTABLE));
                 self::assertTrue($this->_state->has(State::CORRECTABLE));
@@ -484,11 +595,21 @@ class StateTest extends TestCase
                 self::assertFalse($this->_state->has(State::EDITABLE));
                 self::assertFalse($this->_state->has(State::EXAMINATABLE));
                 self::assertTrue($this->_state->has(State::FINISHED));
-                self::assertFalse($this->_state->has(State::REUSABLE));
                 self::assertFalse($this->_state->has(State::RUNNING));
                 self::assertFalse($this->_state->has(State::UPCOMING));
                 self::assertTrue($this->_state->has(State::ANSWERED));
                 self::assertFalse($this->_state->has(State::CORRECTED));
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertFalse($this->_state->has(State::REUSABLE));
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue($this->_state->has(State::REUSABLE));
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertFalse($this->_state->has(State::REUSABLE));
+                }
 
                 // 
                 // Finished examination (corrected):
@@ -499,7 +620,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() - 60);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertFalse($this->_state->has(State::CONTRIBUTABLE));
                 self::assertTrue($this->_state->has(State::CORRECTABLE));
@@ -509,18 +630,28 @@ class StateTest extends TestCase
                 self::assertFalse($this->_state->has(State::EDITABLE));
                 self::assertFalse($this->_state->has(State::EXAMINATABLE));
                 self::assertTrue($this->_state->has(State::FINISHED));
-                self::assertFalse($this->_state->has(State::REUSABLE));
                 self::assertFalse($this->_state->has(State::RUNNING));
                 self::assertFalse($this->_state->has(State::UPCOMING));
                 self::assertTrue($this->_state->has(State::ANSWERED));
                 self::assertTrue($this->_state->has(State::CORRECTED));
 
                 // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertFalse($this->_state->has(State::REUSABLE));
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue($this->_state->has(State::REUSABLE));
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertFalse($this->_state->has(State::REUSABLE));
+                }
+
+                // 
                 // Finished examination (decoded):
                 // 
                 $this->_exam->decoded = true;
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertFalse($this->_state->has(State::CONTRIBUTABLE));
                 self::assertFalse($this->_state->has(State::CORRECTABLE));
@@ -530,11 +661,21 @@ class StateTest extends TestCase
                 self::assertFalse($this->_state->has(State::EDITABLE));
                 self::assertFalse($this->_state->has(State::EXAMINATABLE));
                 self::assertTrue($this->_state->has(State::FINISHED));
-                self::assertFalse($this->_state->has(State::REUSABLE));
                 self::assertFalse($this->_state->has(State::RUNNING));
                 self::assertFalse($this->_state->has(State::UPCOMING));
                 self::assertTrue($this->_state->has(State::ANSWERED));
                 self::assertTrue($this->_state->has(State::CORRECTED));
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertFalse($this->_state->has(State::REUSABLE));
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue($this->_state->has(State::REUSABLE));
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertFalse($this->_state->has(State::REUSABLE));
+                }
 
                 // 
                 // Test custom state:
@@ -548,16 +689,16 @@ class StateTest extends TestCase
                 $this->_exam->decoded = false;
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertTrue($this->_state->has(State::DRAFT));
-                
-                $this->_exam->lockdown = array('enable' => true);
+
+                $this->_exam->lockdown = (object) array('enable' => true);
                 $this->_exam->testcase = true;
                 $this->_exam->published = true;
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 self::assertTrue($this->_state->has(State::TESTCASE));
                 self::assertTrue($this->_state->has(State::LOCKDOWN));
@@ -581,7 +722,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() + 120);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 $flags = $this->_state->getFlags();
                 printf("Before examination started (unpublished):\n");
@@ -595,11 +736,21 @@ class StateTest extends TestCase
                 self::assertTrue(in_array('editable', $flags));
                 self::assertTrue(in_array('examinatable', $flags));
                 self::assertFalse(in_array('finished', $flags));
-                self::assertTrue(in_array('reusable', $flags));
                 self::assertFalse(in_array('running', $flags));
                 self::assertTrue(in_array('upcoming', $flags));
                 self::assertFalse(in_array('answered', $flags));
                 self::assertFalse(in_array('corrected', $flags));
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertTrue(in_array('reusable', $flags));
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue(in_array('reusable', $flags));
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertFalse(in_array('reusable', $flags));
+                }
 
                 // 
                 // Before examination started (published):
@@ -610,7 +761,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() + 120);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 $flags = $this->_state->getFlags();
                 printf("Before examination started (published):\n");
@@ -624,11 +775,21 @@ class StateTest extends TestCase
                 self::assertTrue(in_array('editable', $flags));
                 self::assertTrue(in_array('examinatable', $flags));
                 self::assertFalse(in_array('finished', $flags));
-                self::assertTrue(in_array('reusable', $flags));
                 self::assertFalse(in_array('running', $flags));
                 self::assertTrue(in_array('upcoming', $flags));
                 self::assertFalse(in_array('answered', $flags));
                 self::assertFalse(in_array('corrected', $flags));
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertTrue(in_array('reusable', $flags));
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue(in_array('reusable', $flags));
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertFalse(in_array('reusable', $flags));
+                }
 
                 // 
                 // Ongoing examination (unseen):
@@ -637,7 +798,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() + 60);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 $flags = $this->_state->getFlags();
                 printf("Ongoing examination (unseen):\n");
@@ -651,11 +812,21 @@ class StateTest extends TestCase
                 self::assertTrue(in_array('editable', $flags));
                 self::assertTrue(in_array('examinatable', $flags));
                 self::assertFalse(in_array('finished', $flags));
-                self::assertTrue(in_array('reusable', $flags));
                 self::assertTrue(in_array('running', $flags));
                 self::assertFalse(in_array('upcoming', $flags));
                 self::assertFalse(in_array('answered', $flags));
                 self::assertFalse(in_array('corrected', $flags));
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertTrue(in_array('reusable', $flags));
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue(in_array('reusable', $flags));
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertFalse(in_array('reusable', $flags));
+                }
 
                 // 
                 // Ongoing examination (seen):
@@ -666,7 +837,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() + 60);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 $flags = $this->_state->getFlags();
                 printf("Ongoing examination (seen):\n");
@@ -680,11 +851,21 @@ class StateTest extends TestCase
                 self::assertFalse(in_array('editable', $flags));
                 self::assertTrue(in_array('examinatable', $flags));
                 self::assertFalse(in_array('finished', $flags));
-                self::assertFalse(in_array('reusable', $flags));
                 self::assertTrue(in_array('running', $flags));
                 self::assertFalse(in_array('upcoming', $flags));
                 self::assertTrue(in_array('answered', $flags));
                 self::assertFalse(in_array('corrected', $flags));
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertFalse(in_array('reusable', $flags));
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue(in_array('reusable', $flags));
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertFalse(in_array('reusable', $flags));
+                }
 
                 // 
                 // Finished examination (not yet corrected):
@@ -693,7 +874,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() - 60);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 $flags = $this->_state->getFlags();
                 printf("Finished examination (not yet corrected):\n");
@@ -707,11 +888,21 @@ class StateTest extends TestCase
                 self::assertFalse(in_array('editable', $flags));
                 self::assertFalse(in_array('examinatable', $flags));
                 self::assertTrue(in_array('finished', $flags));
-                self::assertFalse(in_array('reusable', $flags));
                 self::assertFalse(in_array('running', $flags));
                 self::assertFalse(in_array('upcoming', $flags));
                 self::assertTrue(in_array('answered', $flags));
                 self::assertFalse(in_array('corrected', $flags));
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertFalse(in_array('reusable', $flags));
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue(in_array('reusable', $flags));
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertFalse(in_array('reusable', $flags));
+                }
 
                 // 
                 // Finished examination (corrected):
@@ -722,7 +913,7 @@ class StateTest extends TestCase
                 $this->_exam->endtime = date('Y-m-d H:i:s', time() - 60);
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 $flags = $this->_state->getFlags();
                 printf("Finished examination (corrected):\n");
@@ -736,18 +927,28 @@ class StateTest extends TestCase
                 self::assertFalse(in_array('editable', $flags));
                 self::assertFalse(in_array('examinatable', $flags));
                 self::assertTrue(in_array('finished', $flags));
-                self::assertFalse(in_array('reusable', $flags));
                 self::assertFalse(in_array('running', $flags));
                 self::assertFalse(in_array('upcoming', $flags));
                 self::assertTrue(in_array('answered', $flags));
                 self::assertTrue(in_array('corrected', $flags));
 
                 // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertFalse(in_array('reusable', $flags));
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue(in_array('reusable', $flags));
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertFalse(in_array('reusable', $flags));
+                }
+
+                // 
                 // Finished examination (decoded):
                 // 
                 $this->_exam->decoded = true;
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
 
                 $flags = $this->_state->getFlags();
                 printf("Finished examination (decoded):\n");
@@ -761,11 +962,21 @@ class StateTest extends TestCase
                 self::assertFalse(in_array('editable', $flags));
                 self::assertFalse(in_array('examinatable', $flags));
                 self::assertTrue(in_array('finished', $flags));
-                self::assertFalse(in_array('reusable', $flags));
                 self::assertFalse(in_array('running', $flags));
                 self::assertFalse(in_array('upcoming', $flags));
                 self::assertTrue(in_array('answered', $flags));
                 self::assertTrue(in_array('corrected', $flags));
+
+                // 
+                // Check if always reusable is on:
+                // 
+                if (!isset($this->config->exam->reusable)) {
+                        self::assertFalse(in_array('reusable', $flags));
+                } elseif ($this->config->exam->reusable == 'always') {
+                        self::assertTrue(in_array('reusable', $flags));
+                } elseif ($this->config->exam->reusable == 'never') {
+                        self::assertFalse(in_array('reusable', $flags));
+                }
 
                 // 
                 // Test custom state:
@@ -779,17 +990,17 @@ class StateTest extends TestCase
                 $this->_exam->decoded = false;
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
                 $flags = $this->_state->getFlags();
-                
+
                 self::assertTrue(in_array('draft', $flags));
-                
-                $this->_exam->lockdown = array('enable' => true);
+
+                $this->_exam->lockdown = (object) array('enable' => true);
                 $this->_exam->testcase = true;
                 $this->_exam->published = true;
 
                 $this->_exam->update();
-                $this->_state->refresh();
+                $this->_state->reset();
                 $flags = $this->_state->getFlags();
                 printf("Custom state (e.g. published):\n");
                 print_r($flags);
