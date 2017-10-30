@@ -63,7 +63,9 @@ class Sequence extends Validator implements ValidatorInterface
                 // Validate sequence of values:
                 // 
                 for ($prev = 0, $i = 0; $i < count($sequence); ++$i) {
-                        if ($sequence[$i] < $prev) {
+                        if (!isset($sequence[$i])) {
+                                continue;
+                        } elseif ($sequence[$i] < $prev) {
                                 $this->appendMessage($this->getOption("message"));
                                 return false;
                         } else {
