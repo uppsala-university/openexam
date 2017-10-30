@@ -766,7 +766,7 @@ if ($exam->decoded) {
                 });
 
                 $.each(ansIds, function (i, ansId) {
-                    var saveResultBtn = $('.ans-id' + ansId);
+                    var saveResultBtn = $(".save-result[ans-id='" + ansId + "']");
                     var correctorComents = $(saveResultBtn).parent().parent().find('textarea').val();
                     var correctorId = parseInt($(saveResultBtn).attr('corrector-id'));
                     var resultJson = {};

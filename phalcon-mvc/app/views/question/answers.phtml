@@ -316,7 +316,7 @@ if (strtotime($exam->endtime) < time()) {
                                                                                         <textarea class="changeable no-print" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?= $qSpecAns->id ?>"><?= $result->comment ?></textarea>
                                                                                     </div>
                                                                                     <div class="savable" style="padding-bottom: 10px; padding-left: 45px;">
-                                                                                        <input class="no-print" style="text-shadow:none; background-color:#40c040; font-size:11px" type="button" class="save-result ans-id<?= $qSpecAns->id ?>" ans-id="<?= $qSpecAns->id ?>" value="Save result for this question" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
+                                                                                        <input class="save-result no-print" type="button" style="text-shadow:none; background-color:#40c040; font-size:11px" ans-id="<?= $qSpecAns->id ?>" value="Save result for this question" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
                                                                                     </div>
                                                                             <?php endif; ?>
                                                                     <?php else: ?>
@@ -461,7 +461,7 @@ if (strtotime($exam->endtime) < time()) {
                                                                                         </div>
 
                                                                                         <div class="savable no-print" style="padding-top: 10px; padding-left: 45px;">
-                                                                                            <input style="text-shadow:none; background-color:#40c040; font-size:11px" type="button" class="save-result ans-id<?= $answer->id ?>" ans-id="<?= $answer->id ?>" value="Save this result" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
+                                                                                            <input class="save-result no-print" type="button" style="text-shadow:none; background-color:#40c040; font-size:11px" ans-id="<?= $answer->id ?>" value="Save this result" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
                                                                                         </div>
                                                                                 <?php endif; ?>
                                                                         <?php else: ?>
@@ -553,5 +553,5 @@ if (strtotime($exam->endtime) < time()) {
                 window.print();
             }
         });
-        
+
 </script>
