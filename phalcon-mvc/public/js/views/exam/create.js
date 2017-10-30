@@ -252,7 +252,7 @@ $(document).ready(function () {
                         qbody.addClass("question-removed");
                         question.find(".remove-q").hide();
                         question.find(".insert-q").show();
-                        question.find('.edit-q > i').css('color', '#004276');
+                        question.find('.edit-q').addClass('editable');
                     }
             );
         }
@@ -281,7 +281,7 @@ $(document).ready(function () {
                         qbody.removeClass("question-removed");
                         question.find(".insert-q").hide();
                         question.find(".remove-q").show();
-                        question.find('.edit-q > i').css('color', '#994276');
+                        question.find('.edit-q').removeClass('editable');
                     }
             );
 
@@ -768,13 +768,12 @@ $(document).ready(function () {
             if (qData.status === "removed") {
                 $(qLine).find('.remove-q').hide();
                 $(qLine).find('.insert-q').show();
-                $(qLine).find('.edit-q > i').css('color', '#004276');
+                $(qLine).find('.edit-q').addClass('editable');
                 $(qLine).find('.qs_area_line_q_parts').addClass("question-removed");
             }
             if (qData.status === "active") {
                 $(qLine).find('.insert-q').hide();
                 $(qLine).find('.remove-q').show();
-                $(qLine).find('.edit-q > i').css('color', '#994276');
             }
 
             var totalScore = 0;
