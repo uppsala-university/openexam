@@ -252,6 +252,7 @@ $(document).ready(function () {
                         qbody.addClass("question-removed");
                         question.find(".remove-q").hide();
                         question.find(".insert-q").show();
+                        question.find('.edit-q > i').css('color', '#004276');
                     }
             );
         }
@@ -280,6 +281,7 @@ $(document).ready(function () {
                         qbody.removeClass("question-removed");
                         question.find(".insert-q").hide();
                         question.find(".remove-q").show();
+                        question.find('.edit-q > i').css('color', '#994276');
                     }
             );
 
