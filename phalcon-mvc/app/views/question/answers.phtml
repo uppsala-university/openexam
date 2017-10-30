@@ -73,6 +73,17 @@ if (strtotime($exam->endtime) < time()) {
     .savable {
         display: <?= $exam->show_save ? '' : 'none' ?>
     }
+    @media print {
+        .no-print {
+            display: none;
+        }
+        input.q-points {
+            padding: 10px;
+        }
+        body {
+            font-size: smaller;
+        }
+    }
 </style>
 
 <div class="hero-unit">
@@ -302,10 +313,10 @@ if (strtotime($exam->endtime) < time()) {
                                                                                     <div class="savable" style="padding-bottom: 10px; padding-left:35px">
                                                                                         <i class="fa fa-comments"></i>
                                                                                         Comments:<br />
-                                                                                        <textarea class="changeable" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?= $qSpecAns->id ?>"><?= $result->comment ?></textarea>
+                                                                                        <textarea class="changeable no-print" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?= $qSpecAns->id ?>"><?= $result->comment ?></textarea>
                                                                                     </div>
                                                                                     <div class="savable" style="padding-bottom: 10px; padding-left: 45px;">
-                                                                                        <input style="text-shadow:none; background-color:#40c040; font-size:11px" type="button" class="save-result ans-id<?= $qSpecAns->id ?>" ans-id="<?= $qSpecAns->id ?>" value="Save result for this question" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
+                                                                                        <input class="no-print" style="text-shadow:none; background-color:#40c040; font-size:11px" type="button" class="save-result ans-id<?= $qSpecAns->id ?>" ans-id="<?= $qSpecAns->id ?>" value="Save result for this question" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
                                                                                     </div>
                                                                             <?php endif; ?>
                                                                     <?php else: ?>
@@ -446,10 +457,10 @@ if (strtotime($exam->endtime) < time()) {
                                                                                         <div class="savable" style="padding-top: 10px; padding-left:35px">
                                                                                             <i class="fa fa-comments"></i>
                                                                                             Comments:<br />
-                                                                                            <textarea class="changeable" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?= $answer->id ?>"><?= $result->comment ?></textarea>
+                                                                                            <textarea class="changeable no-print" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?= $answer->id ?>"><?= $result->comment ?></textarea>
                                                                                         </div>
 
-                                                                                        <div class="savable" style="padding-top: 10px; padding-left: 45px;">
+                                                                                        <div class="savable no-print" style="padding-top: 10px; padding-left: 45px;">
                                                                                             <input style="text-shadow:none; background-color:#40c040; font-size:11px" type="button" class="save-result ans-id<?= $answer->id ?>" ans-id="<?= $answer->id ?>" value="Save this result" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
                                                                                         </div>
                                                                                 <?php endif; ?>
@@ -487,7 +498,15 @@ if (strtotime($exam->endtime) < time()) {
         </div>
     </div>
     <?php if ($decoded == false) : ?>
-            <div style="position: fixed; top: 55px; right: 70px; padding: 10px; background-color: whitesmoke; border-radius: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2); z-index: 2">
+            <div class="no-print" style="position: fixed; top: 55px; right: 70px; padding: 10px; background-color: whitesmoke; border-radius: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2); z-index: 2">
+                <div>
+                    <?php
+                    printf("<a href=\"#\" style=\"float: right; padding: 5px\" onclick=\"return render_pdf_document('%s','%s')\" title=\"Download current view as PDF document\"><i class=\"fa fa-file-pdf-o fa-2x\" aria-hidden=\"true\"></i></a>\n", urlencode($this->request->get("_url")), $this->url->get("utility/render/pdf"));
+                    printf("<a href=\"#\" style=\"float: right; padding: 5px\" onclick=\"return online_url_document('%s')\" title=\"View online in print friendly format\"><i class=\"fa fa-print fa-2x\" aria-hidden=\"true\"></i></a>\n", $this->url->get($this->request->get('_url')));
+
+                    ?>
+                </div>
+                <hr>
                 <input type="button" style="text-shadow: none; background-color: rgb(64, 192, 64); font-size: 20px; padding: 8px" class="save-all-result savable" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>" value="Save all results »">
                 <div style="padding-left: 10px; padding-top: 5px">
                     <input type="checkbox" class="hide-completed"><span style="margin-left: 10px">Hide fully corrected answers</span><br>
@@ -496,9 +515,43 @@ if (strtotime($exam->endtime) < time()) {
             </div>
     <?php endif; ?>
 </div>
+
+<form id="download-pdf" action="" style="display: none">
+    <input id="download-url" type="hidden" name="url" value="">
+    <input type="submit">
+</form>
+
 <style>
     .hero-unit {
         background-color:#F9F9F9 !important;
         padding: 0px !important;
     }
 </style>
+
+<script>
+        // 
+        // Trigger download of PDF document:
+        // 
+        function render_pdf_document(url, render) {
+            window.location.href = render + '?url=' + url;
+            return false;
+        }
+
+        // 
+        // Trigger print of URL:
+        // 
+        function online_url_document(url) {
+            window.location.href = url + "#print";
+            return false;
+        }
+
+        // 
+        // Popup print dialog if hash-bang is set:
+        // 
+        document.addEventListener("DOMContentLoaded", function () {
+            if (window.location.hash && window.location.hash === '#print') {
+                window.print();
+            }
+        });
+        
+</script>
