@@ -637,10 +637,19 @@ $(document).ready(function () {
                 baseURL + 'ajax/core/' + role + '/question/' + (qId ? 'update' : 'create'),
                 data,
                 function (qData) {
-                    // 
-                    // Question was successfully added, save question id in JSON object:
-                    // 
-                    qJson["questId"] = qId ? qsJson[qId]["questId"] : qData.id;
+                    if (qId) {
+                        // 
+                        // Question was successfully updated. Keep ID and status in JSON object:
+                        // 
+                        qJson["questId"] = qsJson[qId]["questId"];
+                        qJson["status"] = qsJson[qId]["status"];
+                    } else {
+                        // 
+                        // Question was successfully created. Save ID and status in JSON object:
+                        // 
+                        qJson["questId"] = qData.id;
+                        qJson["status"] = qData.status;
+                    }
 
                     // 
                     // Save correctors against this question in database and in JSON object:
@@ -763,6 +772,7 @@ $(document).ready(function () {
             if (qData.status === "active") {
                 $(qLine).find('.insert-q').hide();
                 $(qLine).find('.remove-q').show();
+                $(qLine).find('.edit-q > i').css('color', '#994276');
             }
 
             var totalScore = 0;
