@@ -16,13 +16,13 @@
         var exception = (function ()
         {
             return {
-                server: '<?= gethostname() ?>',
-                subject: '<?= $error->getString() ?>',
-                message: '<?= $error->getMessage() ?>',
+                server: "<?= gethostname() ?>",
+                subject: "<?= $error->getString() ?>",
+                message: "<?= $error->getMessage() ?>",
                 receiver: <?= json_encode($contact) ?>,
-                time: '<?= strftime('%F %T') ?>',
-                file: '<?= basename($error->getException()->getFile()) ?>',
-                line: '<?= $error->getException()->getLine() ?>'
+                time: "<?= strftime('%F %T') ?>",
+                file: "<?= basename($error->getException()->getFile()) ?>",
+                line: "<?= $error->getException()->getLine() ?>"
             };
         }());
 
