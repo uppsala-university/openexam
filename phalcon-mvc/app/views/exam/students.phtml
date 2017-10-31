@@ -270,15 +270,9 @@ if (!$cdt->etime) {
             // 
             // Called after students has been added to exam.
             // 
-            // @param array userData The array of newly created student objects.
+            // @param int examId The exam ID.
             // 
-            var onStudentInserted = function (userData) {
-
-                if (userData.length > 1) {
-                    var examId = userData[0].exam_id;
-                } else {
-                    var examId = userData.exam_id;
-                }
+            var onStudentInserted = function (examId) {
 
                 $.ajax({
                     type: "POST",
@@ -573,7 +567,7 @@ if (!$cdt->etime) {
                             baseURL + 'ajax/core/invigilator/student/create',
                             JSON.stringify(stData),
                             function (userData) {
-                                onStudentInserted(userData);
+                                onStudentInserted(examId);
                             }
                     );
                 }
@@ -699,7 +693,7 @@ if (!$cdt->etime) {
                         baseURL + 'ajax/core/invigilator/student/create',
                         JSON.stringify(stdata),
                         function (result) {
-                            onStudentInserted(result);
+                            onStudentInserted(examId);
                         });
             });
 
