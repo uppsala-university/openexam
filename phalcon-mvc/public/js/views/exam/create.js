@@ -446,6 +446,26 @@ $(document).ready(function () {
                         duration: 5
                     }
                 });
+            },
+            error: function (error) {
+                $("#manage-students").html(error.responseText);
+                $("#manage-students").dialog({
+                    autoOpen: true,
+                    width: "50%",
+                    position: ['center', 20],
+                    modal: true,
+                    close: function () {
+                        $(this).dialog('destroy');
+                    },
+                    show: {
+                        effect: "blind",
+                        duration: 5
+                    },
+                    hide: {
+                        effect: "blind",
+                        duration: 5
+                    }
+                });
             }
         });
     });
