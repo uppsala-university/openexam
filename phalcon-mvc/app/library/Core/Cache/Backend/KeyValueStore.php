@@ -107,8 +107,8 @@ class KeyValueStore
          */
         public function save($keyName = null, $content = null, $lifetime = null, $stopBuffer = true)
         {
-                $this->_store[$keyName] = $content;
                 $this->_backend->save($keyName, $content, $lifetime, $stopBuffer);
+                $this->store($keyName, $content);
         }
 
         /**
@@ -129,9 +129,34 @@ class KeyValueStore
                 }
         }
 
+        /**
+         * Get all cache backends.
+         * @return BackendInterface[]
+         */
         public function getBackends()
         {
                 return $this->_backend->getBackends();
+        }
+
+        /**
+         * Store content in key/value store.
+         * 
+         * @param string $keyName The cache key.
+         * @param mixed $content The key value.
+         */
+        private function store($keyName, $content)
+        {
+                if ($content === serialize(false)) {
+                        $this->_store[$keyName] = false;
+                } elseif (!is_string($content)) {
+                        $this->_store[$keyName] = $content;
+                } elseif (($string = unserialize($content))) {
+                        $this->_store[$keyName] = $string;
+                } elseif (is_null($string)) {
+                        $this->_store[$keyName] = null;
+                } else {
+                        $this->_store[$keyName] = $content;
+                }
         }
 
 }
