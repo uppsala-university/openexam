@@ -174,7 +174,7 @@ $(document).ready(function () {
                 $("#manage-students").html(content);
                 $("#manage-students").dialog({
                     autoOpen: true,
-                    width: "50%",
+                    width: "700",
                     position: ['center', 20],
                     modal: true,
                     close: function () {
