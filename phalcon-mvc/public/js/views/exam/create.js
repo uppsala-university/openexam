@@ -430,20 +430,12 @@ $(document).ready(function () {
                 $("#manage-students").html(content);
                 $("#manage-students").dialog({
                     autoOpen: true,
-                    width: "700",
+                    width: "750",
                     position: ['center', 20],
                     modal: true,
                     close: function () {
                         $(this).dialog('destroy');
                         location.reload();
-                    },
-                    show: {
-                        effect: "blind",
-                        duration: 5
-                    },
-                    hide: {
-                        effect: "blind",
-                        duration: 5
                     }
                 });
             },
