@@ -34,6 +34,9 @@ if (!$cdt->etime) {
         border: 1px solid #ccff99;
         background-color: #99ff99;
     }
+    .st-exam-item-save {
+        white-space: nowrap;
+    }
 </style>
 <div id="st-mng-wrapper" exam-id="<?= $this->request->getPost('exam_id') ?>">
     <div style="padding-bottom:15px">
@@ -218,7 +221,7 @@ if (!$cdt->etime) {
                                         <td class="st-exam-item-edit" data-name="code" data-stud-code="<?= $student->code ?>"><?= $student->code ?></td>
                                         <td class="st-exam-item-edit" data-name="tag" data-stud-tag="<?= $student->tag ?>"><?= $student->tag ?></td>
                                         <td class="st-exam-item-save">
-                                            <span class="btn btn-default" style="visibility: hidden">
+                                            <span class="btn btn-default" style="visibility: hidden; display: inline-table">
                                                 <i class="fa fa-save"></i>
                                                 <span>Save</span>
                                             </span>
@@ -238,10 +241,10 @@ if (!$cdt->etime) {
 
 <script language="javascript">
         var studentList = <?= json_encode($stList) ?>;
-        $(function () {
+
+        (function () {
 
             $('.tablesorter').tablesorter({
-                widgets: ['zebra', 'columns'],
                 usNumberFormat: false,
                 sortReset: true,
                 sortRestart: true,
@@ -252,11 +255,13 @@ if (!$cdt->etime) {
                     }
                 }
             });
+
             $('.tabs').tabs();
             $(".accordion").accordion({
                 heightStyle: "content"
             });
-            if (stEvents == 'loaded') {
+
+            if (stEvents === 'loaded') {
                 return;
             } else {
                 stEvents = 'loaded';
@@ -292,7 +297,7 @@ if (!$cdt->etime) {
                         $('#no-student-msg').hide();
                     }
                 });
-            }
+            };
 
             // 
             // Edit student properties inline.
@@ -465,11 +470,11 @@ if (!$cdt->etime) {
             $(document).on("keyup", "#search-students", function () {
                 var value = jQuery.trim($(this).val());
                 $("table tr").each(function (index) {
-                    if (index != 0 && !$(this).hasClass('st-detail-rows')) {
+                    if (index !== 0 && !$(this).hasClass('st-detail-rows')) {
 
                         $row = $(this);
                         $row.find("td").each(function (i, elem) {
-                            if (jQuery.trim($(elem).text()).indexOf(value) != 0) {
+                            if (jQuery.trim($(elem).text()).indexOf(value) !== 0) {
                                 $row.hide();
                             } else {
                                 $row.show();
@@ -514,7 +519,7 @@ if (!$cdt->etime) {
                             {"id": $(this).attr('data-id')},
                             function (status) {
                                 jQuery.each(studentList, function (i, sData) {
-                                    if (typeof sData !== 'undefined' && sData.id == $(student).attr('data-id')) {
+                                    if (typeof sData !== 'undefined' && sData.id === $(student).attr('data-id')) {
                                         delete studentList[i];
                                     }
                                 });
@@ -545,7 +550,7 @@ if (!$cdt->etime) {
                     // Prepare data object:
                     // 
                     $.each(stList, function (i, val) {
-                        if (jQuery.trim(val) != '') {
+                        if (jQuery.trim(val) !== '') {
                             st = jQuery.trim(val).split(/\s/g);
                             if (st.length > 2) {
                                 var tmp = '';
@@ -591,6 +596,7 @@ if (!$cdt->etime) {
                 var data = new FormData($('form#student-file-import')[0]);
                 data.append('type', $('#file-type').attr('type'));
                 data.append('exam_id', $(this).closest('#st-mng-wrapper').attr('exam-id'));
+
                 $.ajax({
                     url: baseURL + '/utility/import/students/file',
                     type: 'POST',
@@ -603,7 +609,7 @@ if (!$cdt->etime) {
                     $('#student-file-import-content').attr('id', 'student-data-import-content');
                     $('#import-students-by-file').attr('id', 'import-students-by-table');
                 }).fail(function (message) {
-                    alert("Failed submit form")
+                    alert("Failed submit form");
                 });
             });
 
@@ -611,10 +617,12 @@ if (!$cdt->etime) {
             // Handle student group import:
             // 
             $(document).on('click', '#import-students-by-group', function () {
+
                 var data = new FormData($('form#student-group-import')[0]);
                 data.append('group', $('#group-name').val());
                 data.append('domain', $('#domain-name').val());
                 data.append('exam_id', $(this).closest('#st-mng-wrapper').attr('exam-id'));
+
                 $.ajax({
                     url: baseURL + '/utility/import/students/group',
                     type: 'POST',
@@ -627,7 +635,7 @@ if (!$cdt->etime) {
                     $('#student-group-import-content').attr('id', 'student-data-import-content');
                     $('#import-students-by-group').attr('id', 'import-students-by-table');
                 }).fail(function (message) {
-                    alert("Failed submit form")
+                    alert("Failed submit form");
                 });
             });
 
@@ -691,7 +699,7 @@ if (!$cdt->etime) {
                         baseURL + 'ajax/core/invigilator/student/create',
                         JSON.stringify(stdata),
                         function (result) {
-                            onStudentInserted(result)
+                            onStudentInserted(result);
                         });
             });
 
@@ -731,7 +739,7 @@ if (!$cdt->etime) {
             // 
             $(document).on("click", "#print-students-list", function () {
                 var examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
-                window.location.href = baseURL + 'utility/export/students/' + examId + '/download'
+                window.location.href = baseURL + 'utility/export/students/' + examId + '/download';
             });
-        });
+        })();
 </script>
