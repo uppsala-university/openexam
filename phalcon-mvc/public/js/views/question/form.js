@@ -1,8 +1,17 @@
 // 
-// Javascript for question editing.
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
 // 
-// @author Ahsan Shahzad [MedfarmDoIT]
-// @author Anders Lövgren (BMC-IT)
+// File:    form.js
+// 
+// Author:  Ahsan Shahzad (Medfarm DoIT)
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+// 
+// Question editing form.
+// 
 
 var qPartTabs = $("#qPartTabs").tabs();
 var tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close'>Remove Tab</span></li>";
@@ -43,7 +52,7 @@ var addQuestPartTab = function () {
     qPartTabs.tabs({active: tabCounter - 1});
     $(".accordion").accordion({heightStyle: "content"});
 
-    if (tabCounter == 2) {
+    if (tabCounter === 2) {
         qPartTabs.find("#q-parts-wrapper > .ui-tabs-panel").css('padding', '1em 1.4em');
         $('#q-part-tabs').show(200);
     }

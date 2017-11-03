@@ -1,4 +1,3 @@
-
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -56,7 +55,7 @@ $(document).ready(function () {
         return {
             setData: function (content) {
                 var colors = {bc: [], hc: [], fc: []};
-                var duser = [], dexam = [], dname = []
+                var duser = [], dexam = [], dname = [];
 
                 for (var i = 0; i < content.children.length; ++i) {
                     var division = content.children[i];

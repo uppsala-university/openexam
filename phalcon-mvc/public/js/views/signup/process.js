@@ -1,4 +1,3 @@
-
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -36,10 +35,11 @@ $(document).ready(function () {
             if (--tasks === 0) {
                 $('#next').show();
                 setTimeout(function () {
-                    $('#next').trigger('click')
+                    $('#next').trigger('click');
                 }, 3000);
             }
-        }
+        };
+        
         var _starting = function (obj) {
             var status = obj.find("div.exam-status");
             status.removeClass('none');
@@ -69,7 +69,7 @@ $(document).ready(function () {
             clone: function (obj, exam) {
                 _starting(obj);
                 ajax(baseURL + 'ajax/signup/teacher', {'id': exam}, function (data) {
-                    if (data == false) {
+                    if (data === false) {
                         _finished(obj, 'This exam has already been copied');
                     } else {
                         _finished(obj);
@@ -82,14 +82,14 @@ $(document).ready(function () {
             register: function (obj, exam) {
                 _starting(obj);
                 ajax(baseURL + 'ajax/signup/student', {'id': exam}, function (data) {
-                    if (data == false) {
-                        _finished(obj, 'Already subscribed on this exam')
+                    if (data === false) {
+                        _finished(obj, 'Already subscribed on this exam');
                     } else {
                         _finished(obj);
                     }
                 });
             }
-        }
+        };
     }($('div.exam-content-box').length));
 
     $('div.exam-content-box').each(function () {
@@ -101,4 +101,4 @@ $(document).ready(function () {
             signup.grant($(this));
         }
     });
-})
+});

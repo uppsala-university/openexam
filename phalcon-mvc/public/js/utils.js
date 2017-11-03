@@ -1,18 +1,25 @@
-/**
- * Application level utility functions
- * 
- * @author Ahsan Shahzad (MedfarmDoIT)
- * @author Anders Lövgren (BMC-IT)
- **/
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    utils.js
+// 
+// Author:  Ahsan Shahzad (Medfarm DoIT)
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
 
+// 
+// Application level utility functions.
+// 
 
 /**
- * Ajax wrapper
+ * Custom AJAX function.
  * 
- * @param {String} url
- * @param {Json} data
+ * @param {String} url The target URL.
+ * @param {Json} data The request data.
  * @param {string} target [e.g: undefined, 'return', '#id-of-element', '.class-name']
- * @param {type} type [POST, GET]
+ * @param {type} type [POST, GET] The request method.
  */
 var ajax = function (url, data, callback, type, async, showSuccessMsg) {
 
@@ -29,7 +36,9 @@ var ajax = function (url, data, callback, type, async, showSuccessMsg) {
     });
 
     request.done(function (response) {
-        // check response status
+        // 
+        // Check response status:
+        // 
         if (typeof response.failed !== "undefined") {
             showMessage(response.failed.return, 'error');
         } else if (typeof response.success !== "undefined") {
@@ -78,9 +87,9 @@ var showMessage = function (message, type) {
         $('#msg-box')
                 .attr('class', 'alert alert-' + type)
                 .html(message)
-                .slideDown(300)
+                .slideDown(300);
     }
-}
+};
 
 var closeToolTips = function ()
 {

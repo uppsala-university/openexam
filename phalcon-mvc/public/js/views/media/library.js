@@ -1,5 +1,17 @@
-// JavaScript Document specific to Exam create
-// @Author Ahsan Shahzad [MedfarmDoIT]
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    library.js
+// Created: 2015-02-17 02:22:48
+// 
+// Author:  Ahsan Shahzad (Medfarm DoIT)
+// 
+
+// 
+// The media files library.
+// 
 
 /**
  * Media library related event bindings
@@ -23,7 +35,7 @@ $(function () {
 
             $.each(data.result.files, function (index, file) {
 
-                if (typeof file.url != 'undefined') {
+                if (typeof file.url !== 'undefined') {
 
                     // 
                     // Add this image in selected library image area:
@@ -67,7 +79,7 @@ $(function () {
                                             .end()
                                             .end()
                                             .find('.lib-img')
-                                            .attr('src', (fType[0] == 'image' ? file.url : baseURL + "img/file-icon.png"))
+                                            .attr('src', (fType[0] === 'image' ? file.url : baseURL + "img/file-icon.png"))
                                             .attr('file-path', file.url)
                                             .end()
                                             .find('.lib-item-title')
@@ -97,7 +109,7 @@ $(function () {
 
 
                 } else {
-                    alert("Unable to upload file '" + file.name + "': " + file.error)
+                    alert("Unable to upload file '" + file.name + "': " + file.error);
                 }
             });
         },
@@ -132,10 +144,10 @@ $(function () {
 							<div>This resource can be used </div>\
 							<div>\
 								<select class="update-lib-item-shared" style="min-width:185px; height:25px">\
-									<option value="private" ' + (shared == 'private' ? 'selected' : '') + '>Only by me</option>\
-									<option value="exam" ' + (shared == 'exam' ? 'selected' : '') + '>By co-workers on this exam</option>\
-									<option value="group" ' + (shared == 'group' ? 'selected' : '') + '>For anyone in my department or group</option>\
-									<option value="global" ' + (shared == 'global' ? 'selected' : '') + '>By everyone else</option>\
+									<option value="private" ' + (shared === 'private' ? 'selected' : '') + '>Only by me</option>\
+									<option value="exam" ' + (shared === 'exam' ? 'selected' : '') + '>By co-workers on this exam</option>\
+									<option value="group" ' + (shared === 'group' ? 'selected' : '') + '>For anyone in my department or group</option>\
+									<option value="global" ' + (shared === 'global' ? 'selected' : '') + '>By everyone else</option>\
 								</select>\
 							</div>\
 							<br />\
@@ -154,10 +166,10 @@ $(function () {
 							<div>This resource can be used </div>\
 							<div>\
 								<select class="update-lib-item-shared" style="min-width:185px; height:25px">\
-									<option value="private" ' + (shared == 'private' ? 'selected' : '') + '>Only by me</option>\
-									<option value="exam" ' + (shared == 'exam' ? 'selected' : '') + '>By co-workers on this exam</option>\
-									<option value="group" ' + (shared == 'group' ? 'selected' : '') + '>For anyone in my department or group</option>\
-									<option value="global" ' + (shared == 'global' ? 'selected' : '') + '>By everyone else</option>\
+									<option value="private" ' + (shared === 'private' ? 'selected' : '') + '>Only by me</option>\
+									<option value="exam" ' + (shared === 'exam' ? 'selected' : '') + '>By co-workers on this exam</option>\
+									<option value="group" ' + (shared === 'group' ? 'selected' : '') + '>For anyone in my department or group</option>\
+									<option value="global" ' + (shared === 'global' ? 'selected' : '') + '>By everyone else</option>\
 								</select>\
 							</div>\
 							<br />\

@@ -87,7 +87,7 @@ var colors = {
         }
         return this._colors[this._curr++];
     }
-}
+};
 
 // 
 // Natural numbers sequence generator.

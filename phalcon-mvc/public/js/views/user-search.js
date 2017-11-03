@@ -1,4 +1,3 @@
-
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -227,8 +226,8 @@ function addUserRole(item, anchor, model)
     ajax(
             baseURL + 'ajax/core/' + role + '/' + model + '/create',
             {
-                "exam_id": examId,
-                "user": item.id
+                exam_id: examId,
+                user: item.id
             },
             function (response) {
 

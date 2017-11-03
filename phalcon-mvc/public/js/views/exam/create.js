@@ -1,6 +1,17 @@
-// JavaScript Document specific to Exam create
-// @author Ahsan Shahzad [MedfarmDoIT]
-// @author Anders Lövgren (BMC-IT)
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    create.js
+// 
+// Author:  Ahsan Shahzad (Medfarm DoIT)
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+// 
+// Javascript specific to exam create.
+// 
 
 /*-- var initialization --*/
 var totalQs = 0;
@@ -150,7 +161,7 @@ $(document).ready(function () {
                 }
         );
 
-    }
+    };
 
     if (showAddQuestionView && $('.add_new_qs').length) {
         loadQuestionDialog(0);
@@ -400,11 +411,11 @@ $(document).ready(function () {
 
         data = {"id": examId, "name": examTitle, "descr": examDesc, "orgunit": org, "grades": grades, "details": details, "course": course, "code": code};
 
-        if (start != '') {
+        if (start !== '') {
             data["starttime"] = start;
         }
 
-        if (end != '') {
+        if (end !== '') {
             data["endtime"] = end;
         }
 
@@ -568,7 +579,8 @@ $(document).ready(function () {
             // Get question text (html):
             // 
             var qText = jQuery.trim(
-                    CKEDITOR.instances[$(qPart).find('.write_q_ckeditor').attr('id')].getData());
+                    CKEDITOR.instances[$(qPart).find('.write_q_ckeditor').attr('id')].getData()
+                    );
             qJson[qPartTitle]["q_text"] = qText;
             aPartQtxt = aPartQtxt === '' ? qText : aPartQtxt;
 
@@ -742,7 +754,7 @@ $(document).ready(function () {
                 }
         );
 
-    }
+    };
 
     // 
     // Reads question data from JSON object (on page storage) and 

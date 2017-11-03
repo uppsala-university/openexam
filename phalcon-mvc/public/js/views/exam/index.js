@@ -1,5 +1,18 @@
-// JavaScript Document specific to exam/index
-// @Author Ahsan Shahzad [MedfarmDoIT]
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    index.js
+// 
+// Author:  Ahsan Shahzad (Medfarm DoIT)
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+// 
+// 
+// Javascript specific to exam index.
+// 
 
 /*-- var initialization --*/
 var stEvents = '';
@@ -19,54 +32,54 @@ $(document).ready(function () {
                 {
                     'id': exam
                 },
-        function (status) {
-            if (status) {
-                var stime = status.starttime;
-                var etime = status.endtime;
+                function (status) {
+                    if (status) {
+                        var stime = status.starttime;
+                        var etime = status.endtime;
 
-                var changer = $("#exam-datetime-changer");
+                        var changer = $("#exam-datetime-changer");
 
-                changer.find("#exam-starttime").val(stime);
-                changer.find("#exam-endtime").val(etime);
+                        changer.find("#exam-starttime").val(stime);
+                        changer.find("#exam-endtime").val(etime);
 
-                changer.dialog({
-                    autoOpen: true,
-                    modal: true,
-                    buttons: {
-                        OK: function () {
+                        changer.dialog({
+                            autoOpen: true,
+                            modal: true,
+                            buttons: {
+                                OK: function () {
 
-                            stime = changer.find("#exam-starttime").val();
-                            etime = changer.find("#exam-endtime").val();
+                                    stime = changer.find("#exam-starttime").val();
+                                    etime = changer.find("#exam-endtime").val();
 
-                            if (stime.length === 0) {
-                                stime = null;
-                            }
-                            if (etime.length === 0) {
-                                etime = null;
-                            }
+                                    if (stime.length === 0) {
+                                        stime = null;
+                                    }
+                                    if (etime.length === 0) {
+                                        etime = null;
+                                    }
 
-                            ajax(
-                                    baseURL + 'ajax/core/invigilator/exam/update',
-                                    {
-                                        'id': exam,
-                                        'starttime': stime,
-                                        'endtime': etime
-                                    }, function (status) {
-                                if (status) {
-                                    changer.dialog('close');
+                                    ajax(
+                                            baseURL + 'ajax/core/invigilator/exam/update',
+                                            {
+                                                'id': exam,
+                                                'starttime': stime,
+                                                'endtime': etime
+                                            }, function (status) {
+                                        if (status) {
+                                            changer.dialog('close');
+                                        }
+                                    });
+                                },
+                                Cancel: function () {
+                                    changer.dialog('destroy');
                                 }
-                            });
-                        },
-                        Cancel: function () {
-                            changer.dialog('destroy');
-                        }
-                    },
-                    close: function () {
-                        changer.dialog('destroy');
+                            },
+                            close: function () {
+                                changer.dialog('destroy');
+                            }
+                        });
                     }
                 });
-            }
-        });
     });
 
 
@@ -90,11 +103,11 @@ $(document).ready(function () {
                             'id': $(this).attr('data-id'),
                             'published': 1
                         },
-                function (status) {
-                    if (status) {
-                        location.reload();
-                    }
-                }
+                        function (status) {
+                            if (status) {
+                                location.reload();
+                            }
+                        }
                 );
             }
         }
@@ -110,11 +123,11 @@ $(document).ready(function () {
                             "id": $(this).attr('data-id'),
                             "published": 0
                         },
-                function (status) {
-                    if (status) {
-                        location.reload();
-                    }
-                }
+                        function (status) {
+                            if (status) {
+                                location.reload();
+                            }
+                        }
                 );
             }
         }
@@ -130,11 +143,11 @@ $(document).ready(function () {
                             "id": $(this).attr('data-id'),
                             "decoded": 1
                         },
-                function (status) {
-                    if (status) {
-                        location.reload();
-                    }
-                }
+                        function (status) {
+                            if (status) {
+                                location.reload();
+                            }
+                        }
                 );
             }
         }
@@ -223,7 +236,7 @@ $(document).ready(function () {
                         url: baseURL + 'exam/replicate/' + examId,
                         success: function (response) {
                             var resp = jQuery.parseJSON(response);
-                            if (resp.status == 'success') {
+                            if (resp.status === 'success') {
                                 location.href = baseURL + 'exam/update/' + resp.exam_id + '/creator';
                             } else {
                                 alert(resp.message);
@@ -256,12 +269,12 @@ $(document).ready(function () {
             ajax(
                     baseURL + 'ajax/core/creator/exam/delete',
                     {"id": examId},
-            function (examData) {
-                $(examLine).slideUp(500, function () {
-                    $(this).remove();
-                    location.reload();
-                });
-            },
+                    function (examData) {
+                        $(examLine).slideUp(500, function () {
+                            $(this).remove();
+                            location.reload();
+                        });
+                    },
                     "POST",
                     true,
                     false
@@ -270,12 +283,12 @@ $(document).ready(function () {
     });
 
     $(document).on('keyup', '.exam-search-box', function (e) {
-        if ($(this).val() == '') {
+        if ($(this).val() === '') {
             var examListingAreas = $(this).closest('.exam-listing-wrapper').find('.exam-listing-area');
             if (examListingAreas.length > 1) {
                 $(examListingAreas).not(':last').remove();
             }
-        } else if (e.which == 13) {
+        } else if (e.which === 13) {
             $(this).parent().find('.search-exam').trigger('click');
         }
     });
@@ -311,12 +324,12 @@ $(document).ready(function () {
     });
 
     var reloadExamList = function (element, offset) {
-        // section
         var section = $(element).closest('.exam-listing-wrapper');
         var role = $(section).attr('exam-role');
         var examSortBy = $(section).find('.exam-sort-by').val();
         var examSortOrder = $(section).find('.exam-sort-order').attr('order');
         var searchKey = $(section).find('.exam-search-box').val();
+        
         if (searchKey) {
             var cond = ["name like :key: or code like :key:", {"key": "%" + searchKey + "%"}];
         } else {
@@ -326,8 +339,7 @@ $(document).ready(function () {
         if (typeof offset === 'undefined') {
             offset = $(section).find('.pagination > .active').attr('offset');
         }
-        //"flags":["upcoming"]
-        // prepare data
+        
         data = {"params": {
                 "role": role,
                 "conditions": [cond],
@@ -337,13 +349,14 @@ $(document).ready(function () {
             }
         };
 
-        // send ajax request	
+        // 
+        // Send AJAX request:
+        // 
         ajax(
                 baseURL + 'ajax/core/' + role + '/exam/read',
                 data,
                 function (examData) {
                     if (examData.length) {
-                        //alert(JSON.stringify(examData));
                         populateExamGrid(examData, section, cond.length);
                     } else {
                         alert("No such exam found!");
@@ -357,7 +370,9 @@ $(document).ready(function () {
         var populatePages = false;
         var examRole = $(section).attr('exam-role') != $(section).attr('section-role') ? $(section).attr('section-role') : $(section).attr('exam-role');
 
-        // grid that appears when someone searches for exam
+        // 
+        // Grid that appears when someone searches for exam:
+        // 
         if (populateInSearchGrid) {
             if ($(section).find('.exam-listing-area').length > 1) {
                 var examListingArea = $(section).find('.exam-listing-area').first();
@@ -368,16 +383,19 @@ $(document).ready(function () {
         } else {
             var examListingArea = $(section).find('.exam-listing-area');
         }
+        
         $(examListingArea).find('.exam-list').find('li').not(':first').not(':first').remove();
         $(examListingArea).find('.exam-progress').hide();   // TODO: display exam progress.
 
         $.each(examData, function (i, exam) {
             var start = exam.starttime ? exam.starttime.split(" ") : ["0000:00:00", "00:00"];
             var ends = exam.endtime ? exam.endtime.split(" ") : ["0000:00:00", "00:00"];
-            var examName = exam.name == '' || exam.name == ' ' ? 'Untitled exam' : exam.name;
+            var examName = exam.name === '' || exam.name === ' ' ? 'Untitled exam' : exam.name;
             var examItem = $(examListingArea).find('.exam-list').find('li').not(':first').first().clone();
+            
             $(examItem).attr('data-id', exam.id);
             $(examItem).find('.exam-name').html(examName + (exam.code != '' && exam.code != null ? " (" + exam.code + ")" : ""));
+            
             if (exam.starttime) {
                 $(examItem).find('.exam-date-time').show();
                 $(examItem).find('.exam-date').html(start[0]);
@@ -410,12 +428,14 @@ $(document).ready(function () {
                 $(examItem).css('background-color', '#fff');
             }
 
-            //list operational buttons as per the exam role and status
+            // 
+            // List operational buttons as per the exam role and status:
+            // 
             $(examItem).find('.exam-show-options').empty();
             $.each(examSections[examRole]["show-options"], function (btnKey, btnProp) {
 
                 var showBtn = false;
-                if (btnProp["show-on-flags"] == '*') {
+                if (btnProp["show-on-flags"] === '*') {
                     showBtn = true;
                 } else {
                     $.each(btnProp["show-on-flags"], function (i, flag) {
@@ -437,7 +457,7 @@ $(document).ready(function () {
 
             $(examListingArea).find('.exam-list').append(examItem);
 
-            if (i == examPerPage - 1) {
+            if (i === (examPerPage - 1)) {
                 return false;
             }
         });
@@ -445,12 +465,14 @@ $(document).ready(function () {
         if (populatePages) {
             var totalPgs = Math.ceil(examData.length / examPerPage);
             var pagination = $(examListingArea).find('.pagination');
+            
             $(pagination).find('li').not(':first').remove();
+            
             for (var i = 1; i <= totalPgs; i++) {
                 var pageItem = $(pagination).find('li').first().removeClass('active').clone();
                 $(pageItem).find('a').html(i);
                 $(pageItem).attr('offset', ((i - 1) * examPerPage));
-                if (i == 1) {
+                if (i === 1) {
                     $(pageItem).addClass('active');
                 }
                 $(pagination).append(pageItem);

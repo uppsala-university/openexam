@@ -1,9 +1,19 @@
-// JavaScript Document specific to View question
-// @author Ahsan Shahzad [MedfarmDoIT]
-// @author Anders Lövgren BMC-IT
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    view.js
+// 
+// Author:  Ahsan Shahzad (Medfarm DoIT)
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+// 
+// The question view. Use in question preview and student view for displaying questions. 
 
 var dirtybit = 0;
-var syncEvery = 10000; // 10 seconds 
+var syncEvery = 10000; // Save every 10 seconds 
 var ansJson = {};
 var totalSyncs = 0;
 var canvasElem = [];
@@ -48,14 +58,15 @@ function syncAnswers(async, redirectToAfterSync)
             }
 
             // 
-            // Initialize json obj attr
+            // Initialize JSON object attributes:
             // 
-            ansJson[qPartName] = {};
-            ansJson[qPartName]["type"] = ansType;
-            ansJson[qPartName]["ans"] = [];
+            ansJson[qPartName] = {
+                type: ansType,
+                ans: []
+            };
 
             // 
-            // Make JSON as per ansType
+            // Set answer data for each question part:
             // 
             if (ansType === 'textbox') {
                 var ansData = $(answers).val();
@@ -114,13 +125,13 @@ function syncAnswers(async, redirectToAfterSync)
                 if (t === "timeout") {
                     alert("Seems like you lost your internet connection. Please make sure that internet cable is properly connected with computer. \r\n");
                 } else {
-                    if (m != '' && m != null) {
+                    if (m !== '' && m !== null) {
                         alert("Error occured! System was'nt able to save your answer during last 10 seconds. Please ignore if you see this message for the first time and review you answer again. Otherwise, please inform it to invigilator." + "\r\n\r\n >>>" + JSON.stringify(x) + "--" + t + "--" + m);
                     }
                 }
             }
         }).done(function (respJson) {
-            if (typeof respJson.success == "undefined") {
+            if (typeof respJson.success === "undefined") {
                 var failMsg = "Failed to save your answer!\r\n\Please report to invigilator immediately. Don't refresh or close this page or you may loose your latest changes!\r\n";
                 if (async) {
                     failMsg += "Error source:   \n------------------\n" + JSON.stringify(respJson) + "\r\n";
@@ -192,7 +203,7 @@ var canvasGetMarker = function (elementId, backgroundImage) {
     }
 
     painter.config.zoomStep = zstep;
-
+    
     return painter;
 }
 
@@ -320,7 +331,7 @@ $(function () {
     // Disable some editor buttons:
     // 
     CKEDITOR.config.removeButtons = 'Link,Unlink';
-    
+
     // 
     // Remove standard characters, add greek alphabeth instead:
     // 
