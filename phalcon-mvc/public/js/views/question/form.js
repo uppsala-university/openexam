@@ -116,12 +116,6 @@ $(document).ready(function () {
         }
     }, 500);
 
-    if (formJs === 'loaded') {
-        return;
-    } else {
-        formJs = 'loaded';
-    }
-
     // 
     // Removing the tab on click:
     // 
@@ -139,6 +133,12 @@ $(document).ready(function () {
             $('#q-part-tabs').hide(200);
         }
     });
+
+    if (formJs === 'loaded') {
+        return;
+    } else {
+        formJs = 'loaded';
+    }
 
     // 
     // Answer type selector (single input, textarea, drawingarea, ...
