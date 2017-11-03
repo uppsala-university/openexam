@@ -237,20 +237,27 @@ if ($question->status == 'removed') {
                 </a> <br>
                 <div class="q-corrector-area">
                     <ul class="q_corrector_list" style="list-style:none; margin:0px">
-                        <?php foreach ($correctors as $k => $corrector): ?>
-                                <li>
-                                    <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "11", "class" => 'del-corrector')); ?>
-                                    <?php if (is_object($corrector)): ?>
-                                            <span data-user="<?= $corrector->user ?>" data-rec="<?= $corrector->id ?>" class="left-col-user" style="font-size:11px">
-                                                <?= $corrector->display ?>
-                                            </span>
-                                    <?php else: ?>
-                                            <span data-user="<?= $k ?>" class="left-col-user" style="font-size:11px">
-                                                <?= $corrector ?>
-                                            </span>
-                                    <?php endif; ?>
-                                </li>
-                        <?php endforeach; ?>
+                        <!-- corrector item template -->
+                        <li style="display: none">
+                            <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "11", "class" => 'del-corrector')); ?>
+                            <span data-user="" data-rec="" class="left-col-user" style="font-size:11px"></span>
+                        </li>
+                        <?php if ($correctors) : ?>
+                                <?php foreach ($correctors as $k => $corrector): ?>
+                                        <li>
+                                            <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "11", "class" => 'del-corrector')); ?>
+                                            <?php if (is_object($corrector)): ?>
+                                                    <span data-user="<?= $corrector->user ?>" data-rec="<?= $corrector->id ?>" class="left-col-user" style="font-size:11px">
+                                                        <?= $corrector->display ?>
+                                                    </span>
+                                            <?php else: ?>
+                                                    <span data-user="<?= $k ?>" class="left-col-user" style="font-size:11px">
+                                                        <?= $corrector ?>
+                                                    </span>
+                                            <?php endif; ?>
+                                        </li>
+                                <?php endforeach; ?>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </div>

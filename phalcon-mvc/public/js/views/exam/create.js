@@ -673,12 +673,17 @@ $(document).ready(function () {
                     qsCorrectorsJson[qIndex] = {};
 
                     $(qCorrectorList).find('.left-col-user').each(function (i, rElem) {
-                        var correctorUserName = $(rElem).attr('data-user');
+                        // 
+                        // Skip empty list items:
+                        // 
+                        if ($(rElem).attr('data-user').length === 0) {
+                            return;
+                        }
                         if (!qId) {
                             qCorrectorsArr.push({'question_id': qData.id, "user": $(rElem).attr('data-user')});
                         }
                         // 
-                        // Add correct to json for on page manuplation:
+                        // Add correct to JSON for on page manuplation:
                         // 
                         qsCorrectorsJson[qIndex][i] = $(rElem).html();
                     });
@@ -686,7 +691,7 @@ $(document).ready(function () {
                     // 
                     // Only creator can add correctors!
                     // 
-                    if (role == 'creator') {
+                    if (role === 'creator') {
                         if (!qId && qCorrectorsArr.length) {
 
                             // 

@@ -1,4 +1,6 @@
-// JavaScript Document specific to Exam create
+// 
+// Javascript for question editing.
+// 
 // @author Ahsan Shahzad [MedfarmDoIT]
 // @author Anders Lövgren (BMC-IT)
 
@@ -318,7 +320,7 @@ $(document).ready(function () {
     $(document).on('click', '.del-corrector', function () {
 
         var delCorrector = $(this);
-        if ($('.q_corrector_list').find('li').length > 1) {
+        if ($('.q_corrector_list').find('li:visible').length > 1) {
 
             if (qId) {
                 // 

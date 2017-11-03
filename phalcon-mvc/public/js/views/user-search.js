@@ -107,24 +107,24 @@ function searchCatalogUser(term, response)
                     limit: 10
                 }
             },
-    function (json) {
-        
-        var checked = $('.user-insert-show-mail').is(':checked');
+            function (json) {
 
-        $.each(json, function (i, result) {
-            if (userList.indexOf(result.principal) < 0) {
-                respObj.push({
-                    id: result.principal,
-                    label: checked ? (result.name + ' [' + result.mail[0] + ']') : (result.name + ' [' + result.principal + ']'),
-                    value: result.principal,
-                    name: result.name,
-                    mail: result.mail[0]
+                var checked = $('.user-insert-show-mail').is(':checked');
+
+                $.each(json, function (i, result) {
+                    if (userList.indexOf(result.principal) < 0) {
+                        respObj.push({
+                            id: result.principal,
+                            label: checked ? (result.name + ' [' + result.mail[0] + ']') : (result.name + ' [' + result.principal + ']'),
+                            value: result.principal,
+                            name: result.name,
+                            mail: result.mail[0]
+                        });
+                        userList.push(result.principal);
+                    }
                 });
-                userList.push(result.principal);
-            }
-        });
-        response(respObj);
-    });
+                response(respObj);
+            });
 }
 
 // 
@@ -142,8 +142,7 @@ function insertCatalogUser(item, element)
         if (!hasCorrector(item, anchor)) {
             addCorrector(item, anchor, model);
         }
-    }
-    else {
+    } else {
         if (!hasUserRole(item, anchor)) {
             addUserRole(item, anchor, model);
         }
@@ -174,6 +173,7 @@ function addCorrector(item, anchor, model)
 {
     var qid = anchor.attr('qid');
     var entry = $('.q_corrector_list > li:first').clone()
+            .show(200)
             .find('.left-col-user')
             .attr('data-user', item.id)
             .html(item.name)
@@ -189,10 +189,11 @@ function addCorrector(item, anchor, model)
                     "question_id": qid,
                     "user": item.id
                 },
-        function (status) {
-            $('.q_corrector_list').append(entry);
-            insertStaffUser(item);
-        });
+                function (status) {
+                    entry.find('.left-col-user').attr('data-rec', status.id);
+                    $('.q_corrector_list').append(entry);
+                    insertStaffUser(item);
+                });
     } else {
         $('.q_corrector_list').append(entry);
     }
@@ -229,53 +230,53 @@ function addUserRole(item, anchor, model)
                 "exam_id": examId,
                 "user": item.id
             },
-    function (response) {
-
-        // 
-        // Prepare item to be added:
-        // 
-        var entry = anchor.closest('li')
-                // 
-                // Hide default message, if it was visible:
-                // 
-                .find('.menuLevel1')
-                .find('.left-col-def-msg')
-                .hide()
-                .end()
+            function (response) {
 
                 // 
-                // Find template item and prepare it to add:
+                // Prepare item to be added:
                 // 
-                .find('li:first')
-                .clone()
+                var entry = anchor.closest('li')
+                        // 
+                        // Hide default message, if it was visible:
+                        // 
+                        .find('.menuLevel1')
+                        .find('.left-col-def-msg')
+                        .hide()
+                        .end()
+
+                        // 
+                        // Find template item and prepare it to add:
+                        // 
+                        .find('li:first')
+                        .clone()
+
+                        // 
+                        // Update data-ref attribute; helpful in deletion:
+                        // 
+                        .find('.deluuid')
+                        .attr('data-ref', response.id)
+                        .end()
+                        .show()
+
+                        // 
+                        // Update username data:
+                        // 
+                        .find('.left-col-user')
+                        .attr('data-user', item.id)
+                        .html(item.name)
+                        .show()
+                        .end();
 
                 // 
-                // Update data-ref attribute; helpful in deletion:
+                // Add item to the menu:
                 // 
-                .find('.deluuid')
-                .attr('data-ref', response.id)
-                .end()
-                .show()
+                anchor.closest('li').find('.menuLevel1').show().append(entry);
 
                 // 
-                // Update username data:
+                // Append to staff list:
                 // 
-                .find('.left-col-user')
-                .attr('data-user', item.id)
-                .html(item.name)
-                .show()
-                .end();
-
-        // 
-        // Add item to the menu:
-        // 
-        anchor.closest('li').find('.menuLevel1').show().append(entry);
-
-        // 
-        // Append to staff list:
-        // 
-        insertStaffUser(item);
-    });
+                insertStaffUser(item);
+            });
 
 }
 
