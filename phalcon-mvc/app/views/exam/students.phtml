@@ -1,12 +1,21 @@
-<!-- Main area -->
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    students.phtml
+// 
+// Author:  Ahsan Shahzad (Medfarm DoIT)
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+?>
 
 <?= Phalcon\Tag::stylesheetLink('css/tablesorter.default.css'); ?>
 <?= Phalcon\Tag::javascriptInclude('js/jquery.tablesorter.js'); ?>
 
 <?php
-
-use OpenExam\Library\Gui\Component\DateTime\Relative as DateTime;
-
 $i = 0;
 $stList = array();
 
@@ -14,17 +23,6 @@ foreach ($exam->students as $student) {
         $stList[$i]["id"] = $student->id;
         $stList[$i]["value"] = $student->user . " - " . $student->code;
         $i++;
-}
-
-$cdt = new DateTime($exam->starttime, $exam->endtime);
-
-if (!$cdt->stime) {
-        $cdt->startdate = strftime('%x', time());
-        $cdt->starttime = strftime('%H:%M', time());
-}
-if (!$cdt->etime) {
-        $cdt->enddate = strftime('%x', time());
-        $cdt->endtime = strftime('%H:%M', time());
 }
 
 ?>
@@ -42,200 +40,21 @@ if (!$cdt->etime) {
     <div style="padding-bottom:15px">
         <h3><?= $exam->name ?></h3>
     </div>
+    <?php if ($readonly) : ?>
+            <div class="tabs">
+                <?php $this->partial("partials/students-list", array('exam' => $exam, 'readonly' => true)) ?>
+            </div>
+    <?php else: ?>
+            <div class="tabs">
+                <ul>
+                    <li><a href="#tabs-1">Add new students</a></li>
+                    <li><a href="#tabs-2">Manage existing students</a></li>
+                </ul>
+                <?php $this->partial("partials/students-add", array('domains' => $domains)) ?>
+                <?php $this->partial("partials/students-list", array('exam' => $exam, 'readonly' => false)) ?>
+            </div>
+    <?php endif; ?>
     <div class="tabs">
-        <ul>
-            <li><a href="#tabs-1">Add new students</a></li>
-            <li><a href="#tabs-2">Manage existing students</a></li>
-        </ul>
-        <div id="tabs-1">
-
-            <div class="accordion">
-                <h3>Add single or multiple students</h3>
-                <div>
-                    <p>
-                        Write identities (username or personal number) and anonymous code (optional, system will generate one if missing) of single or multiple students. 
-                        Separate identity and anonymous code by whitespace.
-                    </p>
-                    <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
-                        Input multiple students at once by separating them with newline:
-                        <br>
-                        <small>
-                            <strong>identity1 code1</strong><br />
-                            <strong>identity1 code2</strong>                        
-                        </small>
-                    </div>
-                    <textarea id="student_list" placeholder="user@example.com 1234ABCD" style="height:100px; width:480px"></textarea>
-
-                    <div style="display: block; margin:10px 0px 30px 0px;">   
-                        <span id="add_students_btn" class="btn btn-success">
-                            <i class="fa fa-chevron-circle-right"></i>
-                            <span>Add students</span>
-                        </span>
-                    </div>                                
-                </div>
-                <h3>Import from file</h3>
-                <div>
-                    <div id="student-file-import-content">
-                        <p>
-                            Upload the file containing students to import. Students can be imported by username or personal number, with optional supplied anonymous code and/or tag.
-                        </p>
-                        <form id="student-file-import" name="student-file-import">
-                            <input type="file" name="file[]" />                                
-                            <div class="btn-group" style="padding-top: 5px">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Filetype 
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="#" type='-1'>Auto Detect</a></li>
-                                    <li><a href="#" type='oocalc'>OpenDocument Format Spreadsheet (*.ods,*.ots)</a></li>
-                                    <li><a href="#" type='excel2007'>Microsoft Excel 2007/2010/2013 XML (*.xlsx)</a></li>
-                                    <li><a href="#" type='excel2003'>Microsoft Excel 2003 XML (*.xml)</a></li>
-                                    <li><a href="#" type='excel97'>Microsoft Excel 97/2000/XP/2003 (*.xls,*.xlt)</a></li>
-                                    <li><a href="#" type='tab'>TAB Separated Values (*.tab,*.tsv,*.txt)</a></li>
-                                    <li><a href="#" type='csv'>CSV File (*.csv)</a></li>
-                                    <li><a href="#" type='gnumeric'>Gnumeric Spreadsheet (*.gnumeric)</a></li>
-                                    <li><a href="#" type='html'>HTML Document (*.htm,*.html)</a></li>
-                                    <li><a href="#" type='sylk'>SYLK Document (*.slk,*.sylk)</a></li>
-                                </ul>
-                                <div id='file-type' type='-1' style="padding: 5px 0"><span style="margin-left: 10px">Auto Detect</span></div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div style="display: block; margin:10px 0px 30px 0px;">        
-                        <span id="import-students-by-file" class="btn btn-success">
-                            <i class="fa fa-chevron-circle-right"></i>
-                            <span>Import students</span>
-                        </span>
-                    </div>                                
-                </div>
-                <h3>Import from group</h3>
-                <div>
-                    <div id="student-group-import-content">
-                        <p>
-                            Supply the name of a group to import students from. The name could e.g. be a course code or a domain group. The search can be restricted to a single domain.
-                        </p>
-                        <form id="student-file-import" name="student-group-import">
-                            <div>
-                                <label for="group">Group name:</label>
-                                <input id="group-name" type="text" name="group" placeholder="3MK579" /><br />
-                                <label for="domain">Domain:</label> 
-                                <select id="domain-name" name="domain">
-                                    <option></option>
-                                    <?php foreach ($domains as $domain): ?>
-                                            <option><?= $domain ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div style="display: block; margin:10px 0px 30px 0px;">   
-                        <span id="import-students-by-group" class="btn btn-success">
-                            <i class="fa fa-chevron-circle-right"></i>
-                            <span>Import students</span>
-                        </span>
-                    </div> 
-                </div>
-            </div>
-        </div>
-        <div id="tabs-2">
-            <h4>Registered students in this exam</h4>
-
-            <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
-                Click inside table cells to edit their content. Dates are omitted from display whenever they coincidence with exam start or end date. 
-                Input time as hh:mm with optional date, use the suggested date/time as a guide.
-            </div>
-
-            <div style="clear:both"></div>
-
-            <?php if (!count($exam->students)): ?>
-                    <div id="no-student-msg">
-                        <em>No students have been added to the exam yet.</em>
-                    </div>
-            <?php else: ?>
-                    <div id="print-students-list" style="float:left; display: inline; margin-bottom: 10px; margin-right: 5px;">        
-                        <span class="btn btn-success">
-                            <i class="fa fa-print"></i>
-                            <span>Download</span>
-                        </span>
-                    </div>                                
-
-                    <div style="float:left; margin-bottom: 10px;">
-                        <span id='del-st-btn' class="btn btn-danger" style="display: none">
-                            <i class="fa fa-trash-o"></i>
-                            <span></span>
-                        </span>
-                    </div>
-                    <div style="float:right">
-                        <input id="search-students" type="text" placeholder="Filter students" style="width:145px; height:15px;" />
-                        <span class="label label-orange filter-students"><i style="color:#FFF" class="fa fa-search"></i></span>
-                    </div>
-                    <table id="all-students-table" style="width:100%" class="tablesorter">
-                        <thead>
-                            <tr>
-                                <th class="no-sort"><input id="select_all_students" type="checkbox" value="1"></th>
-                                <th>Name</th>
-                                <th>Username</th>
-                                <th>Person no.</th>
-                                <th>Start time</th>
-                                <th>End time</th>
-                                <th>Code</th>
-                                <th>Tag</th>
-                            </tr>    
-                        </thead>
-                        <tbody>
-                            <?php foreach ($exam->students as $student): ?>
-                                    <tr style="background-color:#D9ECF2;">
-                                        <td><input name="students[]" type="checkbox" value="<?= $student->id ?>"></td>
-                                        <td>
-                                            <a href="#" data-id="<?= $student->id ?>" class="st-exam-detail" style="color:blue">
-                                                <?= $student->display ?>
-                                            </a>
-                                        </td>
-                                        <?php
-                                        $sdt = new DateTime($exam->starttime, $student->starttime);
-                                        $edt = new DateTime($exam->endtime, $student->endtime);
-
-                                        if ($sdt->etime) {
-                                                $sdt->time = $sdt->endtime;
-                                                $sdt->date = $sdt->enddate;
-                                        } else {
-                                                $sdt->time = $cdt->starttime;
-                                                $sdt->date = $cdt->startdate;
-                                        }
-
-                                        if ($edt->etime) {
-                                                $edt->time = $edt->endtime;
-                                                $edt->date = $edt->enddate;
-                                        } else {
-                                                $edt->time = $cdt->endtime;
-                                                $edt->date = $cdt->enddate;
-                                        }
-
-                                        ?>
-                                        <td><?= $student->user ?></td>
-                                        <td><?= $student->persnr ?></td>
-                                        <td class="st-exam-item-edit" data-name="starttime" data-exam-date="<?= $cdt->startdate ?>" data-stud-date="<?= $sdt->date ?>" data-stud-time="<?= $sdt->time ?>"><?= $sdt->text() ?></td>
-                                        <td class="st-exam-item-edit" data-name="endtime" data-exam-date="<?= $cdt->enddate ?>" data-stud-date="<?= $edt->date ?>" data-stud-time="<?= $edt->time ?>"><?= $edt->text() ?></td>
-                                        <td class="st-exam-item-edit" data-name="code" data-stud-code="<?= $student->code ?>"><?= $student->code ?></td>
-                                        <td class="st-exam-item-edit" data-name="tag" data-stud-tag="<?= $student->tag ?>"><?= $student->tag ?></td>
-                                        <td class="st-exam-item-save">
-                                            <span class="btn btn-default" style="visibility: hidden; display: inline-table">
-                                                <i class="fa fa-save"></i>
-                                                <span>Save</span>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr class="st-detail-rows" style="display:none;" id="st-detail-row<?= $student->id ?>">
-                                        <td colspan="10" style="background-color:#ffe;"></td>
-                                    </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-            <?php endif; ?>
-            <div style="clear:both"></div>
-        </div>
     </div>
 </div>
 

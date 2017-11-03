@@ -1,0 +1,107 @@
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    students-add.phtml
+// Created: 2017-11-03 23:39:17
+// 
+// Author:  Ahsan Shahzad (Medfarm DoIT)
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+?>
+
+<div id="tabs-1">
+
+    <div class="accordion">
+        <h3>Add single or multiple students</h3>
+        <div>
+            <p>
+                Write identities (username or personal number) and anonymous code (optional, system will generate one if missing) of single or multiple students. 
+                Separate identity and anonymous code by whitespace.
+            </p>
+            <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
+                Input multiple students at once by separating them with newline:
+                <br>
+                <small>
+                    <strong>identity1 code1</strong><br />
+                    <strong>identity1 code2</strong>                        
+                </small>
+            </div>
+            <textarea id="student_list" placeholder="user@example.com 1234ABCD" style="height:100px; width:480px"></textarea>
+
+            <div style="display: block; margin:10px 0px 30px 0px;">   
+                <span id="add_students_btn" class="btn btn-success">
+                    <i class="fa fa-chevron-circle-right"></i>
+                    <span>Add students</span>
+                </span>
+            </div>                                
+        </div>
+        <h3>Import from file</h3>
+        <div>
+            <div id="student-file-import-content">
+                <p>
+                    Upload the file containing students to import. Students can be imported by username or personal number, with optional supplied anonymous code and/or tag.
+                </p>
+                <form id="student-file-import" name="student-file-import">
+                    <input type="file" name="file[]" />                                
+                    <div class="btn-group" style="padding-top: 5px">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Filetype 
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#" type='-1'>Auto Detect</a></li>
+                            <li><a href="#" type='oocalc'>OpenDocument Format Spreadsheet (*.ods,*.ots)</a></li>
+                            <li><a href="#" type='excel2007'>Microsoft Excel 2007/2010/2013 XML (*.xlsx)</a></li>
+                            <li><a href="#" type='excel2003'>Microsoft Excel 2003 XML (*.xml)</a></li>
+                            <li><a href="#" type='excel97'>Microsoft Excel 97/2000/XP/2003 (*.xls,*.xlt)</a></li>
+                            <li><a href="#" type='tab'>TAB Separated Values (*.tab,*.tsv,*.txt)</a></li>
+                            <li><a href="#" type='csv'>CSV File (*.csv)</a></li>
+                            <li><a href="#" type='gnumeric'>Gnumeric Spreadsheet (*.gnumeric)</a></li>
+                            <li><a href="#" type='html'>HTML Document (*.htm,*.html)</a></li>
+                            <li><a href="#" type='sylk'>SYLK Document (*.slk,*.sylk)</a></li>
+                        </ul>
+                        <div id='file-type' type='-1' style="padding: 5px 0"><span style="margin-left: 10px">Auto Detect</span></div>
+                    </div>
+                </form>
+            </div>
+
+            <div style="display: block; margin:10px 0px 30px 0px;">        
+                <span id="import-students-by-file" class="btn btn-success">
+                    <i class="fa fa-chevron-circle-right"></i>
+                    <span>Import students</span>
+                </span>
+            </div>                                
+        </div>
+        <h3>Import from group</h3>
+        <div>
+            <div id="student-group-import-content">
+                <p>
+                    Supply the name of a group to import students from. The name could e.g. be a course code or a domain group. The search can be restricted to a single domain.
+                </p>
+                <form id="student-file-import" name="student-group-import">
+                    <div>
+                        <label for="group">Group name:</label>
+                        <input id="group-name" type="text" name="group" placeholder="3MK579" /><br />
+                        <label for="domain">Domain:</label> 
+                        <select id="domain-name" name="domain">
+                            <option></option>
+                            <?php foreach ($domains as $domain): ?>
+                                    <option><?= $domain ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <div style="display: block; margin:10px 0px 30px 0px;">   
+                <span id="import-students-by-group" class="btn btn-success">
+                    <i class="fa fa-chevron-circle-right"></i>
+                    <span>Import students</span>
+                </span>
+            </div> 
+        </div>
+    </div>
+</div>

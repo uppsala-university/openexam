@@ -607,20 +607,20 @@ class ExamController extends GuiController
                 }
 
                 // 
-                // Check if exam is examinatable (students can be managed):
+                // Set read-only if students can't be added:
                 // 
                 if (!$exam->getState()->has(State::EXAMINATABLE)) {
-                        throw new Exception(
-                        "It's no longer possible to manage student's data.", Error::METHOD_NOT_ALLOWED
-                        );
+                        $this->view->setVar('readonly', true);
+                } else {
+                        $this->view->setVar('readonly', false);
                 }
-
+                
                 // 
                 // Set data for view:
                 // 
                 $this->view->setVars(array(
-                        "exam"    => $exam,
-                        "domains" => $this->catalog->getDomains()
+                        "exam"     => $exam,
+                        "domains"  => $this->catalog->getDomains()
                 ));
         }
 

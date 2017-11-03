@@ -1,0 +1,126 @@
+<?php
+
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    students-list.phtml
+// Created: 2017-11-03 23:58:08
+// 
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// Author:  Ahsan Shahzad (Medfarm DoIT)
+// 
+
+use OpenExam\Library\Gui\Component\DateTime\Relative as DateTime;
+
+$cdt = new DateTime($exam->starttime, $exam->endtime);
+
+if (!$cdt->stime) {
+        $cdt->startdate = strftime('%x', time());
+        $cdt->starttime = strftime('%H:%M', time());
+}
+if (!$cdt->etime) {
+        $cdt->enddate = strftime('%x', time());
+        $cdt->endtime = strftime('%H:%M', time());
+}
+
+?>
+
+<div id="tabs-2">
+    <h4>Registered students in this exam</h4>
+
+    <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
+        Click inside table cells to edit their content. Dates are omitted from display whenever they coincidence with exam start or end date. 
+        Input time as hh:mm with optional date, use the suggested date/time as a guide.
+    </div>
+
+    <div style="clear:both"></div>
+
+    <?php if (!count($exam->students)): ?>
+            <div id="no-student-msg">
+                <em>No students have been added to the exam yet.</em>
+            </div>
+    <?php else: ?>
+            <div id="print-students-list" style="float:left; display: inline; margin-bottom: 10px; margin-right: 5px;">        
+                <span class="btn btn-success">
+                    <i class="fa fa-print"></i>
+                    <span>Download</span>
+                </span>
+            </div>                                
+
+            <div style="float:left; margin-bottom: 10px;">
+                <span id='del-st-btn' class="btn btn-danger" style="display: none">
+                    <i class="fa fa-trash-o"></i>
+                    <span></span>
+                </span>
+            </div>
+            <div style="float:right">
+                <input id="search-students" type="text" placeholder="Filter students" style="width:145px; height:15px;" />
+                <span class="label label-orange filter-students"><i style="color:#FFF" class="fa fa-search"></i></span>
+            </div>
+            <table id="all-students-table" style="width:100%" class="tablesorter">
+                <thead>
+                    <tr>
+                        <th class="no-sort"><input id="select_all_students" type="checkbox" value="1" <?= $readonly ? "disabled" : "" ?>></th>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Person no.</th>
+                        <th>Start time</th>
+                        <th>End time</th>
+                        <th>Code</th>
+                        <th>Tag</th>
+                    </tr>    
+                </thead>
+                <tbody>
+                    <?php foreach ($exam->students as $student): ?>
+                            <tr style="background-color:#D9ECF2;">
+                                <td><input name="students[]" type="checkbox" value="<?= $student->id ?>" <?= $readonly ? "disabled" : "" ?>></td>
+                                <td>
+                                    <a href="#" data-id="<?= $student->id ?>" class="st-exam-detail" style="color:blue">
+                                        <?= $student->display ?>
+                                    </a>
+                                </td>
+                                <?php
+                                $sdt = new DateTime($exam->starttime, $student->starttime);
+                                $edt = new DateTime($exam->endtime, $student->endtime);
+
+                                if ($sdt->etime) {
+                                        $sdt->time = $sdt->endtime;
+                                        $sdt->date = $sdt->enddate;
+                                } else {
+                                        $sdt->time = $cdt->starttime;
+                                        $sdt->date = $cdt->startdate;
+                                }
+
+                                if ($edt->etime) {
+                                        $edt->time = $edt->endtime;
+                                        $edt->date = $edt->enddate;
+                                } else {
+                                        $edt->time = $cdt->endtime;
+                                        $edt->date = $cdt->enddate;
+                                }
+
+                                ?>
+                                <td><?= $student->user ?></td>
+                                <td><?= $student->persnr ?></td>
+                                <td class="st-exam-item-edit" data-name="starttime" data-exam-date="<?= $cdt->startdate ?>" data-stud-date="<?= $sdt->date ?>" data-stud-time="<?= $sdt->time ?>"><?= $sdt->text() ?></td>
+                                <td class="st-exam-item-edit" data-name="endtime" data-exam-date="<?= $cdt->enddate ?>" data-stud-date="<?= $edt->date ?>" data-stud-time="<?= $edt->time ?>"><?= $edt->text() ?></td>
+                                <td class="st-exam-item-edit" data-name="code" data-stud-code="<?= $student->code ?>"><?= $student->code ?></td>
+                                <td class="st-exam-item-edit" data-name="tag" data-stud-tag="<?= $student->tag ?>"><?= $student->tag ?></td>
+                                <td class="st-exam-item-save">
+                                    <span class="btn btn-default" style="visibility: hidden; display: inline-table">
+                                        <i class="fa fa-save"></i>
+                                        <span>Save</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="st-detail-rows" style="display:none;" id="st-detail-row<?= $student->id ?>">
+                                <td colspan="10" style="background-color:#ffe;"></td>
+                            </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+    <?php endif; ?>
+    <div style="clear:both"></div>
+</div>
