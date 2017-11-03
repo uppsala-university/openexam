@@ -1,16 +1,23 @@
-<!-- Main area -->
-
 <?php
+
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    settings.phtml
+// 
+// Author:  Ahsan Shahzad (Medfarm DoIT)
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
 
 use OpenExam\Models\Exam;
 
-?>
-
-<?php $canUpdateExam = true; ?>
-<?php
+$canUpdateExam = true;
 $totalScore = 0;
 $missingQuestText = $missingPoints = array();
 $qs = $exam->getQuestions(array('order' => 'slot'));
+
 foreach ($qs as $qNo => $q):
         $totalScore += $q->score;
 
@@ -274,8 +281,7 @@ endforeach;
                             'Undo', 'Redo', 'Outdent', 'Indent', '-',
                             'Bold', 'Italic', 'Underline', '-',
                             'NumberedList', 'BulletedList', '-',
-                            'Link', 'Unlink'/*, '-',
-                             'Mathjax', 'Specialchar'*/
+                            'Link', 'Unlink'
                         ]
                     ]
 

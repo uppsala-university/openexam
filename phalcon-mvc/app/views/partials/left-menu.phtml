@@ -1,5 +1,15 @@
 <?php
 
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    left-menu.phtml
+// 
+// Author:  Ahsan Shahzad (MedfarmDoIT)
+// 
+
 use \OpenExam\Library\Security\Roles;
 
 $oBullet = Phalcon\Tag::image(array("img/openeopt.png", "class" => "bullet-opened"));
@@ -8,8 +18,8 @@ $i = 1;
 $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
 
 ?>
-<!-- Left Column -->
 
+<!-- Left Column -->
 <div id="leftCol">
     <div class="treeMenuContainer componentContainer">
         <ul class="menuLevel0">
@@ -70,6 +80,8 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
 
                         <?php if ($this->capabilities->hasPermission($this->user->getPrimaryRole(), $model, 'create') && in_array("editable", $exam->flags)): ?>
                                 <?= Phalcon\Tag::image(array("img/plus-circle.png", "height" => "12", "width" => "12", "class" => "manage-students", "style" => "position: absolute; margin-top: -20px; margin-left: 123px; cursor:pointer")); ?>
+                        <?php else : ?>
+                                <?= Phalcon\Tag::image(array("img/grey-bullet.gif", "height" => "12", "width" => "12", "class" => "manage-students", "style" => "position: absolute; margin-top: -20px; margin-left: 123px; cursor:pointer")); ?>
                         <?php endif; ?>
                     </li>
             <?php endif; ?>
@@ -167,7 +179,7 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
                             new Opentip(
                                     element,
                                     $('#question-topic-settings-box').html(),
-                                    {style: "drops", tipJoint: "top left", showOn: "click", }
+                                    {style: "drops", tipJoint: "top left", showOn: "click" }
                             );
 
                         });
@@ -190,34 +202,34 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
                         ajax(
                                 baseURL + 'ajax/core/creator/topic/create',
                                 {"exam_id": examId, "name": 'Click to edit title', "randomize": "0"},
-                        function (topicData) {
-                            // 
-                            // Prepare cloned row to add in menu:
-                            // 
-                            newTopic.find('.topic-name')
-                                    .html(topicData.name)
-                                    .attr('data-id', topicData.id)
-                                    .end()
-                                    .find('.topic-settings').attr('data-randomize', topicData.randomize).end()
-                                    .find('a').show();
+                                function (topicData) {
+                                    // 
+                                    // Prepare cloned row to add in menu:
+                                    // 
+                                    newTopic.find('.topic-name')
+                                            .html(topicData.name)
+                                            .attr('data-id', topicData.id)
+                                            .end()
+                                            .find('.topic-settings').attr('data-randomize', topicData.randomize).end()
+                                            .find('a').show();
 
-                            newTopic.find('.sortable-qs > li').not(':last').remove().end();
+                                    newTopic.find('.sortable-qs > li').not(':last').remove().end();
 
-                            // 
-                            // Show it in menu now:
-                            // 
-                            $(".sortable-q-topic > li:nth-child(1)").after(newTopic);
+                                    // 
+                                    // Show it in menu now:
+                                    // 
+                                    $(".sortable-q-topic > li:nth-child(1)").after(newTopic);
 
-                            // 
-                            // Make it sortable:
-                            // 
-                            makeQsSortable();
+                                    // 
+                                    // Make it sortable:
+                                    // 
+                                    makeQsSortable();
 
-                            // 
-                            // Connect tooltip with newly added:
-                            // 
-                            refreshTopicSettingsTooltips();
-                        }
+                                    // 
+                                    // Connect tooltip with newly added:
+                                    // 
+                                    refreshTopicSettingsTooltips();
+                                }
                         );
 
                         return false;
@@ -241,21 +253,21 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
                             ajax(
                                     baseURL + 'ajax/core/creator/topic/delete',
                                     {"id": $(this).parent().find('.topic-name').attr('data-id')},
-                            function (topicData) {
+                                    function (topicData) {
 
-                                //                
-                                // Remove this section now from left menu:
-                                // 
-                                $(topicToDel).closest('li').slideUp(500, function () {
+                                        //                
+                                        // Remove this section now from left menu:
+                                        // 
+                                        $(topicToDel).closest('li').slideUp(500, function () {
 
-                                    $(this).remove();
+                                            $(this).remove();
 
-                                    if ($('.sortable-q-topic').find('.topic-line').length <= 1)
-                                        $('.sortable-q-topic').find('.topic-line').hide();
+                                            if ($('.sortable-q-topic').find('.topic-line').length <= 1)
+                                                $('.sortable-q-topic').find('.topic-line').hide();
 
-                                })
+                                        });
 
-                            }
+                                    }
                             );
 
                         }
@@ -268,7 +280,7 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
                     $(document).on('blur', '.q-topic-txtbox', function () {
 
                         $this = $(this);
-                        valToBeUpdated = $(this).val() != '' ? $(this).val() : 'Click to edit title';
+                        valToBeUpdated = $(this).val() !== '' ? $(this).val() : 'Click to edit title';
 
                         // 
                         // Send AJAX request to update topic name in DB:
@@ -276,18 +288,18 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
                         ajax(
                                 baseURL + 'ajax/core/creator/topic/update',
                                 {"id": $(this).parent().attr('data-id'), "name": valToBeUpdated, "exam_id": examId},
-                        function (topicData) {
-                            // 
-                            // Update topic title:
-                            // 
-                            $this.parent().html(valToBeUpdated);
-                        }
+                                function (topicData) {
+                                    // 
+                                    // Update topic title:
+                                    // 
+                                    $this.parent().html(valToBeUpdated);
+                                }
                         );
 
                     });
 
                     $(document).on('keyup', '.q-topic-txtbox', function (e) {
-                        if (e.keyCode == 13)
+                        if (e.keyCode === 13)
                         {
                             $(this).trigger('blur');
                         }
@@ -315,12 +327,12 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
                         ajax(
                                 baseURL + 'ajax/core/creator/topic/update',
                                 {"id": $(this).attr('data-id'), "randomize": randomize, "exam_id": examId},
-                        function (topicData) {
-                            // 
-                            // Update on page randomize value:
-                            // 
-                            $('.topic-name[data-id="' + $(this).attr('data-id') + '"]').parent().find('.topic-settings').attr('data-randomize', randomize);
-                        }
+                                function (topicData) {
+                                    // 
+                                    // Update on page randomize value:
+                                    // 
+                                    $('.topic-name[data-id="' + $(this).attr('data-id') + '"]').parent().find('.topic-settings').attr('data-randomize', randomize);
+                                }
                         );
 
                         closeTooltips();

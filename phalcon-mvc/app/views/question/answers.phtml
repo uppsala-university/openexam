@@ -338,7 +338,7 @@ if (strtotime($exam->endtime) < time()) {
                                                     <?php endforeach; ?>
                                                     <?php if (!count($qSpecificAns)): ?>
                                                             <span style="background-color:#FEFF99"><i>Student did not answer this question part.</i></span>
-                                                            <script>$("#<?= $question->id ?>-corrected").hide()</script>
+                                                            <script>$("#<?= $question->id ?>-corrected").hide();</script>
                                                     <?php endif; ?>
                                             <?php endif; ?>
                                         </div>
