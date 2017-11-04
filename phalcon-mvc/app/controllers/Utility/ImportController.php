@@ -70,7 +70,14 @@ class ImportController extends GuiController
                 $import->read();
                 $import->close();
 
-                $this->view->setVar('data', $import->getSheet());
+                if (!($data = $import->getSheet())) {
+                        $data = array();
+                }
+                if ($import->hasHeaders()) {
+                        array_unshift($data, $import->getHeaders());
+                }
+
+                $this->view->setVar('data', $data);
         }
 
         /**

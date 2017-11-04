@@ -129,6 +129,15 @@ abstract class ImportStudents extends ImportBase
                 return $this->_sdat->head;
         }
 
+        /**
+         * Check if headers are set.
+         * @return bool
+         */
+        public function hasHeaders()
+        {
+                return count($this->_sdat->head) > 0;
+        }
+
 }
 
 /**
@@ -192,6 +201,8 @@ class StudentData
                                 return $this->_rows;
                         case 'cols':
                                 return $this->_cols;
+                        case 'head':
+                                return $this->_defined['head'];
                 }
         }
 
@@ -295,6 +306,14 @@ class StudentData
                                 if (in_array(Pattern::MATCH_CODE, $this->_defined['head']) == false) {
                                         $this->_defined['head'][$i] = Pattern::MATCH_CODE;
                                 }
+                        }
+                }
+
+                for ($i = 0; $i < $this->_cols; ++$i) {
+                        if (!isset($this->_defined['head'][$i])) {
+                                $this->_defined['head'][$i] = false;
+                        } elseif ($this->_defined['head'][$i] == Pattern::MATCH_PERSNR) {
+                                $this->_defined['head'][$i] = 'pnr';
                         }
                 }
         }
