@@ -53,18 +53,8 @@ abstract class ImportStudents extends ImportBase
          */
         private $_sheet;
         /**
-         * The number of columns.
-         * @var int 
-         */
-        private $_cols;
-        /**
-         * The number of rows.
-         * @var int 
-         */
-        private $_rows;
-        /**
-         * Sheet data read (trimmed).
-         * @var array 
+         * The student data.
+         * @var StudentData 
          */
         private $_sdat;
 
@@ -85,27 +75,21 @@ abstract class ImportStudents extends ImportBase
                 // 
                 // Set column, row and data from sheet:
                 // 
-                $this->_cols = ord($this->_sheet->getHighestColumn()) - ord('A');
-                $this->_rows = $this->_sheet->getHighestRow();
-                $this->_sdat = $this->_sheet->toArray();
+                $cols = ord($this->_sheet->getHighestColumn()) - ord('A');
+                $rows = $this->_sheet->getHighestRow();
+                $data = $this->_sheet->toArray();
 
                 // 
-                // Trim read data:
+                // Process student data:
                 // 
-                $this->removeEmptyCells();
+                $this->_sdat = new StudentData($data, $rows, $cols);
 
                 // 
                 // Bug out on empty data:
                 // 
-                if (count($this->_sdat) == 0) {
+                if ($this->_sdat->isMissing()) {
                         throw new ImportException("No data detected on first sheet", Error::PRECONDITION_FAILED);
                 }
-
-                // 
-                // Update row and column count:
-                // 
-                $this->_rows = count($this->_sdat);
-                $this->_cols = count($this->_sdat[0]);
         }
 
         /**
@@ -114,7 +98,7 @@ abstract class ImportStudents extends ImportBase
          */
         public function getSheet()
         {
-                return $this->_sdat;
+                return $this->_sdat->data;
         }
 
         /**
@@ -123,7 +107,7 @@ abstract class ImportStudents extends ImportBase
          */
         public function getRows()
         {
-                return $this->_rows;
+                return $this->_sdat->rows;
         }
 
         /**
@@ -132,47 +116,152 @@ abstract class ImportStudents extends ImportBase
          */
         public function getColumns()
         {
-                return $this->_cols;
+                return $this->_sdat->cols;
+        }
+
+}
+
+/**
+ * Student data helper class.
+ * 
+ * @property-read array $data The data array.
+ * @property-read int $rows The number of rows.
+ * @property-read int $cols The number of columns.
+ */
+class StudentData
+{
+
+        /**
+         * The number of columns.
+         * @var int 
+         */
+        private $_cols;
+        /**
+         * The number of rows.
+         * @var int 
+         */
+        private $_rows;
+        /**
+         * Sheet data read (trimmed).
+         * @var array 
+         */
+        private $_data;
+        /**
+         * The defined rows and columns.
+         * @var array 
+         */
+        private $_defined = array(
+                'rows' => array(),
+                'cols' => array()
+        );
+
+        /**
+         * Constructor.
+         * 
+         * @param array $data The sheet data.
+         * @param int $rows The number of rows.
+         * @param int $cols The number of columns.
+         */
+        public function __construct($data, $rows, $cols)
+        {
+                $this->_data = $data;
+                $this->_rows = $rows;
+                $this->_cols = $cols;
+
+                $this->process();
+        }
+
+        public function __get($name)
+        {
+                switch ($name) {
+                        case 'data':
+                                return $this->_data;
+                        case 'rows':
+                                return $this->_rows;
+                        case 'cols':
+                                return $this->_cols;
+                }
         }
 
         /**
-         * Cleanup empty rows and columns.
+         * Check if data exist.
+         * @return bool
          */
-        private function removeEmptyCells()
+        public function isMissing()
         {
-                $defined = array(
-                        'rows' => array(),
-                        'cols' => array()
-                );
+                return count($this->_data) == 0;
+        }
 
+        /**
+         * Process input data.
+         */
+        private function process()
+        {
+                $this->prepare();
+                $this->detect();
+                $this->cleanup();
+
+                $this->remap();
+        }
+
+        /**
+         * Prepare data processing.
+         */
+        private function prepare()
+        {
                 for ($i = 0; $i < $this->_rows; ++$i) {
-                        $defined['rows'][$i] = false;
+                        $this->_defined['rows'][$i] = false;
                 }
                 for ($i = 0; $i < $this->_rows; ++$i) {
-                        $defined['cols'][$i] = false;
+                        $this->_defined['cols'][$i] = false;
                 }
+        }
 
+        /**
+         * Detect empty cells.
+         */
+        private function detect()
+        {
                 for ($r = 0; $r < $this->_rows; ++$r) {
                         for ($c = 0; $c <= $this->_cols; ++$c) {
-                                if (strlen($this->_sdat[$r][$c]) != 0) {
-                                        $defined['rows'][$r] = true;
-                                        $defined['cols'][$c] = true;
+                                if (strlen($this->_data[$r][$c]) != 0) {
+                                        $this->_defined['rows'][$r] = true;
+                                        $this->_defined['cols'][$c] = true;
                                 }
                         }
                 }
+        }
 
+        /**
+         * Compact data.
+         */
+        private function cleanup()
+        {
                 for ($i = 0; $i < $this->_rows; ++$i) {
-                        if (!$defined['rows'][$i]) {
+                        if (!$this->_defined['rows'][$i]) {
                                 $this->removeRow($i);
                         }
                 }
                 for ($i = 0; $i <= $this->_cols; ++$i) {
-                        if (!$defined['cols'][$i]) {
+                        if (!$this->_defined['cols'][$i]) {
                                 $this->removeColumn($i);
                         }
                 }
+        }
 
-                $this->remapIndexes();
+        /**
+         * Remap array indexes.
+         */
+        private function remap()
+        {
+                if (array_walk($this->_data, function(&$entry, $key) {
+                            $this->_data[$key] = array_values($entry);
+                    })) {
+                        $this->_data = array_values($this->_data);
+                }
+
+                $this->_rows = count($this->_data);
+                $this->_cols = count($this->_data[0]);
         }
 
         /**
@@ -182,7 +271,7 @@ abstract class ImportStudents extends ImportBase
         private function removeColumn($column)
         {
                 for ($i = 0; $i < $this->_rows; ++$i) {
-                        unset($this->_sdat[$i][$column]);
+                        unset($this->_data[$i][$column]);
                 }
         }
 
@@ -192,19 +281,7 @@ abstract class ImportStudents extends ImportBase
          */
         private function removeRow($row)
         {
-                unset($this->_sdat[$row]);
-        }
-
-        /**
-         * Remap array indexes.
-         */
-        private function remapIndexes()
-        {
-                if (array_walk($this->_sdat, function(&$entry, $key) {
-                            $this->_sdat[$key] = array_values($entry);
-                    })) {
-                        $this->_sdat = array_values($this->_sdat);
-                }
+                unset($this->_data[$row]);
         }
 
 }
