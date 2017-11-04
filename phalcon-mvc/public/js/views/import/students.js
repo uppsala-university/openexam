@@ -46,11 +46,15 @@ $(document).ready(function () {
     });
 
     // 
-    // Remove first row if first column contains 'user':
+    // Remove first row if first column contains 'user' or personal number:
     // 
     var row = $("#table-import-students > tbody > tr:first");
-    if (row.find("td:first").text() === 'user') {
-        row.remove();
+    switch (row.find("td:first").text()) {
+        case 'user':
+        case 'persnr':
+        case 'pnr':
+            row.remove();
+            break;
     }
 
 });
