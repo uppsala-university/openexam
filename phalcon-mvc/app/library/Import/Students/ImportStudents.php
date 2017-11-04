@@ -14,6 +14,7 @@
 namespace OpenExam\Library\Import\Students;
 
 use OpenExam\Library\Core\Error;
+use OpenExam\Library\Core\Pattern;
 use OpenExam\Library\Import\Exception as ImportException;
 use OpenExam\Library\Import\ImportBase;
 use OpenExam\Library\Import\ImportData;
@@ -119,6 +120,15 @@ abstract class ImportStudents extends ImportBase
                 return $this->_sdat->cols;
         }
 
+        /**
+         * Get detected headers.
+         * @return array
+         */
+        public function getHeaders()
+        {
+                return $this->_sdat->head;
+        }
+
 }
 
 /**
@@ -127,6 +137,7 @@ abstract class ImportStudents extends ImportBase
  * @property-read array $data The data array.
  * @property-read int $rows The number of rows.
  * @property-read int $cols The number of columns.
+ * @property-read array $head The detected headers.
  */
 class StudentData
 {
@@ -152,7 +163,8 @@ class StudentData
          */
         private $_defined = array(
                 'rows' => array(),
-                'cols' => array()
+                'cols' => array(),
+                'head' => array()
         );
 
         /**
@@ -202,6 +214,7 @@ class StudentData
                 $this->cleanup();
 
                 $this->remap();
+                $this->header();
         }
 
         /**
@@ -262,6 +275,28 @@ class StudentData
 
                 $this->_rows = count($this->_data);
                 $this->_cols = count($this->_data[0]);
+        }
+
+        /**
+         * Find header data.
+         */
+        private function header()
+        {
+                for ($i = 0; $i < $this->_cols; ++$i) {
+                        if (preg_match(Pattern::REGEX_PERSNR, $this->_data[0][$i])) {
+                                if (in_array(Pattern::MATCH_PERSNR, $this->_defined['head']) == false) {
+                                        $this->_defined['head'][$i] = Pattern::MATCH_PERSNR;
+                                }
+                        } elseif (preg_match(Pattern::REGEX_USER, $this->_data[0][$i])) {
+                                if (in_array(Pattern::MATCH_USER, $this->_defined['head']) == false) {
+                                        $this->_defined['head'][$i] = Pattern::MATCH_USER;
+                                }
+                        } elseif (preg_match(Pattern::REGEX_CODE, $this->_data[0][$i])) {
+                                if (in_array(Pattern::MATCH_CODE, $this->_defined['head']) == false) {
+                                        $this->_defined['head'][$i] = Pattern::MATCH_CODE;
+                                }
+                        }
+                }
         }
 
         /**
