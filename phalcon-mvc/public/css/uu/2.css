@@ -1401,14 +1401,11 @@
     }
     li a:hover {
         background:#eee;
-        /*border-bottom: 1px solid #cc0066 !important;*/
         color:#cc0066 !important;
         text-decoration:none;
     }
 
     li a:visited{
-
-        border-bottom: 1px solid #660000;
         color:#660000
     }
     li a.selected {
