@@ -39,10 +39,10 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
 {
 
         /**
-         * The session model.
-         * @var SessionModel
+         * The session models.
+         * @var SessionModel[]
          */
-        private $_session = null;
+        private $_session = array();
 
         /**
          * {@inheritdoc}
@@ -86,33 +86,58 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                 );
 
                 parent::__construct($options);
-
-                $this->_session = new SessionModel();
         }
 
         /**
-         * Load session model or create new if missing.
+         * Find session model.
+         * 
+         * This method returns the session model from local store or database
+         * model. A new session model is created if the session ID is not yet
+         * loaded.
+         * 
          * @param string $sessionId The session ID.
-         * @return boolean
+         * @return SessionModel
          */
-        private function load($sessionId)
+        private function find($sessionId)
         {
-                if ($this->_session === false) {
-                        return false;
+                // 
+                // Return from local store if exist:
+                // 
+                if (isset($this->_session[$sessionId])) {
+                        return $this->_session[$sessionId];
                 }
 
-                if ($this->_session != null && $this->_session->session_id == $sessionId) {
-                        return true;
-                } elseif (isset($sessionId)) {
-                        $this->_session = SessionModel::findFirst("session_id = '$sessionId'");
+                // 
+                // Query session in database model:
+                // 
+                if (($session = SessionModel::findFirst("session_id = '$sessionId'"))) {
+                        $this->_session[$sessionId] = $session;
+                        return $session;
                 }
 
-                if ($this->_session == null) {
-                        $this->_session = new SessionModel();
-                        $this->_session->session_id = $sessionId;
-                }
+                // 
+                // Create an empty session model:
+                // 
+                $session = new SessionModel();
+                $session->session_id = $sessionId;
 
-                return true;
+                // 
+                // Keep object reference for subsequent use:
+                // 
+                $this->_session[$sessionId] = $session;
+                return $session;
+        }
+
+        /**
+         * Cleanup all session having this ID.
+         * 
+         * @param string $sessionId The session ID.
+         */
+        private function cleanup($sessionId)
+        {
+                if (($session = SessionModel::findFirst("session_id = '$sessionId'"))) {
+                        $session->delete();
+                }
         }
 
         /**
@@ -140,9 +165,8 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
          */
         public function read($sessionId)
         {
-                if ($this->load($sessionId)) {
-                        return $this->_session->data;
-                }
+                $session = $this->find($sessionId);
+                return $session->data;
         }
 
         /**
@@ -154,35 +178,61 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
          */
         public function write($sessionId, $data)
         {
+                // 
+                // Refuse to write empty data:
+                // 
                 if (empty($data)) {
                         return false;
                 }
 
-                if (!$this->load($sessionId)) {
+                // 
+                // Get session model:
+                // 
+                if (!($session = $this->find($sessionId))) {
                         return false;
                 }
 
-                if ($this->_session->data == $data) {
+                // 
+                // Don't update if data is unchanged, unless expire time has
+                // passed and session need refresh:
+                // 
+                if ($session->data == $data) {
                         if ($this->getOption('expires') -
                             $this->getOption('refresh') +
-                            $this->_session->updated > time()) {
+                            $session->updated > time()) {
                                 return true;
                         }
                 }
 
-                if (isset($this->_session->id)) {
-                        $this->_session->session_id = $sessionId;
-                        $this->_session->data = $data;
-                        $this->_session->updated = time();
+                // 
+                // Set session data:
+                // 
+                if (isset($session->id)) {
+                        $session->session_id = $sessionId;
+                        $session->data = $data;
+                        $session->updated = time();
                 } else {
-                        $this->_session->session_id = $sessionId;
-                        $this->_session->data = $data;
-                        $this->_session->created = time();
-                        $this->_session->updated = null;
+                        $session->session_id = $sessionId;
+                        $session->data = $data;
+                        $session->created = time();
+                        $session->updated = null;
                 }
 
-                if (($this->_session->save() == false)) {
-                        throw new ModelException($this->_session->getMessages()[0], Error::SERVICE_UNAVAILABLE);
+                // 
+                // Clean persisted session in case of a race condition:
+                // 
+                if (($session->save() == false)) {
+                        $this->cleanup($sessionId);
+                } else {
+                        // throw new ModelException("TEST");
+                        return true;
+                }
+
+                // 
+                // Try to save session:
+                // 
+                if (($session->save() == false)) {
+                        throw new ModelException($session->getMessages()[0], Error::SERVICE_UNAVAILABLE);
                 } else {
                         return true;
                 }
@@ -195,21 +245,34 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
          */
         public function destroy($sessionId = null)
         {
+                // 
+                // Can't destroy session if session handling is stopped:
+                // 
                 if (!parent::isStarted()) {
                         return true;
                 }
 
+                // 
+                // Get session ID from parent if null:
+                // 
                 if (is_null($sessionId)) {
                         $sessionId = parent::getId();
                 }
 
-                if (empty($this->_session)) {
-                        return true;
-                }
+                // 
+                // Delete session model:
+                // 
+                $session = $this->find($sessionId);
+                $result = $session->delete();
 
-                $result = $this->_session->delete();
-                $this->_session = false;
+                // 
+                // Remove session from local store:
+                // 
+                unset($this->_session[$sessionId]);
 
+                // 
+                // Old session is obsolete. Use new session ID:
+                // 
                 session_regenerate_id();
                 return $result;
         }
@@ -221,17 +284,28 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
          */
         public function gc($maxlifetime)
         {
-                if ($this->_session->id == null) {
-                        return false;
-                }
+                // 
+                // Check if garbage collection is enabled:
+                // 
                 if (!$this->getOption('cleanup')) {
                         return false;
                 }
+
+                // 
+                // Adjust max lifetime if lower than configured:
+                // 
                 if ($maxlifetime < $this->getOption('expires')) {
                         $maxlifetime = $this->getOption('expires');
                 }
 
-                $dbo = $this->_session->getWriteConnection();
+                // 
+                // Get write connection from session model:
+                // 
+                $dbo = (new SessionModel)->getWriteConnection();
+
+                // 
+                // Cleanup left over session data:
+                // 
                 return $dbo->execute(
                         sprintf(
                             'DELETE FROM sessions WHERE COALESCE(updated, created) + %d < ?', $maxlifetime
