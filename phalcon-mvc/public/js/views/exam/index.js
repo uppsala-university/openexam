@@ -10,14 +10,9 @@
 // 
 
 // 
-// 
 // Javascript specific to exam index.
 // 
 
-/*-- var initialization --*/
-var stEvents = '';
-
-/*-- Event handlers --*/
 $(document).ready(function () {
 
     // 
@@ -81,7 +76,6 @@ $(document).ready(function () {
                     }
                 });
     });
-
 
     // 
     // Handle exam progress button click in exam archive.
@@ -198,7 +192,7 @@ $(document).ready(function () {
         });
     });
 
-    $('.check-exam').click(function () {
+    $(document).on('click', '.check-exam', function () {
         $.ajax({
             type: "POST",
             data: {
@@ -215,7 +209,6 @@ $(document).ready(function () {
                 });
             }
         });
-
     });
 
     $(document).on('click', '.reuse-exam', function () {
@@ -265,7 +258,7 @@ $(document).ready(function () {
         var examId = $(examLine).attr('data-id');
         var examName = $(examLine).find('.exam-name').html();
 
-        if (confirm("Are you sure you want to delete this Exam: '" + jQuery.trim(examName) + "'")) {
+        if (confirm("Are you sure you want to delete exam: '" + jQuery.trim(examName) + "'")) {
             ajax(
                     baseURL + 'ajax/core/creator/exam/delete',
                     {"id": examId},
@@ -282,25 +275,51 @@ $(document).ready(function () {
         }
     });
 
+    // 
+    // Simple delay function:
+    // 
+    var delay = (function () {
+        var timer = 0;
+        return function (callback, ms) {
+            clearTimeout(timer);
+            timer = setTimeout(callback, ms);
+        };
+    })();
+
+    // 
+    // On search string input:
+    // 
     $(document).on('keyup', '.exam-search-box', function (e) {
-        if ($(this).val() === '') {
-            var examListingAreas = $(this).closest('.exam-listing-wrapper').find('.exam-listing-area');
-            if (examListingAreas.length > 1) {
-                $(examListingAreas).not(':last').remove();
+        data.search = $(this).val().trim();
+        var element = $(this);
+
+        delay(function () {
+            if (element.val().length > 1 || element.val().length === 0) {
+                var source = element.closest('article').parent();
+                showSectionIndex(source);
             }
-        } else if (e.which === 13) {
-            $(this).parent().find('.search-exam').trigger('click');
-        }
+        }, 500);
+        return false;
     });
 
     $(document).on('click', '.search-exam', function () {
-        reloadExamList($(this), 0);
+        // Show advanced search options.
     });
 
+    // 
+    // On sort by field changed:
+    // 
     $(document).on('change', '.exam-sort-by', function () {
-        reloadExamList($(this));
+        var source = $(this).closest('article').parent();
+        data.sort = $(this).val();
+
+        showSectionIndex(source);
+        return false;
     });
 
+    // 
+    // On sort order changed:
+    // 
     $(document).on('click', '.exam-sort-order', function () {
         if ($(this).hasClass('fa-arrow-circle-down')) {
             $(this).removeClass('fa-arrow-circle-down').addClass('fa-arrow-circle-up');
@@ -310,178 +329,99 @@ $(document).ready(function () {
             $(this).attr('order', 'desc');
         }
 
-        reloadExamList($(this));
+        var source = $(this).closest('article').parent();
+        data.order = $(this).attr('order');
+
+        showSectionIndex(source);
+        return false;
     });
 
+    // 
+    // On page index clicked:
+    // 
     $(document).on('click', '.pagination > li', function () {
 
         $(this).closest('.pagination').find('li').removeClass('active');
         $(this).addClass('active');
 
-        reloadExamList($(this));
+        var source = $(this).closest('article').parent();
+        data.first = Number($(this).attr('page'));
 
+        showSectionIndex(source);
         return false;
     });
 
-    var reloadExamList = function (element, offset) {
-        var section = $(element).closest('.exam-listing-wrapper');
-        var role = $(section).attr('exam-role');
-        var examSortBy = $(section).find('.exam-sort-by').val();
-        var examSortOrder = $(section).find('.exam-sort-order').attr('order');
-        var searchKey = $(section).find('.exam-search-box').val();
-        
-        if (searchKey) {
-            var cond = ["name like :key: or code like :key:", {"key": "%" + searchKey + "%"}];
-        } else {
-            var cond = [];
-        }
+    // 
+    // The section filtering options:
+    // 
+    var data = {
+        sect: null,
+        sort: 'created',
+        order: 'desc',
+        first: 1,
+        limit: 5,
+        search: ''
+    };
 
-        if (typeof offset === 'undefined') {
-            offset = $(section).find('.pagination > .active').attr('offset');
-        }
-        
-        data = {"params": {
-                "role": role,
-                "conditions": [cond],
-                "order": examSortBy + " " + examSortOrder,
-                "limit": offset ? examPerPage : 100000,
-                "offset": offset
-            }
+    // 
+    // On accordion tab expanded:
+    // 
+    $('input[type="radio"]').on('click', function () {
+        var parent = $(this).parent();
+        var target = parent.find('.exam-listing-area');
+
+        // 
+        // Reset filter on section switch:
+        // 
+        data = {
+            sect: parent.attr('section-role'),
+            sort: 'created',
+            order: 'desc',
+            first: 1,
+            limit: 5,
+            search: ''
         };
 
         // 
-        // Send AJAX request:
+        // Check if already initialized:
         // 
-        ajax(
-                baseURL + 'ajax/core/' + role + '/exam/read',
-                data,
-                function (examData) {
-                    if (examData.length) {
-                        populateExamGrid(examData, section, cond.length);
-                    } else {
-                        alert("No such exam found!");
-                    }
-                }
-        );
+        if (target.children().length > 0) {
+            return;
+        }
+
+        // 
+        // Show this section with delay for animation:
+        // 
+        delay(function () {
+            showSectionIndex(parent);
+        }, 200);
+    });
+
+    // 
+    // Show exam index. The source parameter is the containing div.
+    // 
+    var showSectionIndex = function (source) {
+        var target = source.find('.exam-listing-area');
+        var role = source.attr('section-role');
+
+        loadSectionIndex(target, role);
     };
 
-    var populateExamGrid = function (examData, section, populateInSearchGrid) {
-
-        var populatePages = false;
-        var examRole = $(section).attr('exam-role') != $(section).attr('section-role') ? $(section).attr('section-role') : $(section).attr('exam-role');
-
+    // 
+    // Load exam listing.
+    // 
+    var loadSectionIndex = function (target, role) {
         // 
-        // Grid that appears when someone searches for exam:
+        // Send AJAX request:
         // 
-        if (populateInSearchGrid) {
-            if ($(section).find('.exam-listing-area').length > 1) {
-                var examListingArea = $(section).find('.exam-listing-area').first();
-            } else {
-                var examListingArea = $(section).find('.exam-listing-area').clone();
-                populatePages = true;
-            }
-        } else {
-            var examListingArea = $(section).find('.exam-listing-area');
-        }
-        
-        $(examListingArea).find('.exam-list').find('li').not(':first').not(':first').remove();
-        $(examListingArea).find('.exam-progress').hide();   // TODO: display exam progress.
-
-        $.each(examData, function (i, exam) {
-            var start = exam.starttime ? exam.starttime.split(" ") : ["0000:00:00", "00:00"];
-            var ends = exam.endtime ? exam.endtime.split(" ") : ["0000:00:00", "00:00"];
-            var examName = exam.name === '' || exam.name === ' ' ? 'Untitled exam' : exam.name;
-            var examItem = $(examListingArea).find('.exam-list').find('li').not(':first').first().clone();
-            
-            $(examItem).attr('data-id', exam.id);
-            $(examItem).find('.exam-name').html(examName + (exam.code != '' && exam.code != null ? " (" + exam.code + ")" : ""));
-            
-            if (exam.starttime) {
-                $(examItem).find('.exam-date-time').show();
-                $(examItem).find('.exam-date').html(start[0]);
-                $(examItem).find('.exam-starts').html(start[1]);
-                $(examItem).find('.exam-ends').html(ends[1]);
-            } else {
-                $(examItem).find('.exam-date-time').hide();
-            }
-
-            $(examItem).find('.published-exam').hide();
-            $(examItem).find('.draft-exam').hide();
-            $(examItem).find('.upcoming-exam').hide();
-
-            if (exam.state & 0x4000) {
-                $(examItem).find('.draft-exam').hide();
-                $(examItem).find('.upcoming-exam').hide();
-                $(examItem).find('.published-exam').show();
-                if (examRole == 'creator') {
-                    $(examItem).css('background-color', '#ffffed');
-                }
-            } else if (exam.state & 0x2000) {
-                $(examItem).find('.draft-exam').show();
-                $(examItem).find('.upcoming-exam').hide();
-                $(examItem).find('.published-exam').hide();
-                $(examItem).css('background-color', '#fff');
-            } else {
-                $(examItem).find('.draft-exam').hide();
-                $(examItem).find('.upcoming-exam').show();
-                $(examItem).find('.published-exam').hide();
-                $(examItem).css('background-color', '#fff');
-            }
-
-            // 
-            // List operational buttons as per the exam role and status:
-            // 
-            $(examItem).find('.exam-show-options').empty();
-            $.each(examSections[examRole]["show-options"], function (btnKey, btnProp) {
-
-                var showBtn = false;
-                if (btnProp["show-on-flags"] === '*') {
-                    showBtn = true;
-                } else {
-                    $.each(btnProp["show-on-flags"], function (i, flag) {
-                        if (exam.flags.indexOf(flag) >= 0) {
-                            showBtn = true;
-                            return false;
-                        }
-                    });
-                }
-
-                if (showBtn) {
-                    var target = btnProp["target"].indexOf('/') >= 0 ? baseURL + (btnProp["target"].replace("{exam-id}", exam.id)) : '#';
-                    var btnClass = btnProp["target"].indexOf('/') >= 0 ? "" : btnProp["target"] + " prevent";
-                    $(examItem)
-                            .find('.exam-show-options')
-                            .append('<a class="' + btnClass + '" href="' + target + '" data-id="' + exam.id + '">' + $('#' + btnKey).html() + '</a>');
-                }
-            })
-
-            $(examListingArea).find('.exam-list').append(examItem);
-
-            if (i === (examPerPage - 1)) {
-                return false;
+        $.ajax({
+            type: "POST",
+            data: data,
+            url: baseURL + 'exam/section/' + role,
+            success: function (response) {
+                target.html(response).fadeIn('slow');
             }
         });
-
-        if (populatePages) {
-            var totalPgs = Math.ceil(examData.length / examPerPage);
-            var pagination = $(examListingArea).find('.pagination');
-            
-            $(pagination).find('li').not(':first').remove();
-            
-            for (var i = 1; i <= totalPgs; i++) {
-                var pageItem = $(pagination).find('li').first().removeClass('active').clone();
-                $(pageItem).find('a').html(i);
-                $(pageItem).attr('offset', ((i - 1) * examPerPage));
-                if (i === 1) {
-                    $(pageItem).addClass('active');
-                }
-                $(pagination).append(pageItem);
-            }
-            $(pagination).find('li').first().remove();
-        }
-
-        $(examListingArea).find('.exam-list').find('li').eq(1).remove();
-        $(section).find('.exam-listing-area').parent().prepend(examListingArea);
     };
 
 });

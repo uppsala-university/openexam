@@ -9,6 +9,7 @@
 // Created: 2014-09-18 18:11:50
 // 
 // Author:  Ahsan Shahzad (MedfarmDoIT)
+// Author:  Anders Lövgren (QNET)
 // 
 
 namespace OpenExam\Controllers\Gui;
@@ -33,6 +34,8 @@ use OpenExam\Plugins\Security\Model\ObjectAccess;
 use Phalcon\Mvc\Model\Transaction\Failed as TransactionFailed;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Phalcon\Mvc\View;
+use Phalcon\Paginator\Adapter\Model as PaginatorModel;
+use Phalcon\Paginator\Adapter\NativeArray as PaginatorArray;
 
 /**
  * Controller for loading Exam pages
@@ -48,127 +51,203 @@ class ExamController extends GuiController
         const EXAMS_PER_PAGE = 3;
 
         /**
-         * Home page for exam management to list all exams
-         * exam/index
+         * List all exams sections where caller has role.
          */
         public function indexAction()
         {
                 // 
-                // Get all published exams using the student role:
+                // Try to acquire all roles:
                 // 
-                $this->user->setPrimaryRole(Roles::STUDENT);
-                if (!($exams['student'] = Exam::find(array(
-                            'conditions' => "published = 'Y'",
-                            'order'      => 'starttime DESC'
-                    )))) {
-                        throw new Exception("Failed query student exams");
-                }
+                $this->user->acquire(array(
+                        Roles::ADMIN,
+                        Roles::CONTRIBUTOR,
+                        Roles::CORRECTOR,
+                        Roles::CREATOR,
+                        Roles::DECODER,
+                        Roles::INVIGILATOR,
+                        Roles::STUDENT,
+                        Roles::TEACHER
+                ));
+
                 // 
-                // Filter student exams on upcoming and ongoing:
+                // Special handling for student pseudo roles that differentiate
+                // between having upcoming and alredy finished exams:
                 // 
-                $exams['student-upcoming'] = $exams['student']->filter(function($exam) {
-                        if ($exam->state & State::UPCOMING || $exam->state & State::RUNNING) {
-                                return $exam;
+                if ($this->user->roles->acquire(Roles::STUDENT)) {
+                        // 
+                        // Get all published exams using the student role:
+                        // 
+                        $this->user->setPrimaryRole(Roles::STUDENT);
+                        if (!($exams = Exam::find(array(
+                                    'conditions' => "published = 'Y'"
+                            )))) {
+                                throw new Exception("Failed query student exams");
                         }
-                });
-                // 
-                // Filter student exams on finished:
-                // 
-                $exams['student-finished'] = $exams['student']->filter(function($exam) {
-                        if ($exam->state & State::FINISHED) {
-                                return $exam;
+
+                        // 
+                        // Filter student exams on upcoming and ongoing:
+                        // 
+                        $found = $exams->filter(function($exam) {
+                                if ($exam->state & State::UPCOMING || $exam->state & State::RUNNING) {
+                                        return $exam;
+                                }
+                        });
+                        if (count($found) > 0) {
+                                $this->user->roles->addRole('student-upcoming');
                         }
-                });
-                unset($exams['student']);
 
-                // 
-                // Get exams using the creator role:
-                // 
-                $this->user->setPrimaryRole(Roles::CREATOR);
-                if (!($exams['creator'] = Exam::find(array(
-                            'order' => 'created DESC'
-                    )))) {
-                        throw new Exception("Failed query creator exams");
-                }
-
-                // 
-                // Get exams using the contributor role:
-                // 
-                $this->user->setPrimaryRole(Roles::CONTRIBUTOR);
-                if (!($exams['contributor'] = Exam::find(array(
-                            'order' => 'created DESC'
-                    )))) {
-                        throw new Exception("Failed query contributor exams");
-                }
-
-                // 
-                // Get exams using the invigilator role:
-                // 
-                $this->user->setPrimaryRole(Roles::INVIGILATOR);
-                if (!($exams['invigilator'] = Exam::find(array(
-                            'order' => 'created DESC'
-                    )))) {
-                        throw new Exception("Failed query invigilator exams");
-                }
-
-                // 
-                // Get exams using the corrector role:
-                // 
-                $this->user->setPrimaryRole(Roles::CORRECTOR);
-                if (!($exams['corrector'] = Exam::find(array(
-                            'order' => 'created DESC'
-                    )))) {
-                        throw new Exception("Failed query corrector exams");
-                }
-
-                // 
-                // Get exams using the decoder role:
-                // 
-                $this->user->setPrimaryRole(Roles::DECODER);
-                if (!($exams['decoder'] = Exam::find(array(
-                            'order' => 'created DESC'
-                    )))) {
-                        throw new Exception("Failed query decoder exams");
-                }
-
-                // 
-                // Reset primary role:
-                // 
-                $this->user->setPrimaryRole(null);
-
-                // 
-                // Strip "roles" without any exams:
-                // 
-                foreach ($exams as $role => $data) {
-                        if (count($data) == 0) {
-                                unset($exams[$role]);
+                        // 
+                        // Filter student exams on finished:
+                        // 
+                        $found = $exams->filter(function($exam) {
+                                if ($exam->state & State::FINISHED) {
+                                        return $exam;
+                                }
+                        });
+                        if (count($found) > 0) {
+                                $this->user->roles->addRole('student-finished');
                         }
+
+                        unset($exams);
+                        unset($found);
                 }
 
                 // 
                 // Show creator tab if admin and teacher:
                 // 
-                if (!isset($exams['creator'])) {
-                        if ($this->user->acquire(array('admin', 'teacher'))) {
-                                $exams['creator'] = array();
-                        }
+                if ($this->user->roles->hasRole(Roles::ADMIN) ||
+                    $this->user->roles->hasRole(Roles::TEACHER)) {
+                        $this->user->roles->addRole(Roles::CREATOR);
                 }
+
+                // 
+                // Get list of all acquired exams:
+                // 
+                $roles = $this->user->roles->getRoles();
 
                 // 
                 // Set data for view:
                 // 
                 $this->view->setVars(array(
-                        'roleBasedExamList' => $exams,
-                        'expandExamTabs'    => array()
+                        'roles'  => $roles,
+                        'expand' => array()
                 ));
         }
 
         /**
-         * Show create view for exam
-         * On exam create request, new records are inserted 
-         * exam/create
+         * Display exam listing.
          * 
-         * Allowed to Roles: teacher
+         * Call this method to display listing of exams in exam index. The 
+         * role correspond to one of the accordion tabs. Accepts these post 
+         * parameters: sort, order, first and limit.
+         * 
+         * The first parameter is the page to show (pagination). The limit
+         * should be 5, but can actually be unlimited. The first and limit
+         * is passed along to view.
+         * 
+         * @param string $sect The requesting index section (i.e. creator).
+         * @throws Exception
+         */
+        public function sectionAction($sect)
+        {
+                // 
+                // Explore combined roles (currently only students):
+                // 
+                if (strstr($sect, '-')) {
+                        list($role, $part) = explode('-', $sect);
+                } else {
+                        list($role, $part) = array($sect, false);
+                }
+
+                // 
+                // Get request parameters:
+                // 
+                $sort = $this->request->getPost('sort', 'string', 'created');
+                $order = $this->request->getPost('order', 'string', 'desc');
+                $first = $this->request->getPost('first', 'int', 1);
+                $limit = $this->request->getPost('limit', 'int', 5);
+                $search = $this->request->getPost('search', 'string', '');
+
+                // 
+                // Set primary role for model access:
+                // 
+                $this->user->setPrimaryRole($role);
+
+                // 
+                // Get all exams for pagination:
+                // 
+                if ($role == Roles::STUDENT) {
+                        if (!($exams = Exam::find(array(
+                                    'conditions' => "published = 'Y' AND name LIKE '%$search%'",
+                                    'order'      => "$sort $order"
+                            )))) {
+                                throw new Exception("Failed query exams");
+                        }
+                } else {
+                        if (!($exams = Exam::find(array(
+                                    'conditions' => "name LIKE '%$search%'",
+                                    'order'      => "$sort $order"
+                            )))) {
+                                throw new Exception("Failed query exams");
+                        }
+                }
+
+                // 
+                // Special filtering if being student:
+                // 
+                if ($role == Roles::STUDENT) {
+                        if ($part == 'upcoming') {
+                                $exams = $exams->filter(function($exam) {
+                                        if ($exam->state & State::UPCOMING || $exam->state & State::RUNNING) {
+                                                return $exam;
+                                        }
+                                });
+                        }
+                        if ($part == 'finished') {
+                                $exams = $exams->filter(function($exam) {
+                                        if ($exam->state & State::FINISHED) {
+                                                return $exam;
+                                        }
+                                });
+                        }
+                }
+
+                // 
+                // Create paginator for result set:
+                // 
+                if (is_array($exams)) {
+                        $paginator = new PaginatorArray(array(
+                                "data"  => $exams,
+                                "limit" => $limit,
+                                "page"  => $first
+                        ));
+                } else {
+                        $paginator = new PaginatorModel(array(
+                                "data"  => $exams,
+                                "limit" => $limit,
+                                "page"  => $first
+                        ));
+                }
+
+                // 
+                // Pass data to view:
+                // 
+                $this->view->setVars(array(
+                        'role'   => $role,
+                        'sect'   => $sect,
+                        'page'   => $paginator->getPaginate(),
+                        'sort'   => $sort,
+                        'order'  => $order,
+                        'first'  => $first,
+                        'limit'  => $limit,
+                        'search' => $search
+                ));
+        }
+
+        /**
+         * Show create view for exam. 
+         * 
+         * On exam create request, new records are inserted 
          */
         public function createAction()
         {
@@ -245,10 +324,9 @@ class ExamController extends GuiController
         }
 
         /**
-         * Allows exam creator to replicate his exam
+         * Allows exam creator to replicate his exam.
          * 
-         * exam/replicate/{exam-id}
-         * Allowed to Roles: teacher
+         * @param int $eid The exam ID.
          */
         public function replicateAction($eid)
         {
@@ -512,10 +590,9 @@ class ExamController extends GuiController
         }
 
         /**
-         * Shows exam instructions for student and for test exam
-         * exam/{exam_id}
+         * Shows exam instructions for student and for test exam.
          * 
-         * Allowed to Roles: student
+         * @param int $eid The exam ID.
          */
         public function instructionAction($eid)
         {
@@ -614,13 +691,13 @@ class ExamController extends GuiController
                 } else {
                         $this->view->setVar('readonly', false);
                 }
-                
+
                 // 
                 // Set data for view:
                 // 
                 $this->view->setVars(array(
-                        "exam"     => $exam,
-                        "domains"  => $this->catalog->getDomains()
+                        "exam"    => $exam,
+                        "domains" => $this->catalog->getDomains()
                 ));
         }
 
@@ -723,6 +800,7 @@ class ExamController extends GuiController
 
         /**
          * View for displaying exam details (i.e. state).
+         * 
          * @param int $eid The exam ID.
          * @throws Exception
          */
@@ -806,6 +884,7 @@ class ExamController extends GuiController
 
         /**
          * Exam status check.
+         * 
          * @param int $eid The exam ID.
          */
         public function checkAction()
@@ -885,6 +964,9 @@ class ExamController extends GuiController
 
         /**
          * Create PDF for archive or paper exam.
+         * 
+         * @param int $eid The exam ID.
+         * @param bool $download Should archive be downloaded?
          */
         public function archiveAction($eid, $download = false)
         {

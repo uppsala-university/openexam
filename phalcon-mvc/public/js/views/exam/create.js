@@ -21,7 +21,6 @@ var qsIdJson = {};
 var qJson = {};
 var exam = exam || {};
 var formJs = '';
-var stEvents = '';
 
 $(document).ready(function () {
 
