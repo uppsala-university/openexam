@@ -116,7 +116,7 @@ class ModelBase extends Model
                 // 
                 if (isset($parameters['conditions'])) {
                         if (is_string($parameters['conditions'])) {
-                                $parameters['conditions'] = preg_replace("/(\[?[a-z\\\\]+\]?\.)?(\[?\w+?\]?) (=|between|in)/i", "${class}.$2 $3", $parameters['conditions']);
+                                $parameters['conditions'] = preg_replace("/(\[?[a-z\\\\]+\]?\.)?(\[?\w+?\]?) (=|between|in|like)/i", "${class}.$2 $3", $parameters['conditions']);
                         }
                 }
 
@@ -125,7 +125,7 @@ class ModelBase extends Model
                 // 
                 foreach (array_keys($parameters) as $index) {
                         if (is_int($index)) {
-                                $parameters[$index] = preg_replace("/(\[?[a-z\\\\]+\]?\.)?(\[?\w+?\]?) (=|between|in)/i", "${class}.$2 $3", $parameters[$index]);
+                                $parameters[$index] = preg_replace("/(\[?[a-z\\\\]+\]?\.)?(\[?\w+?\]?) (=|between|in|like)/i", "${class}.$2 $3", $parameters[$index]);
                         }
                 }
 
