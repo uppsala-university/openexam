@@ -101,6 +101,7 @@ class TaskController extends GuiController
         public function resultAction()
         {
                 $this->roleAction(array(
+                        'state' => State::DECODED,
                         'order' => 'Exam.starttime',
                         'match' => array(
                                 'decoded' => true
@@ -139,6 +140,7 @@ class TaskController extends GuiController
                 }
 
                 $this->view->setVars(array(
+                        'state'  => array($sect => $filter['state']),
                         'roles'  => array($sect),
                         'expand' => array($sect),
                         'filter' => $filter
