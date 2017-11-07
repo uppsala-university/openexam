@@ -126,11 +126,25 @@ class ExamController extends GuiController
                 $roles = $this->user->roles->getRoles();
 
                 // 
+                // Use these filter options:
+                // 
+                $filter = array(
+                        'sort'   => 'desc',
+                        'order'  => 'created',
+                        'first'  => 1,
+                        'limit'  => 5,
+                        'search' => '',
+                        'state'  => 0,
+                        'match'  => array()
+                );
+
+                // 
                 // Set data for view:
                 // 
                 $this->view->setVars(array(
                         'roles'  => $roles,
-                        'expand' => array()
+                        'expand' => array(),
+                        'filter' => $filter
                 ));
         }
 
@@ -162,11 +176,24 @@ class ExamController extends GuiController
                 // 
                 // Get request parameters:
                 // 
-                $sort = $this->request->getPost('sort', 'string', 'created');
-                $order = $this->request->getPost('order', 'string', 'desc');
+                $order = $this->request->getPost('order', 'string', 'created');
+                $sort = $this->request->getPost('sort', 'string', 'desc');
                 $first = $this->request->getPost('first', 'int', 1);
                 $limit = $this->request->getPost('limit', 'int', 5);
                 $search = $this->request->getPost('search', 'string', '');
+                $state = $this->request->getPost('state', 'int', 0);
+                $match = $this->request->getPost('match', 'string', array());
+
+                // 
+                // Convert boolean strings to enum:
+                // 
+                foreach ($match as $key => $val) {
+                        if ($val == 'true') {
+                                $match[$key] = 'Y';
+                        } elseif ($val == 'false') {
+                                $match[$key] = 'N';
+                        }
+                }
 
                 // 
                 // Set primary role for model access:
@@ -174,60 +201,61 @@ class ExamController extends GuiController
                 $this->user->setPrimaryRole($role);
 
                 // 
-                // Get all exams for pagination:
+                // Use QueryBuilder to get exams. Don't use model result for pagination 
+                // as adviced by phalcon docs.
                 // 
-                if ($role == Roles::STUDENT) {
-                        if (!($exams = Exam::find(array(
-                                    'conditions' => "published = 'Y' AND name LIKE '%$search%'",
-                                    'order'      => "$sort $order"
-                            )))) {
-                                throw new Exception("Failed query exams");
-                        }
-                } else {
-                        if (!($exams = Exam::find(array(
-                                    'conditions' => "name LIKE '%$search%'",
-                                    'order'      => "$sort $order"
-                            )))) {
-                                throw new Exception("Failed query exams");
-                        }
+                // See: https://olddocs.phalconphp.com/en/3.0.0/reference/pagination.html
+                //      http://phalcon.io/cheat-sheet/#section-17
+                //      
+                $builder = $this->modelsManager->createBuilder()
+                    ->from("Exam")
+                    ->orderBy("$order $sort")
+                    ->groupBy("Exam.id");
+
+                if (strlen($search)) {
+                        $builder->andWhere("Exam.name LIKE '%$search%'");
+                }
+                foreach ($match as $key => $val) {
+                        $builder->andWhere("$key = '$val'");
                 }
 
                 // 
-                // Special filtering if being student:
+                // Execute PHQL query statement:
                 // 
-                if ($role == Roles::STUDENT) {
-                        if ($part == 'upcoming') {
-                                $exams = $exams->filter(function($exam) {
-                                        if ($exam->state & State::UPCOMING || $exam->state & State::RUNNING) {
-                                                return $exam;
-                                        }
-                                });
-                        }
-                        if ($part == 'finished') {
-                                $exams = $exams->filter(function($exam) {
-                                        if ($exam->state & State::FINISHED) {
-                                                return $exam;
-                                        }
-                                });
+                $string = Exam::getQuery($builder->getPhql());
+                $result = $this->modelsManager->executeQuery($string);
+
+                // 
+                // The exam array to paginate:
+                // 
+                $exams = array();
+
+                if ($state > 0) {
+                        // 
+                        // Filter on exam state:
+                        // 
+                        $exams = $result->filter(function($exam) use($state) {
+                                if ($exam->state & $state) {
+                                        return $exam;
+                                }
+                        });
+                } else {
+                        // 
+                        // Have to extract each model from result set:
+                        // 
+                        foreach ($result as $exam) {
+                                $exams[] = $exam;
                         }
                 }
 
                 // 
                 // Create paginator for result set:
                 // 
-                if (is_array($exams)) {
-                        $paginator = new PaginatorArray(array(
-                                "data"  => $exams,
-                                "limit" => $limit,
-                                "page"  => $first
-                        ));
-                } else {
-                        $paginator = new PaginatorModel(array(
-                                "data"  => $exams,
-                                "limit" => $limit,
-                                "page"  => $first
-                        ));
-                }
+                $paginator = new PaginatorArray(array(
+                        "data"  => $exams,
+                        "limit" => $limit,
+                        "page"  => $first
+                ));
 
                 // 
                 // Pass data to view:

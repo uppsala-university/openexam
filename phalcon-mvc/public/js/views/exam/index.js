@@ -1,3 +1,5 @@
+/* global filter, expand, baseURL */
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -81,10 +83,6 @@ $(document).ready(function () {
     // Handle exam progress button click in exam archive.
     //
     $(document).on('click', '.exam-progress', function () {
-        console.log($(this));
-        var exam = $(this).attr('data-id');
-        console.log(exam);
-        console.log($(this).hasClass('running'));
 
         if ($(this).hasClass('creator') && $(this).hasClass('upcoming') || $(this).hasClass('running')) {
             var prompt = "This exam is not yet published. If you chose to publish it now, then it will \nshow up as an upcoming exam for student but can't be opened by them \nbefore the exam actually starts.\n\nDo you want to publish it?";
@@ -172,6 +170,9 @@ $(document).ready(function () {
         return false;
     });
 
+    // 
+    // Show student management dialog:
+    // 
     $(document).on('click', '.manage-students', function () {
         $.ajax({
             type: "POST",
@@ -192,6 +193,9 @@ $(document).ready(function () {
         });
     });
 
+    // 
+    // Show exam check dialog:
+    // 
     $(document).on('click', '.check-exam', function () {
         $.ajax({
             type: "POST",
@@ -211,6 +215,9 @@ $(document).ready(function () {
         });
     });
 
+    // 
+    // Show exam duplicate dialog:
+    // 
     $(document).on('click', '.reuse-exam', function () {
         var examId = $(this).closest('.list-group-item').attr('data-id');
         var dialog = $("#reuse-exam-dialog").dialog({
@@ -253,6 +260,9 @@ $(document).ready(function () {
 
     });
 
+    // 
+    // Prompt before delete exam:
+    // 
     $(document).on('click', '.del-exam', function () {
         var examLine = $(this).closest('.list-group-item');
         var examId = $(examLine).attr('data-id');
@@ -295,7 +305,10 @@ $(document).ready(function () {
 
         delay(function () {
             if (element.val().length > 1 || element.val().length === 0) {
+
+                data.first = 1;
                 var source = element.closest('article').parent();
+
                 showSectionIndex(source);
             }
         }, 500);
@@ -307,11 +320,11 @@ $(document).ready(function () {
     });
 
     // 
-    // On sort by field changed:
+    // On order by field changed:
     // 
-    $(document).on('change', '.exam-sort-by', function () {
+    $(document).on('change', '.exam-order-by', function () {
         var source = $(this).closest('article').parent();
-        data.sort = $(this).val();
+        data.order = $(this).val();
 
         showSectionIndex(source);
         return false;
@@ -323,14 +336,14 @@ $(document).ready(function () {
     $(document).on('click', '.exam-sort-order', function () {
         if ($(this).hasClass('fa-arrow-circle-down')) {
             $(this).removeClass('fa-arrow-circle-down').addClass('fa-arrow-circle-up');
-            $(this).attr('order', 'asc');
+            $(this).attr('sort', 'asc');
         } else {
             $(this).removeClass('fa-arrow-circle-up').addClass('fa-arrow-circle-down');
-            $(this).attr('order', 'desc');
+            $(this).attr('sort', 'desc');
         }
 
         var source = $(this).closest('article').parent();
-        data.order = $(this).attr('order');
+        data.sort = $(this).attr('sort');
 
         showSectionIndex(source);
         return false;
@@ -352,16 +365,10 @@ $(document).ready(function () {
     });
 
     // 
-    // The section filtering options:
+    // Set default section filtering options. Clone filtering object to prevent
+    // modify be reference when setting properties in data object.
     // 
-    var data = {
-        sect: null,
-        sort: 'created',
-        order: 'desc',
-        first: 1,
-        limit: 5,
-        search: ''
-    };
+    var data = Object.assign({}, filter);
 
     // 
     // On accordion tab expanded:
@@ -371,23 +378,17 @@ $(document).ready(function () {
         var target = parent.find('.exam-listing-area');
 
         // 
-        // Reset filter on section switch:
-        // 
-        data = {
-            sect: parent.attr('section-role'),
-            sort: 'created',
-            order: 'desc',
-            first: 1,
-            limit: 5,
-            search: ''
-        };
-
-        // 
         // Check if already initialized:
         // 
         if (target.children().length > 0) {
             return;
         }
+
+        // 
+        // Reset filter on section switch:
+        // 
+        data = Object.assign({}, filter);
+        data.sect = parent.attr('section-role');
 
         // 
         // Show this section with delay for animation:
@@ -419,10 +420,22 @@ $(document).ready(function () {
             data: data,
             url: baseURL + 'exam/section/' + role,
             success: function (response) {
-                target.html(response).fadeIn('slow');
+                target.hide().html(response).fadeIn();
             }
         });
     };
+
+    // 
+    // Load data in all expanded sections:
+    // 
+    if (expand.length > 0) {
+        for (var i = 0; i < expand.length; ++i) {
+            var source = '[section-role="' + expand[i] + '"]';
+            var parent = $(document).find(source);
+
+            showSectionIndex(parent);
+        }
+    }
 
 });
 

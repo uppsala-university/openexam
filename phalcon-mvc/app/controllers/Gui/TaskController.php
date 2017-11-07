@@ -16,7 +16,6 @@ namespace OpenExam\Controllers\Gui;
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Security\Roles;
-use OpenExam\Models\Exam;
 
 /**
  * Task controller.
@@ -32,8 +31,10 @@ class TaskController extends GuiController
          */
         public function manageAction($state = null)
         {
-                $this->user->setPrimaryRole(Roles::CREATOR);
-                $this->roleAction(Roles::CREATOR, Exam::find(), $state);
+                $this->roleAction(array(
+                        'state' => $state
+                    ), Roles::CREATOR
+                );
         }
 
         /**
@@ -41,11 +42,13 @@ class TaskController extends GuiController
          */
         public function contributeAction()
         {
-                $this->user->setPrimaryRole(Roles::CONTRIBUTOR);
-                $this->roleAction(Roles::CONTRIBUTOR, Exam::find(array(
-                            'conditions' => "published = 'N'",
-                            'order'      => 'starttime DESC'
-                    )), State::CONTRIBUTABLE
+                $this->roleAction(array(
+                        'state' => State::CONTRIBUTABLE,
+                        'order' => 'starttime',
+                        'match' => array(
+                                'published' => false
+                        )
+                    ), Roles::CONTRIBUTOR
                 );
         }
 
@@ -54,16 +57,15 @@ class TaskController extends GuiController
          */
         public function correctAction()
         {
-                $this->user->setPrimaryRole(Roles::CORRECTOR);
-                $this->roleAction(Roles::CORRECTOR, Exam::find(array(
-                            'conditions' => "published = 'Y' AND decoded = 'N'",
-                            'order'      => 'starttime DESC'
-                    )), function($exam) {
-                        if ($exam->state & State::CORRECTABLE ||
-                            $exam->state & State::CORRECTED) {
-                                return $exam;
-                        }
-                });
+                $this->roleAction(array(
+                        'state' => State::CORRECTABLE | State::CORRECTED,
+                        'order' => 'starttime',
+                        'match' => array(
+                                'published' => true,
+                                'decoded'   => false
+                        )
+                    ), Roles::CORRECTOR
+                );
         }
 
         /**
@@ -71,10 +73,10 @@ class TaskController extends GuiController
          */
         public function invigilateAction()
         {
-                $this->user->setPrimaryRole(Roles::INVIGILATOR);
-                $this->roleAction(Roles::INVIGILATOR, Exam::find(array(
-                            'order' => 'starttime DESC'
-                    )), State::EXAMINATABLE
+                $this->roleAction(array(
+                        'state' => State::EXAMINATABLE,
+                        'order' => 'starttime'
+                    ), Roles::INVIGILATOR
                 );
         }
 
@@ -83,11 +85,13 @@ class TaskController extends GuiController
          */
         public function decodeAction()
         {
-                $this->user->setPrimaryRole(Roles::DECODER);
-                $this->roleAction(Roles::DECODER, Exam::find(array(
-                            'conditions' => "decoded = 'N'",
-                            'order'      => 'starttime DESC'
-                    )), State::DECODABLE
+                $this->roleAction(array(
+                        'state' => State::DECODABLE,
+                        'order' => 'starttime',
+                        'match' => array(
+                                'decoded' => false
+                        )
+                    ), Roles::DECODER
                 );
         }
 
@@ -96,37 +100,50 @@ class TaskController extends GuiController
          */
         public function resultAction()
         {
-                $this->user->setPrimaryRole(Roles::STUDENT);
-                $this->roleAction('student-finished', Exam::find(array(
-                            'conditions' => "decoded = 'Y'",
-                            'order'      => 'starttime DESC'
-                    ))
+                $this->roleAction(array(
+                        'order' => 'Exam.starttime',
+                        'match' => array(
+                                'decoded' => true
+                        )
+                    ), Roles::STUDENT, 'student-finished'
                 );
         }
 
         /**
          * Task helper method.
          * 
-         * @param string $role The task role.
-         * @param Exam[] $exams The exams resultset.
-         * @param int|callable $filter Optional resultset filter.
+         * @param array $filter The filter options.
+         * @param string $role The user role.
+         * @param string $sect The exam section (defaults to role).
          */
-        private function roleAction($role, $exams, $filter = null)
+        private function roleAction($filter, $role, $sect = null)
         {
-                if (is_callable($filter)) {
-                        $exams = $exams->filter($filter);
-                } elseif (is_int($filter)) {
-                        $exams = $exams->filter(function($exam) use($filter) {
-                                if ($exam->state & $filter) {
-                                        return $exam;
-                                }
-                        });
+                if (!isset($sect)) {
+                        $sect = $role;
+                }
+
+                if (!isset($filter['search'])) {
+                        $filter['search'] = '';
+                }
+                if (!isset($filter['order'])) {
+                        $filter['order'] = 'id';
+                }
+                if (!isset($filter['sort'])) {
+                        $filter['sort'] = 'desc';
+                }
+                if (!isset($filter['state'])) {
+                        $filter['state'] = 0;
+                }
+                if (!isset($filter['match'])) {
+                        $filter['match'] = array();
                 }
 
                 $this->view->setVars(array(
-                        'roleBasedExamList' => array($role => $exams),
-                        'expandExamTabs'    => array($role)
+                        'roles'  => array($sect),
+                        'expand' => array($sect),
+                        'filter' => $filter
                 ));
+
                 $this->view->pick(array('exam/index'));
         }
 

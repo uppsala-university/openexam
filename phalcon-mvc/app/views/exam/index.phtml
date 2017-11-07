@@ -49,21 +49,20 @@ for ($i = 0; $i < count($roles); ++$i) {
                                 <?= $sections[$role]['title'] ?>
                             </label>
                             <article class="ac-large exam-listing-wrapper">
-                                <?php if ($role == Roles::CREATOR): ?>
-                                        <a href="<?= $this->url->get('exam/create') ?>"> 
-                                            <span style="float: right; font-size: 12px; padding: 5px"> 
-                                                <span class="label label-blue" style="margin-right: 26px; background-color:#3D7489">
-                                                    <i class="fa fa-plus-square"></i> Create new exam
+                                <div style="padding:5px; margin-bottom: 20px">
+                                    <span style="margin: 2px; float:right" class="label label-orange search-exam"><i class="fa fa-search" style="color:#FFF"></i></span> 
+                                    <input style="margin: 1px; float:right" type="text" class="exam-search-box" placeholder="Quick search" value="<?= $search ?>"> 
+
+                                    <?php if ($role == Roles::CREATOR): ?>
+                                            <a href="<?= $this->url->get('exam/create') ?>"> 
+                                                <span style="float: right; font-size: 14px"> 
+                                                    <span class="label label-blue" style="margin-right: 5px; background-color:#3D7489">
+                                                        <i class="fa fa-plus-square"></i> Create new exam
+                                                    </span> 
                                                 </span> 
-                                            </span> 
-                                        </a>
-                                <?php endif; ?>
-
-                                <div style="float:right; padding:5px;">
-                                    <input type="text" class="exam-search-box" placeholder="Quick search" value="<?= $search ?>">
-                                    <span class="label label-orange search-exam"><i class="fa fa-search" style="color:#FFF"></i></span> 
+                                            </a>
+                                    <?php endif; ?>
                                 </div>
-
                                 <div class="exam-listing-area" style="min-height:260px"></div>
                             </article>
                         </div>
@@ -116,4 +115,6 @@ for ($i = 0; $i < count($roles); ++$i) {
 
 <script>
         var examSections = <?= json_encode($sections); ?>;
+        var filter = <?= json_encode($filter); ?>;
+        var expand = <?= json_encode($expand); ?>;
 </script>

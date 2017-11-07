@@ -519,6 +519,18 @@ class Question extends ModelBase
          * );
          * </code>
          * 
+         * This function can also be used with the query builder from model manager:
+         * <code>
+         * $query = $this->modelsManager->createQuery()
+         *      ->from("Question")
+         *      ->where("name like '%test%'")
+         *      ->getPhql();
+         * 
+         * $result = $this->modelsManager->executeQuery(
+         *      Question::getQuery($query)
+         * );
+         * </code>
+         * 
          * @param string $query The query string.
          * @return string
          */
@@ -526,7 +538,12 @@ class Question extends ModelBase
         {
                 $relations = self::getRelations();
 
-                list($qs, $qe) = explode(" Question ", $query . ' ');
+                if (strpos($query, " Question ") !== false) {
+                        list($qs, $qe) = explode(" Question ", $query . ' ');
+                }
+                if (strpos($query, "[Question]") !== false) {
+                        list($qs, $qe) = explode(" [Question] ", $query . ' ');
+                }
 
                 $qs = trim($qs);
                 $qe = trim($qe);

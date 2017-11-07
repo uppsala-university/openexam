@@ -740,6 +740,19 @@ class Exam extends ModelBase
          * );
          * </code>
          * 
+         * This function can also be used with the query builder from model manager:
+         * <code>
+         * $query = $this->modelsManager->createQuery()
+         *      ->from("Exam")
+         *      ->where("published = 'Y'")
+         *      ->orderBy('starttime')
+         *      ->getPhql();
+         * 
+         * $result = $this->modelsManager->executeQuery(
+         *      Exam::getQuery($query)
+         * );
+         * </code>
+         * 
          * @param string $query The query string.
          * @return string
          */
@@ -747,7 +760,12 @@ class Exam extends ModelBase
         {
                 $relations = self::getRelations();
 
-                list($qs, $qe) = explode(" Exam ", $query . ' ');
+                if (strpos($query, " Exam ") !== false) {
+                        list($qs, $qe) = explode(" Exam ", $query . ' ');
+                }
+                if (strpos($query, "[Exam]") !== false) {
+                        list($qs, $qe) = explode(" [Exam] ", $query . ' ');
+                }
 
                 $qs = trim($qs);
                 $qe = trim($qe);
