@@ -374,10 +374,29 @@ $(document).ready(function () {
     }
 
     // 
-    // Set default section filtering options. Clone filtering object to prevent
-    // modify be reference when setting properties in data object.
+    // Filter options for current section.
     // 
     var data = Object.assign({}, filter);
+
+    // 
+    // Initialize section data:
+    // 
+    $('[section-role]').each(function () {
+        // 
+        // Store filter options in section element:
+        // 
+        var options = Object.assign({}, filter);
+
+        options.sect = $(this).attr('section-role');
+        options.state = Number($(this).attr('section-state'));
+
+        $(this).data(options);
+
+        // 
+        // Set filter data to last:
+        // 
+        data = $(this).data();
+    });
 
     // 
     // On accordion tab expanded:
@@ -387,17 +406,16 @@ $(document).ready(function () {
         var target = parent.find('.exam-listing-area');
 
         // 
+        // Use section filter options:
+        // 
+        data = parent.data();
+
+        // 
         // Check if already initialized:
         // 
         if (target.children().length > 0) {
             return;
         }
-
-        // 
-        // Reset filter on section switch:
-        // 
-        data = Object.assign({}, filter);
-        data.sect = parent.attr('section-role');
 
         // 
         // Show this section with delay for animation:
