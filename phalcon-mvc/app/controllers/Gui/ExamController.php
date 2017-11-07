@@ -217,7 +217,7 @@ class ExamController extends GuiController
                 //      
                 $builder = $this->modelsManager->createBuilder()
                     ->from("Exam")
-                    ->orderBy("$order $sort")
+                    ->orderBy("Exam.$order $sort")
                     ->groupBy("Exam.id");
 
                 if (strlen($search)) {
