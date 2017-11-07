@@ -365,6 +365,15 @@ $(document).ready(function () {
     });
 
     // 
+    // Fake object.assing for IE 11:
+    // 
+    if (Object.assign === undefined) {
+        Object.prototype.assign = function (obj) {
+            return $.extend({}, obj);
+        };
+    }
+
+    // 
     // Set default section filtering options. Clone filtering object to prevent
     // modify be reference when setting properties in data object.
     // 
