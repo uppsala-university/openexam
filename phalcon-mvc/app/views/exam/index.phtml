@@ -62,7 +62,7 @@ foreach ($roles as $role) {
                             <article class="ac-large exam-listing-wrapper">
                                 <div style="padding:5px; margin-bottom: 20px">
                                     <span style="margin: 2px; float:right" class="toolbtn toolbtn-orange search-exam"><i class="fa fa-search" style="color:#FFF"></i></span> 
-                                    <input class="form-control" style="margin: 1px; float:right; max-width: 300px" type="text" class="exam-search-box" placeholder="Quick search" value="<?= $search ?>"> 
+                                    <input class="form-control exam-search-box" style="margin: 1px; float:right; max-width: 300px" type="text" class="exam-search-box" placeholder="Quick search" value="<?= $search ?>"> 
 
                                     <?php if ($role == Roles::CREATOR): ?>
                                             <a href="<?= $this->url->get('exam/create') ?>"> 

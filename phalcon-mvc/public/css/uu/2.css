@@ -4782,13 +4782,6 @@ select[name=program] {
 .exam-sort-order {
     cursor:pointer !important;
 }
-.exam-search-box {
-    height: 13px; 
-    width:215px !important; 
-    display: inline !important; 
-    border:1px solid #dedede;
-    font-size:0.9em;
-}
 .exam-list-boxes {
     font-weight: normal;
 }
