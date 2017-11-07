@@ -86,7 +86,7 @@ if (strtotime($exam->endtime) < time()) {
     }
 </style>
 
-<div class="hero-unit">
+<div class="jumbotron">
     <h2>
         <?= Phalcon\Tag::image(array("img/uu_logo.svg", "height" => "55px", "style" => "padding-right:20px")); ?><?= $exam->name ?></h2>
     <br />
@@ -297,7 +297,7 @@ if (strtotime($exam->endtime) < time()) {
 
                                                                             ?>
                                                                             <?php if (!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
-                                                                                    <input type="text" class="q-points changeable" ans-id="<?= $qSpecAns->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" value="<?= $score ?>" max-pt="<?= floatval($qPart['q_points']) ?>" required="required">								
+                                                                                    <input class="form-control" type="text" class="q-points changeable" ans-id="<?= $qSpecAns->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" value="<?= $score ?>" max-pt="<?= floatval($qPart['q_points']) ?>" required="required">								
                                                                             <?php else: ?>
                                                                                     <?= floatval($scoreData[$qPartTitle]) ?>
                                                                             <?php endif; ?>	
@@ -444,7 +444,7 @@ if (strtotime($exam->endtime) < time()) {
                                                                                 ?>
 
                                                                                 <?php if (!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
-                                                                                        <input type="text" class="q-points changeable" ans-id="<?= $answer->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" value="<?= isset($scoreData[$qPartTitle]) ? $scoreData[$qPartTitle] : ($qPart['type'] == 'choicebox' ? round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2) : '') ?>"  max-pt="<?= floatval($questParts[$qPartTitle]['q_points']) ?>" required="required">
+                                                                                        <input class="form-control" type="text" class="q-points changeable" ans-id="<?= $answer->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" value="<?= isset($scoreData[$qPartTitle]) ? $scoreData[$qPartTitle] : ($qPart['type'] == 'choicebox' ? round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2) : '') ?>"  max-pt="<?= floatval($questParts[$qPartTitle]['q_points']) ?>" required="required">
                                                                                 <?php else: ?>
                                                                                         <?= floatval($scoreData[$qPartTitle]) ?>
                                                                                 <?php endif; ?>
@@ -509,8 +509,18 @@ if (strtotime($exam->endtime) < time()) {
                 <hr>
                 <input type="button" style="text-shadow: none; background-color: rgb(64, 192, 64); font-size: 20px; padding: 8px" class="save-all-result savable" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>" value="Save all results »">
                 <div style="padding-left: 10px; padding-top: 5px">
-                    <input type="checkbox" class="hide-completed"><span style="margin-left: 10px">Hide fully corrected answers</span><br>
-                    <input type="checkbox" class="hide-resources"><span style="margin-left: 10px">Hide media and resource files</span>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" class="hide-completed">
+                            Hide fully corrected answers
+                        </label>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" class="hide-resources">
+                            Hide media and resource files
+                        </label>
+                    </div>
                 </div>
             </div>
     <?php endif; ?>
@@ -522,7 +532,7 @@ if (strtotime($exam->endtime) < time()) {
 </form>
 
 <style>
-    .hero-unit {
+    .jumbotron {
         background-color:#F9F9F9 !important;
         padding: 0px !important;
     }

@@ -12,7 +12,6 @@
 // Author:  Ahsan Shahzad (Medfarm DoIT)
 // 
 
-
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Gui\Component\Exam\Progress;
 use Phalcon\Tag;
@@ -20,24 +19,24 @@ use Phalcon\Tag;
 $sections = include('sections.inc');
 
 $buttons = array(
-        'manage-exam'       => '<span class="label label-green"><i class="fa fa-gear"></i> Manage</span>',
-        'test-exam'         => '<span class="label label-blue"><i class="fa fa-thumbs-o-up"></i> Preview</span>',
-        'del-exam'          => '<span class="label label-red"><i class="fa fa-trash"></i> Delete</span>',
-        'reuse-exam'        => '<span class="label label-primary" style="background-color: #4285F4"><i class="fa fa-refresh"></i> Reuse</span>',
-        'view-exam'         => '<span class="label label-green"><i class="fa fa-question-circle"></i> Display</span>',
-        'check-exam'        => '<span class="label label-orange"><i class="fa fa-thumbs-o-up"></i> Status</span>',
-        'add-q'             => '<span class="label label-blue"><i class="fa fa-pencil-square-o"></i> Add questions</span>',
-        'ans-correction'    => '<span class="label label-green"><i class="fa fa-check-square-o"></i> Answer correction</span>',
-        'exam-not-finished' => '<span class="label label-primary"><i class="fa fa-times"></i> Exam not finished yet</span>',
-        'view-results'      => '<span class="label label-warning"><i class="fa fa-line-chart"></i> View results</span>',
-        'view-scoreboard'   => '<span class="label label-warning"><i class="fa fa-trophy"></i> View Score board</span>',
-        'download-result'   => '<span class="label label-primary" style="background-color: #4285F4"><i class="fa fa-download"></i> Download results</span>',
-        'decode-exam'       => '<span class="label label-green"><i class="fa fa-code"></i> Decode this exam</span>',
-        'decode-closed'     => '<span class="label label-primary"><i class="fa fa-times"></i> Not open for decoding yet</span>',
-        'manage-student'    => '<span class="label label-green"><i class="fa fa-user"></i> Manage students</span>',
-        'change-time'       => '<span class="label label-blue"><i class="fa fa-clock-o"></i> Change schedule</span>',
-        'st-exam-page'      => '<span class="label label-green"><i class="fa fa-gear"></i> Go to exam page</span>',
-        'st-view-exam'      => '<span class="label label-green"><i class="fa fa-gear"></i> View exam</span>'
+        'manage-exam'       => '<span class="toolbtn toolbtn-green"><i class="fa fa-gear"></i> Manage</span>',
+        'test-exam'         => '<span class="toolbtn toolbtn-blue"><i class="fa fa-thumbs-o-up"></i> Preview</span>',
+        'del-exam'          => '<span class="toolbtn toolbtn-red"><i class="fa fa-trash"></i> Delete</span>',
+        'reuse-exam'        => '<span class="toolbtn toolbtn-primary" style="background-color: #4285F4"><i class="fa fa-refresh"></i> Reuse</span>',
+        'view-exam'         => '<span class="toolbtn toolbtn-green"><i class="fa fa-question-circle"></i> Display</span>',
+        'check-exam'        => '<span class="toolbtn toolbtn-orange"><i class="fa fa-thumbs-o-up"></i> Status</span>',
+        'add-q'             => '<span class="toolbtn toolbtn-blue"><i class="fa fa-pencil-square-o"></i> Add questions</span>',
+        'ans-correction'    => '<span class="toolbtn toolbtn-green"><i class="fa fa-check-square-o"></i> Answer correction</span>',
+        'exam-not-finished' => '<span class="toolbtn toolbtn-primary"><i class="fa fa-times"></i> Exam not finished yet</span>',
+        'view-results'      => '<span class="toolbtn toolbtn-warning"><i class="fa fa-line-chart"></i> View results</span>',
+        'view-scoreboard'   => '<span class="toolbtn toolbtn-warning"><i class="fa fa-trophy"></i> View Score board</span>',
+        'download-result'   => '<span class="toolbtn toolbtn-primary" style="background-color: #4285F4"><i class="fa fa-download"></i> Download results</span>',
+        'decode-exam'       => '<span class="toolbtn toolbtn-green"><i class="fa fa-code"></i> Decode this exam</span>',
+        'decode-closed'     => '<span class="toolbtn toolbtn-primary"><i class="fa fa-times"></i> Not open for decoding yet</span>',
+        'manage-student'    => '<span class="toolbtn toolbtn-green"><i class="fa fa-user"></i> Manage students</span>',
+        'change-time'       => '<span class="toolbtn toolbtn-blue"><i class="fa fa-clock-o"></i> Change schedule</span>',
+        'st-exam-page'      => '<span class="toolbtn toolbtn-green"><i class="fa fa-gear"></i> Go to exam page</span>',
+        'st-view-exam'      => '<span class="toolbtn toolbtn-green"><i class="fa fa-gear"></i> View exam</span>'
 );
 
 $ordering = array(
@@ -54,22 +53,24 @@ $ordering = array(
 
 <?php if (count($page->items) != 0): ?>
         <ul class="list-group exam-list">
-            <li class="list-group-item" style="background-color: rgb(245, 245, 245); padding: 5px; font-size: 11px;">
-                <span style="font-size:9px">Sort by: </span>
-                <select class="exam-order-by" style="font-size: 9px; height: 20px; width: 95px;">
-                    <?php foreach ($ordering as $key => $val) : ?>
-                            <?php if ($order == $key) : ?>
-                                    <option value="<?= $key ?>" selected="true"><?= $val ?></option>
-                            <?php else: ?>
-                                    <option value="<?= $key ?>"><?= $val ?></option>
-                            <?php endif; ?>
-                    <?php endforeach; ?>
-                </select>
-                <?php if ($sort == "desc") : ?>
-                        <i class="exam-sort-order fa fa-lg fa-arrow-circle-down" sort="desc" style="color: rgb(193, 0, 43);"></i>
-                <?php else : ?>
-                        <i class="exam-sort-order fa fa-lg fa-arrow-circle-up" sort="asc" style="color: rgb(193, 0, 43);"></i>
-                <?php endif; ?>
+            <li class="list-group-item" style="background-color: rgb(245, 245, 245); padding: 5px;">
+                <div class="form-inline">
+                    <span>Sort by: </span>
+                    <select class="exam-order-by form-control" style="max-width: 200px">
+                        <?php foreach ($ordering as $key => $val) : ?>
+                                <?php if ($order == $key) : ?>
+                                        <option value="<?= $key ?>" selected="true"><?= $val ?></option>
+                                <?php else: ?>
+                                        <option value="<?= $key ?>"><?= $val ?></option>
+                                <?php endif; ?>
+                        <?php endforeach; ?>
+                    </select>
+                    <?php if ($sort == "desc") : ?>
+                            <i class="exam-sort-order fa fa-lg fa-arrow-circle-down" sort="desc" style="color: rgb(193, 0, 43);"></i>
+                    <?php else : ?>
+                            <i class="exam-sort-order fa fa-lg fa-arrow-circle-up" sort="asc" style="color: rgb(193, 0, 43);"></i>
+                    <?php endif; ?>                        
+                </div>
             </li>
 
             <?php foreach ($page->items as $exam): ?>
@@ -102,7 +103,7 @@ $ordering = array(
                                class="exam-state-show"
                                title="Click to display exam details"
                                style="cursor: pointer">
-                                <span class="exam-date label label-blue-outline" style="margin-right: 10px; margin-left: 5px; min-width: 200px;">
+                                <span class="exam-date toolbtn toolbtn-blue-outline" style="margin-right: 10px; margin-left: 5px; min-width: 120px;">
                                     <i class="fa fa-clock-o"></i> 
                                     <?php
                                     if (isset($exam->starttime)) {
@@ -157,8 +158,8 @@ $ordering = array(
         </ul>
 
         <?php if ($page->total_pages > 1): ?>
-                <div style=" float: right; left: -50%; margin-bottom: 2em; position: relative; text-align: left;">
-                    <ul class="pagination" style="left: 50%; list-style: none outside none; margin: 0; padding: 0; position: relative;">
+                <div style=" margin-bottom: 2em; position: relative; text-align: left;">
+                    <ul class="pagination" style="left: 50%; list-style: none outside none; margin: 0; padding: 0; position: relative; border-top-left-radius: 0px">
                         <?php for ($i = 1; $i <= $page->total_pages; $i++): ?>
                                 <?php if ($i == $page->current) : ?>
                                         <li class="active" page="<?= $i ?>">

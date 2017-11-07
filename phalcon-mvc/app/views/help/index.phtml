@@ -16,7 +16,7 @@
 <div class="row">
     <?php
     foreach ($help as $section => $ds) {
-            printf("<div class=\"span3\">\n");
+            printf("<div class=\"col-lg-3 col-md-3 col-sm-3\">\n");
             foreach ($help as $section => $ds) {
                     printf("<a href=\"%s/%s\" title=\"Click to display more manuals in various formats and translations\">\n", $base, $section);
                     printf("<h2>%s</h2>\n", $ds['name']);

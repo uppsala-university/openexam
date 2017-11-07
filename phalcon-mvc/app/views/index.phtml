@@ -17,20 +17,21 @@
         <?= Phalcon\Tag::getTitle(); ?>
         <meta http-equiv="content-type" content="text/html" charset="UTF-8" />	
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <?= Phalcon\Tag::javascriptInclude('js/jquery.min.js'); ?>
-            <?= Phalcon\Tag::javascriptInclude('js/utils.js'); ?>
+        <?= Phalcon\Tag::javascriptInclude('js/jquery.min.js'); ?>
+        <?= Phalcon\Tag::javascriptInclude('js/utils.js'); ?>
 
-            <script language="javascript">
-                    var baseURL = '<?= $this->url->get() ?>';
-            </script>
+        <script language="javascript">
+                var baseURL = '<?= $this->url->get() ?>';
+        </script>
     </head>
 
     <body class="Ettan sv contrast-red fixed-header">
         <?= $this->getContent(); ?>
 
-        <!-- content to show when ajax request is in progress -->
+        <!-- Content to show when AJAX request is in progress -->
         <div id="ajax_loader" style="display:none">
             <?= Phalcon\Tag::image(array("img/ajax-loader.gif", "class" => "ajax-loader")); ?>
         </div>
     </body>
+
 </html>

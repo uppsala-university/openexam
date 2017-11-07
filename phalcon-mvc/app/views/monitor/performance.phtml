@@ -103,7 +103,7 @@
                     $("div.monitor-buttons").append("<button id=\"" + type + "\" class=\"btn btn-primary counter\">" + content[type].name + "</button>");
                 }
 
-                $("div.monitor-buttons").append("<div class=\"selectpicker delta\"><input type=\"checkbox\" id=\"delta\" checked> Delta Mode</input></div>");
+                $("div.monitor-buttons").append("<div class=\"selectpicker delta checkbox\"><label><input type=\"checkbox\" id=\"delta\" checked> Delta Mode</label></div>");
                 $("div.monitor-buttons").append("<div class=\"selectpicker sources\"></div>");
 
                 monitor = Object.keys(content)[0];
@@ -229,7 +229,7 @@
                 if (content.name !== false) {
                     var length = content.name.length, select;
 
-                    select = "<select class=\"sources\" id=\"sources\">";
+                    select = "<select class=\"sources form-control\" id=\"sources\">";
                     for (var i = 0; i < length; ++i) {
                         select += "<option name=\"" + content.name[i] + "\">" + content.name[i] + "</option>";
                     }

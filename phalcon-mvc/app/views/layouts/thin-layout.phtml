@@ -21,7 +21,7 @@ $this->profiler->add("view");
 ?>
 
 <!-- / bootstrap -->
-<?= Phalcon\Tag::stylesheetLink('thin-layout/stylesheets/bootstrap/bootstrap.css'); ?>
+<?= Phalcon\Tag::stylesheetLink('bootstrap3/css/bootstrap.min.css'); ?>
 
 <!-- / theme file -->
 <?= Phalcon\Tag::stylesheetLink(array('thin-layout/stylesheets/light-theme.css', "media" => "all", "id" => "color-settings-body-color")); ?>
@@ -36,7 +36,7 @@ $this->profiler->add("view");
 <?= Phalcon\Tag::javascriptInclude('js/jquery.cookie.js'); ?>
 
 <!-- / bootstrap  -->
-<?= Phalcon\Tag::javascriptInclude('thin-layout/javascripts/bootstrap/bootstrap.js'); ?>
+<?= Phalcon\Tag::javascriptInclude('bootstrap3/js/bootstrap.min.js'); ?>
 
 <!-- / theme file  -->
 <?= Phalcon\Tag::javascriptInclude('thin-layout/javascripts/theme.js'); ?>  
@@ -45,7 +45,7 @@ $this->profiler->add("view");
 <!-- fancy box -->
 <?= Phalcon\Tag::javascriptInclude('plugins/fancy-box/source/jquery.fancybox.js'); ?>            
 
-<!-- Video.js - HTML5 video with flowplayer dropin -->
+<!-- Video.js - HTML 5 video with flowplayer drop-in -->
 <?= Phalcon\Tag::javascriptInclude('js/video.min.js'); ?>
 <?= Phalcon\Tag::stylesheetLink('css/video-js.min.css'); ?>
 

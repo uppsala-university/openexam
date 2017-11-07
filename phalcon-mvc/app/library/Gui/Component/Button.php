@@ -41,7 +41,7 @@ class Button implements Component
          * @param string $icon The icon name.
          * @param string $color The button color.
          */
-        public function __construct($text = "Button", $icon = "gear", $color = "primary")
+        public function __construct($text = "Button", $icon = "gear", $color = "grey")
         {
                 $this->text = $text;
                 $this->icon = $icon;
@@ -72,9 +72,9 @@ class Button implements Component
                         printf("<a href=\"%s\" target=\"%s\" %s>\n", $this->href, $this->target, implode(" ", $this->attrs));
                 }
                 if ($this->outline) {
-                        printf("<span class=\"label label-%s-outline\">\n", $this->color);
+                        printf("<span class=\"toolbtn toolbtn-%s-outline\">\n", $this->color);
                 } else {
-                        printf("<span class=\"label label-%s\">\n", $this->color);
+                        printf("<span class=\"toolbtn toolbtn-%s\">\n", $this->color);
                 }
                 if ($this->compact) {
                         printf("<i class=\"fa fa-%s\"></i>\n", $this->icon);

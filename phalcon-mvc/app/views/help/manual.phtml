@@ -16,7 +16,7 @@
 <div class="row">
     <?php
     foreach ($manual as $section => $data) {
-            printf("<div class=\"span3\">\n");
+            printf("<div class=\"col-lg-3 col-md-3 col-sm-3\">\n");
             printf("<a href=\"%s/manual/%s\">\n", $base, $section);
             printf("<h2>%s</h2>\n", $data['name']);
             printf("<img src=\"%s\" style=\"padding-bottom:15px\" />\n", $icon);

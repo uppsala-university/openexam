@@ -156,7 +156,7 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
         <div style="display:none" id="question-topic-settings-box">
             <div style="font-size:8px"> If the randomize value is non-zero, then randomize number of questions is randomly selected from the pool of questions in this topic. This value is used for duggor, leave it as zero for ordinary examinations (use all questions). </div>
             <div style="padding-top:10px"> Randomize:
-                <input type="text" size="5" value="0" style="border:1px solid #CCCCCC" class="topic-rand-val">
+                <input class="form-control" type="text" size="5" value="0" style="border:1px solid #CCCCCC" class="topic-rand-val">
                 <input class="topic-settings-save" type="submit" value="Save" data-id="">
             </div>
         </div>
@@ -308,7 +308,7 @@ $canUpdateExam = $this->capabilities->hasCapability($exam, 'update');
                     $(document).on('click', '.topic-name', function () {
 
                         if (!$(this).find('.q-topic-txtbox').length) {
-                            $(this).html('<input type="text" class="q-topic-txtbox" value="' + $(this).html() + '" placeholder="Write section title here">');
+                            $(this).html('<input class="form-control" type="text" class="q-topic-txtbox" value="' + $(this).html() + '" placeholder="Write section title here">');
                             $(this).find('input').focus().select();
                         }
 

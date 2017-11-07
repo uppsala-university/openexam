@@ -226,7 +226,7 @@ class ExamController extends GuiController
                 foreach ($match as $key => $val) {
                         $builder->andWhere("$key = '$val'");
                 }
-
+                
                 // 
                 // Execute PHQL query statement:
                 // 

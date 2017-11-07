@@ -2,249 +2,247 @@
 /**********************************Används inte***************************************************/
 @media screen{
 
-/**** TOPPMENY NIVA 1 CENTRAL ****/
-#wrapper {
-  border-bottom: 29px solid #999;
-}
-#menucontainer {
-	/*width:984px;*/
-	height:28px;
-	margin-bottom:-1px;
+    /**** TOPPMENY NIVA 1 CENTRAL ****/
+    #wrapper {
+        border-bottom: 32px solid #999;
+    }
+    #menucontainer {
+        height:32px;
+        margin-bottom:0px;
         float:left;
         margin:0;
         background:#999;
         display:inline;
-        border-bottom:1px solid #999;
-}
+        border-bottom:0px solid #999;
+    }
 
-ul#menucontainer {
-	list-style-type: none;	
-	padding: 0;
-	margin:0;
-	list-style-image: none;
-}
-ul#menucontainer li {
-	float: left;	
-        height:28px;
-}
+    ul#menucontainer {
+        list-style-type: none;	
+        padding: 0;
+        margin:0;
+        list-style-image: none;
+    }
+    ul#menucontainer li {
+        float: left;	
+        height:32px;
+    }
 
-ul#menucontainer li a {
-	color:#FFFFFF;
+    ul#menucontainer li a {
+        color:#FFFFFF;
         display:block;
         font-family:Verdana,Arial,Helvetica,sans-serif;
         font-size:1em;
         font-weight:700;
         padding:6px 13px 7px;
         text-decoration:none;
-    -webkit-transition-property: background; 
-    -webkit-transition-duration: .3s; 
-    -webkit-transition-timing-function: linear;
-    -moz-transition-property: background; 
-    -moz-transition-duration: .3s; 
-    -moz-transition-timing-function: linear; 
-    transition-property: background; 
-    transition-duration: .3s; 
-    transition-timing-function: linear; 
-    border-bottom:none;
-}
+        -webkit-transition-property: background; 
+        -webkit-transition-duration: .3s; 
+        -webkit-transition-timing-function: linear;
+        -moz-transition-property: background; 
+        -moz-transition-duration: .3s; 
+        -moz-transition-timing-function: linear; 
+        transition-property: background; 
+        transition-duration: .3s; 
+        transition-timing-function: linear; 
+        border-bottom:none;
+    }
 
-ul#menucontainer li:hover {
+    ul#menucontainer li:hover {
 
 
-}
-ul#menucontainer li a:hover{
-	text-decoration: none;
-	color:#333 !important;
-	border-bottom:none !important;
+    }
+    ul#menucontainer li a:hover{
+        text-decoration: none;
+        color:#333 !important;
+        border-bottom:none !important;
         background:#fff;
-}
+    }
 
-ul#menucontainer li.selected {
-background:#FFFFFF none repeat scroll 0 0;
-border-bottom:1px solid #FFFFFF;
+    ul#menucontainer li.selected {
+        background:#FFFFFF none repeat scroll 0 0;
+        border-bottom: 29px solid white;
+    }
+    ul#menucontainer li.first {
+        border-left: 1px solid #999;
+    }
+    ul#menucontainer li.selected a {
+        text-decoration: none;
+        text-decoration: none;
+        color:#333;
+    }
+    /********************** MENY ***********************/
+    .treeMenuContainer  {
+        background: none repeat scroll 0 0 #EEEEEE;
+        margin: 0px 0 20px 5px;
+        padding: 0 0 5px;
+    }
 
-}
-ul#menucontainer li.first {
-    border-left: 1px solid #999;
-}
-ul#menucontainer li.selected a {
-	text-decoration: none;
-	text-decoration: none;
-	color:#333;
-}
-/********************** MENY ***********************/
-.treeMenuContainer  {
-    background: none repeat scroll 0 0 #EEEEEE;
-    margin: 0px 0 20px 5px;
-    padding: 0 0 5px;
-}
+    .treeMenuContainer ul li {
+        background: none repeat scroll 0 0 #EEEEEE;
+        border-top:1px solid #FFFFFF;
+        margin:0;
+        padding:0;
+        -webkit-transition-property: background; 
+        -webkit-transition-duration: .3s; 
+        -webkit-transition-timing-function: linear;
+        -moz-transition-property: background; 
+        -moz-transition-duration: .3s; 
+        -moz-transition-timing-function: linear; 
+        transition-property: background; 
+        transition-duration: .3s; 
+        transition-timing-function: linear; 
 
-.treeMenuContainer ul li {
-    background: none repeat scroll 0 0 #EEEEEE;
-    border-top:1px solid #FFFFFF;
-    margin:0;
-    padding:0;
-    -webkit-transition-property: background; 
-    -webkit-transition-duration: .3s; 
-    -webkit-transition-timing-function: linear;
-    -moz-transition-property: background; 
-    -moz-transition-duration: .3s; 
-    -moz-transition-timing-function: linear; 
-    transition-property: background; 
-    transition-duration: .3s; 
-    transition-timing-function: linear; 
+    }
+    .treeMenuContainer ul li a{
+        padding: 8px 5px 8px 15px;
+        background:none;
+        border-left:5px solid transparent;
+    }
+    .treeMenuContainer ul ul li a {
+        background: none repeat scroll 0 0 transparent;
+        padding: 4px 5px 4px 30px;
+    }
+    .treeMenuContainer ul ul ul li a {
+        background: none repeat scroll 0 0 transparent;
+        padding: 4px 5px 4px 45px;
+    }
+    .treeMenuContainer ul ul ul ul li a {
+        background: none repeat scroll 0 0 transparent;
+        padding: 4px 5px 4px 60px;
+    }
+    .treeMenuContainer ul ul ul ul ul li a {
+        background: none repeat scroll 0 0 transparent;
+        padding: 4px 5px 4px 75px;
+    }
+    .treeMenuContainer ul ul ul ul ul ul li a {
+        background: none repeat scroll 0 0 transparent;
+        padding: 4px 5px 4px 90px;
+    }
+    .treeMenuContainer ul ul ul u ul ul ull li a {
+        background: none repeat scroll 0 0 transparent;
+        padding: 4px 5px 4px 105px;
+    }
+    .treeMenuContainer ul li a:active, .treeMenuContainer ul li a:hover, .treeMenuContainer ul li  a.selectedMenuItem{
+        background:none;
 
-}
-.treeMenuContainer ul li a{
-    padding: 8px 5px 8px 15px;
-    background:none;
-border-left:5px solid transparent;
-}
-.treeMenuContainer ul ul li a {
-    background: none repeat scroll 0 0 transparent;
-    padding: 4px 5px 4px 30px;
-}
-.treeMenuContainer ul ul ul li a {
-    background: none repeat scroll 0 0 transparent;
-    padding: 4px 5px 4px 45px;
-}
-.treeMenuContainer ul ul ul ul li a {
-    background: none repeat scroll 0 0 transparent;
-    padding: 4px 5px 4px 60px;
-}
-.treeMenuContainer ul ul ul ul ul li a {
-    background: none repeat scroll 0 0 transparent;
-    padding: 4px 5px 4px 75px;
-}
-.treeMenuContainer ul ul ul ul ul ul li a {
-    background: none repeat scroll 0 0 transparent;
-    padding: 4px 5px 4px 90px;
-}
-.treeMenuContainer ul ul ul u ul ul ull li a {
-    background: none repeat scroll 0 0 transparent;
-    padding: 4px 5px 4px 105px;
-}
-.treeMenuContainer ul li a:active, .treeMenuContainer ul li a:hover, .treeMenuContainer ul li  a.selectedMenuItem{
-    background:none;
+    }
+    .treeMenuContainer ul li a:hover {
+        color:#444 !important;
+    }
+    .treeMenuContainer ul li  a.selectedMenuItem{
+        background:#fff;
 
-}
-.treeMenuContainer ul li a:hover {
-    color:#444 !important;
-}
-.treeMenuContainer ul li  a.selectedMenuItem{
-    background:#fff;
+    }
+    .treeMenuContainer ul li:hover {
+        background: none repeat scroll 0 0 #fff;
 
-}
-.treeMenuContainer ul li:hover {
-    background: none repeat scroll 0 0 #fff;
+    }
 
-}
+    .treeMenuContainer h2 {
+        background: none repeat scroll 0 0 #999999;
+        color: #FFFFFF;
+        font-size: 1.5em;
+        margin: 0;
+        padding: 5px 5px 5px 10px !important;
+    }
+    .treeMenuContainer h2 a {
+        color:#fff;
+    }
+    .treeMenuContainer h2 a:hover {
+        color:#fff;
+    }
+    .treeMenuContainer h4 {
+        margin:4px 0 0 !important;
+        padding:4px 5px 2px 10px;
+    }
 
-.treeMenuContainer h2 {
-    background: none repeat scroll 0 0 #999999;
-    color: #FFFFFF;
-    font-size: 1.5em;
-    margin: 0;
-    padding: 5px 5px 5px 10px !important;
-}
-.treeMenuContainer h2 a {
-    color:#fff;
-}
-.treeMenuContainer h2 a:hover {
-    color:#fff;
-}
-.treeMenuContainer h4 {
-    margin:4px 0 0 !important;
-    padding:4px 5px 2px 10px;
-}
-
-/********************** MENY ***********************
-.treeMenuContainer  {
-    background:none repeat scroll 0 0 #eee;
-    margin:3px 0 20px 5px;
-    padding:0 0 5px;
-}
-
-.treeMenuContainer ul.menuLevel0 li {
-    border-top:1px solid #FFFFFF;
-    margin:0;
-padding:0px
-}
-.treeMenuContainer ul.menuLevel1 li, .treeMenuContainer ul.menuLevel1 li {
-    border-top:none;
-    margin:0;
-}
-.treeMenuContainer ul.menuLevel1, .treeMenuContainer ul.menuLevel2, .treeMenuContainer ul.menuLevel3 {
-    margin-bottom:5px;
-}
-ul.menuLevel0 li a {
-background:url("") no-repeat left top;
-padding:2px 10px 6px 18px;
-}
-ul.menuLevel1 li a {
-background:url("") no-repeat left top;
-padding:4px 10px 6px 30px;
-}
-ul.menuLevel2 li a {
-background:url("") no-repeat left top;
-padding:4px 10px 6px 45px;
-}
-ul.menuLevel3 li a {
-background:url("") no-repeat left top;
-padding:4px 10px 6px 60px;
-}
-ul.menuLevel4 li a {
-background:url("") no-repeat left top;
-padding:4px 10px 6px 75px;
-}
-ul.menuLevel5 li a {
-background:url("") no-repeat left top;
-padding:4px 10px 6px 85px;
-}
-ul.menuLevel0 li a.selectedMenuItem, ul.menuLevel0 li a:hover {
-    background:#fff url("") no-repeat left top;
-}
-ul.menuLevel1 li a.selectedMenuItem, ul.menuLevel1 li a:hover {
-    background:#fff url("") no-repeat left top;
-}
-ul.menuLevel2 li a.selectedMenuItem, ul.menuLevel2 li a:hover {
-    background:#fff url("") no-repeat left top;
-}
-ul.menuLevel3 li a.selectedMenuItem, ul.menuLevel3 li a:hover {
-    background:#fff url("") no-repeat left top;
-}
-ul.menuLevel4 li a.selectedMenuItem, ul.menuLevel4 li a:hover {
-    background:#fff url("") no-repeat left top;
-}
-ul.menuLevel4 li a.selectedMenuItem, ul.menuLevel4 li a:hover {
-    background:#fff url("") no-repeat left top;
-}
-.treeMenuContainer h2 {
-    background: #bbb;
-    color:#fff;
-    font-size:1.5em;
-    margin:4px 0 0;
-    padding:4px 5px 2px 10px;
-}
-.treeMenuContainer h2 a {
-    color:#fff;
-}
-.treeMenuContainer h2 a:hover {
-    color:#fff;
-}
-.treeMenuContainer h4 {
-    margin:4px 0 0 !important;
-    padding:4px 5px 2px 10px;
-}
-
-/
-
-/*************** Tillfällig colorbox ****************/
-.colorbox h2 {
-    margin-top: 0 !important;
-    padding: 5px !important;
-}
-/*********** Sluttagg som ska finnas med ************/
+    /********************** MENY ***********************
+    .treeMenuContainer  {
+        background:none repeat scroll 0 0 #eee;
+        margin:3px 0 20px 5px;
+        padding:0 0 5px;
+    }
+    
+    .treeMenuContainer ul.menuLevel0 li {
+        border-top:1px solid #FFFFFF;
+        margin:0;
+    padding:0px
+    }
+    .treeMenuContainer ul.menuLevel1 li, .treeMenuContainer ul.menuLevel1 li {
+        border-top:none;
+        margin:0;
+    }
+    .treeMenuContainer ul.menuLevel1, .treeMenuContainer ul.menuLevel2, .treeMenuContainer ul.menuLevel3 {
+        margin-bottom:5px;
+    }
+    ul.menuLevel0 li a {
+    background:url("") no-repeat left top;
+    padding:2px 10px 6px 18px;
+    }
+    ul.menuLevel1 li a {
+    background:url("") no-repeat left top;
+    padding:4px 10px 6px 30px;
+    }
+    ul.menuLevel2 li a {
+    background:url("") no-repeat left top;
+    padding:4px 10px 6px 45px;
+    }
+    ul.menuLevel3 li a {
+    background:url("") no-repeat left top;
+    padding:4px 10px 6px 60px;
+    }
+    ul.menuLevel4 li a {
+    background:url("") no-repeat left top;
+    padding:4px 10px 6px 75px;
+    }
+    ul.menuLevel5 li a {
+    background:url("") no-repeat left top;
+    padding:4px 10px 6px 85px;
+    }
+    ul.menuLevel0 li a.selectedMenuItem, ul.menuLevel0 li a:hover {
+        background:#fff url("") no-repeat left top;
+    }
+    ul.menuLevel1 li a.selectedMenuItem, ul.menuLevel1 li a:hover {
+        background:#fff url("") no-repeat left top;
+    }
+    ul.menuLevel2 li a.selectedMenuItem, ul.menuLevel2 li a:hover {
+        background:#fff url("") no-repeat left top;
+    }
+    ul.menuLevel3 li a.selectedMenuItem, ul.menuLevel3 li a:hover {
+        background:#fff url("") no-repeat left top;
+    }
+    ul.menuLevel4 li a.selectedMenuItem, ul.menuLevel4 li a:hover {
+        background:#fff url("") no-repeat left top;
+    }
+    ul.menuLevel4 li a.selectedMenuItem, ul.menuLevel4 li a:hover {
+        background:#fff url("") no-repeat left top;
+    }
+    .treeMenuContainer h2 {
+        background: #bbb;
+        color:#fff;
+        font-size:1.5em;
+        margin:4px 0 0;
+        padding:4px 5px 2px 10px;
+    }
+    .treeMenuContainer h2 a {
+        color:#fff;
+    }
+    .treeMenuContainer h2 a:hover {
+        color:#fff;
+    }
+    .treeMenuContainer h4 {
+        margin:4px 0 0 !important;
+        padding:4px 5px 2px 10px;
+    }
+    
+    /
+    
+    /*************** Tillfällig colorbox ****************/
+    .colorbox h2 {
+        margin-top: 0 !important;
+        padding: 5px !important;
+    }
+    /*********** Sluttagg som ska finnas med ************/
 }
 
 td a.fill, th a.fill {

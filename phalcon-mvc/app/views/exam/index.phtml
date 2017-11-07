@@ -30,9 +30,15 @@ foreach ($roles as $role) {
 
 ?>
 
+<div id="unsupported-browser" class="alert alert-warning alert-dismissable" style="display: none">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+    <strong>Possible browser problem!</strong><br>
+        It looks like you are using an unsupported browser. In case of problem using the system, please try with an modern browser that supports the latest web standards.
+</div>
+
 <div id="container" class="left_menu_space container" style="width:100%">
 
-    <div class="hero-unit" style="margin:15px">
+    <div class="jumbotron" style="margin:15px; margin-top: 0px; padding: 25px">
         <h1>Hi <?= $this->catalog->getFirstName() ?>!</h1>
         <div style="padding:10px 0px">
             The content of this page depends on the different roles you have. Information about the different roles (creator, contributor, corrector, invigilator, student) can be found <a href="<?= $this->url->get('/help/manual/teacher') ?>">teacher manual</a>.  
@@ -55,13 +61,13 @@ foreach ($roles as $role) {
                             </label>
                             <article class="ac-large exam-listing-wrapper">
                                 <div style="padding:5px; margin-bottom: 20px">
-                                    <span style="margin: 2px; float:right" class="label label-orange search-exam"><i class="fa fa-search" style="color:#FFF"></i></span> 
-                                    <input style="margin: 1px; float:right" type="text" class="exam-search-box" placeholder="Quick search" value="<?= $search ?>"> 
+                                    <span style="margin: 2px; float:right" class="toolbtn toolbtn-orange search-exam"><i class="fa fa-search" style="color:#FFF"></i></span> 
+                                    <input class="form-control" style="margin: 1px; float:right; max-width: 300px" type="text" class="exam-search-box" placeholder="Quick search" value="<?= $search ?>"> 
 
                                     <?php if ($role == Roles::CREATOR): ?>
                                             <a href="<?= $this->url->get('exam/create') ?>"> 
                                                 <span style="float: right; font-size: 14px"> 
-                                                    <span class="label label-blue" style="margin-right: 5px; background-color:#3D7489">
+                                                    <span class="toolbtn toolbtn-blue" style="margin-right: 5px; background-color:#3D7489">
                                                         <i class="fa fa-plus-square"></i> Create new exam
                                                     </span> 
                                                 </span> 
@@ -88,12 +94,26 @@ foreach ($roles as $role) {
             Along with <strong>Exam title, instructions and exam settings</strong>, please select if any of the following exam parts you would like to reuse:
         </div>
         <div style="margin-left:25px">
-            <input type="checkbox" value="topics" class="exam-reuse-opt">
-            Question sections<br>
-            <input type="checkbox" value="questions" class="exam-reuse-opt">
-            Questions and question correctors<br>
-            <input type="checkbox" value="roles"  class="exam-reuse-opt">
-            Exam roles<br>
+            <div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="topics" class="exam-reuse-opt">
+                        Question sections
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="questions" class="exam-reuse-opt">
+                        Questions and question correctors<br>
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="roles"  class="exam-reuse-opt">
+                        Exam roles<br>
+                    </label>
+                </div>
+            </div>
         </div>         
     </div>
 
@@ -103,9 +123,9 @@ foreach ($roles as $role) {
     <div id="exam-datetime-changer" style="display: none" title="Change exam schedule">
         <div class="exam-datetime-select" style="padding: 10px">
             <label for="starttime">Start time:</label>
-            <input type="text" value="" id="exam-starttime" name="starttime" placeholder="yyyy-mm-dd hh:mm:ss">
+            <input class="form-control" type="text" value="" id="exam-starttime" name="starttime" placeholder="yyyy-mm-dd hh:mm:ss">
             <label for="endtime">End time:</label>
-            <input type="text" value="" id="exam-endtime"   name="endtime" placeholder="yyyy-mm-dd hh:mm:ss">
+            <input class="form-control" type="text" value="" id="exam-endtime"   name="endtime" placeholder="yyyy-mm-dd hh:mm:ss">
         </div>
     </div>
 
@@ -122,4 +142,8 @@ foreach ($roles as $role) {
         var examSections = <?= json_encode($sections); ?>;
         var filter = <?= json_encode($filter); ?>;
         var expand = <?= json_encode($expand); ?>;
+
+        if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0) {
+            $("#unsupported-browser").show(500);
+        }
 </script>

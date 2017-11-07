@@ -72,7 +72,12 @@ class DisplayLocation
         Use this view for defining exam security and access restrictions. <strong>Notice:</strong> For keeping the exam public (no access restriction), simply uncheck the 'Enable lockdown' option.
     </div>
 
-    <p><input id="lockdown-enable" class="save" type="checkbox" <?= $exam->lockdown->enable ? "checked" : "" ?>> Enable lockdown</input></p>
+    <div class="checkbox">
+        <label>
+            <input id="lockdown-enable" class="save" type="checkbox" <?= $exam->lockdown->enable ? "checked" : "" ?>> 
+            Enable lockdown                
+        </label>
+    </div>
 
     <div class="locations">
         <p><b>This exam should only be accessable from these locations:</b></p>
@@ -123,7 +128,7 @@ class DisplayLocation
 
     <div class="lockdown-method">
         <p><b>Use this method for client side locking:</b></p>
-        <select id="lockdown-method" class="save">
+        <select id="lockdown-method form-control" class="save">
             <option value="" <?= $exam->lockdown->method == "" ? "selected" : "" ?>>---</option>
             <option value="fwexamd" <?= $exam->lockdown->method == "fwexamd" ? "selected" : "" ?>>fwexamd</option>
         </select>

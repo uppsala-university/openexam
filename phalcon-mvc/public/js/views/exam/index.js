@@ -224,7 +224,7 @@ $(document).ready(function () {
             autoOpen: true,
             modal: true,
             buttons: {
-                "Proceed further »": function () {
+                "OK": function () {
 
                     var data = {'options[]': []};
                     $('.exam-reuse-opt').filter(':checked').each(function () {

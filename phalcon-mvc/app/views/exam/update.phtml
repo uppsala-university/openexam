@@ -121,7 +121,7 @@
     <div id="centerColWide">
 
         <!-- Exam title and description: -->
-        <h1>
+        <h1 style="padding-bottom: 10px">
             <?= trim($exam->name) != '' ? $exam->name : 'Untitled exam' ?>
             <?php if ($canUpdateExam) : ?>
                     <a href="#" class="prevent exam-settings">

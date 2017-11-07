@@ -58,7 +58,7 @@ class Progress extends PhalconComponent implements Component
                 $this->_role = $role;
 
                 $this->_state = $state;
-                $this->_style = "display: inline-block; min-width: 90px; text-align: left; margin-left: 5px";
+                $this->_style = "display: inline-block; min-width: 120px; text-align: left; margin-left: 5px";
 
                 if (isset($this->_role)) {
                         if (!$this->user->roles->acquire($this->_role)) {
@@ -75,9 +75,9 @@ class Progress extends PhalconComponent implements Component
                         }
 
                         if ($outline) {
-                                printf("<span class=\"label label-%s-outline\" style=\"%s\"><i class=\"fa fa-%s\"></i> %s</span>\n", $color, $this->_style, $icon, $text);
+                                printf("<span class=\"toolbtn toolbtn-%s-outline\" style=\"%s\"><i class=\"fa fa-%s\"></i> %s</span>\n", $color, $this->_style, $icon, $text);
                         } else {
-                                printf("<span class=\"label label-%s\" style=\"%s\"><i class=\"fa fa-%s\"></i> %s</span>\n", $color, $this->_style, $icon, $text);
+                                printf("<span class=\"toolbtn toolbtn-%s\" style=\"%s\"><i class=\"fa fa-%s\"></i> %s</span>\n", $color, $this->_style, $icon, $text);
                         }
 
                         if (isset($this->_role)) {
@@ -89,7 +89,7 @@ class Progress extends PhalconComponent implements Component
                 // Check from backward:
                 // 
                 if ($this->_state->has(State::DECODED)) {
-                        $output("primary", "battery-4", "decoded", false, $this->tr->_("Decoded"));
+                        $output("grey", "battery-4", "decoded", false, $this->tr->_("Decoded"));
                 } elseif ($this->_state->has(State::CORRECTED)) {
                         $output("orange", "battery-3", "corrected", true, $this->tr->_("Corrected"));
                 } elseif ($this->_state->has(State::FINISHED)) {

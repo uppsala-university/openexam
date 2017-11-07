@@ -20,9 +20,9 @@ $this->profiler->add("view");
 
 ?>
 
-<!-- Css -->
-<?= Phalcon\Tag::stylesheetLink('bootstrap/css/bootstrap.css'); ?>
-<?= Phalcon\Tag::stylesheetLink('bootstrap/css/bootstrap-responsive.css'); ?>
+<!-- CSS -->
+<?= Phalcon\Tag::stylesheetLink('bootstrap3/css/bootstrap.min.css'); ?>
+<?= Phalcon\Tag::stylesheetLink('bootstrap3/css/bootstrap-theme.min.css'); ?>
 <?= Phalcon\Tag::stylesheetLink("css/uu/1.css"); ?>
 <?= Phalcon\Tag::stylesheetLink("css/uu/2.css"); ?>
 <?= Phalcon\Tag::stylesheetLink("css/uu/3.css"); ?>
@@ -31,9 +31,9 @@ $this->profiler->add("view");
 <?= Phalcon\Tag::stylesheetLink("css/font-awesome.css"); ?>
 <?= Phalcon\Tag::stylesheetLink("plugins/fancy-box/source/jquery.fancybox.css"); ?>
 
-<!-- Js -->
+<!-- Javascript -->
 <?= Phalcon\Tag::javascriptInclude('plugins/fancy-box/source/jquery.fancybox.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('bootstrap/js/bootstrap.js'); ?>
+<?= Phalcon\Tag::javascriptInclude('bootstrap3/js/bootstrap.min.js'); ?>
 <?= Phalcon\Tag::javascriptInclude('js/views/layouts/supermenu.js'); ?>
 
 <?php
@@ -63,8 +63,16 @@ $actionName = $this->dispatcher->getActionName();
             <div class="toppNav"> <br>
                 <br>
                 <h1 class="siteName"> <a href="http://www.bmc.uu.se/">OpenExam</a> - online examination system </h1>
-                <div style="color: #c1002b; float: right; padding-top: 22px;">
-                    <?= $this->catalog->getName() ?>
+                <div style="position: absolute; top: 5px; right: 5px">
+                    <?php if ($this->user->roles->isAdmin()) : ?>
+                            <span class="btn btn-default">
+                                <i class="fa fa-user"></i> <?= $this->catalog->getName() ?>
+                            </span>
+                    <?php else : ?>
+                            <span class="btn btn-link" style="color: #c1002b;">
+                                <i class="fa fa-user"></i> <?= $this->catalog->getName() ?>
+                            </span>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

@@ -91,7 +91,7 @@ if ($question->status == 'removed') {
                                                 <input type="radio" class="ans_type_selector" value="textbox" <?= ($qAnsType == 'textbox') ? 'checked="checked"' : '' ?> />
                                                 <span>Single line text box</span> </div>
                                             <div class="ans_type" style=" <?= ($qAnsType == 'textbox') ? 'display:block' : 'display:none' ?>">
-                                                <input type="text" style="width:350px"  class="readable"/>
+                                                <input type="text" style="width:350px" class="readable form-control"/>
                                             </div>
                                         </div>
                                         <div class="ans_type_selector_box_wrap">
@@ -139,7 +139,7 @@ if ($question->status == 'removed') {
                                                         <span style="margin-right: 10px; margin-left: 5px"> 
                                                             Other: 
                                                         </span>      
-                                                        <input type="text" value="<?= $wordother ? $wordcount : "" ?>" onchange="this.closest('form').querySelectorAll('.word-count-unlimited')[0].value = this.value">
+                                                        <input type="text" value="<?= $wordother ? $wordcount : "" ?>" onchange="this.closest('form').querySelectorAll('.word-count-unlimited')[0].value = this.value" class="form-control">
                                                     </form>
                                                 </div>
                                                 <div style="margin-top: 5px; padding-left: 15px; border-left: 3px solid #dddddd">
@@ -218,7 +218,7 @@ if ($question->status == 'removed') {
                             <h3>Points</h3>
                             <div>
                                 <div style="min-height:200px"> Maximum points:
-                                    <input type="text" class="q-part-points" style="width:50px" value="<?= floatval($qParts[$qPartTitle]['q_points']) ?>" />
+                                    <input type="text" class="q-part-points form-control" style="width:50px" value="<?= floatval($qParts[$qPartTitle]['q_points']) ?>" />
                                 </div>
                             </div>
                         </div>

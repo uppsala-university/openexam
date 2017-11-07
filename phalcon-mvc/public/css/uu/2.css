@@ -10,10 +10,8 @@
 @media screen{
     body {
         font-family: verdana, arial, "trebuchet ms",sans-serif;
-        font-size: 0.7em;
         padding: 0;
         margin: 0 auto;
-        /*background: #f6f6f6 url("") left top repeat-x;*/
         background:#fff;
     }
 
@@ -23,7 +21,7 @@
         background:transparent;
         margin:0;
         padding:0;
-        height:127px;
+        height:159px;
         border-bottom:23px solid #999;
     }
     #wrapper, .toppImg, .toppNav {
@@ -59,7 +57,6 @@
         text-transform:none
     }
 
-
     h1.siteName {
         border:medium none;
         color:#333333;
@@ -70,21 +67,11 @@
         height:50px;
         line-height:1.2em;
         padding-left:30px;
-        /*position:relative;*/
         text-align:left;
         vertical-align:bottom;
         width:800px;
     }
-    /*h1.siteName {
-            border:medium none;
-            color:#333333;
-            font-family:Arial;
-            font-size:2.1em;
-            font-weight:normal;
-            line-height:1.2em;
-            margin:0;
-            padding:53px 0 0 30px;
-    }*/
+
     #leftCol h1, #rightCol h1 {
         font-family:Arial, Helvetica, sans-serif;
         font-size:1.5em;
@@ -117,7 +104,6 @@
     .toppImg h1{
         border:none;
     }
-    /** h2 **/
     h2 {
         font-family:Arial, Helvetica, sans-serif;
         font-size:1.5em;
@@ -272,16 +258,15 @@
     }
     /******************* CONTAINER MED FLARP ***************************/
 
-
     #containerflarp {
         margin:auto;
         width:1040px;
         padding:0px;
         clear:both;
+        margin-top: 40px;
     }
     #container {
         margin:0 auto 35px;
-        /*width:800px;*/
         min-height: 350px; 
         background:#fff;
         padding:10px 0 0; 
@@ -292,7 +277,6 @@
         border: 1px solid #ddd;
         border-top: none;
         float:left;
-        /*position:relative;*/
     }
     /**************** Ingress stylning ************/
     .ingress {
@@ -307,7 +291,6 @@
         padding:0;
         width:487px;
     }
-
 
     hr {
         height:1px;
@@ -1518,8 +1501,6 @@
     }
 
     /******************* RIGHT COLUMN ***************************/
-
-
     #rightCol {
         float:right;
         width:236px;
@@ -1527,9 +1508,7 @@
         overflow:hidden;
     }
 
-
     #rightCol {
-        /*background:url("") left top no-repeat;*/
         min-height:250px;
 
     }
@@ -1546,46 +1525,11 @@
         clear:both;
         float:right;
     }
-    /*#rightCol .miniarticleWrapper {
-        margin-right:15px;
-    }*/
     #rightCol p {
         padding:0;
 
     }
 
-    /*
-    #rightCol ul, #leftCol .miniarticleWrapper ul {
-            list-style-image:url("/digitalAssets/5/5048_dot.gif");
-            padding: 0;
-            margin:0;
-    
-            margin:0 0 10px 20px;
-            line-height:1.5em;
-            color:#333;
-    }
-    #rightCol ul li ul, #leftCol .miniarticleWrapper ul li ul {
-            list-style-image:url("/digitalAssets/5/5052_line.gif");
-            padding: 0;
-            margin:0;
-            margin-left:2.0em;
-    }
-    #rightCol ol, #leftCol ol {
-            list-style-image:none;
-            padding: 0;
-            margin:0;
-            margin:0 0 10px 20px;
-            line-height:1.5em;
-            color:#333;
-    }
-    #rightCol ol li ol, #leftCol ol li ol {
-            list-style-image:none;
-            padding: 0;
-            margin:0;
-            font-size:0.9em;
-            margin-left:2.2em;
-    }
-    */
     .colHeader {
         display:block;
         font-family:Arial, Helvetica, sans-serif;
@@ -1862,7 +1806,6 @@
     .editBindingMenu ul li a{
         border-bottom: 1px dotted;
         color: #d67b22;
-        font-size: 11px;
         font-weight: 500;
         padding: 0 5px;
     }
@@ -1890,7 +1833,6 @@
     .miniPuff p{
         float:left;
         font-family:Arial, Helvetica, sans-serif;
-        font-size:11px;
         color:#666;
         width:9em;
         line-height:14px;
@@ -1961,14 +1903,12 @@
     /********** TEXT STYLES *******/
     .code {
         padding: 10px;
-        font-size:10px;
         font-family:Courier New, Arial;
         background-color:#efefef;
         border: 1px solid #929292;
     }
     .Code {
         padding: 10px;
-        font-size:10px;
         font-family:Courier New, Arial;
         background-color:#efefef;
         border: 1px solid #929292;
@@ -1982,209 +1922,6 @@
         border: 1px solid #929292;
     }
 
-    /******* STYLES FOR THE NEW COMPONENT LIST COMPONENT 2007-12-03 *****
-    .leftColInsideWide {
-            width:236px;
-        background-color: #fff;
-    }
-    #centerColWide {
-            float:left;
-            width:57em;
-    }
-    .centerColInsideWide {
-            width:52em;
-            margin-left:2em;
-    }
-    .centerColInsideWide ul {
-            list-style-type:none;
-            padding: 0;
-            margin:0;
-            font-size:1em;
-            margin-left:2.2em;
-    }
-    .listItem {
-            background:url("") repeat-x top left;
-            padding:5px;
-            width:520px;
-            margin-bottom:20px;
-            border-bottom: solid 1px #ddd;
-            border-top: solid 1px #ddd;
-            overflow:hidden;
-            min-height:50px;
-            }
-    .listItem a{
-            color:#333;
-            text-decoration:none;
-            }
-    .listItem a:hover{
-            text-decoration:underline;
-            }	
-    .listRub {
-            font-weight:bold;
-            margin-bottom:2px;
-            margin-top:0px;
-            }
-    
-    .listText {
-            display:table;
-            margin-top:2px;
-            margin-bottom:0px;
-            line-height:18px;
-            width:455px;
-            }
-    .listImg {
-            display:block;
-            border: solid 1px #cdcdcd;
-            float:left;
-            margin-right:10px;
-            width:50px;
-            height:50px;
-            }
-    .componentImg {
-            width:157px;
-            border:solid 1px #ccc;
-            margin-left:10px;
-            margin-top:8px;
-            }
-    .htmlTextField {
-            display:block;
-            padding:10px;
-            background:#f1f1f1;
-            border:solid 1px #cdcdcd;
-            width:325px;
-            height:auto;
-            }
-    .htmlTextField p{
-            font-size:11px;
-            }
-    .download a{
-            font-size:12px;
-            font-weight:bold;
-            background:url("") no-repeat center;
-            color:#fff;
-            text-decoration:none;
-            padding :1px 10px 1px 10px;
-            border:solid 1px #cdcdcd;
-            outline:none;
-            }
-    .download a:hover{
-            background:url("") no-repeat center;
-            }
-            
-    .cssbox { 
-            float: left;
-            margin: 0 0 10px 10px; 
-            width: 205px; 
-            overflow: hidden;
-    }
-    .cssboxwide { 
-            float: left;
-            margin: 0 0 10px 6px; 
-            width: 360px; 
-            overflow: hidden;
-    }
-    .cssbox h2.cssbox_head { 
-            background: url("") no-repeat; 
-    }
-    h2.cssbox_head { 
-            font-weight: normal; 
-            color: #fff; 
-            font-size: 13px; 
-            line-height: 16px; 
-            padding: 3px 10px 3px; 
-            margin: 0px;
-            text-align: left;
-    }
-    .cssbox_body { 
-            padding-left: 10px;
-            padding-right: 5px;
-            padding-top: 8px;
-            background: white; 
-            border: 1px solid #e7e7e7;
-            border-bottom: 0px solid #e7e7e7;
-            text-align: left;
-            height: 150px;
-    }
-    .cssbox_body p { 
-            padding: 0px;
-            padding-bottom: 5px;
-            margin: 0px;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size:11px;
-            line-height: 14px;
-            clear: both;
-    }
-    .cssbox_footer { 
-            background: url("") no-repeat; 
-            height: 17px;
-    }
-    .cssbox_white_footer { 
-            background: url("") no-repeat; 
-            height: 17px;
-            color: white;
-            font-size: 12px;
-            font-family: Arial, Helvetica, sans-serif;
-            text-align: right;
-            padding-right: 20px;
-    }
-    .cssbox_blue_footer { 
-            background: url("") no-repeat; 
-            height: 17px;
-            color: white;
-            text-align: right;
-            padding-right: 20px;
-            padding-top: 1px;
-            border: 0px;
-            margin: 0px;
-    }
-    .cssbox_blue_footer a, .cssbox_blue_footer a:hover , .cssbox_blue_footer a:visited { 
-            color: white;
-            text-decoration:none;
-            font-size: 11px;
-            font-family: Arial, Helvetica, sans-serif;
-            text-align: right;
-            border: 0px;
-            margin: 0px;
-    }
-    .cssbox_body ul {
-            list-style-type: none;	
-            padding: 0;
-            margin:0;
-            clear: both;
-    }
-    .cssbox_body ul li {
-            float: left;
-            padding-left: 2px;
-            clear: both;
-            width: 185px;
-    }
-    
-    .cssbox_body ul li a {
-            background:url("") left top no-repeat;
-            background-position: 0px 5px;
-            color: #333333;
-            padding: 0em 0.9em 0.4em 1.1em;
-            display: block;
-            margin-bottom:0.1em;
-            text-decoration:none;
-            font-family:Arial, Helvetica, sans-serif;
-            font-size:11px;
-    }
-    .cssbox_body ul li a:hover{
-            padding: 0em 0.9em 0.4em 1.1em;
-            display: block;	
-            text-decoration:underline;
-    }
-    
-    .number {
-            font-size: 14px;
-    }
-    .igAddComponent_dropArea {
-    color:#009904;
-    }
-    
-    
-    /* FORM STyles */
     /******************** FORMULAR ********************/
     .searchField form {
         margin:0;
@@ -2258,7 +1995,7 @@
         margin:20px 0;
         display:block;
     }
-    .cse-search-box .searchfield, input[type="text"] {
+    .cse-search-box .searchfield {
         border-color: #666666 #CCCCCC #CCCCCC #666666;
         border-style: solid;
         border-width: 1px;
@@ -2314,7 +2051,6 @@
         background: white;
         border: 1px solid #cccccc;
         font-family: Verdana, Arial, San serif;
-        font-size: 8pt;
         width: 300px;
     }
     fieldset input
@@ -2322,29 +2058,14 @@
         background: white;
         border: 1px solid #cccccc;
         font-family: Verdana, Arial, San serif;
-        font-size: 8pt;
-        /*width: 300px;*/
     }
     fieldset textarea
     {
         background: white;
         border: 1px solid #cccccc;
         font-family: Verdana, Arial, San serif;
-        font-size: 8pt;
-        /*width: 300px;*/
-        /*height: 50px;*/
     }
     .submitButton {
-        /*background:transparent url("/digitalAssets/5/5078_submitButton.gif") left center no-repeat;
-        font-family: Arial, Helvetica, San serif;
-        font-size:11px;
-        line-height: 14px;
-        border: 0;
-        width: 87px;
-        height: 20px;
-        clear: none;
-        color: #333;
-        cursor:pointer;*/
         -moz-border-radius:4px;
         -webkit-border-radius:4px;
         border-radius:4px;
@@ -2366,21 +2087,11 @@
         font-size:1.1em;
         height:2em;
         margin-left:0.4em;
-        /*outline-color:-moz-use-text-color;*/
         outline-style:none;
         outline-width:medium;
         width:3.5em;
     }
-    .checkbox {
-        background: #efebef;
-        font-family: Arial, Helvetica, San serif;
-        font-size:11px;
-        line-height: 14px;
-        border: 1px solid #cecbce;
-        width: 20px;
-    }
     .igAddComponent {
-        font-size:9px;
         padding:3px;
         line-height:10px; 
         border:1px dashed #000; 
@@ -2411,25 +2122,21 @@
         text-align:left;
     }
     table {
-        /* border:none;*/
         margin-bottom:10px;
     }
     th {
         padding:5px;
-        font-size:1.1em;
         background:#eaeaea;
         color:#333;
         text-align:left;
         border:none;
         border-right: 1px solid #ddd;
-
     }
     td {
         vertical-align:top;
-        /*  border:none;*/
         padding:3px; 
-        font-size:11px;
         text-align:left;
+        font-size: 0.9em;
     }
     td a {
         text-decoration:none;
@@ -2439,7 +2146,6 @@
     }
 
     td p {
-        font-size:11px; 
         padding:5px;      
     }
 
@@ -2611,7 +2317,6 @@
         border:none;
         clear:both;
         float:left;
-        font-size:9px;
         line-height:10px;
         margin-top:6px;
         padding:3px 0 6px;
@@ -4566,14 +4271,13 @@ select[name=program] {
 .ui-autocomplete {
     max-height: 100px;
     overflow-y: auto;
-    /* prevent horizontal scrollbar */
     overflow-x: hidden;
     z-index:1000 !important;
-    font-size:11px !important;
 }
-/* IE 6 doesn't support max-height
-        * we use height instead, but this forces the menu to always be this tall
-        */
+/* 
+ * IE 6 doesn't support max-height
+ * we use height instead, but this forces the menu to always be this tall
+ */
 * html .ui-autocomplete {
     height: 100px;
 }
@@ -4634,7 +4338,6 @@ select[name=program] {
 .custom-combobox-input {
     margin: 0;
     padding: 0.3em;
-    font-size:14px; border: 1px solid #E1E1E1; width: 383px;
 }
 
 *[contenteditable="true"]
@@ -4695,7 +4398,7 @@ select[name=program] {
     width: 93%; 
     box-shadow: none !important; 
     border: medium none !important; 
-    font-size: 20px; 
+    font-size: 1.2em; 
     padding: 0px; 
     margin: 0px; 
     height: 25px;			
@@ -4726,7 +4429,7 @@ select[name=program] {
 }
 
 #selected-lib-img li .title-box {
-    font-size:9px;
+    font-size: 0.9em;
     border-top:1px dashed #dedede;
     margin:2px;
     height:15px;
@@ -4744,7 +4447,7 @@ select[name=program] {
     height: 100%; 
     width: 100%; 
     box-shadow: none; 
-    font-size: 10px;
+    font-size: 0.8em;
     border-radius:0;
 }
 
@@ -4770,7 +4473,7 @@ select[name=program] {
 }
 
 .q_resources ul li a {
-    font-size: 9px;
+    font-size: 0.9em;
     color:#606060;
 }
 
@@ -4821,12 +4524,11 @@ select[name=program] {
     background: none repeat scroll 0 0 #c6e1ec !important;
     border: 1px solid rgba(155, 155, 155, 0.3) !important;
     border-radius: 0;
-    /*box-shadow: 0 0 0 1px rgba(155, 155, 155, 0.3), 0 2px 2px rgba(0, 0, 0, 0.1);*/
     color: #3d7489 !important;
     font-weight: bold !important;
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) !important;
     height:17px;
-    font-size:14px;
+    font-size: 1.1em;
     font-weight:normal;
     font-family:"BebasNeueRegular","Arial Narrow",Arial,sans-serif;
 }
@@ -4849,12 +4551,12 @@ select[name=program] {
     min-height:100px; 
     padding:10px; 
     border:1px solid #dedede; 
-    font-size:11px
+    font-size: 1.1em;
 }
 
 #default_msg_qs {
     color:#C0C0C0; 
-    font-size:18px; 
+    font-size: 1.3em; 
     text-align:center; 
     padding-top:60px; 
     padding-bottom:60px
@@ -4870,7 +4572,7 @@ select[name=program] {
 }
 
 .menuLevel2 {
-    font-size:9px;
+    font-size:0.8em;
     margin-left: 40px !important; 
     min-height:5px
 }
@@ -4898,7 +4600,7 @@ select[name=program] {
 }
 
 .opentip-container {
-    font-size:10px;
+    font-size: 0.9em;
     min-width: 400px;
 }
 
@@ -4927,15 +4629,15 @@ select[name=program] {
 }
 
 .left-col-user {
-    color:#004276; /*#4a7db1*/
-    font-size:10px;
+    color:#004276;
+    font-size:0.9em;
     padding-left:5px;
 }
 
 .left-col-def-msg{
     font-style:italic;
     color:grey; 
-    font-size:10px
+    font-size:0.9em;
 }
 
 .deluuid {
@@ -4953,7 +4655,6 @@ select[name=program] {
 .q-topic-txtbox {
     height:10px; 
     width:70px; 
-    font-size:9px !important;
     border-radius: 0px !important;
 }
 
@@ -4978,22 +4679,11 @@ select[name=program] {
     display: block;     
 }
 
-.exam-settings-box input[type="text"] {
-    border:1px solid #CCCCCC !important;
-    width:225px !important;
-    font-size:11px !important;
-}
-
 .exam-settings-box textarea {
     border:1px solid #CCCCCC; 
     width: 225px; 
     border-radius:3px; 
-    font-size:11px; 
     height:65px
-}
-
-.exam-settings-box lable {
-    font-size:11px !important;
 }
 
 .exam-settings-box .st-line {
@@ -5007,7 +4697,7 @@ select[name=program] {
 .section-default-msg {
     margin-top:12px !important; 
     padding-left:4px 5px 4px 30px !important;
-    font-size:9px;
+    font-size: 0.8em;
     margin-left: 20px !important; 
 }
 
@@ -5043,7 +4733,7 @@ select[name=program] {
 .list-group {
     margin:22px 26px 0; 
     clear:both; 
-    /*padding-top: 12px*/
+    padding-top: 12px;
 }
 .list-group-item:first-child {
     border-top-left-radius: 4px;
@@ -5070,7 +4760,7 @@ select[name=program] {
     border-radius: 10px;
     color: #fff;
     display: inline-block;
-    font-size: 12px;
+    font-size: 0.9em;
     font-weight: 700;
     line-height: 1;
     min-width: 10px;
@@ -5082,19 +4772,12 @@ select[name=program] {
 .ac-container input:checked ~ article.ac-large {
     height: 300px !important;
 }
-.label {
-    font-weight:normal;
-    cursor:pointer;
-}
-.label-danger {
-    background-color: #d9534f;
-}
 .exam-listing-default-msg {
     margin:13% auto auto;
     width:400px;
     color: #aeaeae; 
     font-family: "BebasNeueRegular","Arial Narrow",Arial,sans-serif; 
-    font-size: 16px;
+    font-size: 1.2em;
 }
 .exam-sort-order {
     cursor:pointer !important;
@@ -5104,57 +4787,110 @@ select[name=program] {
     width:215px !important; 
     display: inline !important; 
     border:1px solid #dedede;
-    font-size:11px;
+    font-size:0.9em;
 }
-.label-green {
-    background-color: #468847;
+.exam-list-boxes {
+    font-weight: normal;
 }
-.label-blue {
-    background-color: #3a87ad;
+
+/**
+ * Tool buttons:
+ */
+
+.toolbtn {
+    color: white;
+    font-weight:normal;
+    font-size: 0.9em;
+    border-radius: 3px;    
+    padding: 2px 10px 2px 10px;
+    line-height: 16px;
+    display: inline-block;
+    cursor:pointer;
 }
-.label-sky-blue {
-    background-color: #4285f4;
+.toolbtn-small {
+    line-height: 12px;
 }
-.label-orange {
-    background-color: #f89406;
+.toolbtn-medium {
+    line-height: 16px;
 }
-.label-red {
+.toolbtn-large {
+    line-height: 24px;
+}
+.toolbtn-bigger {
+    line-height: 32px;
+}
+.toolbtn-huge {
+    line-height: 64px;
+}
+.toolbtn-hulk {
+    line-height: 124px;
+}
+.toolbtn-chuck-norris {
+    line-height: 256px;
+}
+.toolbtn-danger {
     background-color: #d9534f;
 }
-.label-light-green {
+.toolbtn-green {
+    background-color: #468847;
+}
+.toolbtn-blue {
+    background-color: #3a87ad;
+}
+.toolbtn-grey {
+    background-color: #999999;
+    color: #ffffff;
+}
+.toolbtn-orange {
+    background-color: #f89406;
+}
+.toolbtn-red {
+    background-color: #d9534f;
+}
+.toolbtn-sky-blue {
+    background-color: #4285f4;
+}
+.toolbtn-light-green {
     background-color: #ccff99;
     color: #009900;
     border: 1px solid #00ff00;
 }
-.label-yellow {
+.toolbtn-yellow {
     background-color: #ffff66;
     color: #ddaa00;
     border: 1px solid #ffcc00;
 }
-.label-blue-outline {
+.toolbtn-blue-outline {
     background-color: #ffffff;
     color: #4285f4;
     border: 1px solid #4285f4;
 }
-.label-orange-outline {
+.toolbtn-orange-outline {
     background-color: #ffffff;
     color: #ff6600;
     border: 1px solid #f89406;
 }
-.label-green-outline {
+.toolbtn-green-outline {
     background-color: #ffffff;
     color: #009900;
     border: 1px solid #33cc33;
 }
-.label-yellow-outline {
+.toolbtn-yellow-outline {
     background-color: #ffffff;
     color: #ddaa00;
     border: 1px solid #ffcc00;
 }
-.label-red-outline {
+.toolbtn-red-outline {
     background-color: #ffffff;
     color: #cc0000;
     border: 1px solid #ff0000;
+}
+.toolbtn-hover-dim {
+    filter: grayscale(50%) opacity(50%);
+    transition: 0.5s;
+}
+.toolbtn-hover-dim:hover {
+    filter: grayscale(0%) opacity(100%);
 }
 
 /*====== specific to media library =====*/
@@ -5241,7 +4977,7 @@ a.selected-lib-img .lib-img {
 }
 
 #selected-lib-img li .title-box {
-    font-size:9px;
+    font-size: 0.8em;
     border-top:1px dashed #dedede;
     margin:2px;
     height:20px;
@@ -5294,7 +5030,7 @@ a.selected-lib-img .lib-img {
 .lib-item .title-box 
 {
     border-top: 1px dashed #dedede; 
-    font-size: 9px;
+    font-size: 0.8em;
 }
 
 .lib-item-title {
@@ -5452,13 +5188,10 @@ table {
     width:60px !important;
     padding:0px !important;
     margin-right:15px !important;
-    font-size:11px !important;
 }
 
 .ui-datepicker-year {
     height:25px !important;
     width:60px !important;
     padding:0px !important;
-    font-size:11px !important;	
 }
-

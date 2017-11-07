@@ -46,7 +46,7 @@
                     Upload the file containing students to import. Students can be imported by username or personal number, with optional supplied anonymous code and/or tag.
                 </p>
                 <form id="student-file-import" name="student-file-import">
-                    <input type="file" name="file[]" />                                
+                    <input class="form-control" type="file" name="file[]" />                                
                     <div class="btn-group" style="padding-top: 5px">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Filetype 
                             <span class="caret"></span>
@@ -84,9 +84,9 @@
                 <form id="student-file-import" name="student-group-import">
                     <div>
                         <label for="group">Group name:</label>
-                        <input id="group-name" type="text" name="group" placeholder="3MK579" /><br />
+                        <input class="form-control" id="group-name" type="text" name="group" placeholder="3MK579" /><br />
                         <label for="domain">Domain:</label> 
-                        <select id="domain-name" name="domain">
+                        <select class="form-control" id="domain-name" name="domain">
                             <option></option>
                             <?php foreach ($domains as $domain): ?>
                                     <option><?= $domain ?></option>
