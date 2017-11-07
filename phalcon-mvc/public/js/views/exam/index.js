@@ -429,7 +429,11 @@ $(document).ready(function () {
             data: data,
             url: baseURL + 'exam/section/' + role,
             success: function (response) {
-                target.hide().html(response).fadeIn();
+                try {
+                    target.hide().html(response).fadeIn();
+                } catch (Error) {
+                    target.html(response);  // IE 11 fix
+                }
             }
         });
     };
