@@ -199,7 +199,7 @@ $(function () {
 
             $('#lib-default-msg').hide();
 
-            var newItem = $("#selected-lib-img >li:first").clone()
+            var newItem = $("#selected-lib-img >li:first").clone();
             newItem.attr('media-id', mediaId)
                     .find('img')
                     .attr('src', $(this).find('img').attr('src'))
