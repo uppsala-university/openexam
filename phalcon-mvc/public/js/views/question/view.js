@@ -1,3 +1,5 @@
+/* global ansId, CKEDITOR, baseURL, qName */
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -54,7 +56,7 @@ function syncAnswers(async, redirectToAfterSync)
             // 
             if (ansType === undefined || ansType.length === 0) {
                 ansType = "textarea";
-                console.log("empty answer type (assuming textarea)")
+                console.log("empty answer type (assuming textarea)");
             }
 
             // 
@@ -205,7 +207,7 @@ var canvasGetMarker = function (elementId, backgroundImage) {
     painter.config.zoomStep = zstep;
     
     return painter;
-}
+};
 
 // 
 // Create canvas for drawing.
@@ -222,7 +224,7 @@ var canvasGetDrawer = function (elementId) {
     );
 
     return painter;
-}
+};
 
 // 
 // Setup canvas for simple drawing or markup on background image.

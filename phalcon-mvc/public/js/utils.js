@@ -1,3 +1,5 @@
+/* global Opentip */
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -96,7 +98,7 @@ var closeToolTips = function ()
     for (var i = 0; i < Opentip.tips.length; i++) {
         Opentip.tips[i].hide();
     }
-}
+};
 
 /**
  * Returns length of JSON object

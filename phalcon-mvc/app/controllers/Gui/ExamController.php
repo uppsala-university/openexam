@@ -34,7 +34,6 @@ use OpenExam\Plugins\Security\Model\ObjectAccess;
 use Phalcon\Mvc\Model\Transaction\Failed as TransactionFailed;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Phalcon\Mvc\View;
-use Phalcon\Paginator\Adapter\Model as PaginatorModel;
 use Phalcon\Paginator\Adapter\NativeArray as PaginatorArray;
 
 /**

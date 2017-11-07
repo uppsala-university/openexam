@@ -1,3 +1,5 @@
+/* global tabCounter, tabId, CKEDITOR, qIsEditable, baseURL, examId, qId */
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -106,7 +108,7 @@ $(document).ready(function () {
     // 
     var tmp = '<option value="">Choose a corrector for question</option>';
     $('.left-col-user').each(function (index, element) {
-        if ($(element).html().replace(/\s/g, '') != '' && tmp.replace(/\s/g, '').indexOf($(element).html().replace(/\s/g, '')) < 0) {
+        if ($(element).html().replace(/\s/g, '') !== '' && tmp.replace(/\s/g, '').indexOf($(element).html().replace(/\s/g, '')) < 0) {
             tmp += '<option value="' + $(element).attr('data-user') + '">' + $(element).html() + '</option>';
         }
     });
@@ -139,7 +141,7 @@ $(document).ready(function () {
             $(element).find('a').html("Part " + String.fromCharCode(96 + (index + 1)));
         });
         tabCounter--;
-        if (tabCounter == 2) {
+        if (tabCounter === 2) {
             qPartTabs.find("#q-parts-wrapper > .ui-tabs-panel").css('padding', '0px');
             $('#q-part-tabs').hide(200);
         }

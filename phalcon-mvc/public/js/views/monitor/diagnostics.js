@@ -1,4 +1,6 @@
 
+/* global baseURL */
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 

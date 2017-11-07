@@ -1,3 +1,5 @@
+/* global mode, baseURL, role, showAddQuestionView, examId, isNewExam, CKEDITOR */
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -13,7 +15,6 @@
 // Javascript specific to exam create.
 // 
 
-/*-- var initialization --*/
 var totalQs = 0;
 var qsJson = {};
 var qsCorrectorsJson = {};
