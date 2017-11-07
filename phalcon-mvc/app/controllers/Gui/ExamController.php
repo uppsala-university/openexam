@@ -125,6 +125,14 @@ class ExamController extends GuiController
                 $roles = $this->user->roles->getRoles();
 
                 // 
+                // Set state for sections:
+                // 
+                $state = array(
+                        'student-finished' => State::FINISHED,
+                        'student-upcoming' => State::UPCOMING | State::RUNNING
+                );
+
+                // 
                 // Use these filter options:
                 // 
                 $filter = array(
@@ -141,6 +149,7 @@ class ExamController extends GuiController
                 // Set data for view:
                 // 
                 $this->view->setVars(array(
+                        'state'  => $state,
                         'roles'  => $roles,
                         'expand' => array(),
                         'filter' => $filter

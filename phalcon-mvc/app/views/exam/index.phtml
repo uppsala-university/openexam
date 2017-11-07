@@ -22,6 +22,11 @@ for ($i = 0; $i < count($roles); ++$i) {
                 unset($roles[$i]);
         }
 }
+foreach ($roles as $role) {
+        if (!isset($state[$role])) {
+                $state[$role] = 0;
+        }
+}
 
 ?>
 
@@ -37,7 +42,7 @@ for ($i = 0; $i < count($roles); ++$i) {
     <section class="ac-container">
         <?php foreach ($roles as $index => $role) : ?>
                 <?php if (array_key_exists($role, $sections)) : ?>
-                        <div section-role="<?= $role ?>">
+                        <div section-role="<?= $role ?>" section-state="<?= $state[$role] ?>">
                             <?php if (in_array($role, $expand)): ?>
                                     <input id="ac-<?= $index ?>" name="accordion-1" type="radio" checked="" />
                             <?php else: ?>
