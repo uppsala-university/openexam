@@ -57,6 +57,14 @@ if (!defined('EXTERN_DIR')) {
  */
 $config = new Config(
     array(
+        'brand'       => array(
+                'logo' => array(
+                        'link'  => 'http://www.uu.se',
+                        'file'  => 'img/uu_logo.svg',
+                        'name'  => 'Uppsala University',
+                        'style' => 'max-height:120px'
+                )
+        ),
         'application' => array(
                 /**
                  * The application layout:
@@ -225,15 +233,15 @@ $config = new Config(
                 // 
                 'extension' => array(
                         'image' => array(
-                                'fmt'          => 'png',
-                                'imageQuality' => 95,
+                                'fmt'              => 'png',
+                                'imageQuality'     => 95,
                                 'enableJavascript' => true
                         // 'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
                         ),
                         'pdf'   => array(
-                                'produceForms' => false,
-                                'outline'      => true,
-                                'outlineDepth' => 2,
+                                'produceForms'     => false,
+                                'outline'          => true,
+                                'outlineDepth'     => 2,
                                 'enableJavascript' => true
                         // 'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
                         )

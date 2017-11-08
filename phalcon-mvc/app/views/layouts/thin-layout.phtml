@@ -10,9 +10,9 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-?>
 
-<?php
+use Phalcon\Tag;
+
 // 
 // Add profiling check point:
 // 
@@ -21,35 +21,35 @@ $this->profiler->add("view");
 ?>
 
 <!-- / bootstrap -->
-<?= Phalcon\Tag::stylesheetLink('bootstrap3/css/bootstrap.min.css'); ?>
+<?= Tag::stylesheetLink('bootstrap3/css/bootstrap.min.css'); ?>
 
 <!-- / theme file -->
-<?= Phalcon\Tag::stylesheetLink(array('thin-layout/stylesheets/light-theme.css', "media" => "all", "id" => "color-settings-body-color")); ?>
-<?= Phalcon\Tag::stylesheetLink('thin-layout/stylesheets/text-zoom.css'); ?>
-<?= Phalcon\Tag::stylesheetLink("plugins/fancy-box/source/jquery.fancybox.css"); ?>        
+<?= Tag::stylesheetLink(array('thin-layout/stylesheets/light-theme.css', "media" => "all", "id" => "color-settings-body-color")); ?>
+<?= Tag::stylesheetLink('thin-layout/stylesheets/text-zoom.css'); ?>
+<?= Tag::stylesheetLink("plugins/fancy-box/source/jquery.fancybox.css"); ?>        
 
 <!-- / jquery -->
-<?= Phalcon\Tag::javascriptInclude('js/jquery.min.js'); ?>	
+<?= Tag::javascriptInclude('js/jquery.min.js'); ?>	
 
 <!-- / jquery migrate (for compatibility with new jquery) [required] -->
-<?= Phalcon\Tag::javascriptInclude('thin-layout/javascripts/jquery/jquery-migrate.min.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('js/jquery.cookie.js'); ?>
+<?= Tag::javascriptInclude('thin-layout/javascripts/jquery/jquery-migrate.min.js'); ?>
+<?= Tag::javascriptInclude('js/jquery.cookie.js'); ?>
 
 <!-- / bootstrap  -->
-<?= Phalcon\Tag::javascriptInclude('bootstrap3/js/bootstrap.min.js'); ?>
+<?= Tag::javascriptInclude('bootstrap3/js/bootstrap.min.js'); ?>
 
 <!-- / theme file  -->
-<?= Phalcon\Tag::javascriptInclude('thin-layout/javascripts/theme.js'); ?>  
-<?= Phalcon\Tag::javascriptInclude('thin-layout/javascripts/zoom.min.js'); ?>
+<?= Tag::javascriptInclude('thin-layout/javascripts/theme.js'); ?>  
+<?= Tag::javascriptInclude('thin-layout/javascripts/zoom.min.js'); ?>
 
 <!-- fancy box -->
-<?= Phalcon\Tag::javascriptInclude('plugins/fancy-box/source/jquery.fancybox.js'); ?>            
+<?= Tag::javascriptInclude('plugins/fancy-box/source/jquery.fancybox.js'); ?>            
 
 <!-- Video.js - HTML 5 video with flowplayer drop-in -->
-<?= Phalcon\Tag::javascriptInclude('js/video.min.js'); ?>
-<?= Phalcon\Tag::stylesheetLink('css/video-js.min.css'); ?>
+<?= Tag::javascriptInclude('js/video.min.js'); ?>
+<?= Tag::stylesheetLink('css/video-js.min.css'); ?>
 
-<?= Phalcon\Tag::stylesheetLink("css/font-awesome.css"); ?>
+<?= Tag::stylesheetLink("css/font-awesome.css"); ?>
 
 <?php
 $answerData = json_decode($answer->answer, true); // highlight-q
@@ -112,7 +112,7 @@ if (isset($_COOKIE['sc']) && $_COOKIE['sc'] == 0) {
 <header>
     <nav class='navbar navbar-default navbar-fixed-top'>
         <a class='navbar-brand' href='<?= $this->url->get('exam/index') ?>'>
-            <?= Phalcon\Tag::image("thin-layout/images/logo.png"); ?>
+            <?= Tag::image("thin-layout/images/logo.png"); ?>
         </a>
         <a class='toggle-nav btn pull-left' href='#'>
             <i class='icon-reorder'></i>
