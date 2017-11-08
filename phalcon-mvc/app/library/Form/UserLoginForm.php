@@ -38,10 +38,10 @@ class UserLoginForm extends Form
                 $this->setUserOption('description', $login->description);
                 $this->setUserOption('information', "Use your domain account for login. Contact the invigilator if you have any questions or problem with the login.<br><br>Example username: john1234@user.uu.se");
 
-                $this->add(new Text("fuser", array('name' => $login->fuser, 'placeholder' => sprintf("login@%s", $this->config->user->domain))));
-                $this->add(new Password("fpass", array('name' => $login->fpass, 'placeholder' => 'Type your password')));
+                $this->add(new Text("fuser", array('name' => $login->fuser, 'placeholder' => sprintf("login@%s", $this->config->user->domain), 'class' => 'form-control')));
+                $this->add(new Password("fpass", array('name' => $login->fpass, 'placeholder' => 'Type your password', 'class' => 'form-control')));
                 $this->add(new Hidden("fembed", array("value" => $this->request->get("embed"))));
-                $this->add(new Submit("fsubmit", array('name' => $login->fname, 'value' => 'Login', 'class' => 'btn-submit')));
+                $this->add(new Submit("fsubmit", array('name' => $login->fname, 'value' => 'Login', 'class' => 'btn btn-success')));
         }
 
 }

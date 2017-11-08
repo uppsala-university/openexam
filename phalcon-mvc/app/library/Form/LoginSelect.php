@@ -40,9 +40,9 @@ class LoginSelect extends Form
                 }
 
                 $this->setAction($this->url->get('auth/login'));
-                $this->add(new Select("auth", $options));
+                $this->add(new Select("auth", $options, array('class' => 'form-control', 'style' => 'max-width: 300px')));
                 $this->add(new Hidden("embed", array("value" => $this->request->get("embed"))));
-                $this->add(new Submit('submit', array('value' => 'Continue', 'class' => 'btn-submit')));
+                $this->add(new Submit('submit', array('value' => 'Continue', 'class' => 'btn btn-success')));
         }
 
 }

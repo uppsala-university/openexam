@@ -19,11 +19,14 @@
         border-radius: 5px;
         margin: 0 20px;
         padding: 0 20px 5px;
-        max-width: 450px;
+        max-width: 600px;
     }    
     .login form {
         margin-top: 20px;
         margin-left: 30px;
+    }
+    .login h4 {
+        color: #999999;
     }
     h2.identity {
         background: url("<?=$this->url->get("/img/kgpg_identity.png")?>") no-repeat right;
@@ -34,7 +37,7 @@
 <div class="login">
     <h2 class="identity">Authentication is required to continue</h2>
     <hr/>
-    <h4>Select authentication method:</h4>
+    <h4>Select authentication method</h4>
     <form action="<?= $form->getAction(); ?>" method="POST">
         <?= $form->render("embed"); ?>
         <p>
