@@ -158,8 +158,8 @@ $ordering = array(
         </ul>
 
         <?php if ($page->total_pages > 1): ?>
-                <div style=" margin-bottom: 2em; position: relative; text-align: left;">
-                    <ul class="pagination" style="left: 50%; list-style: none outside none; margin: 0; padding: 0; position: relative; border-top-left-radius: 0px">
+                <div style="text-align: center;">
+                    <ul class="pagination" style="margin: 0;">
                         <?php for ($i = 1; $i <= $page->total_pages; $i++): ?>
                                 <?php if ($i == $page->current) : ?>
                                         <li class="active" page="<?= $i ?>">
