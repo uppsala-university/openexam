@@ -283,7 +283,7 @@ class QuestionController extends GuiController
                                                     'question_id' => $questions[0]->id,
                                                     'answered'    => 0
                                             ))) {
-                                                throw new Exception("Failed insert empty answer (%s)", $answer->getMessages()[0]);
+                                                throw new Exception(sprintf("Failed insert empty answer (%s)", $answer->getMessages()[0]));
                                         }
                                 }
 
