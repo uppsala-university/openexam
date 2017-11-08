@@ -1841,7 +1841,8 @@ header .navbar .navbar-brand .logo-xs {
     header .navbar .navbar-brand .logo-xs {
         display: none; } }
 header .navbar .navbar-brand img {
-    margin-top: -5px; }
+    padding: 2px;
+}
 header .navbar .toggle-nav {
     color: white;
     text-shadow: none;
