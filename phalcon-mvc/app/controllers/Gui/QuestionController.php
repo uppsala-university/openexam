@@ -242,10 +242,12 @@ class QuestionController extends GuiController
                 ));
                 $firtstQ = $allQs->getFirst();
 
-                // 
-                // Check if needed to load a specific question:
-                // 
-                if ($qid) {
+                if (!$firtstQ) {
+                        // 
+                        // This exam has no questions.
+                        // 
+                        $viewMode = 'none';
+                } elseif ($qid) {
                         $viewMode = 'single';
 
                         //

@@ -59,6 +59,13 @@
                 </p>
             </div>
     <?php endif; ?>
+    
+    <?php if(!$testMode && $viewMode == 'none') : ?>
+            <div class="alert alert-warning" style="margin:15px 0px;">  
+                <strong>Question is missing.</strong> <br/>
+                This exam seems to have no questions. Please inform the invigilator about this problem to get it fixed.
+            </div>
+    <?php endif; ?>
 
     <?php
     // 
