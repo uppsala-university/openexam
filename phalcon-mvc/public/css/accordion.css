@@ -6,8 +6,6 @@
 .ac-container label{
     font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
     padding: 5px 20px;
-/*    position: relative;
-    z-index: 20;*/
     display: block;
     height: 40px;
     cursor: pointer;
@@ -62,7 +60,6 @@
     overflow: hidden;
     height: 0px;
     position: relative;
-/*    z-index: 10;*/
     -webkit-transition: height 0.3s ease-in-out, box-shadow 0.6s linear;
     -moz-transition: height 0.3s ease-in-out, box-shadow 0.6s linear;
     -o-transition: height 0.3s ease-in-out, box-shadow 0.6s linear;
@@ -70,11 +67,7 @@
     transition: height 0.3s ease-in-out, box-shadow 0.6s linear;
 }
 .ac-container article p{
-    /*	font-style: italic;*/
     color: #777;
-    /*	line-height: 23px;
-            padding: 10px;
-    */
     font-size: 12px;
     text-shadow: 1px 1px 1px rgba(255,255,255,0.8);
 }
@@ -95,6 +88,6 @@
     overflow: auto;
 }
 .ac-container input:checked ~ article.ac-large{
-    min-height: 330px;
+    min-height: 365px;
     overflow: auto;
 }
