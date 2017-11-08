@@ -33,7 +33,7 @@ foreach ($roles as $role) {
 <div id="unsupported-browser" class="alert alert-warning alert-dismissable" style="display: none">
     <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
     <strong>Possible browser problem!</strong><br>
-        It looks like you are using an unsupported browser. In case of problem using the system, please try with an modern browser that supports the latest web standards.
+    It looks like you are using an unsupported browser. In case of problem using the system, please try with an modern browser that supports the latest web standards.
 </div>
 
 <div id="container" class="left_menu_space container" style="width:100%">
@@ -57,7 +57,8 @@ foreach ($roles as $role) {
 
                             <label for="ac-<?= $index ?>" class="exam-list-boxes">
                                 <i class="fa fa-chevron-right chevron" style="font-size: 16px; color: #990000"></i>
-                                <?= $sections[$role]['title'] ?>
+                                <?= $sections[$role]['title']['name'] ?>
+                                <span class="hidden-xs"> - <?= $sections[$role]['title']['desc'] ?></span>
                             </label>
                             <article class="ac-large exam-listing-wrapper">
                                 <div style="padding:5px; margin-bottom: 20px">

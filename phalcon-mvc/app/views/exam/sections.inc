@@ -18,7 +18,10 @@ use OpenExam\Library\Security\Roles;
  */
 return array(
         Roles::CREATOR               => array(
-                'title'        => 'Creator - create and manage an exam',
+                'title'        => array(
+                        'name' => 'Creator',
+                        'desc' => 'create and manage an exam'
+                ),
                 'show-options' => array(
                         'check-exam'  => array(
                                 'target'        => 'check-exam',
@@ -59,7 +62,10 @@ return array(
                 )
         ),
         Roles::CONTRIBUTOR           => array(
-                'title'        => 'Contributor - add questions to an exam',
+                'title'        => array(
+                        'name' => 'Contributor',
+                        'desc' => 'add questions to an exam'
+                ),
                 'show-options' => array(
                         'add-q'     => array(
                                 'target'        => 'exam/update/{exam-id}/contributor/add-q',
@@ -76,7 +82,10 @@ return array(
                 )
         ),
         Roles::INVIGILATOR           => array(
-                'title'        => 'Invigilator',
+                'title'        => array(
+                        'name' => 'Invigilator',
+                        'desc' => 'register students or change schedule'
+                ),
                 'show-options' => array(
                         'check-exam'     => array(
                                 'target'        => 'check-exam',
@@ -99,7 +108,10 @@ return array(
                 )
         ),
         Roles::CORRECTOR             => array(
-                'title'        => 'Corrector - correct the student\'s answers',
+                'title'        => array(
+                        'name' => 'Corrector',
+                        'desc' => 'correct the student\'s answers'
+                ),
                 'show-options' => array(
                         'download-result'   => array(
                                 'target'        => 'exam/{exam-id}/correction/download-result',
@@ -129,7 +141,10 @@ return array(
                 )
         ),
         Roles::DECODER               => array(
-                'title'        => 'Decoder - view and decode results',
+                'title'        => array(
+                        'name' => 'Decoder',
+                        'desc' => 'view and decode results'
+                ),
                 'show-options' => array(
                         'download-result' => array(
                                 'target'        => 'exam/{exam-id}/correction/download-results',
@@ -159,7 +174,10 @@ return array(
                 )
         ),
         Roles::STUDENT . '-upcoming' => array(
-                'title'        => 'Your upcoming/ongoing exams',
+                'title'        => array(
+                        'name' => 'Student',
+                        'desc' => 'your upcoming/ongoing exams'
+                ),
                 'show-options' => array(
                         'st-exam-page' => array(
                                 'target'        => 'exam/{exam-id}',
@@ -170,7 +188,10 @@ return array(
                 )
         ),
         Roles::STUDENT . '-finished' => array(
-                'title'        => 'Your finished exams',
+                'title'        => array(
+                        'name' => 'Student',
+                        'desc' => 'your finished exams'
+                ),
                 'show-options' => array(
                         'download-result' => array(
                                 'target'        => 'result/{exam-id}/download',
