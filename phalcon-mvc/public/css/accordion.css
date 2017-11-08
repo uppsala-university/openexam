@@ -6,8 +6,8 @@
 .ac-container label{
     font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
     padding: 5px 20px;
-    position: relative;
-    z-index: 20;
+/*    position: relative;
+    z-index: 20;*/
     display: block;
     height: 40px;
     cursor: pointer;
@@ -62,7 +62,7 @@
     overflow: hidden;
     height: 0px;
     position: relative;
-    z-index: 10;
+/*    z-index: 10;*/
     -webkit-transition: height 0.3s ease-in-out, box-shadow 0.6s linear;
     -moz-transition: height 0.3s ease-in-out, box-shadow 0.6s linear;
     -o-transition: height 0.3s ease-in-out, box-shadow 0.6s linear;

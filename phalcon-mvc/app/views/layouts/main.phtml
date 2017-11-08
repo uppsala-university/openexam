@@ -116,138 +116,147 @@ $link = new NavigateMenuActivator($ctrl, $user);
         <div id="topMenu"> 
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid">
-                    <!-- Left side menu items -->
-                    <ul class="nav navbar-nav">
-                        <!-- Home -->
-                        <?php if (($active = $link->active("index"))) : ?>
-                                <li class="<?= $active ?>">
-                                    <?= Tag::linkTo('', 'Home') ?>
-                                </li>
-                        <?php endif; ?>
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>                        
+                        </button>
+                    </div>
 
-                        <!-- My Exams -->
-                        <?php if (($active = $link->active("exam", false))) : ?>
-                                <li class="<?= $active ?>">
-                                    <?= Tag::linkTo('exam/index', 'My Exams') ?>
-                                </li>
-                        <?php endif; ?>
-                    </ul>
+                    <div class="collapse navbar-collapse" id="myNavbar">
+                        <!-- Left side menu items -->
+                        <ul class="nav navbar-nav">
+                            <!-- Home -->
+                            <?php if (($active = $link->active("index"))) : ?>
+                                    <li class="<?= $active ?>">
+                                        <?= Tag::linkTo('', 'Home') ?>
+                                    </li>
+                            <?php endif; ?>
 
-                    <!-- Right side menu items -->
-                    <ul class="nav navbar-nav navbar-right">
-                        <!-- Tasks -->
-                        <?php if (($active = $link->active("task", false))) : ?>
-                                <li class="dropdown <?= $active ?>">
-                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Task
-                                        <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <?php if ($this->user->roles->hasRole('teacher')) : ?>
-                                                <li>
-                                                    <?= Tag::linkTo('exam/create', 'Create Exam...') ?>
-                                                </li>
-                                        <?php endif; ?>
-                                        <?php if ($this->user->roles->hasRole('contributor')) : ?>
-                                                <li>
-                                                    <?= Tag::linkTo('task/contribute', 'Contribute Questions') ?>
-                                                </li>
-                                        <?php endif; ?>
-                                        <?php if ($this->user->roles->hasRole('corrector')) : ?>
-                                                <li>
-                                                    <?= Tag::linkTo('task/correct', 'Correct Answers') ?>
-                                                </li>
-                                        <?php endif; ?>
-                                        <?php if ($this->user->roles->hasRole('invigilator')) : ?>
-                                                <li>
-                                                    <?= Tag::linkTo('task/invigilate', 'Invigilate Exam') ?>
-                                                </li>
-                                        <?php endif; ?>
-                                        <?php if ($this->user->roles->hasRole('decoder')) : ?>
-                                                <li>
-                                                    <?= Tag::linkTo('task/decode', 'Decode Exam') ?>
-                                                </li>
-                                        <?php endif; ?>
-                                        <?php if ($this->user->roles->hasRole('student')) : ?>
-                                                <li>
-                                                    <?= Tag::linkTo('task/result', 'Download Results') ?>
-                                                </li>
-                                        <?php endif; ?>
-                                    </ul>
-                                </li>
-                        <?php endif; ?>
+                            <!-- My Exams -->
+                            <?php if (($active = $link->active("exam", false))) : ?>
+                                    <li class="<?= $active ?>">
+                                        <?= Tag::linkTo('exam/index', 'My Exams') ?>
+                                    </li>
+                            <?php endif; ?>
+                        </ul>
 
-                        <!-- Tools -->
-                        <?php if (($active = $link->active(array("monitor", "statistics"), false))) : ?>
-                                <li class="dropdown <?= $active ?>">
-                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools
-                                        <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <?= Tag::linkTo('utility/statistics', 'Statistics') ?>
-                                        </li>
-                                        <li>
-                                            <?= Tag::linkTo('utility/monitor/diagnostics', 'Diagnostics') ?>
-                                        </li>
-                                    </ul>
-                                </li>
-                        <?php endif; ?>
+                        <!-- Right side menu items -->
+                        <ul class="nav navbar-nav navbar-right">
+                            <!-- Tasks -->
+                            <?php if (($active = $link->active("task", false))) : ?>
+                                    <li class="dropdown <?= $active ?>">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Task
+                                            <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <?php if ($this->user->roles->hasRole('teacher')) : ?>
+                                                    <li>
+                                                        <?= Tag::linkTo('exam/create', 'Create Exam...') ?>
+                                                    </li>
+                                            <?php endif; ?>
+                                            <?php if ($this->user->roles->hasRole('contributor')) : ?>
+                                                    <li>
+                                                        <?= Tag::linkTo('task/contribute', 'Contribute Questions') ?>
+                                                    </li>
+                                            <?php endif; ?>
+                                            <?php if ($this->user->roles->hasRole('corrector')) : ?>
+                                                    <li>
+                                                        <?= Tag::linkTo('task/correct', 'Correct Answers') ?>
+                                                    </li>
+                                            <?php endif; ?>
+                                            <?php if ($this->user->roles->hasRole('invigilator')) : ?>
+                                                    <li>
+                                                        <?= Tag::linkTo('task/invigilate', 'Invigilate Exam') ?>
+                                                    </li>
+                                            <?php endif; ?>
+                                            <?php if ($this->user->roles->hasRole('decoder')) : ?>
+                                                    <li>
+                                                        <?= Tag::linkTo('task/decode', 'Decode Exam') ?>
+                                                    </li>
+                                            <?php endif; ?>
+                                            <?php if ($this->user->roles->hasRole('student')) : ?>
+                                                    <li>
+                                                        <?= Tag::linkTo('task/result', 'Download Results') ?>
+                                                    </li>
+                                            <?php endif; ?>
+                                        </ul>
+                                    </li>
+                            <?php endif; ?>
 
-                        <!-- Help -->
-                        <?php if (($active = $link->active("help"))) : ?>
-                                <li class="dropdown <?= $active ?>">
-                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Help
-                                        <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <?= Tag::linkTo('help/manual/teacher', 'Teacher Manual') ?>
-                                        </li>
-                                        <li>
-                                            <?= Tag::linkTo('help/manual/student', 'Student Manual') ?>
-                                        </li>
-                                        <li>
-                                            <?= Tag::linkTo(array('help/manual', 'Show All...', 'target' => '_blank', 'title' => 'Open page with manuals in other languages and formats in new window.')) ?>
-                                        </li>
-                                        <li>
-                                            <?= Tag::linkTo('about', 'About') ?>
-                                        </li>
-                                    </ul>
-                                </li>
-                        <?php endif; ?>
+                            <!-- Tools -->
+                            <?php if (($active = $link->active(array("monitor", "statistics"), false))) : ?>
+                                    <li class="dropdown <?= $active ?>">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools
+                                            <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <?= Tag::linkTo('utility/statistics', 'Statistics') ?>
+                                            </li>
+                                            <li>
+                                                <?= Tag::linkTo('utility/monitor/diagnostics', 'Diagnostics') ?>
+                                            </li>
+                                        </ul>
+                                    </li>
+                            <?php endif; ?>
 
-                        <!-- Logon -->
-                        <?php if (($active = $link->active("auth"))) : ?>
-                                <?php if ($this->user->getUser()) : ?>
-                                        <li>
-                                            <?= Tag::linkTo('auth/logout', '<i class="fa fa-unlock-alt"></i> Logout') ?>
-                                        </li>
-                                <?php else : ?>
-                                        <li class="dropdown <?= $active ?>">
-                                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Login
-                                                <span class="caret"></span>
-                                            </a>
-                                            <ul class="dropdown-menu"><?php
-                                                foreach ($authenticators as $name => $auth) {
-                                                        if ($auth->visible) {
-                                                                print Tag::tagHtml("li");
-                                                                print Tag::linkTo(array(
-                                                                            sprintf("auth/login/%s", $name),
-                                                                            sprintf("<i class=\"fa\"></i> %s", $auth['desc'])
-                                                                ));
-                                                                print Tag::tagHtmlClose("li");
-                                                        }
-                                                }
+                            <!-- Help -->
+                            <?php if (($active = $link->active("help"))) : ?>
+                                    <li class="dropdown <?= $active ?>">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Help
+                                            <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <?= Tag::linkTo('help/manual/teacher', 'Teacher Manual') ?>
+                                            </li>
+                                            <li>
+                                                <?= Tag::linkTo('help/manual/student', 'Student Manual') ?>
+                                            </li>
+                                            <li>
+                                                <?= Tag::linkTo(array('help/manual', 'Show All...', 'target' => '_blank', 'title' => 'Open page with manuals in other languages and formats in new window.')) ?>
+                                            </li>
+                                            <li>
+                                                <?= Tag::linkTo('about', 'About') ?>
+                                            </li>
+                                        </ul>
+                                    </li>
+                            <?php endif; ?>
 
-                                                ?></ul>
-                                        </li>
-                                <?php endif; ?>
-                        <?php endif; ?>
-                    </ul>
+                            <!-- Logon -->
+                            <?php if (($active = $link->active("auth"))) : ?>
+                                    <?php if ($this->user->getUser()) : ?>
+                                            <li>
+                                                <?= Tag::linkTo('auth/logout', '<i class="fa fa-unlock-alt"></i> Logout') ?>
+                                            </li>
+                                    <?php else : ?>
+                                            <li class="dropdown <?= $active ?>">
+                                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Login
+                                                    <span class="caret"></span>
+                                                </a>
+                                                <ul class="dropdown-menu"><?php
+                                                    foreach ($authenticators as $name => $auth) {
+                                                            if ($auth->visible) {
+                                                                    print Tag::tagHtml("li");
+                                                                    print Tag::linkTo(array(
+                                                                                sprintf("auth/login/%s", $name),
+                                                                                sprintf("<i class=\"fa\"></i> %s", $auth['desc'])
+                                                                    ));
+                                                                    print Tag::tagHtmlClose("li");
+                                                            }
+                                                    }
+
+                                                    ?></ul>
+                                            </li>
+                                    <?php endif; ?>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
                 </div>
             </nav>            
         </div>
-
     </div>
 
     <!-- Content area -->
