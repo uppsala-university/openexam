@@ -1,4 +1,8 @@
 <?php
+
+use Phalcon\Mvc\User\Component;
+use Phalcon\Tag;
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -6,8 +10,8 @@
 // 
 // File:    main.phtml
 // 
-// Author:  Ahsan Shahzad (MedfarmDoIT)
 // Author:  Anders Lövgren (QNET/BMC CompDept)
+// Author:  Ahsan Shahzad (MedfarmDoIT)
 // 
 
 ?>
@@ -21,29 +25,59 @@ $this->profiler->add("view");
 ?>
 
 <!-- CSS -->
-<?= Phalcon\Tag::stylesheetLink('bootstrap3/css/bootstrap.min.css'); ?>
-<?= Phalcon\Tag::stylesheetLink('bootstrap3/css/bootstrap-theme.min.css'); ?>
-<?= Phalcon\Tag::stylesheetLink("css/uu/1.css"); ?>
-<?= Phalcon\Tag::stylesheetLink("css/uu/2.css"); ?>
-<?= Phalcon\Tag::stylesheetLink("css/uu/3.css"); ?>
-<?= Phalcon\Tag::stylesheetLink("css/supermenu.css"); ?>
-<?= Phalcon\Tag::stylesheetLink("css/accordion.css"); ?>
-<?= Phalcon\Tag::stylesheetLink("css/font-awesome.css"); ?>
-<?= Phalcon\Tag::stylesheetLink("plugins/fancy-box/source/jquery.fancybox.css"); ?>
+<?= Tag::stylesheetLink('bootstrap3/css/bootstrap.min.css'); ?>
+<?= Tag::stylesheetLink('bootstrap3/css/bootstrap-theme.min.css'); ?>
+<?= Tag::stylesheetLink("css/uu/1.css"); ?>
+<?= Tag::stylesheetLink("css/uu/2.css"); ?>
+<?= Tag::stylesheetLink("css/uu/3.css"); ?>
+<?= Tag::stylesheetLink("css/accordion.css"); ?>
+<?= Tag::stylesheetLink("css/font-awesome.css"); ?>
+<?= Tag::stylesheetLink("plugins/fancy-box/source/jquery.fancybox.css"); ?>
 
 <!-- Javascript -->
-<?= Phalcon\Tag::javascriptInclude('plugins/fancy-box/source/jquery.fancybox.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('bootstrap3/js/bootstrap.min.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('js/views/layouts/supermenu.js'); ?>
+<?= Tag::javascriptInclude('plugins/fancy-box/source/jquery.fancybox.js'); ?>
+<?= Tag::javascriptInclude('bootstrap3/js/bootstrap.min.js'); ?>
 
 <?php
-$controllerName = $this->dispatcher->getControllerName();
-$actionName = $this->dispatcher->getActionName();
+
+class NavigateMenuActivator extends Component
+{
+
+        private $_crtl;
+        private $_user;
+
+        public function __construct($ctrl, $user)
+        {
+                $this->_crtl = $ctrl;
+                $this->_user = $user;
+        }
+
+        public function active($ctrl, $public = true)
+        {
+                $result = "visible";
+
+                if (is_array($ctrl) && in_array($this->_crtl, $ctrl)) {
+                        $result = "active";
+                } elseif ($ctrl == $this->_crtl) {
+                        $result = "active";
+                }
+                if ($public == false && is_null($this->_user)) {
+                        $result = false;
+                }
+
+                return $result;
+        }
+
+}
+
+$ctrl = $this->dispatcher->getControllerName();
+$user = $this->user->getUser();
+
+$link = new NavigateMenuActivator($ctrl, $user);
 
 ?>
 
-<!-- page wrapper -->
-
+<!-- Page wrapper -->
 <div id="wrapper" class="wrapper"> 
 
     <!-- Header area -->
@@ -55,160 +89,165 @@ $actionName = $this->dispatcher->getActionName();
             <!-- Logo -->
             <div class="toppImg">
                 <h1 class="logo"> <a href="http://www.uu.se/">
-                        <?= Phalcon\Tag::image(array("img/uu_logo.svg", "style" => "max-height:120px")); ?>
+                        <?= Tag::image(array("img/uu_logo.svg", "style" => "max-height:120px")); ?>
                     </a> <span class="alt-logo">Uppsala universitet</span> </h1>
             </div>
 
             <!-- Logo Text -->
-            <div class="toppNav"> <br>
-                <br>
+            <div class="toppNav">
                 <h1 class="siteName"> <a href="http://www.bmc.uu.se/">OpenExam</a> - online examination system </h1>
-                <div style="position: absolute; top: 10px; right: 25px">
-                    <?php if ($this->user->roles->isAdmin()) : ?>
-                            <span class="btn btn-default">
-                                <i class="fa fa-user"></i> <?= $this->catalog->getName() ?>
-                            </span>
-                    <?php else : ?>
-                            <span class="btn btn-link" style="color: #c1002b;">
-                                <i class="fa fa-user"></i> <?= $this->catalog->getName() ?>
-                            </span>
-                    <?php endif; ?>
-                </div>
+            </div>
+
+            <!-- User control -->
+            <div style="position: absolute; top: 10px; right: 25px">
+                <?php if ($this->user->roles->isAdmin() == false) : ?>
+                        <span class="btn btn-default">
+                            <i class="fa fa-user"></i> <?= $this->catalog->getName() ?>
+                        </span>
+                <?php else : ?>
+                        <span class="btn btn-default" style="color: #c1002b;">
+                            <i class="fa fa-user"></i> <?= $this->catalog->getName() ?>
+                        </span>
+                <?php endif; ?>
             </div>
         </div>
 
         <!-- Top menu -->
         <div id="topMenu"> 
+            <nav class="navbar navbar-inverse">
+                <div class="container-fluid">
+                    <!-- Left side menu items -->
+                    <ul class="nav navbar-nav">
+                        <!-- Home -->
+                        <?php if (($active = $link->active("index"))) : ?>
+                                <li class="<?= $active ?>">
+                                    <?= Tag::linkTo('', 'Home') ?>
+                                </li>
+                        <?php endif; ?>
 
-            <!-- Top left menu -->
-            <ul id="menucontainer">
-                <li class="first <?= (($controllerName == 'public' && $actionName == 'index') ? 'selected' : '') ?>">
-                    <?= Phalcon\Tag::linkTo('', 'Home') ?>
-                </li>
-                <?php if ($this->user->getUser()): ?>
-                        <li class="<?= ($controllerName == 'exam' && $actionName == 'index' ? 'selected' : '') ?>">
-                            <?= Phalcon\Tag::linkTo('exam/index', 'My Exams') ?>
-                        </li>
-                <?php endif; ?>
-            </ul>
-            <!-- Top right menu -->
-            <ul id="menucontainer" style="float:right;" class="login-menu">
-                <li id="login">
-                    <?php
-                    if (!$this->user->getUser()) {
-                            print Phalcon\Tag::linkTo(array(
-                                        sprintf("auth/login/%s", key($authenticators)),
-                                        '<i class="fa fa-lock"></i> Login'
-                            ));
-                    } else {
-                            print Phalcon\Tag::linkTo(array(
-                                        "auth/logout",
-                                        '<i class="fa fa-unlock-alt"></i> Logout'
-                            ));
-                    }
-
-                    if (!$this->user->getUser()) {
-                            printf("<ul class=\"login-menu\" style=\"visibility:hidden;\">\n");
-                            foreach ($authenticators as $name => $auth) {
-                                    if ($auth->visible) {
-                                            print Phalcon\Tag::tagHtml("li");
-                                            print Phalcon\Tag::linkTo(array(
-                                                        sprintf("auth/login/%s", $name),
-                                                        sprintf("<i class=\"fa\"></i> %s", $auth['desc'])
-                                            ));
-                                            print Phalcon\Tag::tagHtmlClose("li");
-                                    }
-                            }
-                            printf("</ul>\n");
-                    }
-
-                    ?>
-                </li>
-            </ul>
-            <ul id="menucontainer" style="float:right;" class="help-menu">
-                <li id="help">
-                    <?=
-                    Phalcon\Tag::linkTo(array(
-                            "help",
-                            '<i class="fa fa-question-circle"></i> Help'
-                    ));
-
-                    ?>
-                    <ul class="help-menu" style="visibility:hidden">
-                        <li>
-                            <?= Phalcon\Tag::linkTo('help/manual/teacher', 'Teacher Manual') ?>
-                        </li>
-                        <li>
-                            <?= Phalcon\Tag::linkTo('help/manual/student', 'Student Manual') ?>
-                        </li>
-                        <li>
-                            <?= Phalcon\Tag::linkTo(array('help/manual', 'Show All...', 'target' => '_blank', 'title' => 'Open page with manuals in other languages and formats in new window.')) ?>
-                        </li>
-                        <li>
-                            <?= Phalcon\Tag::linkTo('about', 'About') ?>
-                        </li>
+                        <!-- My Exams -->
+                        <?php if (($active = $link->active("exam", false))) : ?>
+                                <li class="<?= $active ?>">
+                                    <?= Tag::linkTo('exam/index', 'My Exams') ?>
+                                </li>
+                        <?php endif; ?>
                     </ul>
-                </li>
-            </ul>
-            <ul id="menucontainer" style="float:right;" class="tools-menu">
-                <li id="tools">
-                    <?=
-                    Phalcon\Tag::linkTo(array("#", "Tools"));
 
-                    ?>
-                    <ul class="tools-menu" style="visibility:hidden">
-                        <li>
-                            <?= Phalcon\Tag::linkTo('utility/statistics', 'Statistics') ?>
-                        </li>
-                        <li>
-                            <?= Phalcon\Tag::linkTo('utility/monitor/diagnostics', 'Diagnostics') ?>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <?php if ($this->user->getUser()) : ?>
-                    <ul id="menucontainer" style="float:right;" class="tasks-menu">
-                        <li id="tasks">
-                            <?=
-                            Phalcon\Tag::linkTo(array("#", "Tasks"));
+                    <!-- Right side menu items -->
+                    <ul class="nav navbar-nav navbar-right">
+                        <!-- Tasks -->
+                        <?php if (($active = $link->active("task", false))) : ?>
+                                <li class="dropdown <?= $active ?>">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Task
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <?php if ($this->user->roles->hasRole('teacher')) : ?>
+                                                <li>
+                                                    <?= Tag::linkTo('exam/create', 'Create Exam...') ?>
+                                                </li>
+                                        <?php endif; ?>
+                                        <?php if ($this->user->roles->hasRole('contributor')) : ?>
+                                                <li>
+                                                    <?= Tag::linkTo('task/contribute', 'Contribute Questions') ?>
+                                                </li>
+                                        <?php endif; ?>
+                                        <?php if ($this->user->roles->hasRole('corrector')) : ?>
+                                                <li>
+                                                    <?= Tag::linkTo('task/correct', 'Correct Answers') ?>
+                                                </li>
+                                        <?php endif; ?>
+                                        <?php if ($this->user->roles->hasRole('invigilator')) : ?>
+                                                <li>
+                                                    <?= Tag::linkTo('task/invigilate', 'Invigilate Exam') ?>
+                                                </li>
+                                        <?php endif; ?>
+                                        <?php if ($this->user->roles->hasRole('decoder')) : ?>
+                                                <li>
+                                                    <?= Tag::linkTo('task/decode', 'Decode Exam') ?>
+                                                </li>
+                                        <?php endif; ?>
+                                        <?php if ($this->user->roles->hasRole('student')) : ?>
+                                                <li>
+                                                    <?= Tag::linkTo('task/result', 'Download Results') ?>
+                                                </li>
+                                        <?php endif; ?>
+                                    </ul>
+                                </li>
+                        <?php endif; ?>
 
-                            ?>
-                            <ul class="tasks-menu" style="visibility:hidden">
-                                <?php if ($this->user->roles->hasRole('teacher')) : ?>
+                        <!-- Tools -->
+                        <?php if (($active = $link->active(array("monitor", "statistics"), false))) : ?>
+                                <li class="dropdown <?= $active ?>">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
                                         <li>
-                                            <?= Phalcon\Tag::linkTo('exam/create', 'Create Exam...') ?>
+                                            <?= Tag::linkTo('utility/statistics', 'Statistics') ?>
+                                        </li>
+                                        <li>
+                                            <?= Tag::linkTo('utility/monitor/diagnostics', 'Diagnostics') ?>
+                                        </li>
+                                    </ul>
+                                </li>
+                        <?php endif; ?>
+
+                        <!-- Help -->
+                        <?php if (($active = $link->active("help"))) : ?>
+                                <li class="dropdown <?= $active ?>">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Help
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <?= Tag::linkTo('help/manual/teacher', 'Teacher Manual') ?>
+                                        </li>
+                                        <li>
+                                            <?= Tag::linkTo('help/manual/student', 'Student Manual') ?>
+                                        </li>
+                                        <li>
+                                            <?= Tag::linkTo(array('help/manual', 'Show All...', 'target' => '_blank', 'title' => 'Open page with manuals in other languages and formats in new window.')) ?>
+                                        </li>
+                                        <li>
+                                            <?= Tag::linkTo('about', 'About') ?>
+                                        </li>
+                                    </ul>
+                                </li>
+                        <?php endif; ?>
+
+                        <!-- Logon -->
+                        <?php if (($active = $link->active("auth"))) : ?>
+                                <?php if ($this->user->getUser()) : ?>
+                                        <li>
+                                            <?= Tag::linkTo('auth/logout', '<i class="fa fa-unlock-alt"></i> Logout') ?>
+                                        </li>
+                                <?php else : ?>
+                                        <li class="dropdown <?= $active ?>">
+                                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Help
+                                                <span class="caret"></span>
+                                            </a>
+                                            <ul class="dropdown-menu"><?php
+                                                foreach ($authenticators as $name => $auth) {
+                                                        if ($auth->visible) {
+                                                                print Tag::tagHtml("li");
+                                                                print Tag::linkTo(array(
+                                                                            sprintf("auth/login/%s", $name),
+                                                                            sprintf("<i class=\"fa\"></i> %s", $auth['desc'])
+                                                                ));
+                                                                print Tag::tagHtmlClose("li");
+                                                        }
+                                                }
+
+                                                ?></ul>
                                         </li>
                                 <?php endif; ?>
-                                <?php if ($this->user->roles->hasRole('contributor')) : ?>
-                                        <li>
-                                            <?= Phalcon\Tag::linkTo('task/contribute', 'Contribute Questions') ?>
-                                        </li>
-                                <?php endif; ?>
-                                <?php if ($this->user->roles->hasRole('corrector')) : ?>
-                                        <li>
-                                            <?= Phalcon\Tag::linkTo('task/correct', 'Correct Answers') ?>
-                                        </li>
-                                <?php endif; ?>
-                                <?php if ($this->user->roles->hasRole('invigilator')) : ?>
-                                        <li>
-                                            <?= Phalcon\Tag::linkTo('task/invigilate', 'Invigilate Exam') ?>
-                                        </li>
-                                <?php endif; ?>
-                                <?php if ($this->user->roles->hasRole('decoder')) : ?>
-                                        <li>
-                                            <?= Phalcon\Tag::linkTo('task/decode', 'Decode Exam') ?>
-                                        </li>
-                                <?php endif; ?>
-                                <?php if ($this->user->roles->hasRole('student')) : ?>
-                                        <li>
-                                            <?= Phalcon\Tag::linkTo('task/result', 'Download Results') ?>
-                                        </li>
-                                <?php endif; ?>
-                            </ul>
-                        </li>
+                        <?php endif; ?>
                     </ul>
-            <?php endif; ?>
+                </div>
+            </nav>            
         </div>
+
     </div>
 
     <!-- Content area -->
@@ -225,5 +264,4 @@ $actionName = $this->dispatcher->getActionName();
             </div>
         </div>
     </div>
-</div>
-<!-- wrapper ends --> 
+    <!-- wrapper ends --> 

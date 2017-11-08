@@ -10,8 +10,8 @@
 // 
 
 $(document).ready(function () {
-    $('.login-menu,.help-menu,.tools-menu > li,.tasks-menu > li').bind('mouseover', openSubMenu);
-    $('.login-menu,.help-menu,.tools-menu > li,.tasks-menu > li').bind('mouseout', closeSubMenu);
+    $('#login-menu,#help-menu,#tools-menu > li,#tasks-menu > li').bind('mouseover', openSubMenu);
+    $('#login-menu,#help-menu,#tools-menu > li,#tasks-menu > li').bind('mouseout', closeSubMenu);
 
     function openSubMenu() {
         $(this).find('ul').css('visibility', 'visible');

@@ -21,14 +21,12 @@
         background:transparent;
         margin:0;
         padding:0;
-        height:159px;
-        border-bottom:23px solid #999;
-    }
-    #wrapper, .toppImg, .toppNav {
-        background:#eaeaea;
     }
     #topMenu {
-        margin:0;
+        margin:0px;
+        background-color: #999999;
+        padding: 0px;
+        height: 32px;
     }
     p, li, td {
         font-size:1.0em;
@@ -260,8 +258,7 @@
 
     #containerflarp {
         margin:auto;
-        width:1040px;
-        padding:0px;
+        padding:10px;
         clear:both;
         margin-top: 40px;
     }
@@ -301,11 +298,8 @@
         clear:both;
     }
     #header {
-        /* background:url("/digitalAssets/53/53329_UU_logga_transp.png") left top no-repeat;*/
-        width:984px;
-        height:127px;
         margin: 0 auto;
-
+        /*        background:#eaeaea;*/
     }
 
     /******* http://perishablepress.com/press/2008/02/05/lessons-learned-concerning-the-clearfix-css-hack *********/
@@ -709,14 +703,13 @@
 
     /**************************** HEADER stylning av toppen **********************/
     .headerComponent {
-        clear:both;
+        margin-bottom: 10px;
     }
     .toppNav {
         padding:0;
-        height:127px;
-        width:857px;
-        float:left;
-        /*    background:#eaeaea url("/images/5084_sigill.jpg") right top no-repeat;*/
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;        
     }
 
     .toppNav ul.icons  {
@@ -747,9 +740,7 @@
         background:transparent;
         margin:0;
         padding:0;
-        height:127px;
-        width:127px;
-        float:left;
+        display: inline-block;
     }
     .toppImg a img{
         border:none;
