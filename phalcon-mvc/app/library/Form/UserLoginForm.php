@@ -41,7 +41,8 @@ class UserLoginForm extends Form
                 $this->add(new Text("fuser", array('name' => $login->fuser, 'placeholder' => sprintf("login@%s", $this->config->user->domain), 'class' => 'form-control')));
                 $this->add(new Password("fpass", array('name' => $login->fpass, 'placeholder' => 'Type your password', 'class' => 'form-control')));
                 $this->add(new Hidden("fembed", array("value" => $this->request->get("embed"))));
-                $this->add(new Submit("fsubmit", array('name' => $login->fname, 'value' => 'Login', 'class' => 'btn btn-success')));
+                $this->add(new Submit('fcancel', array('id' => 'cancel', 'value' => 'Back', 'class' => 'btn btn-default', 'style' => 'min-width: 80px', 'onclick' => 'history.back(); return false;')));
+                $this->add(new Submit("fsubmit", array('name' => $login->fname, 'value' => 'Login', 'class' => 'btn btn-success', 'style' => 'min-width: 80px')));
         }
 
 }

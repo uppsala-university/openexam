@@ -48,7 +48,8 @@ class CodeLoginForm extends Form
                 $this->add(new Select('fexam', $exams, array('using' => array('id', 'name'), 'name' => $login->fuser, 'class' => 'form-control')));
                 $this->add(new Hidden('fcode', array('name' => 'secret', 'value' => $login->secret)));
                 $this->add(new Hidden("fembed", array('value' => $this->request->get("embed"))));
-                $this->add(new Submit('fsubmit', array('name' => $login->fname, 'value' => 'Login', 'class' => 'btn btn-success')));
+                $this->add(new Submit('fcancel', array('id' => 'cancel', 'value' => 'Back', 'class' => 'btn btn-default', 'style' => 'min-width: 80px', 'onclick' => 'history.back(); return false;')));
+                $this->add(new Submit('fsubmit', array('name' => $login->fname, 'value' => 'Login', 'class' => 'btn btn-success', 'style' => 'min-width: 80px')));
         }
 
 }
