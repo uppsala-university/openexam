@@ -42,7 +42,7 @@ var diagnostics = (function () {
             }
         }
 
-        parent.append("<div class='card'>" + html + "</div>");
+        parent.append("<div class='card col-md-3'>" + html + "</div>");
     }
 
     // 
@@ -70,7 +70,7 @@ var diagnostics = (function () {
             }
         }
 
-        parent.append("<div class='card'>" + html + "</div>");
+        parent.append("<div class='card col-md-3'>" + html + "</div>");
     }
 
     // 
@@ -100,7 +100,7 @@ var diagnostics = (function () {
             }
         }
 
-        parent.append("<div class='card'>" + html + "</div>");
+        parent.append("<div class='card col-md-3'>" + html + "</div>");
     }
 
     // 
@@ -129,7 +129,7 @@ var diagnostics = (function () {
             }
         }
 
-        parent.append("<div class='card'>" + html + "</div>");
+        parent.append("<div class='card col-md-3'>" + html + "</div>");
     }
 
     // 
