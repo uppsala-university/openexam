@@ -38,34 +38,41 @@
         color: graytext;
     }
     div #statistics-wrapper {
-        display:flex;
+        
     }
     div.statistics-charts {
-        flex: 0 0 70%;
+        
     }
     div.statistics-summary {
-        flex: 0 0 20%;
+        min-width: 300px;
+        max-width: 400px;
     }
 </style>
 
-<h1>Statistics - <span id="statistics-organization"></span></h1>
-<div id="statistics-wrapper">
-    <div class="statistics-summary">
-        <div class="organization-roles">
-            <dl id="organization-roles-list"></dl>
+<h1>
+    Statistics - <span id="statistics-organization"></span>
+</h1>
+
+<div class="container">
+    <div id="statistics-wrapper" class="row">
+        <div class="statistics-summary col-md-4">
+            <div class="organization-roles">
+                <dl id="organization-roles-list"></dl>
+            </div>
+            <div class="organization-exams">
+                <dl id="organization-exams-list"></dl>
+            </div>
+            <div class="organization-users">
+                <dl id="organization-users-list"></dl>
+            </div>
         </div>
-        <div class="organization-exams">
-            <dl id="organization-exams-list"></dl>
+        <div class="statistics-charts col-md-8">
+            <div id="organization-pie-legend" class="pie-legend"></div>
+            <canvas id="organization-pie-chart" width="400" height="300"></canvas>
         </div>
-        <div class="organization-users">
-            <dl id="organization-users-list"></dl>
-        </div>
-    </div>
-    <div class="statistics-charts">
-        <div id="organization-pie-legend" class="pie-legend"></div>
-        <canvas id="organization-pie-chart" width="400" height="300"></canvas>
     </div>
 </div>
+
 <div id="statistics-data"></div>
 
 <script src="<?= $this->url->get('js/chart.js') ?>"></script>
