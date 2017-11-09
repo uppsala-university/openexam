@@ -47,11 +47,16 @@
         min-width: 300px;
         max-width: 400px;
     }
+    button.reload {
+            float: right;
+    }
 </style>
 
 <h1>
     Statistics - <span id="statistics-organization"></span>
 </h1>
+
+<button class="btn btn-primary reload" onclick="location.href='<?= $this->url->get("utility/statistics") ?>'">Refresh</button>
 
 <div class="container">
     <div id="statistics-wrapper" class="row">
