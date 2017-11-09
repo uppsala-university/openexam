@@ -1,4 +1,5 @@
 <?php
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -10,28 +11,28 @@
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
+
+use Phalcon\Tag;
+
 ?>
 
-<?= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery-ui.css'); ?>
-<?= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery.ui.autocomplete.css'); ?>
-<?= Phalcon\Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery.ui.timepicker.css'); ?>
-<?= Phalcon\Tag::stylesheetLink('plugins/validation/css/validationEngine.jquery.css'); ?>
-<?= Phalcon\Tag::stylesheetLink('css/opentip.css'); ?>
+<?= Tag::stylesheetLink('plugins/jquery-ui/jquery-ui.theme.min.css'); ?>
+<?= Tag::stylesheetLink('plugins/validation/css/validationEngine.jquery.css'); ?>
+<?= Tag::stylesheetLink('css/opentip.css'); ?>
 
-<?= Phalcon\Tag::javascriptInclude('plugins/jqueryui/jquery-ui.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('plugins/jqueryui/ui/jquery-ui-timepicker.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('js/modernizr.js') ?>
-<?= Phalcon\Tag::javascriptInclude('plugins/ckeditor/ckeditor.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('plugins/ckeditor/adapters/jquery.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('plugins/validation/js/languages/jquery.validationEngine-en.js') ?>
-<?= Phalcon\Tag::javascriptInclude('plugins/validation/js/jquery.validationEngine.js') ?>
-<?= Phalcon\Tag::javascriptInclude('js/opentip-jquery.min.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('js/opentip-style.js'); ?>
+<?= Tag::javascriptInclude('plugins/jquery-ui/jquery-ui.min.js'); ?>
+<?= Tag::javascriptInclude('js/modernizr.js') ?>
+<?= Tag::javascriptInclude('plugins/ckeditor/ckeditor.js'); ?>
+<?= Tag::javascriptInclude('plugins/ckeditor/adapters/jquery.js'); ?>
+<?= Tag::javascriptInclude('plugins/validation/js/languages/jquery.validationEngine-en.js') ?>
+<?= Tag::javascriptInclude('plugins/validation/js/jquery.validationEngine.js') ?>
+<?= Tag::javascriptInclude('js/opentip-jquery.min.js'); ?>
+<?= Tag::javascriptInclude('js/opentip-style.js'); ?>
 
-<?= Phalcon\Tag::javascriptInclude('js/views/exam/create.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('js/views/exam/security.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('js/views/exam/check.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('js/views/user-search.js'); ?>
+<?= Tag::javascriptInclude('js/views/exam/create.js'); ?>
+<?= Tag::javascriptInclude('js/views/exam/security.js'); ?>
+<?= Tag::javascriptInclude('js/views/exam/check.js'); ?>
+<?= Tag::javascriptInclude('js/views/user-search.js'); ?>
 
 <?php $examQs = $exam->getQuestions(array("order" => "slot")); ?>
 
@@ -114,7 +115,7 @@
 
     <div id="breadcrumbsRow">
         <?php if ($exam->published): ?>
-                <?= Phalcon\Tag::image(array("img/published.gif", "style" => "z-index: 0; height: 65px; position: relative; float: right; top: -9px;")); ?>
+                <?= Tag::image(array("img/published.gif", "style" => "z-index: 0; height: 65px; position: relative; float: right; top: -9px;")); ?>
         <?php endif; ?>
     </div>
 
@@ -254,8 +255,8 @@
         Use this tool to access exam content (i.e. questions) in format suitable for printing or archiving. 
         This is also the right tool to use if some students need to write this exam on paper.
     </div>
-    <a style="display: none" href="<?= $this->url->get('exam/archive/' . $exam->id); ?>" id="exam-archive-action-online" target="_blank">ASDASD</a>
-    <a style="display: none" href="<?= $this->url->get('exam/archive/' . $exam->id) . '/download'; ?>" id="exam-archive-action-download">ASDASD</a>
+    <a style="display: none" href="<?= $this->url->get('exam/archive/' . $exam->id); ?>" id="exam-archive-action-online" target="_blank"></a>
+    <a style="display: none" href="<?= $this->url->get('exam/archive/' . $exam->id) . '/download'; ?>" id="exam-archive-action-download"></a>
     <div class="st-line">
         <center>
             <span style="min-width: 9em" class="btn btn-default" id="exam-archive-online">

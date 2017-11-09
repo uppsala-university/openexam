@@ -12,6 +12,7 @@
 // Author:  Ahsan Shahzad (Medfarm DoIT)
 // 
 
+
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Gui\Component\Exam\Progress;
 use Phalcon\Tag;
@@ -48,8 +49,8 @@ $ordering = array(
 
 ?>
 
-<?= Tag::stylesheetLink('plugins/jqueryui/themes/blitzer/jquery-ui.css'); ?>
-<?= Tag::javascriptInclude('plugins/jqueryui/jquery-ui.js'); ?>
+<?= Tag::stylesheetLink('plugins/jquery-ui/jquery-ui.theme.min.css'); ?>
+<?= Tag::javascriptInclude('plugins/jquery-ui/jquery-ui.min.js'); ?>
 
 <?php if (count($page->items) != 0): ?>
         <ul class="list-group exam-list">

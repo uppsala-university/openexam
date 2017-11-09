@@ -197,6 +197,7 @@ $(document).ready(function () {
     // Show exam check dialog:
     // 
     $(document).on('click', '.check-exam', function () {
+        console.log("HERE");
         $.ajax({
             type: "POST",
             data: {
