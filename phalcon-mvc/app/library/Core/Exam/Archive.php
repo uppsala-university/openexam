@@ -201,6 +201,9 @@ class Archive extends Component
                 if (file_exists($this->_path) && is_writable($this->_path)) {
                         return;
                 }
+                if (file_exists($this->_path) && is_readable($this->_path)) {
+                        throw new RuntimeException("Target directory for exam archives is read-only");
+                }
                 if (!mkdir($this->_path, 0750, true)) {
                         throw new RuntimeException("Failed create target directory for exam archives");
                 }
