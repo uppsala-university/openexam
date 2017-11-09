@@ -83,7 +83,7 @@ var showMessage = function (message, type) {
                 .attr('class', 'alert alert-' + type)
                 .html(message)
                 .slideDown(300)
-                .delay(3000)
+                .delay(2000)
                 .slideUp(300);
     } else {
         $('#msg-box')
