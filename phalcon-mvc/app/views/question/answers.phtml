@@ -46,12 +46,12 @@ if (strtotime($exam->endtime) < time()) {
         overflow: hidden;
     }
     div.correction-section-head {
-        background-color: #e0e0e0;
+        background-color: lavender;
         padding: 10px;
-        border-bottom: 5px solid #999999;        
     }
 
     div.student-answer-box {
+        background-color: white;
         border: 1px solid #e0e0e0;
         border-radius: 5px;
         margin-top: 10px;
@@ -60,7 +60,7 @@ if (strtotime($exam->endtime) < time()) {
     }
 
     #mainview {
-        background-color: white; 
+        background-color: ghostwhite; 
         padding:15px; 
         border-radius:5px;
         width: 100%;
@@ -323,7 +323,7 @@ if (strtotime($exam->endtime) < time()) {
                                                                                     <textarea class="form-control changeable no-print" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?= $qSpecAns->id ?>"><?= $result->comment ?></textarea>
                                                                                 </div>
                                                                                 <div class="savable" style="padding-bottom: 10px; padding-left: 45px;">
-                                                                                    <input class="save-result no-print" type="button" style="text-shadow:none; background-color:#40c040; font-size:11px" ans-id="<?= $qSpecAns->id ?>" value="Save result for this question" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
+                                                                                    <input class="btn btn-success save-result no-print" type="button" ans-id="<?= $qSpecAns->id ?>" value="Save result for this question" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
                                                                                 </div>
                                                                         <?php endif; ?>
                                                                 <?php else: ?>
@@ -468,7 +468,7 @@ if (strtotime($exam->endtime) < time()) {
                                                                                     </div>
 
                                                                                     <div class="savable no-print" style="padding-top: 10px; padding-left: 45px;">
-                                                                                        <input class="save-result no-print" type="button" style="text-shadow:none; background-color:#40c040; font-size:11px" ans-id="<?= $answer->id ?>" value="Save this result" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
+                                                                                        <input class="btn btn-success save-result no-print" type="button" ans-id="<?= $answer->id ?>" value="Save this result" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
                                                                                     </div>
                                                                             <?php endif; ?>
                                                                     <?php else: ?>
@@ -514,7 +514,7 @@ if (strtotime($exam->endtime) < time()) {
                 ?>
             </div>
             <hr>
-            <input type="button" style="text-shadow: none; background-color: rgb(64, 192, 64); font-size: 20px; padding: 8px" class="save-all-result savable" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>" value="Save all results »">
+            <input type="button" class="btn btn-success btn-lg save-all-result savable" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>" value="Save all results »">
             <div style="padding-left: 10px; padding-top: 5px">
                 <div class="checkbox">
                     <label>
