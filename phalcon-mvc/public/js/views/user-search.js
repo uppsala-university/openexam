@@ -26,6 +26,7 @@ function attachCatalogSearch(index, element)
         style: "drops",
         tipJoint: "top left"
     });
+
     opentip.isfor = 'uu-id' + (index + 1);
 
     userman.find('input.user-search').attr('isfor', opentip.isfor);
@@ -139,7 +140,9 @@ function insertCatalogUser(item, element)
     var anchor = $("#" + isfor);
     var model = anchor.attr('data-model');
 
-    if (model === 'corrector') {
+    if (model === undefined) {
+        alert("Failed lookup associated data model");
+    } else if (model === 'corrector') {
         if (!hasCorrector(item, anchor)) {
             addCorrector(item, anchor, model);
         }
