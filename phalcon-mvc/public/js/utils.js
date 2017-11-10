@@ -133,8 +133,11 @@ $(document).ready(function () {
 
     $('.fancybox').fancybox({
         autoHeight: true,
-        autoWidth: true, helpers: {
-            overlay: {closeClick: false}
+        autoWidth: true,
+        helpers: {
+            overlay: {
+                closeClick: false
+            }
         }
     });
 
