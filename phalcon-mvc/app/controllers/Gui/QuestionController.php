@@ -60,12 +60,31 @@ class QuestionController extends GuiController
                 }
 
                 // 
+                // Insert empty question:
+                // 
+                $question = new Question();
+                $question->assign(array(
+                        'exam_id'  => $exam->id,
+                        'score'    => 0,
+                        'quest'    => '{}',
+                        'topic_id' => $exam->topics[0]->id,
+                        'created'  => true
+                ));
+
+                if (!$question->create()) {
+                        throw new Exception($question->getMessages()[0], Error::PRECONDITION_FAILED);
+                } else {
+                        $question->created = true;
+                }
+
+                // 
                 // Set view data:
                 // 
                 $this->view->setVars(array(
-                        'exam'  => $exam,
-                        'role'  => $role,
-                        'staff' => new Staff($exam)
+                        'question' => $question,
+                        'exam'     => $exam,
+                        'role'     => $role,
+                        'staff'    => new Staff($exam)
                 ));
 
                 // 

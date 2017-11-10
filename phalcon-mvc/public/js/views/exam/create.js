@@ -1,4 +1,4 @@
-/* global mode, baseURL, role, showAddQuestionView, examId, isNewExam, CKEDITOR */
+/* global mode, baseURL, role, showAddQuestionView, examId, isNewExam, CKEDITOR, qId */
 
 // 
 // The source code is copyrighted, with equal shared rights, between the
@@ -17,7 +17,6 @@
 
 var totalQs = 0;
 var qsJson = {};
-var qsCorrectorsJson = {};
 var qsIdJson = {};
 var qJson = {};
 var exam = exam || {};
@@ -150,7 +149,7 @@ $(document).ready(function () {
         });
 
         // 
-        // Send AJAX request to update question's names as per new sorting order.
+        // Send AJAX request to update question's order.
         // 
         ajax(
                 baseURL + 'ajax/core/' + role + '/question/update',
@@ -162,10 +161,6 @@ $(document).ready(function () {
         );
 
     };
-
-    if (showAddQuestionView && $('.add_new_qs').length) {
-        loadQuestionDialog(0);
-    }
 
     // 
     // Delete selected UUID:
@@ -219,7 +214,7 @@ $(document).ready(function () {
     // Exam questions related events:
     // 
     $(".add_new_qs").click(function () {
-        loadQuestionDialog(0);
+        newQuestion();
         return false;
     });
 
@@ -236,7 +231,7 @@ $(document).ready(function () {
     // Edit question:
     // 
     $(document).on('click', '.edit-q', function () {
-        loadQuestionDialog($(this).closest('.qs_area_line').attr('q-no'));
+        editQuestion($(this).closest('.qs_area_line').attr('q-no'));
         return false;
     });
 
@@ -305,21 +300,12 @@ $(document).ready(function () {
     // 
     $(document).on('click', '.del-q', function () {
         var qNo = $(this).closest('.qs_area_line').attr('q-no');
+
         if (confirm("Are you sure you want to delete question no. " + qNo + "?")) {
-
-            var qAreaLine = $(this).closest('.qs_area_line');
-
-            // 
-            // Delete from database and then from JSON:
-            // 
-            ajax(
-                    baseURL + 'ajax/core/' + role + '/question/delete',
-                    {"id": qsJson[qNo]["questId"]},
-                    function (status) {
-                        location.reload();
-                        $(qAreaLine).slideUp('500');
-                    }
-            );
+            deleteQuestion(qsJson[qNo]["questId"], function () {
+                location.reload();
+                $(this).closest('.qs_area_line').slideUp('500');
+            });
         }
         return false;
     });
@@ -488,28 +474,74 @@ $(document).ready(function () {
     });
 
     // 
-    // Question dialog window loading populated data if question id is passed.
+    // Delete from database and then callback:
     // 
-    function loadQuestionDialog(qId)
+    var deleteQuestion = function (qid, callback) {
+        ajax(
+                baseURL + 'ajax/core/' + role + '/question/delete',
+                {
+                    id: qid
+                },
+                function (status) {
+                    if (callback) {
+                        callback();
+                    }
+                }
+        );
+    };
+
+    // 
+    // Create new question:
+    // 
+    var newQuestion = function () {
+        loadQuestion(0, 'create', 0);
+    };
+
+    // 
+    // Edit existing question:
+    // 
+    var editQuestion = function (pos) {
+        loadQuestion(pos, 'update', qsJson[pos]["questId"]);
+    };
+
+    // 
+    // Question dialog window. 
+    // 
+    // This function is called when creating or updating a question. The controller will 
+    // create a empty question and return HTML for further editing if this function is 
+    // called qith qid == 0.
+    // 
+    var loadQuestion = function (pos, action, qid)
     {
-        var action = (qId ? 'update' : 'create');
-        var qDbId = (qId ? qsJson[qId]["questId"] : 0);
+        var target = $("#question-form-dialog-wrap");
+        var title = 'Edit question';
 
         $.ajax({
             type: "POST",
             data: {
-                'q_id': qDbId,
+                'q_id': qid,
                 'exam_id': examId,
                 'role': role
             },
             url: baseURL + 'question/' + action,
             success: function (content) {
-
-                $("#question-form-dialog-wrap")
-                        .attr('q-no', qId)
-                        .attr('title', !qId ? 'Add new question.' : 'Update question details.')
+                target
+                        .attr('q-no', pos)
+                        .attr('title', title)
                         .html(content);
-                $("#question-form-dialog-wrap").dialog({
+
+                // 
+                // Get question ID from AJAX loaded HTML content:
+                // 
+                if (!qid) {
+                    qid = qId;
+                }
+
+                // 
+                // Delete question created by AJAX call when dialog is closed and user
+                // confirms closing without saving.
+                // 
+                target.dialog({
                     autoOpen: true,
                     width: "60%",
                     minWidth: 400,
@@ -519,43 +551,55 @@ $(document).ready(function () {
                             addQuestPartTab();
                         },
                         "Save this question": function () {
-                            saveQuestionToExam(qId);
-                            $(this).dialog('destroy');
-                        },
-                        Cancel: function () {
-                            closeToolTips();
+                            saveQuestion(pos, qid);
                             $(this).dialog('destroy');
                         }
+                    },
+                    beforeClose: function () {
+                        var close = true;
+
+                        if (action === 'create') {
+                            close = confirm("Question has not yet been saved. Close this dialog anyway?");
+                        }
+
+                        return close;
                     },
                     close: function () {
                         closeToolTips();
                         $(this).dialog('destroy');
-                    }
 
+                        if (action === 'create') {
+                            deleteQuestion(qid);
+                        }
+                    }
+                });
+            },
+            error: function (error) {
+                target.html(error.responseText);
+                target.dialog({
+                    autoOpen: true,
+                    modal: true
                 });
             }
         });
 
-    }
+    };
 
     // 
-    // Functions for adding queation to exam (db storage). It also saves question 
-    // data in JSON (on page storage).
+    // Functions for adding question to exam and saving question data in JSON (on page storage).
     // 
-    var saveQuestionToExam = function (qId) {
+    var saveQuestion = function (pos, qid) {
 
         var qIndex;
 
-        if (!qId) {
+        if (!pos) {
             qIndex = ++totalQs;
             qsJson[qIndex] = {};
-            qsCorrectorsJson[qIndex] = {};
         } else {
-            qIndex = qId;
+            qIndex = pos;
         }
 
         qJson = {};
-        var totalQParts = $("#question-form-dialog-wrap").find('.q-part').length;
         var totalScore = 0;
         var aPartQtxt = '';
 
@@ -651,24 +695,24 @@ $(document).ready(function () {
         }
 
         // 
-        // Set data for create (qId missing) or question update:
+        // Set data for question update:
         // 
-        if (!qId) {
-            data = {"exam_id": examId, "topic_id": topicId, "score": totalScore, "slot": qIndex, "quest": JSON.stringify(qJson), "status": 'active'};
-        } else {
-            data = {"id": qsJson[qId]["questId"], "score": totalScore, "quest": JSON.stringify(qJson)};
-        }
+        data = {
+            id: qid,
+            score: totalScore,
+            quest: JSON.stringify(qJson)
+        };
 
         ajax(
-                baseURL + 'ajax/core/' + role + '/question/' + (qId ? 'update' : 'create'),
+                baseURL + 'ajax/core/' + role + '/question/update',
                 data,
                 function (qData) {
-                    if (qId) {
+                    if (pos) {
                         // 
                         // Question was successfully updated. Keep ID and status in JSON object:
                         // 
-                        qJson["questId"] = qsJson[qId]["questId"];
-                        qJson["status"] = qsJson[qId]["status"];
+                        qJson["questId"] = qsJson[pos]["questId"];
+                        qJson["status"] = qsJson[pos]["status"];
                     } else {
                         // 
                         // Question was successfully created. Save ID and status in JSON object:
@@ -678,49 +722,7 @@ $(document).ready(function () {
                     }
 
                     // 
-                    // Save correctors against this question in database and in JSON object:
-                    // 
-                    var qCorrectorsArr = [];
-                    var qCorrectorList = $('.q_corrector_list');
-                    qsCorrectorsJson[qIndex] = {};
-
-                    $(qCorrectorList).find('.left-col-user').each(function (i, rElem) {
-                        // 
-                        // Skip empty list items:
-                        // 
-                        if ($(rElem).attr('data-user').length === 0) {
-                            return;
-                        }
-                        if (!qId) {
-                            qCorrectorsArr.push({'question_id': qData.id, "user": $(rElem).attr('data-user')});
-                        }
-                        // 
-                        // Add correct to JSON for on page manuplation:
-                        // 
-                        qsCorrectorsJson[qIndex][i] = $(rElem).html();
-                    });
-
-                    // 
-                    // Only creator can add correctors!
-                    // 
-                    if (role === 'creator') {
-                        if (!qId && qCorrectorsArr.length) {
-
-                            // 
-                            // Send AJAX request to save correctors for this question:
-                            // 
-                            ajax(
-                                    baseURL + 'ajax/core/' + role + '/corrector/create',
-                                    JSON.stringify(qCorrectorsArr),
-                                    function (userData) {
-                                        //do nothing for now
-                                    }
-                            );
-                        }
-                    }
-
-                    // 
-                    // Finally, add this question to qsJson:
+                    // Add this question to JSON:
                     // 
                     qJson["canUpdate"] = 1;
                     qsJson[qIndex] = qJson;
@@ -736,7 +738,7 @@ $(document).ready(function () {
                     var qTxtLeftMenu = aPartQtxt.replace(/(<([^>]+)>)/ig, "").substring(0, 75);
                     var qTopic = $('ul[topic-id="' + topicId + '"]');
 
-                    if (!qId) {
+                    if (!pos) {
                         var newQ = qTopic.find('li:first')
                                 .clone()
                                 .show()
@@ -749,7 +751,7 @@ $(document).ready(function () {
                                 .end();
                         qTopic.append(newQ);
                     } else {
-                        qTopic.find('span[q-no="' + qId + '"]').parent().find('.q-txt').html(qTxtLeftMenu);
+                        qTopic.find('span[q-no="' + pos + '"]').parent().find('.q-txt').html(qTxtLeftMenu);
                     }
                 }
         );

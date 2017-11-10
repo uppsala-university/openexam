@@ -1,4 +1,5 @@
 <?php
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -10,15 +11,26 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
+
 use OpenExam\Library\Security\Roles;
+use OpenExam\Models\Question;
+use Phalcon\Tag;
+
+// 
+// Create empty question if rendered from question/create:
+// 
+if (is_null($question)) {
+        $question = new Question();
+        $question->id = 0;
+}
 
 $qParts = json_decode($question->quest, true);
 $totalQParts = count($qParts);
 
-if ($this->user->acquire(array(Roles::CREATOR, Roles::ADMIN), $exam->id)) {
-        $exam->show_correctors = true;
+if ($role == Roles::CONTRIBUTOR) {
+        $question->show_correctors = false;
 } else {
-        $exam->show_correctors = false;
+        $question->show_correctors = true;
 }
 
 if ($exam->published) {
@@ -99,7 +111,7 @@ if ($question->status == 'removed') {
                                                 <input type="radio"  class="ans_type_selector" value="textarea" <?= ($qAnsType == 'textarea') ? 'checked="checked"' : '' ?>/>
                                                 <span>Multi line text box</span> </div>
                                             <div class="ans_type" style=" <?= ($qAnsType == 'textarea') ? 'display:block' : 'display:none' ?>">
-                                                <?= Phalcon\Tag::image(array("img/ckeditor.png", "width" => '40%')); ?>
+                                                <?= Tag::image(array("img/ckeditor.png", "width" => '40%')); ?>
                                                 <div style="margin-top: 5px; padding-left: 15px; border-left: 3px solid #dddddd">
                                                     <?php
                                                     if (isset($qParts[$qPartTitle]['ans_area']['word_count'])) {
@@ -156,7 +168,7 @@ if ($question->status == 'removed') {
                                                 <span>Choice box</span> 
                                             </div>
                                             <div class="ans_type" style=" <?= ($qAnsType == 'choicebox') ? 'display:block' : 'display:none' ?>">
-                                                <?php $delOpt = Phalcon\Tag::image(array("img/cross-circle.png", "class" => "delopt hideable", "width" => "12", "height" => "12")); ?>
+                                                <?php $delOpt = Tag::image(array("img/cross-circle.png", "class" => "delopt hideable", "width" => "12", "height" => "12")); ?>
                                                 <div class="qline_wrapper">
                                                     <div class="choice_q qline" style="width:100%">
                                                         <div class="question_opts" style="padding-bottom:5px">
@@ -193,7 +205,7 @@ if ($question->status == 'removed') {
                                             </div>
                                             <div class="ans_type" style=" <?= ($qAnsType == 'canvas') ? 'display:block' : 'display:none' ?>">
                                                 <div class="qline_wrapper">
-                                                    <?= Phalcon\Tag::image(array("img/canvas.png", "width" => '40%')); ?>
+                                                    <?= Tag::image(array("img/canvas.png", "width" => '40%')); ?>
                                                 </div>
                                                 <div class="q_resources lib_canvas">
                                                     <div class="add_resources"><a class="set_canvas_background" href="#">Select background image</a></div>
@@ -230,56 +242,44 @@ if ($question->status == 'removed') {
             ?>
         </div>
     </div>
-    <br style="clear:both" />
-    <div style="margin:25px 10px; <?= ($exam->show_correctors ? "" : "display:none") ?>" id="q_correctors">
-        <article class="ac-large">
-            <?php
-            if ($exam->show_correctors) {
-                    $correctors = is_object($question) ? $question->correctors : array($this->user->getPrincipalName() => $this->catalog->getName());
-            } else {
-                    $correctors = is_object($question) ? $question->correctors : array();
-            }
-
-            ?>
-
-            <div style="font-weight:bold"> Question Correctors: <a href="#" id="uu-id4" data-model="corrector" qid='<?= $question->id ?>'>
-                    <?= Phalcon\Tag::image(array("img/plus-circle.png", "width" => "10", "height" => "10", "class" => "search-catalog-service prevent")); ?>
-                </a> <br>
-                <div class="q-corrector-area">
-                    <ul class="q_corrector_list" style="list-style:none; margin:0px">
-                        <!-- corrector item template -->
-                        <li style="display: none">
-                            <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "11", "class" => 'del-corrector')); ?>
-                            <span data-user="" data-rec="" class="left-col-user" style="font-size:11px"></span>
-                        </li>
-                        <?php if ($correctors) : ?>
-                                <?php foreach ($correctors as $k => $corrector): ?>
+    <?php if ($question->show_correctors) : ?>
+            <br style="clear:both" />
+            <div style="margin:0px 10px 10px;" id="q_correctors">
+                <article class="ac-large">
+                    <div style="font-weight:bold"> Question Correctors: 
+                        <a href="#" id="uu-id4" data-model="corrector" qid='<?= $question->id ?>'>
+                            <?= Tag::image(array("img/plus-circle.png", "width" => "10", "height" => "10", "class" => "search-catalog-service prevent")); ?>
+                        </a> 
+                        <br>
+                        <div class="q-corrector-area">
+                            <ul class="q_corrector_list" style="list-style:none; margin:0px">
+                                <!-- corrector item template -->
+                                <li style="display: none">
+                                    <?= Tag::image(array("img/cross-circle.png", "height" => "11", "class" => 'del-corrector')); ?>
+                                    <span data-user="" data-rec="" class="left-col-user" style="font-size:11px"></span>
+                                </li>
+                                <?php foreach ($question->correctors as $corrector): ?>
                                         <li>
-                                            <?= Phalcon\Tag::image(array("img/cross-circle.png", "height" => "11", "class" => 'del-corrector')); ?>
-                                            <?php if (is_object($corrector)): ?>
-                                                    <span data-user="<?= $corrector->user ?>" data-rec="<?= $corrector->id ?>" class="left-col-user" style="font-size:11px">
-                                                        <?= $corrector->display ?>
-                                                    </span>
-                                            <?php else: ?>
-                                                    <span data-user="<?= $k ?>" class="left-col-user" style="font-size:11px">
-                                                        <?= $corrector ?>
-                                                    </span>
-                                            <?php endif; ?>
+                                            <?= Tag::image(array("img/cross-circle.png", "height" => "11", "class" => 'del-corrector')); ?>
+                                            <span data-user="<?= $corrector->user ?>" data-rec="<?= $corrector->id ?>" class="left-col-user" style="font-size:11px">
+                                                <?= $corrector->display ?>
+                                            </span>
                                         </li>
                                 <?php endforeach; ?>
-                        <?php endif; ?>
-                    </ul>
-                </div>
+                            </ul>
+                        </div>
+                    </div>
+                </article>
             </div>
-        </article>
-    </div>
+    <?php endif; ?>
 </div>
 
 <!-- Dialog for resource selection -->
 <div  id="media_selector" style="padding-top:20px; display:none" title="Select or upload supplementary material"></div>
+
 <script language="javascript">
         var tabId = tabCounter = <?= ($totalQParts ? $totalQParts + 1 : 2) ?>;
-        var qId = <?= $question->id ? $question->id : 0 ?>;
+        var qId = <?= $question->id ?>;
         var qIsEditable = <?= $question->is_editable ? 1 : 0 ?>;
         var role = '<?= $role ?>';
 </script>
@@ -336,4 +336,4 @@ if ($question->status == 'removed') {
 <?php $this->partial("partials/user-search", array('staff' => $staff)) ?>
 
 <!-- Include question form javascript -->
-<?= Phalcon\Tag::javascriptInclude('js/views/question/form.js') ?>
+<?= Tag::javascriptInclude('js/views/question/form.js') ?>
