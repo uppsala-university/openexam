@@ -157,7 +157,7 @@ endforeach;
             <div class="st-line">
                 <label for="grade"><strong>Grades:</strong> <span style="color:#F02222">*</span></label>
                 <?php if ($canUpdateExam): ?>
-                        <textarea title="The newline separated grades" name="grade" class="grade validate[required]" placeholder="<?= str_pad("U:0", 65, " ") . str_pad("G:50", 60, " ") . "VG:75" ?>"><?= trim($exam->grades) ?></textarea>
+                        <textarea class="form-control" style="width: 100%" rows="4" title="The newline separated grades" name="grade" class="grade validate[required]" placeholder="<?= str_pad("U:0", 65, " ") . str_pad("G:50", 60, " ") . "VG:75" ?>"><?= trim($exam->grades) ?></textarea>
                 <?php else: ?>
                         <span style="border: 1px solid #cecece; padding:5px"><?= nl2br(trim($exam->grades)) ?></span>
                 <?php endif; ?>
@@ -172,7 +172,7 @@ endforeach;
             <div class="st-line">
                 <label for="exam-desc"><strong>Exam instructions for students:</strong></label>		
                 <?php if ($canUpdateExam && in_array("editable", $exam->flags)): ?>
-                        <textarea id="exam-desc" style="width:99%;" rows="1" placeholder="Write exam description here"><?= trim($exam->descr) ?></textarea>
+                        <textarea class="form-control" id="exam-desc" style="width:99%;" rows="1" placeholder="Write exam description here"><?= trim($exam->descr) ?></textarea>
                 <?php else: ?>
                         <div style="width:99%;border: 1px solid #cecece; padding:5px"><?= trim($exam->descr) ?></div>
                 <?php endif; ?>

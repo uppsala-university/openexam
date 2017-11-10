@@ -320,7 +320,7 @@ if (strtotime($exam->endtime) < time()) {
                                                                                 <div class="savable" style="padding-bottom: 10px; padding-left:35px">
                                                                                     <i class="fa fa-comments"></i>
                                                                                     Comments:<br />
-                                                                                    <textarea class="changeable no-print" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?= $qSpecAns->id ?>"><?= $result->comment ?></textarea>
+                                                                                    <textarea class="form-control changeable no-print" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?= $qSpecAns->id ?>"><?= $result->comment ?></textarea>
                                                                                 </div>
                                                                                 <div class="savable" style="padding-bottom: 10px; padding-left: 45px;">
                                                                                     <input class="save-result no-print" type="button" style="text-shadow:none; background-color:#40c040; font-size:11px" ans-id="<?= $qSpecAns->id ?>" value="Save result for this question" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
@@ -464,7 +464,7 @@ if (strtotime($exam->endtime) < time()) {
                                                                                     <div class="savable" style="padding-top: 10px; padding-left:35px">
                                                                                         <i class="fa fa-comments"></i>
                                                                                         Comments:<br />
-                                                                                        <textarea class="changeable no-print" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?= $answer->id ?>"><?= $result->comment ?></textarea>
+                                                                                        <textarea class="form-control changeable no-print" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?= $answer->id ?>"><?= $result->comment ?></textarea>
                                                                                     </div>
 
                                                                                     <div class="savable no-print" style="padding-top: 10px; padding-left: 45px;">
