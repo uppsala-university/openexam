@@ -292,6 +292,13 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                 }
 
                 // 
+                // Don't garbage collect on $maxlifetime == 0:
+                // 
+                if ($maxlifetime == 0) {
+                        return false;
+                }
+
+                // 
                 // Adjust max lifetime if lower than configured:
                 // 
                 if ($maxlifetime < $this->getOption('expires')) {
@@ -299,18 +306,19 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                 }
 
                 // 
-                // Get write connection from session model:
+                // Get session models for garbage collection:
                 // 
-                $dbo = (new SessionModel)->getWriteConnection();
-
-                // 
-                // Cleanup left over session data:
-                // 
-                return $dbo->execute(
-                        sprintf(
-                            'DELETE FROM sessions WHERE COALESCE(updated, created) + %d < ?', $maxlifetime
-                        ), array(time())
-                );
+                if (($sessions = SessionModel::find(array(
+                            'conditions' => 'COALESCE(updated, created) + :max: < :now:',
+                            'bind'       => array(
+                                    'max' => $maxlifetime,
+                                    'now' => time()
+                            )
+                    )))) {
+                        return $sessions->delete();
+                } else {
+                        return true;
+                }
         }
 
         private function getOption($key)
