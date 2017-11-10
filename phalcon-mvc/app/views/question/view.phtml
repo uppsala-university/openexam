@@ -170,7 +170,7 @@
                                                         <div class="form-group q-part-ans-type" data-id="<?= $qPartData['ans_area']['type'] ?>">
                                                             <?php if ($qPartData['ans_area']['type'] == 'textbox'): ?>
                                                                     <div id="ansBkp<?= $qPart ?>" style="display:none"><?= htmlentities($answerData[$qPart]['ans'][0]) ?></div>
-                                                                    <input type="text" style="font-size:11px" class="form-control changeable" value="<?= htmlentities($answerData[$qPart]['ans'][0]) ?>" placeholder="Write your answer here ..." />
+                                                                    <input type="text" class="form-control changeable" value="<?= htmlentities($answerData[$qPart]['ans'][0]) ?>" placeholder="Write your answer here ..." />
                                                             <?php elseif ($qPartData['ans_area']['type'] == 'canvas'): ?>
                                                                     <?php
                                                                     $drawingJson = trim(json_encode($answerData[$qPart]['ans'][0]['canvasJson']), '"');
