@@ -27,16 +27,18 @@ $this->profiler->add("view");
 <!-- CSS -->
 <?= Tag::stylesheetLink('bootstrap3/css/bootstrap.min.css'); ?>
 <?= Tag::stylesheetLink('bootstrap3/css/bootstrap-theme.min.css'); ?>
+
 <?= Tag::stylesheetLink("css/uu/1.css"); ?>
 <?= Tag::stylesheetLink("css/uu/2.css"); ?>
 <?= Tag::stylesheetLink("css/uu/3.css"); ?>
 <?= Tag::stylesheetLink("css/accordion.css"); ?>
-<?= Tag::stylesheetLink("css/font-awesome.css"); ?>
-<?= Tag::stylesheetLink("plugins/fancy-box/source/jquery.fancybox.css"); ?>
+
+<?= Tag::stylesheetLink("css/font-awesome.min.css"); ?>
+<?= Tag::stylesheetLink("plugins/fancybox-master/dist/jquery.fancybox.min.css"); ?>
 
 <!-- Javascript -->
-<?= Tag::javascriptInclude('plugins/fancy-box/source/jquery.fancybox.js'); ?>
 <?= Tag::javascriptInclude('bootstrap3/js/bootstrap.min.js'); ?>
+<?= Tag::javascriptInclude('plugins/fancybox-master/dist/jquery.fancybox.min.js'); ?>
 
 <?php
 

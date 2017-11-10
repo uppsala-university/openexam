@@ -1,4 +1,7 @@
 <?php
+
+use Phalcon\Tag;
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -6,7 +9,8 @@
 // 
 // File:    index.phtml
 // 
-// Author:  Ahsan Shahzad (MedfarmDoIT)
+// Author:  Ahsan Shahzad (Medfarm DoIT)
+// Author:  Anders Lövgren (BMC-IT)
 // 
 
 ?>
@@ -14,11 +18,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
     <head>
-        <?= Phalcon\Tag::getTitle(); ?>
+        <?= Tag::getTitle(); ?>
         <meta http-equiv="content-type" content="text/html" charset="UTF-8" />	
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <?= Phalcon\Tag::javascriptInclude('js/jquery.min.js'); ?>
-        <?= Phalcon\Tag::javascriptInclude('js/utils.js'); ?>
+
+        <?= Tag::javascriptInclude('js/jquery.min.js'); ?>        
+        <?= Tag::javascriptInclude('js/utils.js'); ?>
 
         <script language="javascript">
                 var baseURL = '<?= $this->url->get() ?>';
@@ -30,8 +35,9 @@
 
         <!-- Content to show when AJAX request is in progress -->
         <div id="ajax_loader" style="display:none">
-            <?= Phalcon\Tag::image(array("img/ajax-loader.gif", "class" => "ajax-loader")); ?>
+            <?= Tag::image(array("img/ajax-loader.gif", "class" => "ajax-loader")); ?>
         </div>
+
     </body>
 
 </html>

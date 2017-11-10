@@ -16,12 +16,13 @@ use Phalcon\Tag;
 
 ?>
 
-<?= Tag::stylesheetLink('plugins/jquery-ui/jquery-ui.theme.min.css'); ?>
+<?= Tag::stylesheetLink('plugins/jquery-ui/jquery-ui.min.css'); ?>
 <?= Tag::stylesheetLink('plugins/validation/css/validationEngine.jquery.css'); ?>
+
 <?= Tag::stylesheetLink('css/opentip.css'); ?>
 
-<?= Tag::javascriptInclude('plugins/jquery-ui/jquery-ui.min.js'); ?>
 <?= Tag::javascriptInclude('js/modernizr.js') ?>
+<?= Tag::javascriptInclude('plugins/jquery-ui/jquery-ui.min.js'); ?>
 <?= Tag::javascriptInclude('plugins/ckeditor/ckeditor.js'); ?>
 <?= Tag::javascriptInclude('plugins/ckeditor/adapters/jquery.js'); ?>
 <?= Tag::javascriptInclude('plugins/validation/js/languages/jquery.validationEngine-en.js') ?>
