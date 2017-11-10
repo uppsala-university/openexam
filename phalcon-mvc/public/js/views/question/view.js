@@ -367,24 +367,16 @@ $(function () {
             spell = false;
         }
 
-        // 
-        // This error should never happen:
-        // 
-        try {
-            var editor = CKEDITOR.replace(element.id, {
-                height: '100px',
-                disableNativeSpellChecker: spell === false,
-                wordcount: {
-                    countHTML: false,
-                    showWordCount: true,
-                    showCharCount: false,
-                    maxWordCount: limit
-                }
-            });
-        } catch (error) {
-            console.log(error);
-            return false;
-        }
+        var editor = CKEDITOR.replace(element.id, {
+            height: '100px',
+            disableNativeSpellChecker: spell === false,
+            wordcount: {
+                countHTML: false,
+                showWordCount: true,
+                showCharCount: false,
+                maxWordCount: limit
+            }
+        });
 
         if (spell) {
             // 
