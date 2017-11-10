@@ -43,7 +43,7 @@ class DisplayLocation
 
                                 printf("<li addr='%s' disp='%s'>\n", $location['addr'], $key);
                                 printf("<b>%s</b><br/><div class='location-addresses'>%s</br/></div>\n", $key, implode('<br/>', $location['disp']));
-                                printf("<span style='padding:2px; font-size:11px; min-width: 6em' class='btn btn-success' id='location-add'>\n");
+                                printf("<span style='min-width: 6em' class='btn btn-success' id='location-add'>\n");
                                 printf("<i class='fa fa-plus-circle'></i>\n");
                                 printf("<span>Add</span>\n");
                                 printf("</span>\n");
@@ -89,7 +89,7 @@ class DisplayLocation
                             <td contenteditable="true"><?= $key ?></td>
                             <td contenteditable="true"><?= str_replace(';', '<br/>', $location['addr']) ?></td>
                             <td>
-                                <span style="padding:2px; font-size:11px; min-width: 6em" class="btn btn-success" id="location-remove">
+                                <span style="min-width: 6em" class="btn btn-success" id="location-remove">
                                     <i class="fa fa-cut"></i>
                                     <span>Remove</span>
                                 </span>
@@ -102,7 +102,7 @@ class DisplayLocation
             <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
                 Select locations from recent used, system pre-defined or current action locations.
             </div>
-            <span style="padding:2px; font-size:11px; min-width: 6em; float: right" class="btn btn-success" id="locations-details">
+            <span style="min-width: 6em; float: right" class="btn btn-success" id="locations-details">
                 <i class="fa fa-list-alt"></i>
                 <span>Details</span>
             </span>
@@ -116,11 +116,11 @@ class DisplayLocation
 
             ?>
         </div>
-        <span style="padding:2px; font-size:11px; min-width: 6em" class="btn btn-success" id="location-new">
+        <span style="min-width: 6em" class="btn btn-success" id="location-new">
             <i class="fa fa-plus-circle"></i>
             <span>New</span>
         </span>
-        <span style="padding:2px; font-size:11px; min-width: 6em" class="btn btn-success" id="location-insert">
+        <span style="min-width: 6em" class="btn btn-success" id="location-insert">
             <i class="fa fa-list"></i>
             <span>Insert...</span>
         </span>
@@ -137,11 +137,11 @@ class DisplayLocation
     <hr>
     <div class="st-line">
         <center>
-            <span style="padding:2px; font-size:11px; min-width: 6em" class="btn btn-success save" id="close-security">
+            <span style="min-width: 6em" class="btn btn-success save" id="close-security">
                 <i class="fa fa-save"></i>
                 <span>OK</span>
             </span>
-            <span style="padding:2px; font-size:11px; min-width: 6em" class="btn btn-success" id="close-security">
+            <span style="min-width: 6em" class="btn btn-success" id="close-security">
                 <i class="fa fa-undo"></i>
                 <span>Cancel</span>
             </span>

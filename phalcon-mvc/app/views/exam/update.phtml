@@ -151,7 +151,7 @@ use Phalcon\Tag;
         <?php if ($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'question', 'create') && in_array("contributable", $exam->flags)): ?>
                 <a href="#" style="font-size: 12px; float:right" class="add_new_qs">
                     <div style="display: block; float:right">
-                        <span class="btn btn-success" style="padding:2px; font-size:11px">
+                        <span class="btn btn-success">
                             <i class="fa fa-plus-circle"></i>
                             <span>Add new question</span>
                         </span>
@@ -207,10 +207,10 @@ use Phalcon\Tag;
         </div>
 
         <?php if ($canUpdateExam && in_array("editable", $exam->flags)): ?>
-                <div id="exam_op_btns" style="padding:15px; <?= !count($examQs) ? 'display:none' : '' ?>">
+                <div id="exam_op_btns" style="<?= !count($examQs) ? 'display:none' : '' ?>">
                     <center>
                         <a href="<?= $this->url->get('exam/' . $exam->id) ?>">
-                            <span class="btn btn-default" style="font-size:11px; color:#333333">
+                            <span class="btn btn-default" style="color:#333333">
                                 <i class="fa fa-chevron-circle-right"></i>
                                 <span>Preview student view</span>
                             </span>
@@ -273,7 +273,7 @@ use Phalcon\Tag;
     <hr>
     <div class="st-line">
         <center>
-            <span style="padding:2px; font-size:11px; min-width: 6em; float: right" class="btn btn-success" id="close-archive">
+            <span style="min-width: 6em; float: right" class="btn btn-success" id="close-archive">
                 <i class="fa fa-undo"></i>
                 <span>Close</span>
             </span>

@@ -91,7 +91,7 @@ use OpenExam\Library\Core\Exam\State;
             <?php endif; ?>
         </p>
         <center>
-            <input class="btn btn-success btn-lg" style="margin: 2px" onClick="javascript:location.href = '<?= $this->url->get('exam/' . $exam->id . '/question/1') ?>';" value="I am ready, start the exam <?= $testMode ? 'in test mode' : '' ?>" type="button" style=" <?= ((strtotime($exam->starttime) <= strtotime("now")) || $testMode) ? '' : 'display:none' ?>">
+            <input class="btn btn-success btn-lg" style="margin: 2px" onclick="javascript:location.href = '<?= $this->url->get('exam/' . $exam->id . '/question/1') ?>';" value="I am ready, start the exam <?= $testMode ? 'in test mode' : '' ?>" type="button" style=" <?= ((strtotime($exam->starttime) <= strtotime("now")) || $testMode) ? '' : 'display:none' ?>">
         </center>
     </div>
 </div>
