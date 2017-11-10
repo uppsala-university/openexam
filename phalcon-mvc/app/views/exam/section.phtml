@@ -52,6 +52,21 @@ $ordering = array(
 <?= Tag::stylesheetLink('plugins/jquery-ui/jquery-ui.min.css'); ?>
 <?= Tag::javascriptInclude('plugins/jquery-ui/jquery-ui.min.js'); ?>
 
+<style>
+    .pagination > .active > a {
+        background-color: #f6f6f6;
+        border-color: #dddddd;
+        color: #c1002b;
+        border-top-right-radius: 0px;
+        border-top-left-radius: 0px;
+    }
+    .pagination > .active > a:hover,
+    .pagination > .active > a:focus {
+        background-color: white;
+        border-color: #dfdfdf;
+    }
+</style>
+
 <?php if (count($page->items) != 0): ?>
         <ul class="list-group exam-list">
             <li class="list-group-item" style="background-color: rgb(245, 245, 245); padding: 5px;">
@@ -164,11 +179,11 @@ $ordering = array(
                         <?php for ($i = 1; $i <= $page->total_pages; $i++): ?>
                                 <?php if ($i == $page->current) : ?>
                                         <li class="active" page="<?= $i ?>">
-                                            <a href="#" style="padding:0px 9px"><?= $i ?><span class="sr-only">(current)</span></a> 
+                                            <a href="#"><?= $i ?><span class="sr-only">(current)</span></a> 
                                         </li>
                                 <?php else : ?>
                                         <li page="<?= $i ?>">
-                                            <a href="#" style="padding:0px 9px"><?= $i ?><span class="sr-only">(current)</span></a> 
+                                            <a href="#"><?= $i ?><span class="sr-only">(current)</span></a> 
                                         </li>
                                 <?php endif; ?>
                         <?php endfor; ?>
