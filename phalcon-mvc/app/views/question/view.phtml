@@ -250,22 +250,22 @@
                                             </div>
                                             <?php if ($prevQuestId && $prevQuestId != $qObj->id): ?>
                                                     <a class="sync-answer" href="#" hlink="<?= $this->url->get('exam/' . $exam->id . '/question/' . ($prevQuestId)) ?>">
-                                                        <button class="btn btn-xs btn-prev"><i class="icon-arrow-left"></i> Prev. Question </button>
+                                                        <button class="btn btn-prev"><i class="icon-arrow-left"></i> Prev. Question </button>
                                                     </a>
                                             <?php endif; ?>
 
                                             <?php if ($nextQuestId): ?>
                                                     <a class="sync-answer" href="#" hlink="<?= $this->url->get('exam/' . $exam->id . '/question/' . ($nextQuestId)) ?>">
-                                                        <button class="btn btn-xs btn-success btn-next"> Next Question <i class="icon-arrow-right"></i></button>
+                                                        <button class="btn btn-success btn-next"> Next Question <i class="icon-arrow-right"></i></button>
                                                     </a>
                                             <?php else: ?>
                                                     <a class="sync-answer" href="#" hlink="<?= $this->url->get('exam/' . $exam->id . '/question/all') ?>">
-                                                        <button class="btn btn-xs btn-success btn-next"><i class="icon-list"></i> Preview your answers for all questions</button>
+                                                        <button class="btn btn-success btn-next"><i class="icon-list"></i> Preview your answers for all questions</button>
                                                     </a>
                                             <?php endif; ?>
                                     <?php else: ?>
                                             <a href="<?= $this->url->get('exam/' . $exam->id . '/question/' . ($qObj->id)) ?>">
-                                                <button class="btn btn-xs btn-success btn-prev"><i class="icon-pencil"></i> Change your answer </button>
+                                                <button class="btn btn-success btn-prev"><i class="icon-pencil"></i> Change your answer </button>
                                             </a>
                                     <?php endif; ?>
                                 </div>
