@@ -76,7 +76,11 @@ var ajax = function (url, data, callback, type, async, showSuccessMsg) {
  */
 var showMessage = function (message, type) {
 
-    type = typeof type !== 'undefined' ? type : 'info';
+    if (type === undefined) {
+        type = 'info';
+    } else if (type === 'error') {
+        type = 'danger';
+    }
 
     if (type === 'success') {
         $('#msg-box')
