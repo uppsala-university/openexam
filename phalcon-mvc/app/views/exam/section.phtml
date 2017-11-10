@@ -29,8 +29,8 @@ $buttons = array(
         'add-q'             => '<span class="toolbtn toolbtn-blue"><i class="fa fa-pencil-square-o"></i> Add questions</span>',
         'ans-correction'    => '<span class="toolbtn toolbtn-green"><i class="fa fa-check-square-o"></i> Answer correction</span>',
         'exam-not-finished' => '<span class="toolbtn toolbtn-primary"><i class="fa fa-times"></i> Exam not finished yet</span>',
-        'view-results'      => '<span class="toolbtn toolbtn-warning"><i class="fa fa-line-chart"></i> View results</span>',
-        'view-scoreboard'   => '<span class="toolbtn toolbtn-warning"><i class="fa fa-trophy"></i> View Score board</span>',
+        'view-results'      => '<span class="toolbtn toolbtn-orange"><i class="fa fa-line-chart"></i> View results</span>',
+        'view-scoreboard'   => '<span class="toolbtn toolbtn-orange"><i class="fa fa-trophy"></i> View Score board</span>',
         'download-result'   => '<span class="toolbtn toolbtn-primary" style="background-color: #4285F4"><i class="fa fa-download"></i> Download results</span>',
         'decode-exam'       => '<span class="toolbtn toolbtn-green"><i class="fa fa-code"></i> Decode this exam</span>',
         'decode-closed'     => '<span class="toolbtn toolbtn-primary"><i class="fa fa-times"></i> Not open for decoding yet</span>',
@@ -49,7 +49,7 @@ $ordering = array(
 
 ?>
 
-<?= Tag::stylesheetLink('plugins/jquery-ui/jquery-ui.theme.min.css'); ?>
+<?= Tag::stylesheetLink('plugins/jquery-ui/jquery-ui.min.css'); ?>
 <?= Tag::javascriptInclude('plugins/jquery-ui/jquery-ui.min.js'); ?>
 
 <?php if (count($page->items) != 0): ?>
