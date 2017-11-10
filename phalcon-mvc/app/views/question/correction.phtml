@@ -172,9 +172,15 @@ if ($exam->decoded) {
                                     ?>
                                     <th style="background-color:#EAEAEA; width:35px; text-align:center; " class="sorter-false">
                                         <div style="text-align: center">
-                                            <a class="fb fancybox.ajax fill" href="<?= $href ?>" title="<?= $desc ?>">Q<?= $question->slot ?><br>Max. <?= floatval($question->score) ?></a>
+                                            <a data-fancybox="ajax" 
+                                               data-caption="<?= $exam->name ?>"
+                                               data-src="<?= $href ?>" 
+                                               title="<?= $desc ?>"
+                                               data-type="ajax" 
+                                               href="javascript:;">
+                                                Q<?= $question->slot ?><br>Max. <?= floatval($question->score) ?>
+                                            </a>
                                         </div>
-
                                     </th>
                                     <?php $totalExamScore += $question->score; ?>
                             <?php endforeach; ?>
@@ -281,7 +287,9 @@ if ($exam->decoded) {
                                             ?>
 
                                             <?php
-                                            // find color code
+                                            // 
+                                            // Find color code:
+                                            // 
                                             $cLink = true;
                                             if (!$answer) {
                                                     $cc = 'na';
@@ -300,8 +308,12 @@ if ($exam->decoded) {
                                             ?>
                                             <td class="cc <?= $cc ?>">
                                                 <?php if ($cLink): ?>
-                                                        <a class="fb fancybox.ajax fill" ans-id="<?= $answer->id ?>" 
-                                                           href="<?= $this->url->get('exam/' . $exam->id . '/correction/answer/' . $answer->id) ?>">
+                                                        <a data-fancybox="ajax" 
+                                                           data-caption="<?= $exam->name ?>"
+                                                           data-src="<?= $this->url->get('exam/' . $exam->id . '/correction/answer/' . $answer->id) ?>" 
+                                                           data-type="ajax" 
+                                                           href="javascript:;" 
+                                                           ans-id="<?= $answer->id ?>">
                                                                <?= (is_object($result) && $result->count()) ? $qScore : '<i class="fa fa-check-square-o"></i>' ?>
                                                         </a>
                                                 <?php else: ?>
@@ -315,8 +327,13 @@ if ($exam->decoded) {
                                                 <a title="download result in pdf format" href="<?= $this->url->get('result/' . $exam->id . '/download/' . $student->id) ?>"><i class="fa fa-file-pdf-o" style="color:red"></i></a>    
                                                 &nbsp; &nbsp; &nbsp;
                                         <?php endif; ?> 
-                                        <a class="fb fancybox.ajax fill" href="<?= $this->url->get('exam/' . $exam->id . '/correction/student/' . $student->id) ?>">
-                                            <?= $exam->decoded ? $student->code : Student . '(' . $student->id . ')' ?>
+                                        <a data-fancybox="ajax" 
+                                           data-caption="<?= $exam->name ?>"
+                                           data-src="<?= $this->url->get('exam/' . $exam->id . '/correction/student/' . $student->id) ?>" 
+                                           data-type="ajax" 
+                                           href="javascript:;" 
+                                           ans-id="<?= $answer->id ?>">
+                                               <?= $exam->decoded ? $student->code : Student . '(' . $student->id . ')' ?>
                                         </a>
                                     </td>
                                     <?php if ($exam->show_code): ?>
@@ -326,14 +343,10 @@ if ($exam->decoded) {
                                     <?php endif; ?>
                                     <?php if ($exam->decoded): ?>
                                             <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
-                                                    <!--<a class="fb fancybox.ajax" href="<?= $this->url->get('exam/' . $exam->id . '/correction/student/' . $student->id) ?>">-->
                                                 <?= $student->fname ?>
-                                                <!--</a>-->
                                             </td>
                                             <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
-                                                    <!--<a class="fb fancybox.ajax" href="<?= $this->url->get('exam/' . $exam->id . '/correction/student/' . $student->id) ?>">-->
                                                 <?= $student->lname ?>
-                                                <!--</a>-->
                                             </td>
                                             <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
                                                 <?= substr(substr_replace($student->persnr, "-", 8, 0), 2); ?>
@@ -515,7 +528,6 @@ if ($exam->decoded) {
         </div>
     </div>
     <br clear="both">
-    <!-- container --> 
 </div>
 
 <!-------------- Hidden Divs --------------->
@@ -524,13 +536,13 @@ if ($exam->decoded) {
     <div id="progressbar"></div>
 </div>
 
-<?= Tag::stylesheetLink('plugins/jquery-ui/jquery-ui.theme.min.css'); ?>
+<?= Tag::stylesheetLink('plugins/jquery-ui/jquery-ui.min.css'); ?>
 <?= Tag::stylesheetLink('css/tablesorter.default.css'); ?>
+<?= Tag::stylesheetLink('css/opentip.css'); ?>
 
 <?= Tag::javascriptInclude('plugins/jquery-ui/jquery-ui.min.js'); ?>
-<?= Tag::javascriptInclude('js/jquery.tablesorter.js'); ?>
 
-<?= Tag::stylesheetLink('css/opentip.css'); ?>
+<?= Tag::javascriptInclude('js/jquery.tablesorter.js'); ?>
 
 <?= Tag::javascriptInclude('js/opentip-jquery.min.js'); ?>
 <?= Tag::javascriptInclude('js/opentip-style.js'); ?>
@@ -579,8 +591,9 @@ if ($exam->decoded) {
         var completedRequests = {};
         var resyncableResults = [];
         $(document).ready(function () {
-
-            // keep column order
+            // 
+            // Keep column order:
+            // 
             jQuery.each($('#scoreboard-wrapper').find('table').find('tr'), function () {
                 if (($(this).children().length)) {
                     for (i = 0; i <<?= $colReorderCount ?>; i++) {
@@ -591,16 +604,19 @@ if ($exam->decoded) {
                 }
             });
 
-            $('.fb').fancybox({
-                'width': "100%",
-                'height': "95%",
-                'autoSize': false,
+            $('a[data-fancybox]').fancybox({
+                width: "100%",
+                height: "95%",
+                autoSize: true,
+                toolbar: true,
+                smallBtn: false,
                 helpers: {
-                    overlay: {closeClick: false}
+                    overlay: {
+                        closeClick: false
+                    }
                 },
                 afterClose: function () {
                     resyncableResults = [];
-                    //location.reload();
                 }
             });
 
@@ -729,7 +745,6 @@ if ($exam->decoded) {
                         });
 
             });
-
 
             $('#containerflarp').css('width', '92%');
 
