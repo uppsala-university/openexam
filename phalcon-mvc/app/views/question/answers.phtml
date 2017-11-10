@@ -59,6 +59,13 @@ if (strtotime($exam->endtime) < time()) {
         margin-bottom: 20px;
     }
 
+    #mainview {
+        background-color: white; 
+        padding:15px; 
+        border-radius:5px;
+        width: 100%;
+    }
+
     input.q-points:required {
         background-color: #ffffff;
     }
@@ -79,13 +86,18 @@ if (strtotime($exam->endtime) < time()) {
             font-size: smaller;
         }
     }
+    @media screen {
+        .on-print {
+            display: none;
+        }
+    }
 </style>
 
-<h2>
+<h2 class="on-print">
     <?= Phalcon\Tag::image(array("img/uu_logo.svg", "height" => "55px", "style" => "padding-right:20px")); ?><?= $exam->name ?>
 </h2>
-<br />
-<div id="mainview" style="background-color: white; padding:15px; border-radius:5px">
+
+<div id="mainview">
     <h3><?= $decoded ? "Answer correction" : "Correct the answers" ?> for <?= $heading ?>.</h3>
     <?php foreach ($questions as $question): ?>
             <?php
@@ -112,7 +124,7 @@ if (strtotime($exam->endtime) < time()) {
                     <?php endif; ?>
 
                     <?php if (!$decoded && $loadBy != 'question'): ?>
-                            <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; z-index: 1; right: 15px; width: 5%;", "id" => $question->id . "-corrected", "class" => "not-corrected")); ?>
+                            <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; z-index: 1; right: 15px; width: 90px;", "id" => $question->id . "-corrected", "class" => "not-corrected")); ?>
                     <?php endif; ?>
                     <div class="q-heading correction-section-head">
                         <span style="color:#333333; font-weight:normal"><i class="fa fa-pencil-square-o"></i> Question no. <?= $question->slot ?></span>
