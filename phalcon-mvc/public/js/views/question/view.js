@@ -205,7 +205,7 @@ var canvasGetMarker = function (elementId, backgroundImage) {
     }
 
     painter.config.zoomStep = zstep;
-    
+
     return painter;
 };
 
@@ -346,7 +346,17 @@ $(function () {
         "Œ", "œ", "Ŵ", "Ŷ", "ŵ", "ŷ", "‚", "‛", "„", "…", "™", "►", "•", "→", "⇒", "⇔", "♦", "≈"
     ];
 
-    $('.ckeditor').each(function (index, element) {
+    $('textarea.ckeditor').each(function (index, element) {
+
+        // 
+        // Check if already attached:
+        // 
+        for (var i in CKEDITOR.instances) {
+            if (CKEDITOR.instances[i].name === element.id) {
+                return false;
+            }
+        }
+
         var limit = element.getAttribute('word-count-limit');
         if (limit === "") {
             limit = -1;
@@ -357,16 +367,24 @@ $(function () {
             spell = false;
         }
 
-        var editor = CKEDITOR.replace(element.id, {
-            height: '100px',
-            disableNativeSpellChecker: spell === false,
-            wordcount: {
-                countHTML: false,
-                showWordCount: true,
-                showCharCount: false,
-                maxWordCount: limit
-            }
-        });
+        // 
+        // This error should never happen:
+        // 
+        try {
+            var editor = CKEDITOR.replace(element.id, {
+                height: '100px',
+                disableNativeSpellChecker: spell === false,
+                wordcount: {
+                    countHTML: false,
+                    showWordCount: true,
+                    showCharCount: false,
+                    maxWordCount: limit
+                }
+            });
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
 
         if (spell) {
             // 
