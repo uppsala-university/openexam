@@ -59,7 +59,7 @@ endforeach;
                     </div>
             <?php endif; ?>
             <div style="min-height: 140px">
-                <div style="background-color: #51A451; padding: 10px; color: #FCF8E3; float: right; display: inline-block; margin-right: 0px; margin-left: 30px; border-radius:5px">
+                <div class="alert alert-success" style="width: 50%; float: right; margin-left: 20px">
                     Total number of students in exam: <?= count($exam->getStudents()) ?> <br />
                     Total exam points: <?= $totalScore ?> <br><br>
                     Created: <?= $exam->created ?>
