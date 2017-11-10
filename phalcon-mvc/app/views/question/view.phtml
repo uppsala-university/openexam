@@ -59,8 +59,8 @@
                 </p>
             </div>
     <?php endif; ?>
-    
-    <?php if(!$testMode && $viewMode == 'none') : ?>
+
+    <?php if (!$testMode && $viewMode == 'none') : ?>
             <div class="alert alert-warning" style="margin:15px 0px;">  
                 <strong>Question is missing.</strong> <br/>
                 This exam seems to have no questions. Please inform the invigilator about this problem to get it fixed.
@@ -292,34 +292,34 @@
 </div>
 
 <div class="ans-sync-msg">Saving ... </div>
-<div id="exam-instructions" class="jumbotron" style="min-width:800px; display:none; font-family:Verdana, Geneva, sans-serif;">
-    <div class="head"><?= Phalcon\Tag::image(array("img/uu_logo.svg", "height" => "55px", "style" => "padding-right:20px")); ?>
-        <span style="color: #c2100c">Exam instructions: <?= $exam->name ?></span>
+
+<div id="exam-instructions" style="max-width:800px; display:none; font-family:Verdana, Geneva, sans-serif;">
+    <h2 style="color: #c2100c">Exam instructions: <?= $exam->name ?></h2>
+    <hr>
+    <div class="alert alert-info">
+        <?= $exam->descr ?>
     </div>
-    <?= $exam->descr ?>
 </div>
-<div id="general-instructions" class="jumbotron" style="min-width:800px; display:none; font-family:Verdana, Geneva, sans-serif;">
-    <div class="head"><?= Phalcon\Tag::image(array("img/uu_logo.svg", "height" => "55px", "style" => "padding-right:20px")); ?>
-        <span style="color: #c2100c">General exam instructions: <?= $exam->name ?></span>
+
+<div id="general-instructions" style="max-width:800px; display:none; font-family:Verdana, Geneva, sans-serif;">
+    <h2 style="color: #c2100c">General exam instructions: <?= $exam->name ?></h2>
+    <hr>
+    <div class="alert alert-info">
+        Use the buttons in the heading to minimize the left pane or increase the text size 
+        Under Exam info. You may again read the instructions, access a preview of all your answers and log out when you are done. 
+        You can hover over images (in supplementary material) to zoom. You can see full size image by clicking on it.
     </div>
-    <div>
-        <div style="padding-bottom:10px">
-            Use the buttons in the heading to minimize the left pane or increase the text size 
-            Under Exam info. You may again read the instructions, access a preview of all your answers and log out when you are done. 
-            <!--If you find it helpful, you can mark all questions as completed (green), in need of revision  (yellow) or will not be answered (red). -->
-            You can hover over images (in supplementary material) to zoom. You can see full size image by clicking on it.
-        </div>
-        <div style="padding-bottom:10px">
-            <br />
-            <strong>Important to know:</strong><br />
-            <ul>
-                <li>All your answers are automatically saved, every 10 seconds.</li>
-                <li>It is highly recomended that you <u>don't</u> use "back" and "forward" buttons of web browser to go from one question to another. Always click on <button class="btn btn-xs btn-success" disabled="disabled"> Next Question <i class="icon-arrow-right"></i></button> and <button class="btn btn-xs" disabled="disabled"><i class="icon-arrow-left"></i> Prev. Question </button> buttons. To open a specific question, you can always click on desired question number appearing in left side menu.</li>
-                <li>Please report to invigilator immediately if any button or link do not work. In such a case, please don't close/refresh web browser otherwise we may loose your answer. If you see any error message from system, it is highly important that you <u>don't</u> refresh/close the web page before you report. </li>
-                <li>Flip down the screen if you go away for a biological break.</li>
-                <li>If you have drawing canvas in a quesiton, don't try to write text in canvas by drawing.</li>
-            </ul>
-        </div>
+    <div style="padding-bottom:10px">
+        <br />
+        <strong>Important to know:</strong><br><br>
+        <ul>
+            <li>All your answers are continuously saved every 10 seconds if changed or when switching between question.</li><br>
+            <li>It is highly recomended that you <u>don't</u> use "back" and "forward" buttons in the browser to navigate between questions. Always use the 
+                <button class="btn btn-xs" disabled="disabled"><i class="icon-arrow-left"></i> Prev. Question </button> and 
+                <button class="btn btn-xs btn-success" disabled="disabled"> Next Question <i class="icon-arrow-right"></i></button> 
+                buttons or question links in left hand side menu.</li><br>
+            <li>Please report to invigilator immediately if any button or link do not work. In such a case, please don't close/refresh web browser otherwise we may loose your answer. If you see any error message from system, it is highly important that you <u>don't</u> refresh/close the web page before you report. </li><br>
+        </ul>
     </div>
 </div>
 
