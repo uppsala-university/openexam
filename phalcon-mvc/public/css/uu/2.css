@@ -4465,10 +4465,6 @@ select[name=program] {
     color: #3d7489 !important;
     font-weight: bold !important;
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) !important;
-    height:17px;
-    font-size: 1.1em;
-    font-weight:normal;
-    font-family:"BebasNeueRegular","Arial Narrow",Arial,sans-serif;
 }
 
 #q-parts-wrapper .ui-state-default {
