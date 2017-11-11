@@ -4570,10 +4570,11 @@ select[name=program] {
 }
 
 .opentip-container {
-    font-size: 0.9em;
     min-width: 400px;
 }
-
+.ot-content {
+    font-size: 0.9em;
+}
 .template {
     display:none;
 }
