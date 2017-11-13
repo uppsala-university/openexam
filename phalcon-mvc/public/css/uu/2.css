@@ -1060,7 +1060,6 @@
         text-decoration:underline;
     }
     .treeMenuContainer ul {
-        /* list-style-image:url("/digitalAssets/5/5070_pil.gif");*/
         margin:0;
         padding: 0;
         list-style-image:none;
@@ -1080,7 +1079,6 @@
         padding: 0;
         margin:0;
         margin:0;
-        /* line-height:1.2em;*/
         color:#333;
     }
 
@@ -1185,10 +1183,7 @@
         overflow:hidden;
     }
     #centerColWide {
-        float:left;
-        width:755px;
         margin: 2px 20px 0 20px;
-        overflow:hidden;
     }
 
     /******************* centerCol och centerColWide LISTOR ***************************/
@@ -4557,7 +4552,7 @@ select[name=program] {
     border-bottom:none;
 }
 
-.menuLevel2 .q {
+.menuLevel1 .q {
     color:#99001D;
 }
 
@@ -4593,19 +4588,14 @@ select[name=program] {
     display:none;
 }
 
-.plus-circle {
-    content: url('../../img/plus-circle.png');
-    height:12px;
-    widows:12px;
-}
-
-.left-col-user {
+.left-col-user,
+.left-col-item {
     color:#004276;
     font-size:0.9em;
-    padding-left:5px;
+    padding-left:10px;
 }
 
-.left-col-def-msg{
+.left-col-def-msg {
     font-style:italic;
     color:grey; 
     font-size:0.9em;
@@ -4636,8 +4626,6 @@ select[name=program] {
     width:100%;
     height:100%;
     z-index:10000000;
-    /*background-color:grey;
-    opacity: .8;*/
     display:none;
 }
 
@@ -4645,8 +4633,8 @@ select[name=program] {
     position: absolute;
     left: 50%;
     top: 50%;
-    margin-left: -32px; /* -1 * image width / 2 */
-    margin-top: -32px;  /* -1 * image height / 2 */
+    margin-left: -32px;
+    margin-top: -32px;
     display: block;     
 }
 
@@ -4915,7 +4903,6 @@ a.selected-lib-img .lib-img {
 }
 
 .lib-img  {
-    /*border: 1px solid #DEDEDE;*/
     width:100%;
     min-width: 100px;
     height: 80px;

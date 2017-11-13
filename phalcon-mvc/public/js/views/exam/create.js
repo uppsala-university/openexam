@@ -194,20 +194,24 @@ $(document).ready(function () {
     // 
     // Left menu related:
     // 
-    $('body').on('click', '.bullet-closed', function () {
+    $('body').on('click', '.fa-caret-right', function () {
+        var list = $(this).closest('li').find('ul');
+        var icon = $(this);
 
-        $(this).parent().find('.' + $(this).attr('rel')).slideDown(500);
-        $(this).removeClass('bullet-closed').addClass('bullet-open').find('img').attr('src', baseURL + 'img/openeopt.png');
+        list.slideDown(500);
+        icon.removeClass('fa-caret-right').addClass('fa-caret-down');
 
         return false;
     });
 
-    $('body').on('click', '.bullet-open', function () {
+    $('body').on('click', '.fa-caret-down', function () {
+        var list = $(this).closest('li').find('ul');
+        var icon = $(this);
 
-        $(this).parent().find('.' + $(this).attr('rel')).slideUp(500);
-        $(this).removeClass('bullet-open').addClass('bullet-closed').find('img').attr('src', baseURL + 'img/closedopt.png');
+        list.slideUp(500);
+        icon.removeClass('fa-caret-down').addClass('fa-caret-right');
+
         return false;
-
     });
 
     // 

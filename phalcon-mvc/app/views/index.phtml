@@ -13,6 +13,10 @@ use Phalcon\Tag;
 // Author:  Anders Lövgren (BMC-IT)
 // 
 
+set_error_handler(function($errno, $errstr) {
+        printf($errstr);
+});
+
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
