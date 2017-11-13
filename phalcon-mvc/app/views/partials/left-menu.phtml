@@ -12,8 +12,6 @@
 // 
 
 
-use OpenExam\Library\Security\Roles;
-
 $userRoles = array(
         'contributor' => 'Contributors',
         'decoder'     => 'Decoders',
@@ -140,9 +138,13 @@ $exam->is_editable = in_array("editable", $exam->flags);
                     <?php endif; ?>
                 </span>
 
-                <?php if (($questions = $exam->getQuestions(array("order" => "slot")))) : ?>
-                        <?php if (count($questions)) : ?>
-                                <ul class="menuLevel1 sortable-qs" style="margin-left: 40px;" topic-id="<?= $questions[0]->topic_id ?>">
+                <ul class="menuLevel1 sortable-qs" style="margin-left: 40px;" topic-id="<?= $exam->topics[0]->id ?>">
+                    <li class="left-col-item" style="display:none"> 
+                        <span class="q" q-no=""></span> 
+                        <span class="q-txt"></span> 
+                    </li>                                                
+                    <?php if (($questions = $exam->getQuestions(array("order" => "slot")))) : ?>
+                            <?php if (count($questions)) : ?>
                                     <?php foreach ($questions as $key => $question): ?>
                                             <?php $questArr = json_decode($question->quest, true); ?>
                                             <li q-id="<?= $question->id ?>" class="left-col-item"> 
@@ -151,13 +153,9 @@ $exam->is_editable = in_array("editable", $exam->flags);
                                             </li>
                                             <?php $question->slot ?>
                                     <?php endforeach; ?>
-                                    <li style="display:none"> 
-                                        <span class="q" q-no=""></span> 
-                                        <span class="q-txt"></span> 
-                                    </li>                                                
-                                </ul>
-                        <?php endif; ?>
-                <?php endif; ?>
+                            <?php endif; ?>
+                    <?php endif; ?>
+                </ul>
             </li>
         </ul>
     </div>
