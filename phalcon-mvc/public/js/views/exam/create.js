@@ -70,7 +70,7 @@ $(document).ready(function () {
     // 
     // Sortable questions related.
     // 
-    makeQsSortable = function () {
+    makeQuestionSortable = function () {
         $(".sortable-qs").sortable({
             over: function (event, ui) {
                 $(ui.placeholder).closest('ul').parent().find('.section-default-msg').hide();
@@ -118,34 +118,36 @@ $(document).ready(function () {
         });
 
     };
-    makeQsSortable();
+    makeQuestionSortable();
+
+    // 
+    // Remap question data indexes.
+    // 
+    var remapQuestionData = function (qMap) {
+        var newJson = {};
+
+        for (var i = 0; i < qMap.length; ++i) {
+            newJson[i + 1] = qsJson[qMap[i]];
+        }
+
+        qsJson = newJson;
+    };
 
     // 
     // Sort questions; save in database and JSON. Update both in main area and in left menu.
     // 
     var sortQuestions = function () {
+        var qArr = [];  // Question data for update.
+        var qMap = [];  // Question index remap.
+        var topicId = $('.sortable-qs').attr('topic-id');
 
-        var cntr = 1;
-        var tmpJson = {};
-        var tmpJson = JSON.parse(JSON.stringify(qsJson));
-        var qArr = [];
-        $('.sortable-qs').each(function (index, element) {
+        $('.sortable-qs > li:visible').each(function (index, element) {
+            var item = $(element);
 
-            if ($(element).find('li').filter(':visible').length) {
-                $(element).parent().find('.section-default-msg').hide();
-            } else {
-                $(element).parent().find('.section-default-msg').show();
-            }
-
-            $(element).find('.q').each(function (i, qNo) {
-
-                if ($(qNo).parent().is(':visible')) {
-                    tmpJson[cntr] = qsJson[$(qNo).attr('q-no')];
-                    qArr.push({'id': qsJson[$(qNo).attr('q-no')]["questId"], "slot": (cntr), "topic_id": $(qNo).closest('.sortable-qs').attr('topic-id')});
-                    $(qNo).html("Q" + (cntr) + ":").attr('q-no', (cntr));
-                    cntr++;
-                }
-            });
+            qArr.push({id: item.attr('q-id'), slot: index + 1, topic_id: topicId});
+            qMap.push(item.find('.q').attr('q-no'));
+            item.find('.q').html('Q' + (index + 1) + ':');
+            item.find('.q').attr('q-no', index + 1);
         });
 
         // 
@@ -155,8 +157,8 @@ $(document).ready(function () {
                 baseURL + 'ajax/core/' + role + '/question/update',
                 JSON.stringify(qArr),
                 function (qData) {
-                    qsJson = JSON.parse(JSON.stringify(tmpJson));
-                    refreshQs();
+                    remapQuestionData(qMap);
+                    refreshQuestions();
                 }
         );
 
@@ -689,15 +691,15 @@ $(document).ready(function () {
         // data and send request. Add or update qJson to global qsJson if successful.
         // 
 
-        // 
-        // Use selected topic or default:
-        // 
-        if ($('#q-topic-sel').length) {
-            var topicId = $('#q-topic-sel').val();
-        } else {
-            var topicId = $('.topic-name').first().attr('data-id');
-        }
-
+//        // 
+//        // Use selected topic or default:
+//        // 
+//        if ($('#q-topic-sel').length) {
+//            var topicId = $('#q-topic-sel').val();
+//        } else {
+//            var topicId = $('.topic-name').first().attr('data-id');
+//        }
+//
         // 
         // Set data for question update:
         // 
@@ -734,18 +736,19 @@ $(document).ready(function () {
                     // 
                     // Refresh main question area:
                     // 
-                    refreshQs();
+                    refreshQuestions();
 
                     // 
                     // Show this question in left menu:
                     // 
                     var qTxtLeftMenu = aPartQtxt.replace(/(<([^>]+)>)/ig, "").substring(0, 75);
-                    var qTopic = $('ul[topic-id="' + topicId + '"]');
+                    var qTopic = $('ul[topic-id]').first();
 
                     if (!pos) {
                         var newQ = qTopic.find('li:first')
                                 .clone()
                                 .show()
+                                .attr('q-id', qid)
                                 .find('.q')
                                 .attr('q-no', qIndex)
                                 .html("Q" + qIndex + ":")
@@ -767,7 +770,7 @@ $(document).ready(function () {
     // re-populates questions in main question area
     // 
 
-    var refreshQs = function () {
+    var refreshQuestions = function () {
 
         // 
         // Remove all questions:
@@ -907,6 +910,6 @@ $(document).ready(function () {
         });
     };
 
-    refreshQs();
+    refreshQuestions();
 
 });
