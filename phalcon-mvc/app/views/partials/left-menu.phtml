@@ -139,22 +139,24 @@ $exam->is_editable = in_array("editable", $exam->flags);
                             </a>
                     <?php endif; ?>
                 </span>
-                
-                <?php if ($questions = $exam->getQuestions(array("order" => "slot"))) : ?>
-                        <ul class="menuLevel1 sortable-qs" style="margin-left: 40px;" topic-id="<?= $questions[0]->topic_id ?>">
-                            <?php foreach ($questions as $key => $question): ?>
-                                    <?php $questArr = json_decode($question->quest, true); ?>
-                                    <li q-id="<?= $question->id ?>" class="left-col-item"> 
-                                        <span class="q" q-no="<?= $question->slot ?>">Q<?= $question->slot ?>:</span> 
-                                        <span class="q-txt"><?= substr(strip_tags($questArr['a']['q_text']), 0, 75) ?></span> 
-                                    </li>
-                                    <?php $question->slot ?>
-                            <?php endforeach; ?>
-                            <li style="display:none"> 
-                                <span class="q" q-no=""></span> 
-                                <span class="q-txt"></span> 
-                            </li>                                                
-                        </ul>
+
+                <?php if (($questions = $exam->getQuestions(array("order" => "slot")))) : ?>
+                        <?php if (count($questions)) : ?>
+                                <ul class="menuLevel1 sortable-qs" style="margin-left: 40px;" topic-id="<?= $questions[0]->topic_id ?>">
+                                    <?php foreach ($questions as $key => $question): ?>
+                                            <?php $questArr = json_decode($question->quest, true); ?>
+                                            <li q-id="<?= $question->id ?>" class="left-col-item"> 
+                                                <span class="q" q-no="<?= $question->slot ?>">Q<?= $question->slot ?>:</span> 
+                                                <span class="q-txt"><?= substr(strip_tags($questArr['a']['q_text']), 0, 75) ?></span> 
+                                            </li>
+                                            <?php $question->slot ?>
+                                    <?php endforeach; ?>
+                                    <li style="display:none"> 
+                                        <span class="q" q-no=""></span> 
+                                        <span class="q-txt"></span> 
+                                    </li>                                                
+                                </ul>
+                        <?php endif; ?>
                 <?php endif; ?>
             </li>
         </ul>
