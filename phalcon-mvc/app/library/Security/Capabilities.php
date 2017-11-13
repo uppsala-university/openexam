@@ -14,8 +14,129 @@
 namespace OpenExam\Library\Security;
 
 use Exception;
+use InvalidArgumentException;
 use OpenExam\Models\ModelBase;
 use Phalcon\Mvc\User\Component;
+
+/**
+ * Capability check for resource.
+ * @author Anders Lövgren (QNET)
+ */
+class Capability extends Component
+{
+
+        /**
+         * The resource name.
+         * @var string
+         */
+        private $_resource;
+        /**
+         * The model object. 
+         * @var ModelBase 
+         */
+        private $_model;
+        /**
+         * The check filter.
+         * @var int 
+         */
+        private $_filter;
+
+        /**
+         * Constructor.
+         * @param string|ModelBase $model The model object.
+         */
+        public function __construct($model)
+        {
+                if (is_string($model)) {
+                        $this->_model = null;
+                        $this->_resource = $model;
+                        $this->_filter = Capabilities::CHECK_STATIC;
+                } else {
+                        $this->_model = $model;
+                        $this->_resource = $model->getResourceName();
+                        $this->_filter = Capabilities::CHECK_ALL;
+                }
+        }
+
+        /**
+         * Set model filter.
+         * 
+         * @param mixed $filter The checks to perform.
+         * @throws InvalidArgumentException
+         */
+        public function setFilter($filter)
+        {
+                if ($filter < Capabilities::CHECK_MIN ||
+                    $filter > Capabilities::CHECK_MAX) {
+                        throw new InvalidArgumentException("Filter outside range");
+                }
+
+                $this->_filter = $filter;
+        }
+
+        /**
+         * Check if caller can perform action.
+         * 
+         * @param string $action The requested action.
+         * @return bool
+         */
+        public function canPerform($action, $role = null)
+        {
+                if (!isset($this->_model)) {
+                        $this->_filter = Capabilities::CHECK_STATIC;
+                }
+
+                if ($this->_filter & Capabilities::CHECK_STATIC) {
+                        if (!$this->checkStatic($action, $role)) {
+                                return false;
+                        }
+                }
+                if ($this->_filter & Capabilities::CHECK_ROLE) {
+                        if (!$this->checkObjectRole($action)) {
+                                return false;
+                        }
+                }
+                if ($this->_filter & Capabilities::CHECK_ACTION) {
+                        if (!$this->checkObjectAction($action)) {
+                                return false;
+                        }
+                }
+
+                return true;
+        }
+
+        private function checkStatic($action, $role)
+        {
+                $check = $this->capabilities->getRoles($this->_resource);
+
+                foreach ($check as $r => $a) {
+                        if (isset($role) && $role != $r) {
+                                continue;
+                        }
+                        if (!in_array($action, $a)) {
+                                continue;
+                        }
+                        if ($this->user->roles->acquire($r)) {
+                                return true;
+                        }
+                }
+
+                return false;
+        }
+
+        private function checkObjectRole($action)
+        {
+                $access = $this->_model->getObjectAccess();
+                return $access->checkObjectRole($action, $this->_model, $this->user);
+        }
+
+        private function checkObjectAction($action)
+        {
+                $access = $this->_model->getObjectAccess();
+                return $access->checkObjectAction($action, $this->_model, $this->user);
+        }
+
+}
 
 /**
  * Collects capabilities from access list.
@@ -252,7 +373,7 @@ class Capabilities extends Component
          * $capabilities->hasPermission($role, $name, $access);
          * </code>
          * 
-         * @param ModelBase $model The model object.
+         * @param string|ModelBase $model The model object.
          * @param string $action The requested action.
          * @param mixed $filter The checks to perform.
          * @return bool True if action is allowed.
@@ -260,33 +381,9 @@ class Capabilities extends Component
         public function hasCapability($model, $action, $filter = self::CHECK_ALL)
         {
                 try {
-                        if (!is_int($filter)) {
-                                $filter = self::getFilter($filter);
-                        }
-                        if ($filter < self::CHECK_MIN || $filter > self::CHECK_MAX) {
-                                return false;   // Sanity check
-                        }
-
-                        if ($filter & self::CHECK_STATIC != 0) {
-                                $role = $this->user->getPrimaryRole();
-                                $name = $model->getResourceName();
-
-                                if ($this->hasPermission($role, $name, $action) == false) {
-                                        return false;
-                                }
-                        }
-                        if ($filter & self::CHECK_ROLE != 0) {
-                                if ($model->getObjectAccess()->checkObjectRole($action, $model, $this->user) == false) {
-                                        return false;
-                                }
-                        }
-                        if ($filter & self::CHECK_ACTION != 0) {
-                                if ($model->getObjectAccess()->checkObjectAction($action, $model, $this->user) == false) {
-                                        return false;
-                                }
-                        }
-
-                        return true;    // All check passed
+                        $capability = new Capability($model);
+                        $capability->setFilter($filter);
+                        return $capability->canPerform($action);
                 } catch (Exception $ex) {
                         return false;
                 }

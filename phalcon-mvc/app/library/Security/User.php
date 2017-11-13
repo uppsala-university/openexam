@@ -16,6 +16,7 @@ namespace OpenExam\Library\Security;
 use OpenExam\Library\Catalog\Affiliation;
 use OpenExam\Library\Catalog\Departments;
 use OpenExam\Library\Core\Settings;
+use OpenExam\Models\ModelBase;
 use Phalcon\Mvc\User\Component;
 
 /**
@@ -206,6 +207,18 @@ class User extends Component
         public function hasPrimaryRole()
         {
                 return isset($this->_role);
+        }
+
+        /**
+         * Check action capability on model.
+         * 
+         * @param string|ModelBase $model The model object or resource string.
+         * @param string $action The requested action (i.e. create or delete).
+         * @return bool
+         */
+        public function hasCapability($model, $action)
+        {
+                return $this->capabilities->hasCapability($model, $action);
         }
 
         /**
