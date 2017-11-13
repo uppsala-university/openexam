@@ -28,9 +28,7 @@ $this->profiler->add("view");
 <?= Tag::stylesheetLink('bootstrap3/css/bootstrap.min.css'); ?>
 <?= Tag::stylesheetLink('bootstrap3/css/bootstrap-theme.min.css'); ?>
 
-<?= Tag::stylesheetLink("css/uu/1.css"); ?>
-<?= Tag::stylesheetLink("css/uu/2.css"); ?>
-<?= Tag::stylesheetLink("css/uu/3.css"); ?>
+<?= Tag::stylesheetLink("css/standard.css"); ?>
 <?= Tag::stylesheetLink("css/accordion.css"); ?>
 
 <?= Tag::stylesheetLink("css/font-awesome.min.css"); ?>
@@ -79,201 +77,195 @@ $link = new NavigateMenuActivator($ctrl, $user);
 
 ?>
 
-<!-- Page wrapper -->
-<div id="wrapper" class="wrapper"> 
+<!-- Header area -->
+<div id="oe-header"> 
 
-    <!-- Header area -->
-    <div id="header"> 
+    <!-- Top navigation -->
+    <div class="component"> 
 
-        <!-- Top navigation -->
-        <div class="headerComponent componentContainer"> 
-
-            <!-- Logo -->
-            <div class="toppImg">
-                <h1 class="logo"> <a href="<?= $this->config->brand->logo->link ?>">
-                        <?= Tag::image(array($this->config->brand->logo->file, "style" => $this->config->brand->logo->style)); ?>
-                    </a> <span class="alt-logo"><?= $this->config->brand->logo->link ?></span> </h1>
-            </div>
-
-            <!-- Logo Text -->
-            <div class="toppNav hidden-xs">
-                <h1 class="siteName"> <a href="http://openexam.io">OpenExam</a> - online examination system</h1>
-            </div>
-
-            <!-- User control -->
-            <div style="position: absolute; top: 10px; right: 25px">
-                <?php if ($this->user->roles->isAdmin() == false) : ?>
-                        <span class="btn btn-default">
-                            <i class="fa fa-user"></i> <?= $this->catalog->getName() ?>
-                        </span>
-                <?php else : ?>
-                        <span class="btn btn-default" style="color: #c1002b;">
-                            <i class="fa fa-user"></i> <?= $this->catalog->getName() ?>
-                        </span>
-                <?php endif; ?>
-            </div>
+        <!-- Logo -->
+        <div class="top-image">
+            <h1 class="logo"> <a href="<?= $this->config->brand->logo->link ?>">
+                    <?= Tag::image(array($this->config->brand->logo->file, "style" => $this->config->brand->logo->style)); ?>
+                </a> <span class="alt-logo"><?= $this->config->brand->logo->link ?></span> </h1>
         </div>
 
-        <!-- Top menu -->
-        <div id="topMenu"> 
-            <nav class="navbar navbar-inverse" style="z-index: 1">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>                        
-                        </button>
-                        <a class="navbar-brand hidden-sm hidden-md hidden-lg" href="<?= $this->url->get() ?>">OpenExam</a>  
-                    </div>
+        <!-- Logo Text -->
+        <div class="top-site hidden-xs">
+            <h1 class="site-name"> <a href="http://openexam.io">OpenExam</a><span class="hidden-sm"> - online examination system</span></h1>
+        </div>
 
-                    <div class="collapse navbar-collapse" id="myNavbar">
-                        <!-- Left side menu items -->
-                        <ul class="nav navbar-nav">
-                            <!-- Home -->
-                            <?php if (($active = $link->active("index"))) : ?>
-                                    <li class="<?= $active ?>">
-                                        <?= Tag::linkTo('', 'Home') ?>
-                                    </li>
-                            <?php endif; ?>
+        <!-- User control -->
+        <div style="position: absolute; top: 10px; right: 25px">
+            <?php if ($this->user->roles->isAdmin() == false) : ?>
+                    <span class="btn btn-default">
+                        <i class="fa fa-user"></i> <?= $this->catalog->getName() ?>
+                    </span>
+            <?php else : ?>
+                    <span class="btn btn-default" style="color: #c1002b;">
+                        <i class="fa fa-user"></i> <?= $this->catalog->getName() ?>
+                    </span>
+            <?php endif; ?>
+        </div>
+    </div>
 
-                            <!-- My Exams -->
-                            <?php if (($active = $link->active("exam", false))) : ?>
-                                    <li class="<?= $active ?>">
-                                        <?= Tag::linkTo('exam/index', 'My Exams') ?>
-                                    </li>
-                            <?php endif; ?>
-                        </ul>
-
-                        <!-- Right side menu items -->
-                        <ul class="nav navbar-nav navbar-right">
-                            <!-- Tasks -->
-                            <?php if (($active = $link->active("task", false))) : ?>
-                                    <li class="dropdown <?= $active ?>">
-                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Task
-                                            <span class="caret"></span>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <?php if ($this->user->roles->hasRole('teacher')) : ?>
-                                                    <li>
-                                                        <?= Tag::linkTo('exam/create', 'Create Exam...') ?>
-                                                    </li>
-                                            <?php endif; ?>
-                                            <?php if ($this->user->roles->hasRole('contributor')) : ?>
-                                                    <li>
-                                                        <?= Tag::linkTo('task/contribute', 'Contribute Questions') ?>
-                                                    </li>
-                                            <?php endif; ?>
-                                            <?php if ($this->user->roles->hasRole('corrector')) : ?>
-                                                    <li>
-                                                        <?= Tag::linkTo('task/correct', 'Correct Answers') ?>
-                                                    </li>
-                                            <?php endif; ?>
-                                            <?php if ($this->user->roles->hasRole('invigilator')) : ?>
-                                                    <li>
-                                                        <?= Tag::linkTo('task/invigilate', 'Invigilate Exam') ?>
-                                                    </li>
-                                            <?php endif; ?>
-                                            <?php if ($this->user->roles->hasRole('decoder')) : ?>
-                                                    <li>
-                                                        <?= Tag::linkTo('task/decode', 'Decode Exam') ?>
-                                                    </li>
-                                            <?php endif; ?>
-                                            <?php if ($this->user->roles->hasRole('student')) : ?>
-                                                    <li>
-                                                        <?= Tag::linkTo('task/result', 'Download Results') ?>
-                                                    </li>
-                                            <?php endif; ?>
-                                        </ul>
-                                    </li>
-                            <?php endif; ?>
-
-                            <!-- Tools -->
-                            <?php if (($active = $link->active(array("monitor", "statistics"), false))) : ?>
-                                    <li class="dropdown <?= $active ?>">
-                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools
-                                            <span class="caret"></span>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <?= Tag::linkTo('utility/statistics', 'Statistics') ?>
-                                            </li>
-                                            <li>
-                                                <?= Tag::linkTo('utility/monitor/diagnostics', 'Diagnostics') ?>
-                                            </li>
-                                        </ul>
-                                    </li>
-                            <?php endif; ?>
-
-                            <!-- Help -->
-                            <?php if (($active = $link->active("help"))) : ?>
-                                    <li class="dropdown <?= $active ?>">
-                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Help
-                                            <span class="caret"></span>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <?= Tag::linkTo('help/manual/teacher', 'Teacher Manual') ?>
-                                            </li>
-                                            <li>
-                                                <?= Tag::linkTo('help/manual/student', 'Student Manual') ?>
-                                            </li>
-                                            <li>
-                                                <?= Tag::linkTo(array('help/manual', 'Show All...', 'target' => '_blank', 'title' => 'Open page with manuals in other languages and formats in new window.')) ?>
-                                            </li>
-                                            <li>
-                                                <?= Tag::linkTo('about', 'About') ?>
-                                            </li>
-                                        </ul>
-                                    </li>
-                            <?php endif; ?>
-
-                            <!-- Logon -->
-                            <?php if (($active = $link->active("auth"))) : ?>
-                                    <?php if ($this->user->getUser()) : ?>
-                                            <li>
-                                                <?= Tag::linkTo('auth/logout', '<i class="fa fa-unlock-alt"></i> Logout') ?>
-                                            </li>
-                                    <?php else : ?>
-                                            <li class="dropdown <?= $active ?>">
-                                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Login
-                                                    <span class="caret"></span>
-                                                </a>
-                                                <ul class="dropdown-menu"><?php
-                                                    foreach ($authenticators as $name => $auth) {
-                                                            if ($auth->visible) {
-                                                                    print Tag::tagHtml("li");
-                                                                    print Tag::linkTo(array(
-                                                                                sprintf("auth/login/%s", $name),
-                                                                                sprintf("<i class=\"fa\"></i> %s", $auth['desc'])
-                                                                    ));
-                                                                    print Tag::tagHtmlClose("li");
-                                                            }
-                                                    }
-
-                                                    ?></ul>
-                                            </li>
-                                    <?php endif; ?>
-                            <?php endif; ?>
-                        </ul>
-                    </div>
+    <!-- Top menu -->
+    <div id="oe-top-menu"> 
+        <nav class="navbar navbar-inverse" style="z-index: 1">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>                        
+                    </button>
+                    <a class="navbar-brand hidden-sm hidden-md hidden-lg" href="<?= $this->url->get() ?>">OpenExam</a>  
                 </div>
-            </nav>            
-        </div>
-    </div>
 
-    <!-- Content area -->
-    <div id="containerflarp">
-        <div id="msg-box" class="alert" style="display:none; position: fixed; top: 0px; left: 0px; width: 100%; text-align: center"></div>
-        <?= $this->getContent() ?>
-    </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <!-- Left side menu items -->
+                    <ul class="nav navbar-nav">
+                        <!-- Home -->
+                        <?php if (($active = $link->active("index"))) : ?>
+                                <li class="<?= $active ?>">
+                                    <?= Tag::linkTo('', 'Home') ?>
+                                </li>
+                        <?php endif; ?>
 
-    <!-- Footer area -->
-    <div id="footer">
-        <div class="uuFooter">
-            <div class="footerText">
-                <div class="sidfot vcard" style="width: auto;"> &copy; 2010-<?= date('Y') ?> <a class="url fn org" href="http://www.uu.se/">Uppsala University</a> <a class="url fn org" href="http://www.bmc.uu.se/">BMC</a> </div>
+                        <!-- My Exams -->
+                        <?php if (($active = $link->active("exam", false))) : ?>
+                                <li class="<?= $active ?>">
+                                    <?= Tag::linkTo('exam/index', 'My Exams') ?>
+                                </li>
+                        <?php endif; ?>
+                    </ul>
+
+                    <!-- Right side menu items -->
+                    <ul class="nav navbar-nav navbar-right">
+                        <!-- Tasks -->
+                        <?php if (($active = $link->active("task", false))) : ?>
+                                <li class="dropdown <?= $active ?>">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Task
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <?php if ($this->user->roles->hasRole('teacher')) : ?>
+                                                <li>
+                                                    <?= Tag::linkTo('exam/create', 'Create Exam...') ?>
+                                                </li>
+                                        <?php endif; ?>
+                                        <?php if ($this->user->roles->hasRole('contributor')) : ?>
+                                                <li>
+                                                    <?= Tag::linkTo('task/contribute', 'Contribute Questions') ?>
+                                                </li>
+                                        <?php endif; ?>
+                                        <?php if ($this->user->roles->hasRole('corrector')) : ?>
+                                                <li>
+                                                    <?= Tag::linkTo('task/correct', 'Correct Answers') ?>
+                                                </li>
+                                        <?php endif; ?>
+                                        <?php if ($this->user->roles->hasRole('invigilator')) : ?>
+                                                <li>
+                                                    <?= Tag::linkTo('task/invigilate', 'Invigilate Exam') ?>
+                                                </li>
+                                        <?php endif; ?>
+                                        <?php if ($this->user->roles->hasRole('decoder')) : ?>
+                                                <li>
+                                                    <?= Tag::linkTo('task/decode', 'Decode Exam') ?>
+                                                </li>
+                                        <?php endif; ?>
+                                        <?php if ($this->user->roles->hasRole('student')) : ?>
+                                                <li>
+                                                    <?= Tag::linkTo('task/result', 'Download Results') ?>
+                                                </li>
+                                        <?php endif; ?>
+                                    </ul>
+                                </li>
+                        <?php endif; ?>
+
+                        <!-- Tools -->
+                        <?php if (($active = $link->active(array("monitor", "statistics"), false))) : ?>
+                                <li class="dropdown <?= $active ?>">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <?= Tag::linkTo('utility/statistics', 'Statistics') ?>
+                                        </li>
+                                        <li>
+                                            <?= Tag::linkTo('utility/monitor/diagnostics', 'Diagnostics') ?>
+                                        </li>
+                                    </ul>
+                                </li>
+                        <?php endif; ?>
+
+                        <!-- Help -->
+                        <?php if (($active = $link->active("help"))) : ?>
+                                <li class="dropdown <?= $active ?>">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Help
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <?= Tag::linkTo('help/manual/teacher', 'Teacher Manual') ?>
+                                        </li>
+                                        <li>
+                                            <?= Tag::linkTo('help/manual/student', 'Student Manual') ?>
+                                        </li>
+                                        <li>
+                                            <?= Tag::linkTo(array('help/manual', 'Show All...', 'target' => '_blank', 'title' => 'Open page with manuals in other languages and formats in new window.')) ?>
+                                        </li>
+                                        <li>
+                                            <?= Tag::linkTo('about', 'About') ?>
+                                        </li>
+                                    </ul>
+                                </li>
+                        <?php endif; ?>
+
+                        <!-- Logon -->
+                        <?php if (($active = $link->active("auth"))) : ?>
+                                <?php if ($this->user->getUser()) : ?>
+                                        <li>
+                                            <?= Tag::linkTo('auth/logout', '<i class="fa fa-unlock-alt"></i> Logout') ?>
+                                        </li>
+                                <?php else : ?>
+                                        <li class="dropdown <?= $active ?>">
+                                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Login
+                                                <span class="caret"></span>
+                                            </a>
+                                            <ul class="dropdown-menu"><?php
+                                                foreach ($authenticators as $name => $auth) {
+                                                        if ($auth->visible) {
+                                                                print Tag::tagHtml("li");
+                                                                print Tag::linkTo(array(
+                                                                            sprintf("auth/login/%s", $name),
+                                                                            sprintf("<i class=\"fa\"></i> %s", $auth['desc'])
+                                                                ));
+                                                                print Tag::tagHtmlClose("li");
+                                                        }
+                                                }
+
+                                                ?></ul>
+                                        </li>
+                                <?php endif; ?>
+                        <?php endif; ?>
+                    </ul>
+                </div>
             </div>
-        </div>
+        </nav>            
     </div>
-    <!-- wrapper ends --> 
+</div>
+
+<!-- Content area -->
+<div id="oe-container">
+    <div id="msg-box" class="alert" style="display:none; position: fixed; top: 0px; left: 0px; width: 100%; text-align: center"></div>
+    <?= $this->getContent() ?>
+</div>
+
+<!-- Footer area -->
+<div id="oe-footer">
+        <div class="footer-text">
+            <div class="sidfot vcard" style="width: auto;"> &copy; 2010-<?= date('Y') ?> <a class="url fn org" href="http://www.uu.se/">Uppsala University</a> <a class="url fn org" href="http://www.bmc.uu.se/">BMC</a> </div>
+        </div>
+</div>

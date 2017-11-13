@@ -115,7 +115,7 @@ $(document).ready(function () {
                     data[r].mail = "#";
                 }
                 dest.append("<tr>");
-                dest.append("<td><a href='mailto:" + data[r].mail + "'><span class='btn btn-success' style='padding:10px; font-size:11px'><i class='fa fa-envelope'></i><span> Contact</span></span></a></td>");
+                dest.append("<td><a href='mailto:" + data[r].mail + "'><span class='btn btn-success btn-sm'><i class='fa fa-envelope'></i><span> Contact</span></span></a></td>");
                 dest.append("<td class=\"name\">" + data[r].name + "</td>");
                 dest.append("<td class=\"user\">" + data[r].user + "</td>");
                 dest.append("<td class=\"type\">" + data[r].type + "</td>");

@@ -40,11 +40,8 @@ use Phalcon\Tag;
 <!-- User search support -->
 <?php $this->partial("partials/user-search", array('staff' => $staff)) ?>
 
-<!-- Left Column -->
-<?php $this->partial("partials/left-menu", array('exam' => $exam)) ?> 
-
 <!-- Main area -->         
-<?php $canUpdateExam = $this->capabilities->hasCapability($exam, 'update'); ?>
+<?php $canUpdateExam = $this->user->hasCapability($exam, 'update'); ?>
 
 <style>
     div.question-removed {
@@ -112,33 +109,37 @@ use Phalcon\Tag;
     }
 </style>
 
-<div id="container" class="left_menu_space" style="">
+<div class="oe-columns-container">
+    <!-- Left Column -->
+    <div class="oe-left-column">
+        <?php $this->partial("partials/left-menu", array('exam' => $exam)) ?> 
+    </div>
+    <div class="oe-right-column">
 
-    <div id="breadcrumbsRow">
         <?php if ($exam->published): ?>
                 <?= Tag::image(array("img/published.gif", "style" => "z-index: 0; height: 65px; position: relative; float: right; top: -9px;")); ?>
         <?php endif; ?>
-    </div>
-
-    <div id="centerColWide">
 
         <!-- Exam title and description: -->
         <h1 style="padding-bottom: 10px">
             <?= trim($exam->name) != '' ? $exam->name : 'Untitled exam' ?>
-            <?php if ($canUpdateExam) : ?>
-                    <a href="#" class="prevent exam-settings">
-                        <i class="fa fa-gear" id="exam-settings" style="float:right;padding:3px"></i>
-                    </a> 
-                    <a href="#" class="prevent exam-security">
-                        <i class="fa fa-lock" id="exam-security" style="float:right;padding:3px"></i>
-                    </a>                
-                    <a href="#" class="prevent exam-check">
-                        <i class="fa fa-check-square" id="exam-check" style="float:right;padding:3px"></i>
-                    </a>                
-                    <a href="#" class="prevent exam-archive">
-                        <i class="fa fa-file-archive-o" id="exam-archive" style="float:right;padding:3px"></i>
-                    </a>                
-            <?php endif; ?>
+            <div style="float: right">
+
+                <?php if ($canUpdateExam) : ?>
+                        <a href="#" class="prevent exam-settings">
+                            <i class="fa fa-gear" id="exam-settings" style="float:right;padding:3px"></i>
+                        </a> 
+                        <a href="#" class="prevent exam-security">
+                            <i class="fa fa-lock" id="exam-security" style="float:right;padding:3px"></i>
+                        </a>                
+                        <a href="#" class="prevent exam-check">
+                            <i class="fa fa-check-square" id="exam-check" style="float:right;padding:3px"></i>
+                        </a>                
+                        <a href="#" class="prevent exam-archive">
+                            <i class="fa fa-file-archive-o" id="exam-archive" style="float:right;padding:3px"></i>
+                        </a>                
+                <?php endif; ?>
+            </div>
         </h1>
 
         <?php
@@ -148,8 +149,8 @@ use Phalcon\Tag;
 
         ?>
 
-        <?php if ($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'question', 'create') && in_array("contributable", $exam->flags)): ?>
-                <a href="#" style="font-size: 12px; float:right" class="add_new_qs">
+        <?php if ($this->user->hasCapability('question', 'create') && in_array("contributable", $exam->flags)): ?>
+                <a href="#" class="add_new_qs">
                     <div style="display: block; float:right">
                         <span class="btn btn-success">
                             <i class="fa fa-plus-circle"></i>
@@ -162,7 +163,7 @@ use Phalcon\Tag;
         <div class="seprator" style="border-bottom:0px">&nbsp;</div>
 
         <!-- Questions area: -->
-        <div id="qs_area">
+        <div id="qs_area" style="float: left;margin-top: 1.5em;">
 
             <div id="default_msg_qs">
                 There are no questions in this exam yet. <br>
@@ -207,7 +208,7 @@ use Phalcon\Tag;
         </div>
 
         <?php if ($canUpdateExam && in_array("editable", $exam->flags)): ?>
-                <div id="exam_op_btns" style="<?= !count($examQs) ? 'display:none' : '' ?>">
+                <div id="exam_op_btns" style="clear: both;<?= !count($examQs) ? 'display:none' : '' ?>">
                     <center>
                         <a href="<?= $this->url->get('exam/' . $exam->id) ?>">
                             <span class="btn btn-default" style="color:#333333">
@@ -218,7 +219,7 @@ use Phalcon\Tag;
                     </center>
                 </div>
 
-        <?php elseif ($this->capabilities->hasPermission($this->user->getPrimaryRole(), 'question', 'create') && in_array("editable", $exam->flags)): ?>
+        <?php elseif ($this->user->hasCapability('question', 'create') && in_array("editable", $exam->flags)): ?>
                 <a href="<?= $this->url->get('exam/index'); ?>">
                     <div id="" style="margin-bottom: 10px">
                         <center>
@@ -231,7 +232,6 @@ use Phalcon\Tag;
                 </a>
         <?php endif; ?>
     </div>
-    <br clear="both">
 </div>
 
 <!-- Add / Edit question form that appears in light box -->
@@ -280,6 +280,7 @@ use Phalcon\Tag;
         </center>		
     </div>
 </div>
+
 <?php
 // 
 // Combine question JSON to initialize exam.

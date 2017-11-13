@@ -169,14 +169,14 @@ $(document).ready(function () {
     // 
     $('body').on('click', ".deluuid", function () {
 
-        if ($(this).closest('.menuLevel1').find('li:visible').length <= 1) {
-            $(this).closest('.menuLevel1').find('.left-col-def-msg').show();
+        if ($(this).closest('.menu-level-1').find('li:visible').length <= 1) {
+            $(this).closest('.menu-level-1').find('.left-col-def-msg').show();
         }
 
         // 
         // Send AJAX request to delete this record:
         // 
-        var model = $(this).closest('.menuLevel1').parent().find('a').attr('data-model');
+        var model = $(this).closest('.menu-level-1').parent().find('a').attr('data-model');
         var reqUrl = baseURL + 'ajax/core/' + role + '/' + model + '/delete';
         var thisItem = $(this);
         ajax(reqUrl, {"id": $(this).attr('data-ref')}, function (json) {

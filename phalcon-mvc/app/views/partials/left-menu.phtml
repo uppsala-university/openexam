@@ -1,5 +1,4 @@
 <?php
-
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -22,143 +21,122 @@ $exam->is_editable = in_array("editable", $exam->flags);
 
 ?>
 
-<style>
-    .menu-item-add {
-        margin-right:20px; 
-        color:limegreen;
-    }
-    .menu-item-del {
-        margin-left:20px; 
-        color:red;            
-    }
-    .menu-item-off {
-        margin-right:20px; 
-        color:lightgrey;            
-    }
-    .menu-list-caret {
-        color: #999999;
-    }
-</style>
+<div class="tree-menu-container box-shadow">
+    <ul class="menu-level-0">
 
-<!-- Left Column -->
-<div id="leftCol">
-    <div class="treeMenuContainer componentContainer">
-        <ul class="menuLevel0">
+        <!-- Roles listing section -->
+        <?php foreach ($userRoles as $model => $name): ?>
+                <li> 
+                    <?php $roles = $exam->{$model . 's'}; ?>
+                    <span style="display: flex">
+                        <a href="#" style="min-width: 180px;" rel="menu-level-1" data-model="<?= $model ?>" id="uu-id<?= $i++ ?>">
+                            <i class="menu-list-caret fa fa-caret-down" aria-hidden="true"></i> &nbsp; <?= $name ?>
+                        </a>
+                        <?php if ($this->user->hasCapability($model, 'create')) : ?>
+                                <a href="#" class="search-catalog-service">
+                                    <?php if (in_array("editable", $exam->flags)) : ?>
+                                            <i class="menu-item-add fa fa-plus-circle" aria-hidden="true"></i>
+                                    <?php else: ?>
+                                            <i class="menu-item-off fa fa-gear" aria-hidden="true"></i>
+                                    <?php endif; ?>
+                                </a>
+                        <?php endif; ?>
+                    </span>
 
-            <!-- Roles listing section -->
-            <?php foreach ($userRoles as $model => $name): ?>
-                    <li> 
-                        <?php $roles = $exam->{$model . 's'}; ?>
-                        <span style="display: flex">
-                            <a href="#" style="min-width: 180px;" rel="menuLevel1" data-model="<?= $model ?>" id="uu-id<?= $i++ ?>">
-                                <i class="menu-list-caret fa fa-caret-down" aria-hidden="true"></i> &nbsp; <?= $name ?>
-                            </a>
-                            <?php if ($this->user->hasCapability($model, 'create')) : ?>
-                                    <a href="#" class="search-catalog-service">
-                                        <?php if (in_array("editable", $exam->flags)) : ?>
-                                                <i class="menu-item-add fa fa-plus-circle" aria-hidden="true"></i>
-                                        <?php else: ?>
-                                                <i class="menu-item-off fa fa-gear" aria-hidden="true"></i>
+                    <ul class="menu-level-1">
+                        <?php if ($this->user->hasCapability($model, 'delete') && $exam->is_editable): ?>
+                                <li style="display:none;">
+                                    <span>
+                                        <a href="#" class="deluuid" data-ref="">
+                                            <i class="menu-item-del fa fa-minus-circle" aria-hidden="true"></i>                                  
+                                        </a>
+                                        <a href="#" class="prevent">
+                                            <span class="left-col-user" data-user=""></span>
+                                        </a> 
+                                    </span>
+                                </li>
+                        <?php endif; ?>
+
+                        <li style=" <?= (count($roles) ? 'display:none' : '') ?>" class="left-col-def-msg"> 
+                            <a href="#" class="prevent">&nbsp;<span class="left-col-def-msg">No user has been added</span></a> 
+                        </li>
+
+                        <?php foreach ($roles as $user): ?>
+                                <li>
+                                    <span>
+                                        <?php if ($this->user->hasCapability($model, 'delete') && $exam->is_editable): ?>
+                                                <a href="#" class="deluuid" data-ref="<?= $user->id ?>">
+                                                    <i class="menu-item-del fa fa-minus-circle" aria-hidden="true"></i>                                  
+                                                </a>
                                         <?php endif; ?>
-                                    </a>
+
+                                        <a href="#" class="prevent"> 
+                                            <span class="left-col-user" data-user="<?= $user->user ?>" data-mail="<?= $user->mail[0] ?>">
+                                                <?= $user->display ?>
+                                            </span> 
+                                        </a> 
+                                    </span>
+                                </li>
+                        <?php endforeach ?>
+                    </ul>
+                </li>
+        <?php endforeach; ?>
+
+        <!-- Students listing section -->
+        <li> 
+            <span style="display: flex">
+                <a href="#" style="min-width: 180px;">
+                    <i class="menu-list-caret fa fa-caret-right" aria-hidden="true"></i> 
+                    &nbsp;Students (<span class="total-exam-students"><?= count($exam->getStudents()) ?></span>)
+                </a>
+
+                <?php if ($this->user->hasCapability('student', 'create')) : ?>
+                        <a href="#" class="manage-students">
+                            <?php if ($exam->is_editable) : ?>
+                                    <i class="menu-item-add fa fa-plus-circle" aria-hidden="true"></i>
+                            <?php else: ?>
+                                    <i class="menu-item-off fa fa-gear" aria-hidden="true"></i>
                             <?php endif; ?>
-                        </span>
+                        </a>                        
+                <?php endif; ?>
+            </span>
+        </li>
 
-                        <ul class="menuLevel1">
-                            <?php if ($this->user->hasCapability($model, 'delete') && $exam->is_editable): ?>
-                                    <li style="display:none;text-indent: -25px;">
-                                        <span>
-                                            <a href="#" class="deluuid" data-ref="">
-                                                <i class="menu-item-del fa fa-minus-circle" aria-hidden="true"></i>                                  
-                                            </a>
-                                            <a href="#" class="prevent">
-                                                <span class="left-col-user" data-user=""></span>
-                                            </a> 
-                                        </span>
-                                    </li>
-                            <?php endif; ?>
+        <!-- Question listing section -->
+        <li> 
+            <span style="display: flex">
+                <a href="#" style="min-width: 180px;" rel="menu-level-1">
+                    <i class="menu-list-caret fa fa-caret-down" aria-hidden="true"></i>
+                    &nbsp;Questions &nbsp;
+                </a>
 
-                            <li style=" <?= (count($roles) ? 'display:none' : '') ?>" class="left-col-def-msg"> 
-                                <a href="#" class="prevent">&nbsp;<span class="left-col-def-msg">No user has been added</span></a> 
-                            </li>
+                <?php if ($this->user->hasCapability('question', 'create') && $exam->is_editable): ?>
+                        <a href="#" class="add_new_qs">
+                            <i class="menu-item-add fa fa-plus-circle add_new_qs" aria-hidden="true"></i>
+                        </a>
+                <?php endif; ?>
+            </span>
 
-                            <?php foreach ($roles as $user): ?>
-                                    <li style="text-indent: -25px;">
-                                        <span>
-                                            <?php if ($this->user->hasCapability($model, 'delete') && $exam->is_editable): ?>
-                                                    <a href="#" class="deluuid" data-ref="<?= $user->id ?>">
-                                                        <i class="menu-item-del fa fa-minus-circle" aria-hidden="true"></i>                                  
-                                                    </a>
-                                            <?php endif; ?>
-
-                                            <a href="#" class="prevent"> 
-                                                <span class="left-col-user" data-user="<?= $user->user ?>" data-mail="<?= $user->mail[0] ?>">
-                                                    <?= $user->display ?>
-                                                </span> 
-                                            </a> 
-                                        </span>
-                                    </li>
-                            <?php endforeach ?>
-                        </ul>
-                    </li>
-            <?php endforeach; ?>
-
-            <!-- Students listing section -->
-            <li> 
-                <span style="display: flex">
-                    <a href="#" style="min-width: 180px;">
-                        <i class="menu-list-caret fa fa-caret-right" aria-hidden="true"></i> 
-                        &nbsp;Students (<span class="total-exam-students"><?= count($exam->getStudents()) ?></span>)
-                    </a>
-
-                    <?php if ($this->user->hasCapability('student', 'create')) : ?>
-                            <a href="#" class="manage-students">
-                                <?php if ($exam->is_editable) : ?>
-                                        <i class="menu-item-add fa fa-plus-circle" aria-hidden="true"></i>
-                                <?php else: ?>
-                                        <i class="menu-item-off fa fa-gear" aria-hidden="true"></i>
-                                <?php endif; ?>
-                            </a>                        
-                    <?php endif; ?>
-                </span>
-            </li>
-
-            <!-- Question listing section -->
-            <li> 
-                <span style="display: flex">
-                    <a href="#" style="min-width: 180px;" rel="menuLevel1">
-                        <i class="menu-list-caret fa fa-caret-down" aria-hidden="true"></i>
-                        &nbsp;Questions &nbsp;
-                    </a>
-
-                    <?php if ($this->user->hasCapability('question', 'create') && $exam->is_editable): ?>
-                            <a href="#" class="add_new_qs">
-                                <i class="menu-item-add fa fa-plus-circle add_new_qs" aria-hidden="true"></i>
-                            </a>
-                    <?php endif; ?>
-                </span>
-
-                <ul class="menuLevel1 sortable-qs" style="margin-left: 40px;" topic-id="<?= $exam->topics[0]->id ?>">
-                    <li class="left-col-item" style="display:none"> 
-                        <span class="q" q-no=""></span> 
-                        <span class="q-txt"></span> 
-                    </li>                                                
-                    <?php if (($questions = $exam->getQuestions(array("order" => "slot")))) : ?>
-                            <?php if (count($questions)) : ?>
-                                    <?php foreach ($questions as $key => $question): ?>
-                                            <?php $questArr = json_decode($question->quest, true); ?>
-                                            <li q-id="<?= $question->id ?>" class="left-col-item"> 
-                                                <span class="q" q-no="<?= $question->slot ?>">Q<?= $question->slot ?>:</span> 
-                                                <span class="q-txt"><?= substr(strip_tags($questArr['a']['q_text']), 0, 75) ?></span> 
-                                            </li>
-                                            <?php $question->slot ?>
-                                    <?php endforeach; ?>
-                            <?php endif; ?>
-                    <?php endif; ?>
-                </ul>
-            </li>
-        </ul>
-    </div>
+            <ul class="menu-level-1 sortable-qs" style="margin-left: 40px;" topic-id="<?= $exam->topics[0]->id ?>">
+                <li class="left-col-item" style="display:none"> 
+                    <span class="q" q-no=""></span> 
+                    <span class="q-txt"></span> 
+                </li>                                                
+                <?php if (($questions = $exam->getQuestions(array("order" => "slot")))) : ?>
+                        <?php if (count($questions)) : ?>
+                                <?php foreach ($questions as $key => $question): ?>
+                                        <?php $questArr = json_decode($question->quest, true); ?>
+                                        <li q-id="<?= $question->id ?>" class="left-col-item"> 
+                                            <span class="q" q-no="<?= $question->slot ?>">Q<?= $question->slot ?>:</span> 
+                                            <span class="q-txt"><?= substr(strip_tags($questArr['a']['q_text']), 0, 75) ?></span> 
+                                        </li>
+                                        <?php $question->slot ?>
+                                <?php endforeach; ?>
+                        <?php endif; ?>
+                <?php endif; ?>
+            </ul>
+        </li>
+    </ul>
 </div>
 
 <script>

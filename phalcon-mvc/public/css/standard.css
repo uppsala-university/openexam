@@ -1,0 +1,368 @@
+/** 
+ * 
+ * The source code is copyrighted, with equal shared rights, between the
+ * authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+ * unless otherwise explicit stated elsewhere.
+ * 
+ * File:    standard.css
+ * Created: 2017-11-13 12:18:40
+ * 
+ * Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+ */
+
+/*
+ * Standard CSS (responsive: Support for main content or two column fluid with 
+ * fixed left hand side). 
+ */
+
+*, *:before, *:after {
+    -moz-box-sizing: border-box; 
+    -webkit-box-sizing: border-box; 
+    box-sizing: border-box;
+}
+
+body { 
+    margin: 0; 
+    font-family: verdana, arial, "trebuchet ms", sans-serif;
+}
+
+img {
+    max-width: 100%;
+}
+
+#oe-container {
+    margin-top: -10px;
+}
+
+#oe-container h1 {
+    font-size: 2.2em;
+    font-weight: normal;
+    margin: 1px 0 10px;
+    font-family: Arial,verdana,sans-serif;
+    border-bottom: 1px solid #999;
+    color: #444;
+    text-transform: none;
+}
+
+.oe-columns-container, footer, header { 
+    display: flex;
+}
+
+.oe-left-column, .oe-right-column, footer, header {  
+    margin: 0.5em;
+    padding: 0.5em;
+}
+
+.oe-left-column {
+    margin-left: 0.5em;
+}
+
+#oe-header .top-image {
+    display: inline-block;
+}
+
+#oe-header .top-site {
+    padding: 0;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    margin-left: 50px;
+}
+
+#oe-footer {
+    background-color: ghostwhite;
+    border-top: 5px solid #f1f1f1;
+    color: #999999;
+    font-size: 0.94em;
+    margin: 34px auto;
+    padding: 10px 0;
+    text-align: center;
+    height: 100px;
+}
+#oe-footer a {
+    color: inherit;
+}
+
+.oe-nav {
+    list-style: none;
+    margin-left: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+}
+
+.oe-nav > li,
+.oe-nav > li > a {
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+}
+
+.oe-inline-items {
+    margin-top: 0;
+}
+
+.oe-inline-items li {
+    margin-left: 0;
+    border-left: 1px solid black;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.oe-inline-items li:first-child {
+    margin-left: 0;
+    border: none;
+    padding-left: 0;
+    padding-right: 10px;
+}
+
+.oe-inline-items li:last-child {
+    padding-right: 0;
+}
+
+@media screen and (max-width: 40.5em ) {
+    .oe-left-column { 
+        margin: 0;
+        position: absolute;
+        display: none;
+    }
+
+    .oe-right-column { 
+        margin: 0;
+        margin-top: 0.5em;
+    }   
+
+    .oe-columns-container {
+        display: block;
+    }
+}
+
+a, a:hover {
+    color: #c1002b;
+    text-decoration: none;
+}
+
+.alt-logo {
+    display: none;
+}
+
+h1.logo {
+    padding: 5px;
+    margin: 0 0 20px;
+}
+
+.exam-list-boxes {
+    font-weight: normal;
+}
+
+.box-shadow {
+    box-shadow: 1px 5px 4px #999999;
+    -ie-box-shadow: #999 1px 0px 6px;
+    -moz-box-shadow: 1px 5px 4px #999999;
+    -webkit-box-shadow: 1px 5px 4px #999999; 
+}
+
+/**
+ * Tool buttons:
+ */
+.toolbtn {
+    color: white;
+    font-weight:normal;
+    font-size: 0.9em;
+    border-radius: 3px;  
+    padding: 2px 10px 2px 10px;
+    line-height: 16px;
+    display: inline-block;
+    cursor:pointer;
+}
+.toolbtn-small {
+    line-height: 12px;
+}
+.toolbtn-medium {
+    line-height: 16px;
+}
+.toolbtn-large {
+    line-height: 24px;
+}
+.toolbtn-bigger {
+    line-height: 32px;
+}
+.toolbtn-huge {
+    line-height: 64px;
+}
+.toolbtn-hulk {
+    line-height: 124px;
+}
+.toolbtn-chuck-norris {
+    line-height: 256px;
+}
+.toolbtn-danger {
+    background-color: #d9534f;
+}
+.toolbtn-green {
+    background-color: #468847;
+}
+.toolbtn-blue {
+    background-color: #3a87ad;
+}
+.toolbtn-grey {
+    background-color: #999999;
+    color: #ffffff;
+}
+.toolbtn-orange {
+    background-color: #f89406;
+}
+.toolbtn-red {
+    background-color: #d9534f;
+}
+.toolbtn-sky-blue {
+    background-color: #4285f4;
+}
+.toolbtn-light-green {
+    background-color: #ccff99;
+    color: #009900;
+    border: 1px solid #00ff00;
+}
+.toolbtn-yellow {
+    background-color: #ffff66;
+    color: #ddaa00;
+    border: 1px solid #ffcc00;
+}
+.toolbtn-blue-outline {
+    background-color: #ffffff;
+    color: #4285f4;
+    border: 1px solid #4285f4;
+}
+.toolbtn-orange-outline {
+    background-color: #ffffff;
+    color: #ff6600;
+    border: 1px solid #f89406;
+}
+.toolbtn-green-outline {
+    background-color: #ffffff;
+    color: #009900;
+    border: 1px solid #33cc33;
+}
+.toolbtn-yellow-outline {
+    background-color: #ffffff;
+    color: #ddaa00;
+    border: 1px solid #ffcc00;
+}
+.toolbtn-red-outline {
+    background-color: #ffffff;
+    color: #cc0000;
+    border: 1px solid #ff0000;
+}
+.toolbtn-hover-dim {
+    filter: grayscale(50%) opacity(50%);
+    transition: 0.5s;
+}
+.toolbtn-hover-dim:hover {
+    filter: grayscale(0%) opacity(100%);
+}
+
+/**
+ * jQuery UI fixes:
+ */
+.ui-tabs { 
+    position: relative; 
+    padding: .2em; zoom: 1; 
+}
+.ui-tabs .ui-tabs-nav { 
+    margin: 0; 
+    padding: .2em .2em 0; 
+    background: none;
+    border: none;
+}
+.ui-tabs .ui-tabs-nav li { 
+    list-style: none; 
+    float: left; 
+    position: relative; 
+    top: 1px; 
+    margin: 0 .2em 1px 0; 
+    border-bottom: 0 !important;
+    padding: 0; 
+    white-space: nowrap; 
+}
+.ui-tabs .ui-tabs-nav li a { 
+    float: left; 
+    padding: .5em 1em;
+    text-decoration: none; 
+}
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected { 
+    margin-bottom: 0;
+    padding-bottom: 1px; 
+}
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a, 
+.ui-tabs .ui-tabs-nav li.ui-state-disabled a, 
+.ui-tabs .ui-tabs-nav li.ui-state-processing a {
+    cursor: text; 
+}
+.ui-tabs .ui-tabs-nav li a, 
+.ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { 
+    cursor: pointer; 
+}
+.ui-tabs .ui-tabs-panel { 
+    display: block; 
+    border-width: 0; 
+    padding: 3em 1.4em; 
+    background: none; 
+} 
+.ui-tabs .ui-tabs-hide { 
+    display: none !important; 
+}
+h3.ui-accordion-header {
+    padding-top: 12px;
+    height: 38px;
+}
+div[role="dialog"] {
+    font-size: 1.0em;
+}
+
+/**
+ * Custom menu on right hand side.
+ */
+.tree-menu-container {
+    background-color: #eeeeee;
+    padding: 10px;
+}
+
+.tree-menu-container ul {
+    border-top: 1px solid white;
+}
+
+.tree-menu-container a {
+    color: #333333;
+}
+
+.menu-level-0,
+.menu-level-1 {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-item-add {
+    margin-right:20px; 
+    color:limegreen;
+}
+.menu-item-del {
+    margin-left:20px; 
+    color:red;            
+}
+.menu-item-off {
+    margin-right:20px; 
+    color:lightgrey;            
+}
+.menu-list-caret {
+    color: #999999;
+}
+
+.left-col-user, .left-col-item {
+    color: #004276;
+    font-size: 0.9em;
+    padding-left: 10px;
+}
+
+.left-col-item {
+    cursor: pointer;
+}

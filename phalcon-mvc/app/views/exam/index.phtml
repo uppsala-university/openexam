@@ -36,106 +36,102 @@ foreach ($roles as $role) {
     It looks like you are using an unsupported browser. In case of problem using the system, please try with an modern browser that supports the latest web standards.
 </div>
 
-<div id="container" class="left_menu_space container" style="width:100%">
-
-    <div class="jumbotron" style="margin:15px; margin-top: 0px; padding: 25px">
-        <h1>Hi <?= $this->catalog->getFirstName() ?>!</h1>
-        <div style="padding:10px 0px">
-            The content of this page depends on the different roles you have. Information about the different roles (creator, contributor, corrector, invigilator, student) can be found <a href="<?= $this->url->get('/help/manual/teacher') ?>">teacher manual</a>.  
-        </div>
+<div class="jumbotron" style="margin:15px; margin-top: 0px; padding: 25px">
+    <h1>Hi <?= $this->catalog->getFirstName() ?>!</h1>
+    <div style="padding:10px 0px">
+        The content of this page depends on the different roles you have. Information about the different roles (creator, contributor, corrector, invigilator, student) can be found <a href="<?= $this->url->get('/help/manual/teacher') ?>">teacher manual</a>.  
     </div>
-
-    <section class="ac-container">
-        <?php foreach ($roles as $index => $role) : ?>
-                <?php if (array_key_exists($role, $sections)) : ?>
-                        <div section-role="<?= $role ?>" section-state="<?= $state[$role] ?>">
-                            <?php if (in_array($role, $expand)): ?>
-                                    <input id="ac-<?= $index ?>" name="accordion-1" type="radio" checked="" />
-                            <?php else: ?>
-                                    <input id="ac-<?= $index ?>" name="accordion-1" type="radio"/>
-                            <?php endif; ?>
-
-                            <label for="ac-<?= $index ?>" class="exam-list-boxes">
-                                <i class="fa fa-chevron-right chevron" style="font-size: 16px; color: #990000"></i>
-                                <?= $sections[$role]['title']['name'] ?>
-                                <span class="hidden-xs"> - <?= $sections[$role]['title']['desc'] ?></span>
-                            </label>
-                            <article class="ac-large exam-listing-wrapper">
-                                <div style="padding:5px; margin-bottom: 20px">
-                                    <span style="margin:1px 0 0 3px; float:right; height:34px; width:45px" class="toolbtn toolbtn-orange-outline toolbtn-bigger search-exam"><i class="fa fa-search fa-2x" style="padding-top:2px;"></i></span> 
-                                    <input class="form-control exam-search-box" style="margin: 1px; float:right; max-width: 300px" type="text" class="exam-search-box" placeholder="Quick search" value="<?= $search ?>"> 
-
-                                    <?php if ($role == Roles::CREATOR): ?>
-                                            <a href="<?= $this->url->get('exam/create') ?>"> 
-                                                <span style="float: right; font-size: 14px"> 
-                                                    <span class="toolbtn toolbtn-orange-outline toolbtn-bigger" style="margin-right: 5px; line-height: 28px; margin-top: 1px">
-                                                        <i class="fa fa-plus-square"></i> Create new exam
-                                                    </span> 
-                                                </span> 
-                                            </a>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="exam-listing-area" style="min-height:260px"></div>
-                            </article>
-                        </div>
-                <?php endif; ?>
-        <?php endforeach; ?>
-    </section>
-
-    <!--
-        Dialog for managing students on exam.
-    -->
-    <div id="manage-students" title="Manage students for exam" style="display:none"></div>
-
-    <!--    
-        Dialog for reusing exam (copy properties and questions).
-    -->
-    <div id="reuse-exam-dialog" title="Reuse exam" style="display:none">
-        <div style="margin-top:15px; margin-bottom:10px">
-            Along with <strong>Exam title, instructions and exam settings</strong>, please select if any of the following exam parts you would like to reuse:
-        </div>
-        <div style="margin-left:25px">
-            <div>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" value="topics" class="exam-reuse-opt">
-                        Question sections
-                    </label>
-                </div>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" value="questions" class="exam-reuse-opt">
-                        Questions and question correctors<br>
-                    </label>
-                </div>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" value="roles"  class="exam-reuse-opt">
-                        Exam roles<br>
-                    </label>
-                </div>
-            </div>
-        </div>         
-    </div>
-
-    <!--    
-        Dialog for changing exam schedule.
-    -->
-    <div id="exam-datetime-changer" style="display: none" title="Change exam schedule">
-        <div class="exam-datetime-select" style="padding: 10px">
-            <label for="starttime">Start time:</label>
-            <input class="form-control" type="text" value="" id="exam-starttime" name="starttime" placeholder="yyyy-mm-dd hh:mm:ss">
-            <label for="endtime">End time:</label>
-            <input class="form-control" type="text" value="" id="exam-endtime"   name="endtime" placeholder="yyyy-mm-dd hh:mm:ss">
-        </div>
-    </div>
-
-    <!--
-        Dialog for checking exam status.
-    -->
-    <div id="exam-check-box" style="display:none" title="Exam status check" ></div>    
-
 </div>
+
+<section class="ac-container">
+    <?php foreach ($roles as $index => $role) : ?>
+            <?php if (array_key_exists($role, $sections)) : ?>
+                    <div section-role="<?= $role ?>" section-state="<?= $state[$role] ?>">
+                        <?php if (in_array($role, $expand)): ?>
+                                <input id="ac-<?= $index ?>" name="accordion-1" type="radio" checked="" />
+                        <?php else: ?>
+                                <input id="ac-<?= $index ?>" name="accordion-1" type="radio"/>
+                        <?php endif; ?>
+
+                        <label for="ac-<?= $index ?>" class="exam-list-boxes">
+                            <i class="fa fa-chevron-right chevron" style="font-size: 16px; color: #990000"></i>
+                            <?= $sections[$role]['title']['name'] ?>
+                            <span class="hidden-xs"> - <?= $sections[$role]['title']['desc'] ?></span>
+                        </label>
+                        <article class="ac-large exam-listing-wrapper">
+                            <div style="padding:5px; margin-bottom: 35px">
+                                <span style="margin:1px 0 0 3px; float:right; height:34px; width:45px" class="toolbtn toolbtn-orange-outline toolbtn-bigger search-exam"><i class="fa fa-search fa-2x" style="padding-top:2px;"></i></span> 
+                                <input class="form-control exam-search-box" style="margin: 1px; float:right; max-width: 300px" type="text" class="exam-search-box" placeholder="Quick search" value="<?= $search ?>"> 
+
+                                <?php if ($role == Roles::CREATOR): ?>
+                                        <a href="<?= $this->url->get('exam/create') ?>"> 
+                                            <span style="float: right; font-size: 14px"> 
+                                                <span class="toolbtn toolbtn-orange-outline toolbtn-bigger" style="margin-right: 5px; line-height: 28px; margin-top: 1px">
+                                                    <i class="fa fa-plus-square"></i> Create new exam
+                                                </span> 
+                                            </span> 
+                                        </a>
+                                <?php endif; ?>
+                            </div>
+                            <div class="exam-listing-area" style="min-height:260px"></div>
+                        </article>
+                    </div>
+            <?php endif; ?>
+    <?php endforeach; ?>
+</section>
+
+<!--
+    Dialog for managing students on exam.
+-->
+<div id="manage-students" title="Manage students for exam" style="display:none"></div>
+
+<!--    
+    Dialog for reusing exam (copy properties and questions).
+-->
+<div id="reuse-exam-dialog" title="Reuse exam" style="display:none">
+    <div style="margin-top:15px; margin-bottom:10px">
+        Along with <strong>Exam title, instructions and exam settings</strong>, please select if any of the following exam parts you would like to reuse:
+    </div>
+    <div style="margin-left:25px">
+        <div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="topics" class="exam-reuse-opt">
+                    Question sections
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="questions" class="exam-reuse-opt">
+                    Questions and question correctors<br>
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="roles"  class="exam-reuse-opt">
+                    Exam roles<br>
+                </label>
+            </div>
+        </div>
+    </div>         
+</div>
+
+<!--    
+    Dialog for changing exam schedule.
+-->
+<div id="exam-datetime-changer" style="display: none" title="Change exam schedule">
+    <div class="exam-datetime-select" style="padding: 10px">
+        <label for="starttime">Start time:</label>
+        <input class="form-control" type="text" value="" id="exam-starttime" name="starttime" placeholder="yyyy-mm-dd hh:mm:ss">
+        <label for="endtime">End time:</label>
+        <input class="form-control" type="text" value="" id="exam-endtime"   name="endtime" placeholder="yyyy-mm-dd hh:mm:ss">
+    </div>
+</div>
+
+<!--
+    Dialog for checking exam status.
+-->
+<div id="exam-check-box" style="display:none" title="Exam status check" ></div>    
 
 <?= Tag::javascriptInclude('js/views/exam/index.js') ?>
 
