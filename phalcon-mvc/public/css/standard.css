@@ -161,6 +161,14 @@ h1.logo {
     -webkit-box-shadow: 1px 5px 4px #999999; 
 }
 
+#ajax-loader {  
+    position:absolute;
+    right: 30px;
+    top: 80px;
+    display: none; 
+    color: #ddddee;
+}
+
 /**
  * Tool buttons:
  */

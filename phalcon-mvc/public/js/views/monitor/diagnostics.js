@@ -205,7 +205,7 @@ var diagnostics = (function () {
                 display(JSON.parse(resp));
             },
             error: function (err) {
-                $("#ajax_loader").hide();
+                $("#ajax-loader").hide();
 
                 var target = $(".mbox");
                 target.html(err.responseText);

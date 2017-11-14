@@ -34,8 +34,8 @@ use Phalcon\Tag;
         <?= $this->getContent(); ?>
 
         <!-- Content to show when AJAX request is in progress -->
-        <div id="ajax_loader" style="display:none">
-            <?= Tag::image(array("img/ajax-loader.gif", "class" => "ajax-loader")); ?>
+        <div id="ajax-loader" style="display:none">
+            <i class="fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom"></i>
         </div>
 
     </body>

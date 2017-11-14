@@ -997,7 +997,7 @@ if ($exam->decoded) {
 
             function progress() {
 
-                $('#ajax_loader').hide();
+                $('#ajax-loader').hide();
 
                 var val = (((objectLength(completedRequests) + 1) / objectLength(stIds)) * 100) || 0;
                 progressbar.progressbar("value", Math.round(val));

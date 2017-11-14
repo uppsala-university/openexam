@@ -63,7 +63,7 @@ var ajax = function (url, data, callback, type, async, showSuccessMsg) {
 
     request.fail(function (jqXHR, textStatus) {
         showMessage('Request failed. Please contact system administrators: ' + textStatus, 'error');
-        $("#ajax_loader").hide();
+        $("#ajax-loader").hide();
     });
 };
 
@@ -128,11 +128,11 @@ function objectLength(object)
 $(document).ready(function () {
 
     $(document).ajaxStart(function () {
-        $('#ajax_loader').show();
+        $('#ajax-loader').show();
     });
 
     $(document).ajaxStop(function () {
-        $('#ajax_loader').hide();
+        $('#ajax-loader').hide();
     });
 
     $('.fancybox').fancybox({
