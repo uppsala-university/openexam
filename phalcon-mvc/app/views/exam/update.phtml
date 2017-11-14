@@ -139,7 +139,7 @@ if (in_array("editable", $exam->flags)) {
 
         <!-- Exam title and description: -->
         <h1 style="padding-bottom: 10px">
-            <?= trim($exam->name) != '' ? $exam->name : 'Untitled exam' ?>
+            <?= strlen(trim($exam->name)) > 0 ? $exam->name : '&lt;Untitled exam&gt;' ?>
             <div style="float: right">
 
                 <?php if ($this->user->hasCapability($exam, 'update')) : ?>

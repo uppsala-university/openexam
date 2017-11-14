@@ -91,7 +91,7 @@ endforeach;
                 <?php if ($canUpdateExam && in_array("editable", $exam->flags)): ?>
                         <input class="form-control" title="The exam name" type="text" value="<?= $exam->name ?>" name="exam-title"  class="validate[required]" style="width:100% !important" >
                 <?php else: ?>
-                        <span style="border: 1px solid #cecece; padding:5px"><?= trim($exam->name) != '' ? trim($exam->name) : 'Untitled exam' ?></span>
+                        <span style="border: 1px solid #cecece; padding:5px"><?= strlen(trim($exam->name)) > 0 ? trim($exam->name) : '&lt;Untitled exam&gt;' ?></span>
                 <?php endif; ?>
             </div>
             <div class="st-line">
