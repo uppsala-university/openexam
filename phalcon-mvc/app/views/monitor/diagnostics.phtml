@@ -98,6 +98,11 @@
 
 <script>
         $(document).ready(function () {
+
+            if (oe_module_loaded("monitor-diagnostics")) {
+                return;
+            }
+
             // 
             // Handle pause/resume update event:
             // 

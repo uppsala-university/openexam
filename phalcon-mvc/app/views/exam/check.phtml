@@ -219,6 +219,10 @@ $security = $check->getSecurity();
         $(document).ready(function () {
             var examId = <?= $exam_id ?>;
 
+            if (oe_module_loaded("exam-check")) {
+                return;
+            }
+
             $('.exam-check-set-name').click(function () {
                 $('#exam-settings').trigger('click');
             });

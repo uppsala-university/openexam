@@ -28,6 +28,10 @@
 </div>
 
 <script>
+        if (oe_module_loaded("monitor-index")) {
+            return;
+        }
+
         $("#performance").click(function () {
             location.href = "performance";
         });

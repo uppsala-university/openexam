@@ -97,12 +97,6 @@ if ($exam->decoded) {
 
 ?>
 
-<style>
-    #mainview {
-        padding:15px; 
-    }
-</style>
-
 <!-- Main area -->
 <div id="mainview">
     <?php if (!$exam->show_save): ?>
@@ -564,7 +558,6 @@ if ($exam->decoded) {
     }
 </style>
 
-<script language="javascript">
 <?php
 // 
 // Question is currently first in table. Calculate number of columns last in
@@ -587,10 +580,13 @@ if ($exam->decoded) {
 }
 
 ?>
+
+<script>
         var examId = <?= $exam->id ?>;
         var stIds = <?= json_encode($studentIds) ?>;
         var completedRequests = {};
         var resyncableResults = [];
+
         $(document).ready(function () {
             // 
             // Keep column order:
@@ -637,6 +633,10 @@ if ($exam->decoded) {
                         {style: "drops", tipJoint: "top left", showOn: "click"}
                 );
             });
+
+            if (oe_module_loaded("question-correction")) {
+                return;
+            }
 
             $(document).on('click', '.save-result', function () {
                 var tmp = [];
@@ -932,7 +932,7 @@ if ($exam->decoded) {
                     );
                 }
 
-            }
+            };
         });
 
         $(function () {

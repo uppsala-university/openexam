@@ -36,6 +36,7 @@ foreach ($exam->students as $student) {
         white-space: nowrap;
     }
 </style>
+
 <div id="st-mng-wrapper" exam-id="<?= $this->request->getPost('exam_id') ?>">
     <div style="padding-bottom:15px">
         <h3><?= $exam->name ?></h3>
@@ -59,33 +60,10 @@ foreach ($exam->students as $student) {
 </div>
 
 <script language="javascript">
-        var studentList = <?= json_encode($stList) ?>;
-        var stEvents = '';
 
         (function () {
 
-            $('.tablesorter').tablesorter({
-                usNumberFormat: false,
-                sortReset: true,
-                sortRestart: true,
-                sortList: [[0, 0], [1, 0]],
-                headers: {
-                    '.no-sort': {
-                        sorter: false
-                    }
-                }
-            });
-
-            $('.tabs').tabs();
-            $(".accordion").accordion({
-                heightStyle: "content"
-            });
-
-            if (stEvents === 'loaded') {
-                return;
-            } else {
-                stEvents = 'loaded';
-            }
+            var studentList = <?= json_encode($stList) ?>;
 
             // 
             // Called after students has been added to exam.
@@ -112,6 +90,27 @@ foreach ($exam->students as $student) {
                     }
                 });
             };
+
+            $('.tablesorter').tablesorter({
+                usNumberFormat: false,
+                sortReset: true,
+                sortRestart: true,
+                sortList: [[0, 0], [1, 0]],
+                headers: {
+                    '.no-sort': {
+                        sorter: false
+                    }
+                }
+            });
+
+            $('.tabs').tabs();
+            $(".accordion").accordion({
+                heightStyle: "content"
+            });
+
+            if (oe_module_loaded("exam-students")) {
+                return;
+            }
 
             // 
             // Edit student properties inline.
@@ -532,7 +531,8 @@ foreach ($exam->students as $student) {
             // Delete selected student:
             // 
             $(document).on('click', '#del-st-btn', function () {
-                if (confirm("Are you sure you want to " + $('#del-st-btn > span').html() + "?")) {
+
+                if (confirm("Are you sure you want to " + $('#del-st-btn > span').text().toLowerCase() + "?")) {
 
                     var delStudent = [];
                     $('input[name="students[]"]:checked').each(function (i, elem) {
@@ -546,6 +546,8 @@ foreach ($exam->students as $student) {
                             }
                     );
                 }
+
+                return false;
             });
 
             // 

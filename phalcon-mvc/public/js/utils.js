@@ -1,4 +1,4 @@
-/* global Opentip */
+/* global Opentip, Function */
 
 // 
 // The source code is copyrighted, with equal shared rights, between the
@@ -127,14 +127,45 @@ function objectLength(object)
  */
 $(document).ready(function () {
 
+    // 
+    // Global function for preventing javascript from running twice.
+    // 
+    if (Function.prototype.oe_module_loaded === undefined) {
+        oe_module_loaded = (function () {
+            var modules = [];
+            
+            return function (module) {
+                if (modules.indexOf(module) === -1) {
+                    modules.push(module);
+                    return false;
+                } else {
+                    return true;
+                }
+            };
+        })();
+    }
+
+    if (oe_module_loaded("js-utils")) {
+        return;
+    }
+
+    // 
+    // Called on AJAX request start:
+    // 
     $(document).ajaxStart(function () {
         $('#ajax-loader').show();
     });
 
+    // 
+    // Called on AJAX request stop:
+    // 
     $(document).ajaxStop(function () {
         $('#ajax-loader').hide();
     });
 
+    // 
+    // Attach fancy box on elements:
+    // 
     $('.fancybox').fancybox({
         autoHeight: true,
         autoWidth: true,
@@ -145,6 +176,9 @@ $(document).ready(function () {
         }
     });
 
+    // 
+    // Prevent event bubbling:
+    // 
     $(document).on('click', '.prevent', function () {
         return false;
     });
