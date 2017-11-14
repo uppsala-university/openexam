@@ -40,8 +40,24 @@ use Phalcon\Tag;
 <!-- User search support -->
 <?php $this->partial("partials/user-search", array('staff' => $staff)) ?>
 
-<!-- Main area -->         
-<?php $canUpdateExam = $this->user->hasCapability($exam, 'update'); ?>
+<?php
+if (in_array("contributable", $exam->flags)) {
+        $exam->is_contributable = true;
+} else {
+        $exam->is_contributable = false;
+}
+if (in_array("published", $exam->flags)) {
+        $exam->is_published = true;
+} else {
+        $exam->is_published = false;
+}
+if (in_array("editable", $exam->flags)) {
+        $exam->is_editable = true;
+} else {
+        $exam->is_editable = false;
+}
+
+?>
 
 <style>
     div.question-removed {
@@ -109,6 +125,7 @@ use Phalcon\Tag;
     }
 </style>
 
+<!-- Main area -->         
 <div class="oe-columns-container">
     <!-- Left Column -->
     <div class="oe-left-column">
@@ -125,7 +142,7 @@ use Phalcon\Tag;
             <?= trim($exam->name) != '' ? $exam->name : 'Untitled exam' ?>
             <div style="float: right">
 
-                <?php if ($canUpdateExam) : ?>
+                <?php if ($this->user->hasCapability($exam, 'update')) : ?>
                         <a href="#" class="prevent exam-settings">
                             <i class="fa fa-gear" id="exam-settings" style="float:right;padding:3px"></i>
                         </a> 
@@ -142,14 +159,11 @@ use Phalcon\Tag;
             </div>
         </h1>
 
-        <?php
-        if ($canUpdateExam) {
-                $check->render();
-        }
+        <?php if ($this->user->hasCapability($exam, 'update')) : ?>
+                <div style="float: left;border: 1px dashed #ddddee;padding: 2px 10px 2px 10px;margin-bottom: 10px; width:100%; max-width: 30em"><?= $check->render(); ?></div>
+        <?php endif; ?>
 
-        ?>
-
-        <?php if ($this->user->hasCapability('question', 'create') && in_array("contributable", $exam->flags)): ?>
+        <?php if ($this->user->hasCapability('question', 'create') && $exam->is_contributable): ?>
                 <a href="#" class="add_new_qs">
                     <div style="display: block; float:right">
                         <span class="btn btn-success">
@@ -175,20 +189,20 @@ use Phalcon\Tag;
                     <div class="q_no"></div>
                     <div class="q_score"></div>
                     <div class="q_line_op">
-                        <?php if (in_array("published", $exam->flags)) { ?>
+                        <?php if ($exam->is_published) : ?>
                                 <a href="#" class="q-tool-item view-q" title="Preview question"><i class="fa fa-eye"></i></a>
                                 <a href="#" class="q-tool-item edit-q published" title="Edit question"><i class="fa fa-pencil"></i></a>
                                 <br>
                                 <a href="#" class="q-tool-item remove-q" style="display: block" title="Flag question as removed from this exam"><i class="fa fa-caret-square-o-right"></i></a>
                                 <a href="#" class="q-tool-item insert-q" style="display: none" title="Re-add removed question on this exam"><i class="fa fa-caret-square-o-left"></i></a>
-                        <?php } else { ?>
+                        <?php else : ?>
                                 <a href="#" class="q-tool-item view-q" title="Preview question"><i class="fa fa-eye"></i></a>
                                 <a href="#" class="q-tool-item edit-q editable" title="Edit question"><i class="fa fa-pencil"></i></a>
                                 <br>
                                 <a href="#" class="q-tool-item remove-q" style="display: block" title="Flag question as removed from this exam"><i class="fa fa-caret-square-o-right"></i></a>
                                 <a href="#" class="q-tool-item insert-q" style="display: none" title="Re-add removed question on this exam"><i class="fa fa-caret-square-o-left"></i></a>
                                 <a href="#" class="q-tool-item del-q" title="Delete question from this exam"><i class="fa fa-close"></i></a>
-                        <?php } ?>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="qs_area_line_q_parts">
@@ -207,7 +221,7 @@ use Phalcon\Tag;
             </div>   
         </div>
 
-        <?php if ($canUpdateExam && in_array("editable", $exam->flags)): ?>
+        <?php if ($this->user->hasCapability($exam, 'update') && $exam->is_editable): ?>
                 <div id="exam_op_btns" style="clear: both;<?= !count($examQs) ? 'display:none' : '' ?>">
                     <center>
                         <a href="<?= $this->url->get('exam/' . $exam->id) ?>">
@@ -219,7 +233,7 @@ use Phalcon\Tag;
                     </center>
                 </div>
 
-        <?php elseif ($this->user->hasCapability('question', 'create') && in_array("editable", $exam->flags)): ?>
+        <?php elseif ($this->user->hasCapability('question', 'create') && $exam->is_editable): ?>
                 <a href="<?= $this->url->get('exam/index'); ?>">
                     <div id="" style="margin-bottom: 10px">
                         <center>

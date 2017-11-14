@@ -136,18 +136,14 @@ class Check extends ExamStatusCheck implements Component
                 }
 
                 if ($this->_mode == self::RENDER_LABEL) {
-                        printf("<div style=\"float: left; border: 1px dashed #ddddee; padding: 2px 10px 2px 10px\">\n");
                         printf("<i class=\"fa fa-2x fa-%s-circle\" style=\"color: %s\"></i>\n", $this->_icon, $this->_color);
                         printf("<span style=\"vertical-align: super\">%s: %s</span>\n", $this->_text, $this->_task);
-                        printf("</div>\n");
                 }
                 if ($this->_mode == self::RENDER_BUTTON) {
-                        printf("<div style=\"display: block; float: left\">\n");
                         printf("<span style=\"padding: 2px 10px 2px 10px; font-size: 11px\" class=\"btn btn-default\">\n");
                         printf("<i class=\"fa fa-1x fa-%s-circle\" style=\"color: %s\"></i>\n", $this->_icon, $this->_color);
                         printf("<span>%s: %s</span>\n", $this->_text, $this->_task);
                         printf("</span>\n");
-                        printf("</div>\n");
                 }
         }
 
