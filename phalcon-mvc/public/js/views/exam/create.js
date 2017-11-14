@@ -667,7 +667,7 @@ $(document).ready(function () {
             // 
             if ($(ansType).val() === 'choicebox') {
                 qJson[qPartTitle]["ans_area"]["data"] = {};
-                $(ansType).parent().parent().find('.ans_type').find('.question_opts > div > div').each(function (i, optElement) {
+                $(ansType).closest('.ans_type_selector_box_wrap').find('.ans_type').find('.question_opts > div > div').each(function (i, optElement) {
                     qJson[qPartTitle]["ans_area"]["data"][$(optElement).html()] = $(optElement).parent().find('input').is(':checked');
                 });
             } else if ($(ansType).val() === 'textarea') {
@@ -687,20 +687,6 @@ $(document).ready(function () {
         });
 
         // 
-        // Send AJAX request to add/update this question in database. Prepare question
-        // data and send request. Add or update qJson to global qsJson if successful.
-        // 
-
-//        // 
-//        // Use selected topic or default:
-//        // 
-//        if ($('#q-topic-sel').length) {
-//            var topicId = $('#q-topic-sel').val();
-//        } else {
-//            var topicId = $('.topic-name').first().attr('data-id');
-//        }
-//
-        // 
         // Set data for question update:
         // 
         data = {
@@ -709,6 +695,9 @@ $(document).ready(function () {
             quest: JSON.stringify(qJson)
         };
 
+        // 
+        // Send AJAX request to add/update this question in database.
+        // 
         ajax(
                 baseURL + 'ajax/core/' + role + '/question/update',
                 data,

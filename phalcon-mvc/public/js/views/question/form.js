@@ -287,15 +287,17 @@ $(document).ready(function () {
     // 
     // Add or delele new sortable option in option type of questions:
     // 
-    $('body').on('click', '.addNewSortable', function () {
+    $('body').on('click', '.add-new-sortable', function () {
         var instances = $(document).find('[ckeditor="choice"]').length;
         var editor = 'editor' + instances;
 
         $(this).closest('.choice_q').find('.question_opts').append(
-                '<div style="padding-top:5px">\
-                        <img src="' + baseURL + 'img/cross-circle.png" class="delopt hideable" width="12" height="12"> \
-                        <input type="checkbox"> \
-                        <div class="editabletext" ckeditor="choice" contenteditable="true" style="display: inline" id="' + editor + '">Option - click to edit</div> \
+                '<div style="padding-top:5px"> \
+                    <span class="delopt hideable"> \
+                        <i class="fa fa-minus-circle" aria-hidden="true" style="color: red"></i> \
+                    </span>\n\
+                    <input type="checkbox"> \
+                    <div class="editabletext" ckeditor="choice" contenteditable="true" style="display: inline" id="' + editor + '">Option - click to edit</div> \
                 </div>');
         CKEDITOR.inline(editor);
     });

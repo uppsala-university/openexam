@@ -45,8 +45,57 @@ if ($question->status == 'removed') {
 
 ?>
 
-<!-- Add / Edit question form that appears in light box -->
+<style>
+    #q-parts-wrapper .ui-state-default {
+        border-radius: 0px;
+        padding-top: 0.8em;
+    }
+    #q-parts-wrapper .ui-state-active {
+        background: none repeat scroll 0 0 #c6e1ec !important;
+        color: #3d7489 !important;
+    }
+    .q_resources {
+        border: 1px dashed #e2e2e2;
+        margin-top: 10px;
+        background-color: #f9f9f9;
+        padding-top: 10px;
+    }
+    .q_resources .add_resources a {
+        color: #C02E3C;
+        font-weight: normal;
+        line-height: 1.25;
+        margin-left: 2px;
+        padding-left: 15px;
+    }
+    .ans_type_selector_box_wrap {
+        border: 1px dashed #dedede;
+        margin-bottom: 5px;
+    }
+    .ans_type_selector_box {
+        margin: 10px;
+    }
+    .ans_type_selector_box label {
+        font-weight: normal;
+    }
+    .ans_type {
+        display: none;
+        margin-left: 25px;
+        padding-bottom: 5px;
+    }
+    .add-new-sortable {
+        padding-left: 15px;        
+    }
+    .q-corrector-area {
+        color: grey;
+        font-weight: normal;
+        border: 1px solid #e1e1e1;
+        padding: 8px;
+        width: 350px;
+        border-radius: 3px;
+    }
+</style>
 
+<!-- Question form that appears in dialog -->
 <div  id="question-form" style="padding-top:20px; ">
     <div id="qPartTabs" style="<?= $question->is_editable ? 'display:block' : 'pointer-events: none; opacity: 0.4;'; ?>">
         <?php $tabCounter = 1 ?>
@@ -67,6 +116,7 @@ if ($question->status == 'removed') {
                     ?>
                     <div id="q-part-<?= $i ?>" class="q-part" style="padding:<?= ($tabCounter <= 1 ? "0px" : "1em 1.4em") ?>;">
                         <div class="accordion">
+
                             <h3>Write question</h3>
                             <div>
                                 <article class="ac-large">
@@ -75,7 +125,12 @@ if ($question->status == 'removed') {
                                         <textarea id="q_text<?= $i ?>" class="write_q_ckeditor" style="width:99%;" rows="1" placeholder="Write your question here"><?= $qText ?>
                                         </textarea>
                                         <div class="q_resources lib_resources">
-                                            <div class="add_resources"><a class="add_media" href="#">Add supplementary materials</a></div>
+                                            <div class="add_resources">
+                                                <a class="add_media" href="#">
+                                                    <i class="fa fa-plus-square" aria-hidden="true" style="color: limegreen;"></i>
+                                                    <span> Add supplementary materials</span>
+                                                </a>
+                                            </div>
                                             <ul class="lib_resources_list">
                                                 <?php if (count($qParts[$qPartTitle]['resources'])): ?>
                                                         <?php foreach ($qParts[$qPartTitle]['resources'] as $rTitle => $rLink): ?>
@@ -93,6 +148,7 @@ if ($question->status == 'removed') {
                                     </div>
                                 </article>
                             </div>
+
                             <h3>Answer options</h3>
                             <?php $qAnsType = $qParts[$qPartTitle]['ans_area']['type'] ?>
                             <div class="answering_options">
@@ -100,16 +156,22 @@ if ($question->status == 'removed') {
                                     <div style="padding:10px">
                                         <div class="ans_type_selector_box_wrap">
                                             <div class="ans_type_selector_box">
-                                                <input type="radio" class="ans_type_selector" value="textbox" <?= ($qAnsType == 'textbox') ? 'checked="checked"' : '' ?> />
-                                                <span>Single line text box</span> </div>
+                                                <label>
+                                                    <input class="ans_type_selector" type="radio" value="textbox" <?= ($qAnsType == 'textbox') ? 'checked="checked"' : '' ?> />
+                                                    <span> Single line text box</span> 
+                                                </label>
+                                            </div>
                                             <div class="ans_type" style=" <?= ($qAnsType == 'textbox') ? 'display:block' : 'display:none' ?>">
                                                 <input type="text" style="width:350px" class="readable form-control"/>
                                             </div>
                                         </div>
                                         <div class="ans_type_selector_box_wrap">
                                             <div class="ans_type_selector_box">
-                                                <input type="radio"  class="ans_type_selector" value="textarea" <?= ($qAnsType == 'textarea') ? 'checked="checked"' : '' ?>/>
-                                                <span>Multi line text box</span> </div>
+                                                <label>
+                                                    <input type="radio"  class="ans_type_selector" value="textarea" <?= ($qAnsType == 'textarea') ? 'checked="checked"' : '' ?>/>
+                                                    <span>Multi line text box</span> 
+                                                </label>
+                                            </div>
                                             <div class="ans_type" style=" <?= ($qAnsType == 'textarea') ? 'display:block' : 'display:none' ?>">
                                                 <?= Tag::image(array("img/ckeditor.png", "width" => '40%')); ?>
                                                 <div style="margin-top: 5px; padding-left: 15px; border-left: 3px solid #dddddd">
@@ -164,18 +226,21 @@ if ($question->status == 'removed') {
                                         </div>
                                         <div class="ans_type_selector_box_wrap">
                                             <div class="ans_type_selector_box">
-                                                <input type="radio"  class="ans_type_selector" value="choicebox" <?= ($qAnsType == 'choicebox') ? 'checked="checked"' : '' ?>/>
-                                                <span>Choice box</span> 
+                                                <label>
+                                                    <input type="radio"  class="ans_type_selector" value="choicebox" <?= ($qAnsType == 'choicebox') ? 'checked="checked"' : '' ?>/>
+                                                    <span>Choice box</span> 
+                                                </label>
                                             </div>
                                             <div class="ans_type" style=" <?= ($qAnsType == 'choicebox') ? 'display:block' : 'display:none' ?>">
-                                                <?php $delOpt = Tag::image(array("img/cross-circle.png", "class" => "delopt hideable", "width" => "12", "height" => "12")); ?>
                                                 <div class="qline_wrapper">
                                                     <div class="choice_q qline" style="width:100%">
                                                         <div class="question_opts" style="padding-bottom:5px">
                                                             <?php if (count($qParts[$qPartTitle]['ans_area']['data'])): ?>
                                                                     <?php foreach ($qParts[$qPartTitle]['ans_area']['data'] as $optText => $checked): ?>
                                                                             <div style="padding-top:5px">
-                                                                                <?= $delOpt ?>
+                                                                                <span class="delopt hideable">
+                                                                                    <i class="fa fa-minus-circle" aria-hidden="true" style="color: red"></i>                                                        
+                                                                                </span>
                                                                                 <input type="checkbox" class="readable" <?= $checked ? 'checked="checked"' : '' ?>>
                                                                                 <div contenteditable="true" ckeditor="choice" style="display: inline-block"><?= $optText ?></div> 
                                                                             </div>
@@ -184,14 +249,17 @@ if ($question->status == 'removed') {
                                                                     <?php for ($j = 1; $j <= 3; $j++) : ?>
                                                                             <?php $optTxt = "Option " . $j . " - click to edit"; ?>
                                                                             <div style="padding-top:5px">
-                                                                                <?= $delOpt ?>
+                                                                                <span class="delopt hideable">
+                                                                                    <i class="fa fa-minus-circle" aria-hidden="true" style="color: red"></i>                                                        
+                                                                                </span>
                                                                                 <input type="checkbox" class="readable">
                                                                                 <div contenteditable="true" ckeditor="choice" style="display: inline-block" class="editabletext"><?= $optTxt ?></div>
                                                                             </div>
                                                                     <?php endfor; ?>
                                                             <?php endif; ?>
                                                         </div>
-                                                        <span class="addNewSortable hideable">
+                                                        <span class="add-new-sortable hideable">
+                                                            <i class="fa fa-plus-square" aria-hidden="true" style="color: limegreen;"></i>
                                                             <a href="#" style="color:grey" onClick="return false">Add new option</a>
                                                         </span> 
                                                     </div>
@@ -200,15 +268,22 @@ if ($question->status == 'removed') {
                                         </div>
                                         <div class="ans_type_selector_box_wrap">
                                             <div class="ans_type_selector_box">
-                                                <input type="radio"  class="ans_type_selector" value="canvas" <?= ($qAnsType == 'canvas') ? 'checked="checked"' : '' ?>/>
-                                                <span>Drawing Canvas</span> 
+                                                <label>
+                                                    <input type="radio"  class="ans_type_selector" value="canvas" <?= ($qAnsType == 'canvas') ? 'checked="checked"' : '' ?>/>
+                                                    <span>Drawing Canvas</span> 
+                                                </label>
                                             </div>
                                             <div class="ans_type" style=" <?= ($qAnsType == 'canvas') ? 'display:block' : 'display:none' ?>">
                                                 <div class="qline_wrapper">
                                                     <?= Tag::image(array("img/canvas.png", "width" => '40%')); ?>
                                                 </div>
                                                 <div class="q_resources lib_canvas">
-                                                    <div class="add_resources"><a class="set_canvas_background" href="#">Select background image</a></div>
+                                                    <div class="add_resources">
+                                                        <a class="set_canvas_background" href="#">
+                                                            <i class="fa fa-plus-square" aria-hidden="true" style="color: limegreen;"></i>
+                                                            <span> Select background image</span>
+                                                        </a>
+                                                    </div>
                                                     <ul class="lib_canvas_background">
                                                         <?php if ($qParts[$qPartTitle]['ans_area']['back']): ?>
                                                                 <?php foreach ($qParts[$qPartTitle]['ans_area']['back'] as $rTitle => $rLink): ?>
@@ -227,6 +302,7 @@ if ($question->status == 'removed') {
                                         </div>
                                 </article>
                             </div>
+
                             <h3>Points</h3>
                             <div>
                                 <div style="min-height:200px"> Maximum points:
@@ -247,23 +323,25 @@ if ($question->status == 'removed') {
             <div style="margin:0px 10px 10px;" id="q_correctors">
                 <article class="ac-large">
                     <div style="font-weight:bold"> Question Correctors: 
-                        <a href="#" id="uu-id4" data-model="corrector" qid='<?= $question->id ?>'>
-                            <?= Tag::image(array("img/plus-circle.png", "width" => "10", "height" => "10", "class" => "search-catalog-service prevent")); ?>
+                        <a href="#" id="uu-id4" data-model="corrector" qid='<?= $question->id ?>' class="search-catalog-service prevent">
+                            <i class="fa fa-plus-circle" aria-hidden="true" style="color: limegreen"></i>
                         </a> 
                         <br>
                         <div class="q-corrector-area">
                             <ul class="q_corrector_list" style="list-style:none; margin:0px">
                                 <!-- corrector item template -->
                                 <li style="display: none">
-                                    <?= Tag::image(array("img/cross-circle.png", "height" => "11", "class" => 'del-corrector')); ?>
-                                    <span data-user="" data-rec="" class="left-col-user" style="font-size:11px"></span>
+                                    <i class="fa fa-minus-circle" aria-hidden="true" style="color: red" class="del-corrector"></i>
+                                    <span data-user="" data-rec="" class="left-col-user"></span>
                                 </li>
                                 <?php foreach ($question->correctors as $corrector): ?>
                                         <li>
-                                            <?= Tag::image(array("img/cross-circle.png", "height" => "11", "class" => 'del-corrector')); ?>
-                                            <span data-user="<?= $corrector->user ?>" data-rec="<?= $corrector->id ?>" class="left-col-user" style="font-size:11px">
-                                                <?= $corrector->display ?>
-                                            </span>
+                                            <a href="#" class="del-corrector">
+                                                <i class="fa fa-minus-circle" aria-hidden="true" style="color: red"></i>
+                                                <span data-user="<?= $corrector->user ?>" data-rec="<?= $corrector->id ?>" class="left-col-user">
+                                                    <?= $corrector->display ?>
+                                                </span>
+                                            </a>
                                         </li>
                                 <?php endforeach; ?>
                             </ul>
