@@ -406,7 +406,7 @@ if ($question->status == 'removed') {
         // 
         // Inline ckeditor on elements with ckeditor="choice" attribute:
         // 
-        $(document).find('[ckeditor="choice"]').each(function (index, element) {
+        $(document).find('div[ckeditor="choice"]').each(function (index, element) {
             CKEDITOR.inline(element);
         });
 </script>
