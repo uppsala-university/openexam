@@ -204,7 +204,12 @@ h1.logo {
 
 .opentip-container {
     max-width: 500px;
-    min-width: 350px;
+    min-width: 380px;
+}
+
+.opentip .user-search {
+    min-width: 270px;
+    margin-right: 10px;
 }
 
 /**
