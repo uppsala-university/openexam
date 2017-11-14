@@ -13,14 +13,16 @@
 ?>
 
 <style>
-    h1.success {
+    h2.success {
         padding-left: 30px;
         background: url("<?= $icon ?>") no-repeat left;
     }
 </style>
 
-<h1 class="success">Logged out</h1>
-<p>
-    You have successful logout from <?= $auth->description; ?>. 
-    Please close any open browser windows to clean up any existing session cookies.
-</p>
+<div class="oe-login">
+    <h2 class="success">Logged out</h2>
+    <p>
+        You have successful logout from <?= $auth->description; ?>. 
+        Please close any open browser windows to clean up any existing session cookies.
+    </p>
+</div>

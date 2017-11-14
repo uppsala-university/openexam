@@ -13,13 +13,15 @@
 ?>
 
 <style>
-    h1.success {
+    h2.success {
         padding-left: 30px;
         background: url("<?= $icon ?>") no-repeat left;
     }
 </style>
 
-<h1 class="success">Logged in</h1>
-<p>
-    You have successful login to <?= $auth->description; ?>. 
-</p>
+<div class="oe-login">
+    <h2 class="success">Logged in</h2>
+    <p>
+        You have successful login to <?= $auth->description; ?>. 
+    </p>
+</div>

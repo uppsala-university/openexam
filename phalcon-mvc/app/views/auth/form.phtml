@@ -13,18 +13,9 @@
 ?>
 
 <style type="text/css">
-    .login {
-        background: none repeat scroll 0 0 #f6f6f6;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        margin: 0 20px;
-        padding: 0 20px 5px;
-        max-width: 600px;
-        display: inline-block;
-    }
     .credentials {
         width: 45%;
-        float: left;
+        display: inline-block;
     }    
     .credentials form {
         margin-top: 20px;
@@ -41,6 +32,7 @@
         float: right;
         padding: 20px;
         border-radius: 5px;
+        margin: 20px 10px;
     }
     #status-info {
         color: #5555aa;
@@ -58,51 +50,50 @@
     }
 </style>
 
-<div class="login">
-    <h2 class="identity">Authentication is required to continue</h2>
+<div class="oe-login">
+    <h2 class="identity">Login using <?= $form->getUserOption('description'); ?></h2>
     <hr/>
-
-    <div class="credentials">
-        <h4>Login using <?= $form->getUserOption('description'); ?></h4>
-
-        <form action="<?= $form->getAction(); ?>" method="POST">
-            <?php if ($form->has('fcode')) { ?>
-                    <p>
-                        <label>Code:</label>
-                        <?= $form->render('fpass'); ?>
-                    </p>
-                    <p>
-                        <label>Exam:</label>
-                        <?= $form->render('fexam'); ?>
-                    </p>
-                    <?= $form->render('fcode'); ?>
-            <?php } else { ?>
-                    <p>
-                        <label>Username:</label>
-                        <?= $form->render('fuser'); ?>
-                    </p>
-                    <p>
-                        <label>Password:</label>
-                        <?= $form->render('fpass'); ?>
-                    </p>
-            <?php } ?>
-            <p class="checkbox">
-                <label>
-                    <input type="checkbox" onclick="toggle_show_password('fpass')"> Show password
-                </label>
-            </p>
-            <p>
-                <?= $form->render('fcancel'); ?>
-                <?= $form->render('fsubmit'); ?>
-            </p>
-        </form>
-    </div>
-    <div class="status" id="status-info">
-        <div style="float: left; display: inline-block; width: 15%">
-            <i class="fa fa-info-circle fa-2x"></i>
+    <div>
+        <div class="credentials">
+            <form action="<?= $form->getAction(); ?>" method="POST">
+                <?php if ($form->has('fcode')) { ?>
+                        <p>
+                            <label>Code:</label>
+                            <?= $form->render('fpass'); ?>
+                        </p>
+                        <p>
+                            <label>Exam:</label>
+                            <?= $form->render('fexam'); ?>
+                        </p>
+                        <?= $form->render('fcode'); ?>
+                <?php } else { ?>
+                        <p>
+                            <label>Username:</label>
+                            <?= $form->render('fuser'); ?>
+                        </p>
+                        <p>
+                            <label>Password:</label>
+                            <?= $form->render('fpass'); ?>
+                        </p>
+                <?php } ?>
+                <p class="checkbox">
+                    <label>
+                        <input type="checkbox" onclick="toggle_show_password('fpass')"> Show password
+                    </label>
+                </p>
+                <p>
+                    <?= $form->render('fcancel'); ?>
+                    <?= $form->render('fsubmit'); ?>
+                </p>
+            </form>
         </div>
-        <div style="float: left; display: inline-block; width: 85%">
-            <?= $form->getUserOption('information') ?>
+        <div class="status" id="status-info">
+            <div style="float: left; display: inline-block; width: 15%">
+                <i class="fa fa-info-circle fa-2x"></i>
+            </div>
+            <div style="float: left; display: inline-block; width: 85%">
+                <?= $form->getUserOption('information') ?>
+            </div>
         </div>
     </div>
 </div>
