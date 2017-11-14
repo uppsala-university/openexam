@@ -47,7 +47,7 @@ if ($exam->decoded || $this->user->acquire(array(Roles::DECODER, Roles::CREATOR)
         $exam->show_percent = true;
 }
 
-if ($this->user->acquire(array(Roles::DECODER, Roles::CREATOR), $exam->id) && $exam->getState()->isCorrected()) {
+if ($this->user->acquire(array(Roles::DECODER, Roles::CREATOR), $exam->id)) {
         $exam->show_download = true;
 } else {
         $exam->show_download = false;
@@ -59,14 +59,11 @@ if (!$exam->decoded && $this->user->roles->acquire(Roles::DECODER, $exam->id) &&
         $exam->show_decode = false;
 }
 
-if (!$exam->getState()->isCorrected()) {
+if ($exam->decoded && !$exam->getState()->isCorrected()) {
         $exam->show_download = false;
         $exam->show_decode = false;
-
-        if ($exam->decoded) {
-                $exam->decoded = false;
-                printf("<div class=\"alert alert-warning\">Your exam is flagged as decoded, but some answers are still uncorrected. Please contact the system administrator to resolve this issue.</div>");
-        }
+        $exam->decoded = false;
+        $exam->show_missmatch = true;
 }
 
 if (strtotime($exam->endtime) < time()) {
@@ -100,434 +97,438 @@ if ($exam->decoded) {
 
 ?>
 
+<style>
+    #mainview {
+        padding:15px; 
+    }
+</style>
+
 <!-- Main area -->
-<div id="container" class="left_menu_space" style="width:100%">
-    <div id="centerColWide" style="width:95%">
-        <div id="mainview">
-            <?php if (!$exam->show_save): ?>
-                    <h3>Exam status</h3>
-                    <p>Following table shows all answers from students to questions for the examination <strong>"<?= $exam->name ?>"</strong>. </p>
-                    <p>You can view the student's answers by student (rows), by question (column) or individual (by index). This exam is not yet finished, so you can only monitor the answering progress for students on this exam.</p>
-            <?php elseif (!$exam->decoded): ?>
-                    <h2>Exam correction</h2>
-                    <hr>
-                    <p>Following table shows all answers from students to questions for the examination <strong>"<?= $exam->name ?>"</strong>. </p>
-                    <div class="alert alert-info alert-dismissable">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        Correct answers by student (rows), by question (column) or individual (by index). You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of.
-                    </div>
-            <?php else: ?>
-                    <h3>Exam score board</h3>
-                    <p>Following table shows the final result of all students for the examination <strong>"<?= $exam->name ?>"</strong>. </p>
-                    <p>You can view the student's answers by student (rows), by question (column) or individual (by index). This exam has been decoded, so it's no longer possible to change student results.</p>
+<div id="mainview">
+    <?php if (!$exam->show_save): ?>
+            <h3>Exam status</h3>
+            <p>Following table shows all answers from students to questions for the examination <strong>"<?= $exam->name ?>"</strong>. </p>
+            <p>You can view the student's answers by student (rows), by question (column) or individual (by index). This exam is not yet finished, so you can only monitor the answering progress for students on this exam.</p>
+    <?php elseif (!$exam->decoded): ?>
+            <h2>Exam correction</h2>
+            <hr>
+            <p>Following table shows all answers from students to questions for the examination <strong>"<?= $exam->name ?>"</strong>. </p>
+            <div class="alert alert-info alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                Correct answers by student (rows), by question (column) or individual (by index). You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of.
+            </div>
+    <?php else: ?>
+            <h3>Exam score board</h3>
+            <p>Following table shows the final result of all students for the examination <strong>"<?= $exam->name ?>"</strong>. </p>
+            <p>You can view the student's answers by student (rows), by question (column) or individual (by index). This exam has been decoded, so it's no longer possible to change student results.</p>
+    <?php endif; ?>
+
+    <?php if ($exam->show_missmatch) : ?>
+            <div class="alert alert-warning">Your exam is flagged as decoded, but some answers are still uncorrected. Please contact the system administrator to resolve this issue.</div>;
+    <?php endif; ?>
+
+    <div>
+        <center>
+            <?php if ($exam->show_decode): ?>
+                    <button id="decode-exam" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding: 5px 15px; min-width: 220px" title="Click to decode the exam. Confirmation is required as this is an irreversable operation">
+                        <h5>
+                            <i class="fa fa-check-circle fa-lg" style="color:green"></i> 
+                            Decode this exam.
+                        </h5>
+                    </button>
             <?php endif; ?>
 
+            <?php if ($exam->show_download): ?>
+                    <button id="download-scoreboard" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding: 5px 15px; min-width: 220px" title="Download score board in spreadsheet format">
+                        <h5>
+                            <i class="fa fa-file-excel-o fa-lg" style="color:#1D9D73"></i>
+                            <span class="download-msg"> Download score board</span>
+                        </h5>
+                    </button>
+            <?php endif; ?>
 
-            <div>
-                <center>
-                    <?php if ($exam->show_decode): ?>
-                            <button id="decode-exam" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding: 5px 15px; min-width: 220px" title="Click to decode the exam. Confirmation is required as this is an irreversable operation">
-                                <h5 style="font-style:normal; font-size:12px">
-                                    <i class="fa fa-check-circle fa-lg" style="color:green"></i> 
-                                    Decode this exam.
-                                </h5>
-                            </button>
+            <?php if ($exam->decoded): ?>
+                    <button id="download-results" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding: 0px 15px; min-width: 220px" title="Download zip-file containing all students result">
+                        <h5>
+                            <i class="fa fa-file-pdf-o fa-lg" style="color:red"></i>
+                            <span class="download-msg"> Download student results</span>
+                        </h5>
+                    </button>
+            <?php endif; ?>
+        </center>
+    </div>	
+
+    <div style="overflow:scroll" id="scoreboard-wrapper">
+        <table class="tablesorter">
+            <thead>
+                <tr>
+                    <?php foreach ($questions as $qNo => $question): ?>
+                            <?php
+                            $href = $this->url->get('exam/' . $exam->id . '/correction/question/' . $question->id);
+                            $desc = "Correctors: ";
+
+                            $correctors = array();
+                            foreach ($question->correctors as $corrector) {
+                                    $correctors[] = $corrector->name;
+                            }
+                            $desc .= implode(", ", $correctors);
+
+                            ?>
+                            <th style="background-color:#EAEAEA; width:35px; text-align:center; " class="sorter-false">
+                                <div style="text-align: center">
+                                    <a data-fancybox="ajax" 
+                                       data-caption="<?= $exam->name ?>"
+                                       data-src="<?= $href ?>" 
+                                       title="<?= $desc ?>"
+                                       data-type="ajax" 
+                                       href="javascript:;">
+                                        Q<?= $question->slot ?><br>Max. <?= floatval($question->score) ?>
+                                    </a>
+                                </div>
+                            </th>
+                            <?php $totalExamScore += $question->score; ?>
+                    <?php endforeach; ?>
+
+                    <th style="background-color:#EAEAEA; width:62px" class="sortable">
+                        Student
+                    </th>
+                    <?php if ($exam->show_code): ?>
+                            <th style="background-color:#EAEAEA; width:62px" class="sortable">
+                                Code
+                            </th>
                     <?php endif; ?>
-
-                    <?php if ($exam->show_download): ?>
-                            <button id="download-scoreboard" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding: 5px 15px; min-width: 220px" title="Download score board in spreadsheet format">
-                                <h5 style="font-style:normal; font-size:12px" >
-                                    <i class="fa fa-file-excel-o fa-lg" style="color:#1D9D73"></i>
-                                    <span class="download-msg"> Download score board</span>
-                                </h5>
-                            </button>
-                    <?php endif; ?>
-
                     <?php if ($exam->decoded): ?>
-                            <button id="download-results" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding: 0px 15px; min-width: 220px" title="Download zip-file containing all students result">
-                                <h5 style="font-style:normal; font-size:12px" >
-                                    <i class="fa fa-file-pdf-o fa-lg" style="color:red"></i>
-                                    <span class="download-msg"> Download student results</span>
-                                </h5>
-                            </button>
+                            <th style="background-color:#EAEAEA; width:62px" class="sortable">
+                                F. name
+                            </th>
+                            <th style="background-color:#EAEAEA; width:62px" class="sortable">
+                                L. name
+                            </th>
+                            <th style="background-color:#EAEAEA; width:62px" class="sortable">
+                                P No.
+                            </th>
                     <?php endif; ?>
-                </center>
-            </div>	
-
-            <div style="overflow:scroll" id="scoreboard-wrapper">
-                <table class="tablesorter">
-                    <thead>
+                    <?php if ($exam->show_percent): ?>
+                            <th style="background-color:#EAEAEA; width:35px; text-align:center; " class="sortable">
+                                <div style="text-align: center">
+                                    Total score
+                                    <div>Max. <?= floatval($totalExamScore) ?></div>
+                                </div>
+                            </th> 
+                            <th class="sortable" style="background-color:#EAEAEA; width:25px; text-align:center">%</th>
+                    <?php endif; ?>
+                    <?php if ($exam->show_grades): ?>
+                            <th class="sortable" style="background-color:#EAEAEA; width:25px; text-align:center">Grade</th>
+                    <?php endif; ?>
+                </tr>
+            </thead>	
+            <tbody>
+                <?php foreach ($students as $student): ?>
                         <tr>
-                            <?php foreach ($questions as $qNo => $question): ?>
-                                    <?php
-                                    $href = $this->url->get('exam/' . $exam->id . '/correction/question/' . $question->id);
-                                    $desc = "Correctors: ";
+                            <?php
+                            // 
+                            // Create an answer lookup table:
+                            // 
+                            $studans = $student->answers;
+                            $answers = array();
+                            if ($studans->count() == 0) {
+                                    continue;
+                            }
+                            foreach ($studans as $a) {
+                                    $answers[$a->question_id] = $a;
+                            }
 
-                                    $correctors = array();
-                                    foreach ($question->correctors as $corrector) {
-                                            $correctors[] = $corrector->name;
+                            ?>
+
+                            <?php $totalStudentScore = 0; ?>
+                            <?php
+                            foreach ($questions as $question):
+
+                                    $result = null;
+                                    $qScore = 0;
+                                    $answer = isset($answers[$question->id]) ? $answers[$question->id] : false;
+                                    if ($answer) {
+
+                                            $result = $answer->result;
+                                            if (is_object($result) && $result->count()) {
+                                                    // 
+                                                    // Fixes for invalid JSON score data:
+                                                    // 
+                                                    if ($result->score[0] == '{') {
+                                                            if ($result->score == '{}') {
+                                                                    $result->score = '{"a":0}';
+                                                                    $result->save();
+                                                            }
+                                                            if (!($scores = json_decode($result->score, true))) {
+                                                                    $result->score = '{"a":0}';
+                                                                    $result->save();
+                                                            }
+                                                            if (!($scores = json_decode($result->score, true))) {
+                                                                    die("Failed decode JSON data");
+                                                            }
+                                                    }
+
+                                                    if (is_array($scores)) {
+                                                            foreach ($scores as $part => $score) {
+                                                                    $qScore += $score;
+                                                            }
+                                                    }
+
+                                                    if ($qScore < 0) {
+                                                            $qScore = 0;
+                                                    }
+
+                                                    $totalStudentScore += $qScore;
+                                                    $overallQuestScore[$question->id][] = $qScore;
+                                            }
                                     }
-                                    $desc .= implode(", ", $correctors);
+
+                                    $qCorrectorList = array();
+                                    foreach ($question->getCorrectors() as $qCorrector) {
+                                            $qCorrectorList[] = $qCorrector->user;
+                                    }
 
                                     ?>
-                                    <th style="background-color:#EAEAEA; width:35px; text-align:center; " class="sorter-false">
-                                        <div style="text-align: center">
-                                            <a data-fancybox="ajax" 
-                                               data-caption="<?= $exam->name ?>"
-                                               data-src="<?= $href ?>" 
-                                               title="<?= $desc ?>"
-                                               data-type="ajax" 
-                                               href="javascript:;">
-                                                Q<?= $question->slot ?><br>Max. <?= floatval($question->score) ?>
-                                            </a>
-                                        </div>
-                                    </th>
-                                    <?php $totalExamScore += $question->score; ?>
-                            <?php endforeach; ?>
 
-                            <th style="background-color:#EAEAEA; width:62px" class="sortable">
-                                Student
-                            </th>
+                                    <?php
+                                    // 
+                                    // Find color code:
+                                    // 
+                                    $cLink = true;
+                                    if (!$answer) {
+                                            $cc = 'na';
+                                            $cLink = false;
+                                    } elseif (!$answer->answered) {
+                                            $cc = 'na';
+                                            $cLink = false;
+                                    } elseif (is_object($result) && $result->count() && in_array($result->correction, array('completed', 'finalized'))) {
+                                            $cc = 'ac';
+                                    } elseif (!in_array($this->user->getPrincipalName(), $qCorrectorList)) {
+                                            $cc = 'no';
+                                    } else {
+                                            $cc = 'nc';
+                                    }
+
+                                    ?>
+                                    <td class="cc <?= $cc ?>">
+                                        <?php if ($cLink): ?>
+                                                <a data-fancybox="ajax" 
+                                                   data-caption="<?= $exam->name ?>"
+                                                   data-src="<?= $this->url->get('exam/' . $exam->id . '/correction/answer/' . $answer->id) ?>" 
+                                                   data-type="ajax" 
+                                                   href="javascript:;" 
+                                                   ans-id="<?= $answer->id ?>">
+                                                       <?= (is_object($result) && $result->count()) ? $qScore : '<i class="fa fa-check-square-o"></i>' ?>
+                                                </a>
+                                        <?php else: ?>
+                                                <i class="fa fa-ban"></i>
+                                        <?php endif; ?>
+                                    </td>
+
+                            <?php endforeach; ?>
+                            <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                <?php if ($exam->decoded): ?>
+                                        <a title="download result in pdf format" href="<?= $this->url->get('result/' . $exam->id . '/download/' . $student->id) ?>"><i class="fa fa-file-pdf-o" style="color:red"></i></a>    
+                                        &nbsp; &nbsp; &nbsp;
+                                <?php endif; ?> 
+                                <a data-fancybox="ajax" 
+                                   data-caption="<?= $exam->name ?>"
+                                   data-src="<?= $this->url->get('exam/' . $exam->id . '/correction/student/' . $student->id) ?>" 
+                                   data-type="ajax" 
+                                   href="javascript:;" 
+                                   ans-id="<?= $answer->id ?>">
+                                       <?= $exam->decoded ? $student->code : Student . '(' . $student->id . ')' ?>
+                                </a>
+                            </td>
                             <?php if ($exam->show_code): ?>
-                                    <th style="background-color:#EAEAEA; width:62px" class="sortable">
-                                        Code
-                                    </th>
+                                    <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                        <?= $student->code ?>
+                                    </td>
                             <?php endif; ?>
                             <?php if ($exam->decoded): ?>
-                                    <th style="background-color:#EAEAEA; width:62px" class="sortable">
-                                        F. name
-                                    </th>
-                                    <th style="background-color:#EAEAEA; width:62px" class="sortable">
-                                        L. name
-                                    </th>
-                                    <th style="background-color:#EAEAEA; width:62px" class="sortable">
-                                        P No.
-                                    </th>
+                                    <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                        <?= $student->fname ?>
+                                    </td>
+                                    <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                        <?= $student->lname ?>
+                                    </td>
+                                    <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
+                                        <?= substr(substr_replace($student->persnr, "-", 8, 0), 2); ?>
+                                    </td>
                             <?php endif; ?>
                             <?php if ($exam->show_percent): ?>
-                                    <th style="background-color:#EAEAEA; width:35px; text-align:center; " class="sortable">
-                                        <div style="text-align: center">
-                                            Total score
-                                            <div>Max. <?= floatval($totalExamScore) ?></div>
-                                        </div>
-                                    </th> 
-                                    <th class="sortable" style="background-color:#EAEAEA; width:25px; text-align:center">%</th>
-                            <?php endif; ?>
+                                    <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
+                                        <?= $totalStudentScore ?>
+                                        <?php
+                                        if ($answer) {
+                                                $avgScore[] = $totalStudentScore;
+                                        }
+                                        // 
+                                        // Fix division by zero warning:
+                                        // 
+                                        if ($totalStudentScore == 0 && $totalExamScore == 0) {
+                                                $totalStudentScore = 0;
+                                                $totalExamScore = 1;
+                                        }
+
+                                        ?>                                                                
+                                    </td>
+                                    <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
+                                        <?= sprintf("%1.1f", ($totalStudentScore / $totalExamScore) * 100) ?>%
+                                        <?php
+                                        if ($answer) {
+                                                $avgPercentage[] = floatval(($totalStudentScore / $totalExamScore) * 100);
+                                        }
+
+                                        ?>
+                                    </td>
+                            <?php endif ?>
                             <?php if ($exam->show_grades): ?>
-                                    <th class="sortable" style="background-color:#EAEAEA; width:25px; text-align:center">Grade</th>
-                            <?php endif; ?>
-                        </tr>
-                    </thead>	
-                    <tbody>
-                        <?php foreach ($students as $student): ?>
-                                <tr>
                                     <?php
-                                    // 
-                                    // Create an answer lookup table:
-                                    // 
-                                    $studans = $student->answers;
-                                    $answers = array();
-                                    if ($studans->count() == 0) {
-                                            continue;
+                                    $needGraceMarks = false;
+                                    foreach ($examGrades as $grade => $limit) {
+                                            // 
+                                            // Fix division by zero warning:
+                                            // 
+                                            if ($totalStudentScore == 0 && $totalExamScore == 0) {
+                                                    $totalStudentScore = 0;
+                                                    $totalExamScore = 1;
+                                            }
+                                            if ((($totalStudentScore / $totalExamScore) * 100) >= $limit) {
+                                                    end($examGrades);
+                                                    if (key($examGrades) == $grade) {
+                                                            if ($passAt - (($totalStudentScore / $totalExamScore) * 100) <= 5) {
+                                                                    $colorScheme = 'background-color:#4285F4; color:#FFFFCC';
+                                                                    $needGraceMarks = true;
+                                                            } else {
+                                                                    $colorScheme = 'background-color:#FF6B4F; color:#FFFFCC';
+                                                            }
+                                                    } else {
+                                                            $colorScheme = 'background-color:#8BC540; color:#41612c';
+                                                    }
+                                                    break;
+                                            }
                                     }
-                                    foreach ($studans as $a) {
-                                            $answers[$a->question_id] = $a;
-                                    }
+                                    $avgGrades[$grade] ++;
 
                                     ?>
-
-                                    <?php $totalStudentScore = 0; ?>
-                                    <?php
-                                    foreach ($questions as $question):
-
-                                            $result = null;
-                                            $qScore = 0;
-                                            $answer = isset($answers[$question->id]) ? $answers[$question->id] : false;
-                                            if ($answer) {
-
-                                                    $result = $answer->result;
-                                                    if (is_object($result) && $result->count()) {
-                                                            // 
-                                                            // Fixes for invalid JSON score data:
-                                                            // 
-                                                            if ($result->score[0] == '{') {
-                                                                    if ($result->score == '{}') {
-                                                                            $result->score = '{"a":0}';
-                                                                            $result->save();
-                                                                    }
-                                                                    if (!($scores = json_decode($result->score, true))) {
-                                                                            $result->score = '{"a":0}';
-                                                                            $result->save();
-                                                                    }
-                                                                    if (!($scores = json_decode($result->score, true))) {
-                                                                            die("Failed decode JSON data");
-                                                                    }
-                                                            }
-
-                                                            if (is_array($scores)) {
-                                                                    foreach ($scores as $part => $score) {
-                                                                            $qScore += $score;
-                                                                    }
-                                                            }
-
-                                                            if ($qScore < 0) {
-                                                                    $qScore = 0;
-                                                            }
-
-                                                            $totalStudentScore += $qScore;
-                                                            $overallQuestScore[$question->id][] = $qScore;
-                                                    }
-                                            }
-
-                                            $qCorrectorList = array();
-                                            foreach ($question->getCorrectors() as $qCorrector) {
-                                                    $qCorrectorList[] = $qCorrector->user;
-                                            }
-
-                                            ?>
-
-                                            <?php
-                                            // 
-                                            // Find color code:
-                                            // 
-                                            $cLink = true;
-                                            if (!$answer) {
-                                                    $cc = 'na';
-                                                    $cLink = false;
-                                            } elseif (!$answer->answered) {
-                                                    $cc = 'na';
-                                                    $cLink = false;
-                                            } elseif (is_object($result) && $result->count() && in_array($result->correction, array('completed', 'finalized'))) {
-                                                    $cc = 'ac';
-                                            } elseif (!in_array($this->user->getPrincipalName(), $qCorrectorList)) {
-                                                    $cc = 'no';
-                                            } else {
-                                                    $cc = 'nc';
-                                            }
-
-                                            ?>
-                                            <td class="cc <?= $cc ?>">
-                                                <?php if ($cLink): ?>
-                                                        <a data-fancybox="ajax" 
-                                                           data-caption="<?= $exam->name ?>"
-                                                           data-src="<?= $this->url->get('exam/' . $exam->id . '/correction/answer/' . $answer->id) ?>" 
-                                                           data-type="ajax" 
-                                                           href="javascript:;" 
-                                                           ans-id="<?= $answer->id ?>">
-                                                               <?= (is_object($result) && $result->count()) ? $qScore : '<i class="fa fa-check-square-o"></i>' ?>
-                                                        </a>
-                                                <?php else: ?>
-                                                        <i class="fa fa-ban"></i>
-                                                <?php endif; ?>
-                                            </td>
-
-                                    <?php endforeach; ?>
-                                    <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
-                                        <?php if ($exam->decoded): ?>
-                                                <a title="download result in pdf format" href="<?= $this->url->get('result/' . $exam->id . '/download/' . $student->id) ?>"><i class="fa fa-file-pdf-o" style="color:red"></i></a>    
-                                                &nbsp; &nbsp; &nbsp;
-                                        <?php endif; ?> 
-                                        <a data-fancybox="ajax" 
-                                           data-caption="<?= $exam->name ?>"
-                                           data-src="<?= $this->url->get('exam/' . $exam->id . '/correction/student/' . $student->id) ?>" 
-                                           data-type="ajax" 
-                                           href="javascript:;" 
-                                           ans-id="<?= $answer->id ?>">
-                                               <?= $exam->decoded ? $student->code : Student . '(' . $student->id . ')' ?>
-                                        </a>
+                                    <td class="gru" style="border-bottom:1px #dedede solid; text-align:center; font-weight:bold; <?= $colorScheme ?>">
+                                        <?= $grade ?> <?= ($needGraceMarks) ? "(" . floatval((($passAt / 100) * $totalExamScore) - $totalStudentScore) . " pt. less)" : '' ?>
                                     </td>
-                                    <?php if ($exam->show_code): ?>
-                                            <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
-                                                <?= $student->code ?>
-                                            </td>
-                                    <?php endif; ?>
-                                    <?php if ($exam->decoded): ?>
-                                            <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
-                                                <?= $student->fname ?>
-                                            </td>
-                                            <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
-                                                <?= $student->lname ?>
-                                            </td>
-                                            <td class="adjustable" style="border-bottom:1px #dedede solid; border-right:5px solid #DDDDDD; background-color:#FFFFFF; width:62px">
-                                                <?= substr(substr_replace($student->persnr, "-", 8, 0), 2); ?>
-                                            </td>
-                                    <?php endif; ?>
-                                    <?php if ($exam->show_percent): ?>
-                                            <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
-                                                <?= $totalStudentScore ?>
-                                                <?php
-                                                if ($answer) {
-                                                        $avgScore[] = $totalStudentScore;
-                                                }
-                                                // 
-                                                // Fix division by zero warning:
-                                                // 
-                                                if ($totalStudentScore == 0 && $totalExamScore == 0) {
-                                                        $totalStudentScore = 0;
-                                                        $totalExamScore = 1;
-                                                }
+                            <?php endif; ?>
+                        </tr>
+                        <?php
+                        $studentIds[] = $student->id;
+                endforeach;
 
-                                                ?>                                                                
-                                            </td>
-                                            <td style="border-bottom:1px #dedede solid; background-color:#FFFFCC; text-align:center">
-                                                <?= sprintf("%1.1f", ($totalStudentScore / $totalExamScore) * 100) ?>%
-                                                <?php
-                                                if ($answer) {
-                                                        $avgPercentage[] = floatval(($totalStudentScore / $totalExamScore) * 100);
-                                                }
+                ?>
+            </tbody>	
+            <?php if ($exam->show_summary): ?>
+                    <tfoot>
+                        <tr class="avarage">
+                            <?php foreach ($questions as $q): ?>
+                                    <?php
+                                    // 
+                                    // Avarage:
+                                    // 
+                                    if (isset($overallQuestScore[$q->id])) {
+                                            $sumScores = array_sum($overallQuestScore[$q->id]);
+                                            $numScores = count($overallQuestScore[$q->id]);
+                                    } else {
+                                            $numScores = 0;
+                                    }
 
-                                                ?>
-                                            </td>
-                                    <?php endif ?>
-                                    <?php if ($exam->show_grades): ?>
-                                            <?php
-                                            $needGraceMarks = false;
-                                            foreach ($examGrades as $grade => $limit) {
-                                                    // 
-                                                    // Fix division by zero warning:
-                                                    // 
-                                                    if ($totalStudentScore == 0 && $totalExamScore == 0) {
-                                                            $totalStudentScore = 0;
-                                                            $totalExamScore = 1;
-                                                    }
-                                                    if ((($totalStudentScore / $totalExamScore) * 100) >= $limit) {
-                                                            end($examGrades);
-                                                            if (key($examGrades) == $grade) {
-                                                                    if ($passAt - (($totalStudentScore / $totalExamScore) * 100) <= 5) {
-                                                                            $colorScheme = 'background-color:#4285F4; color:#FFFFCC';
-                                                                            $needGraceMarks = true;
-                                                                    } else {
-                                                                            $colorScheme = 'background-color:#FF6B4F; color:#FFFFCC';
-                                                                    }
-                                                            } else {
-                                                                    $colorScheme = 'background-color:#8BC540; color:#41612c';
-                                                            }
-                                                            break;
-                                                    }
-                                            }
-                                            $avgGrades[$grade] ++;
+                                    // 
+                                    // Fixup for division by zero warning:
+                                    // 
+                                    if ($numScores == 0) {
+                                            $sumScores = 0;
+                                            $numScores = 1;
+                                    }
+                                    $avgScores = floatval($sumScores / $numScores);
 
-                                            ?>
-                                            <td class="gru" style="border-bottom:1px #dedede solid; text-align:center; font-weight:bold; <?= $colorScheme ?>">
-                                                <?= $grade ?> <?= ($needGraceMarks) ? "(" . floatval((($passAt / 100) * $totalExamScore) - $totalStudentScore) . " pt. less)" : '' ?>
-                                            </td>
-                                    <?php endif; ?>
-                                </tr>
-                                <?php
-                                $studentIds[] = $student->id;
-                        endforeach;
+                                    // 
+                                    // Tooltip:
+                                    // 
+                                    $ansCount = count($overallQuestScore[$q->id]);
 
-                        ?>
-                    </tbody>	
-                    <?php if ($exam->show_summary): ?>
-                            <tfoot>
-                                <tr class="avarage">
-                                    <?php foreach ($questions as $q): ?>
-                                            <?php
-                                            // 
-                                            // Avarage:
-                                            // 
-                                            if (isset($overallQuestScore[$q->id])) {
-                                                    $sumScores = array_sum($overallQuestScore[$q->id]);
-                                                    $numScores = count($overallQuestScore[$q->id]);
-                                            } else {
-                                                    $numScores = 0;
-                                            }
+                                    // 
+                                    // Load correction status HTML fragment:
+                                    // 
+                                    $this->partial("partials/question-info", array(
+                                            'question'  => $q,
+                                            'corrected' => $ansCount,
+                                            'percent'   => $q->score == 0 ? 0 : sprintf("%.02d", ($avgScores / $q->score) * 100),
+                                            'avarage'   => $avgScores
+                                        )
+                                    );
 
-                                            // 
-                                            // Fixup for division by zero warning:
-                                            // 
-                                            if ($numScores == 0) {
-                                                    $sumScores = 0;
-                                                    $numScores = 1;
-                                            }
-                                            $avgScores = floatval($sumScores / $numScores);
+                                    ?>
+                            <?php endforeach; ?>
 
-                                            // 
-                                            // Tooltip:
-                                            // 
-                                            $ansCount = count($overallQuestScore[$q->id]);
+                            <th  class="cc aa" align="right" style="vertical-align:top;">Average:</th>
+                            <?php if ($exam->show_code): ?>
+                                    <th align="right" style="vertical-align:top;"></th>
+                            <?php endif; ?>
+                            <?php if ($exam->decoded): ?>
+                                    <th align="right" style="vertical-align:top;"></th>
+                                    <th align="right" style="vertical-align:top;"></th>
+                                    <th align="right" style="vertical-align:top;"></th>
+                            <?php endif; ?>
+                            <?php if ($exam->show_percent): ?>
+                                    <td class="cc aa">
+                                        <?php if (is_array($avgScore)) : ?>
+                                                <?= floatval(array_sum($avgScore) / count($avgScore)) ?> (<?= floatval($totalExamScore) ?>)
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="cc aa">
+                                        <?php if (is_array($avgPercentage)) : ?>
+                                                <?= sprintf("%1.1f", array_sum($avgPercentage) / count($avgPercentage)) ?>%
+                                        <?php endif; ?>
+                                    </td>
+                            <?php endif; ?>
+                            <?php if ($exam->show_grades): ?>
+                                    <td class="cc aa" style="text-align:right; margin:0; padding:0">
+                                        <?php foreach ($examGrades as $grade => $limit): ?>
+                                                <div style="padding:1px; "><b><?= $grade ?></b>: <?= $avgGrades[$grade] ?></div>
+                                        <?php endforeach; ?>
+                                    </td>
+                            <?php endif; ?>
+                        </tr>
+                    </tfoot>
+            <?php endif; ?>
+        </table>
+    </div>  
 
-                                            // 
-                                            // Load correction status HTML fragment:
-                                            // 
-                                            $this->partial("partials/question-info", array(
-                                                    'question'  => $q,
-                                                    'corrected' => $ansCount,
-                                                    'percent'   => $q->score == 0 ? 0 : sprintf("%.02d", ($avgScores / $q->score) * 100),
-                                                    'avarage'   => $avgScores
-                                                )
-                                            );
-
-                                            ?>
-                                    <?php endforeach; ?>
-
-                                    <th  class="cc aa" align="right" style="vertical-align:top;">Average:</th>
-                                    <?php if ($exam->show_code): ?>
-                                            <th align="right" style="vertical-align:top;"></th>
-                                    <?php endif; ?>
-                                    <?php if ($exam->decoded): ?>
-                                            <th align="right" style="vertical-align:top;"></th>
-                                            <th align="right" style="vertical-align:top;"></th>
-                                            <th align="right" style="vertical-align:top;"></th>
-                                    <?php endif; ?>
-                                    <?php if ($exam->show_percent): ?>
-                                            <td class="cc aa">
-                                                <?php if (is_array($avgScore)) : ?>
-                                                        <?= floatval(array_sum($avgScore) / count($avgScore)) ?> (<?= floatval($totalExamScore) ?>)
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="cc aa">
-                                                <?php if (is_array($avgPercentage)) : ?>
-                                                        <?= sprintf("%1.1f", array_sum($avgPercentage) / count($avgPercentage)) ?>%
-                                                <?php endif; ?>
-                                            </td>
-                                    <?php endif; ?>
-                                    <?php if ($exam->show_grades): ?>
-                                            <td class="cc aa" style="text-align:right; margin:0; padding:0">
-                                                <?php foreach ($examGrades as $grade => $limit): ?>
-                                                        <div style="padding:1px; "><b><?= $grade ?></b>: <?= $avgGrades[$grade] ?></div>
-                                                <?php endforeach; ?>
-                                            </td>
-                                    <?php endif; ?>
-                                </tr>
-                            </tfoot>
-                    <?php endif; ?>
-                </table>
-            </div>  
-
-            <h5>Color Codes</h5>
-            <p>Following are the color codes used in the score board:</p>
-            <table style="margin:0">
-                <tbody>
+    <h5>Color Codes</h5>
+    <p>Following are the color codes used in the score board:</p>
+    <table style="margin:0">
+        <tbody>
+            <tr class="colorcode">
+                <td class="cc ac">&nbsp;</td>
+                <td>Answer has been corrected.</td>
+            </tr>
+            <?php if (!$exam->decoded && $this->user->getPrincipalName() == $exam->creator): ?>
                     <tr class="colorcode">
-                        <td class="cc ac">&nbsp;</td>
-                        <td>Answer has been corrected.</td>
+                        <td class="cc no">&nbsp;</td>
+                        <td>This answer should be corrected by another person.</td>
                     </tr>
-                    <?php if (!$exam->decoded && $this->user->getPrincipalName() == $exam->creator): ?>
-                            <tr class="colorcode">
-                                <td class="cc no">&nbsp;</td>
-                                <td>This answer should be corrected by another person.</td>
-                            </tr>
-                    <?php endif; ?>                                        
-                    <tr class="colorcode">
-                        <td class="cc na">&nbsp;</td>
-                        <td>No answer was given for this question.</td>
-                    </tr>
-                    <tr class="colorcode">
-                        <td class="cc nc">&nbsp;</td>
-                        <td>The answer is uncorrected or partially corrected.</td>
-                    </tr>
-                    <tr class="colorcode">
-                        <td class="cc gm">&nbsp;</td>
-                        <td>Student can pass with some grace marks.</td>
-                    </tr>
-                </tbody>
-            </table>
-            <br />
-        </div>
-    </div>
-    <br clear="both">
+            <?php endif; ?>                                        
+            <tr class="colorcode">
+                <td class="cc na">&nbsp;</td>
+                <td>No answer was given for this question.</td>
+            </tr>
+            <tr class="colorcode">
+                <td class="cc nc">&nbsp;</td>
+                <td>The answer is uncorrected or partially corrected.</td>
+            </tr>
+            <tr class="colorcode">
+                <td class="cc gm">&nbsp;</td>
+                <td>Student can pass with some grace marks.</td>
+            </tr>
+        </tbody>
+    </table>
+    <br />
 </div>
 
 <!-------------- Hidden Divs --------------->

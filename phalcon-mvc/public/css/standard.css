@@ -136,6 +136,9 @@ img {
     }
 }
 
+/**
+ * Miscellaneous style:
+ */
 a, a:hover {
     color: #c1002b;
     text-decoration: none;
@@ -167,6 +170,10 @@ h1.logo {
     top: 80px;
     display: none; 
     color: #ddddee;
+}
+
+#mainview {
+    padding:15px; 
 }
 
 /**
