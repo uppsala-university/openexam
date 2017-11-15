@@ -13,33 +13,46 @@
 
 use OpenExam\Models\Exam;
 
-$canUpdateExam = true;
 $totalScore = 0;
 $missingQuestText = $missingPoints = array();
 $qs = $exam->getQuestions(array('order' => 'slot'));
 
-foreach ($qs as $qNo => $q):
+foreach ($qs as $qNo => $q) {
         $totalScore += $q->score;
 
         $qTxt = '(';
         $quest = json_decode($q->quest, true);
-        foreach ($quest as $qPartTitle => $qPart):
-                if (strip_tags($qPart['q_text']) == ''):
+        foreach ($quest as $qPartTitle => $qPart) {
+                if (strip_tags($qPart['q_text']) == '') {
                         $qTxt .= "Part " . $qPartTitle . ",";
-                endif;
-        endforeach;
+                }
+        }
 
-        if ($qTxt != '('):
+        if ($qTxt != '(') {
                 $missingQuestText[] = "Q" . ($qNo + 1) . " " . trim($qTxt, ',') . ")";
-        endif;
+        }
 
-        if (!$q->score):
+        if (!$q->score) {
                 $missingPoints[] = "Q" . ($qNo + 1);
-        endif;
+        }
+}
 
-endforeach;
+if (in_array("editable", $exam->flags)) {
+        $exam->is_editable = true;
+        $exam->on_disabled = '';
+} else {
+        $exam->is_editable = false;
+        $exam->on_disabled = 'disabled="disabled"';     // HTML attribute
+}
 
 ?>
+
+<style>
+    .exam-settings-box input[type="text"] {
+        max-width: 450px;
+    }
+</style>
+
 <div class="exam-settings-box">
     <div class="tabs">
         <ul>
@@ -53,11 +66,10 @@ endforeach;
         </ul>
 
         <div id="tabs-0">
-            <?php if ($canUpdateExam): ?>
-                    <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
-                        Please note that you may return at anytime to complete the exam settings. Remember to press the 'Save settings' button. Use 'Check exam' to detect missing tasks to complete.
-                    </div>
-            <?php endif; ?>
+            <div class="alert alert-info" style="padding: 10px">
+                Please note that you may return at anytime to complete the exam settings. Remember to press the 'Save settings' button. Use 'Check exam' to detect missing tasks to complete.
+            </div>
+
             <div style="min-height: 140px">
                 <div class="alert alert-success" style="width: 50%; float: right; margin-left: 20px">
                     Total number of students in exam: <?= count($exam->getStudents()) ?> <br />
@@ -82,32 +94,26 @@ endforeach;
         </div>
 
         <div id="tabs-1">
-            <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
+            <div class="alert alert-info" style="padding: 10px">
                 The exam title will be shown for students when selecting exam. The organization should not be edited in normal cases as it affects grouping of exams in statistics.
             </div>
 
             <div class="st-line">
                 <label for="exam-title"><strong>Exam title:</strong> <span style="color:#F02222">*</span></label>
-                <?php if ($canUpdateExam && in_array("editable", $exam->flags)): ?>
-                        <input class="form-control" title="The exam name" type="text" value="<?= $exam->name ?>" name="exam-title"  class="validate[required]" style="width:100% !important" >
-                <?php else: ?>
-                        <span style="border: 1px solid #cecece; padding:5px"><?= strlen(trim($exam->name)) > 0 ? trim($exam->name) : '&lt;Untitled exam&gt;' ?></span>
-                <?php endif; ?>
+                <input class="form-control" title="The exam name" type="text" value="<?= $exam->name ?>" name="exam-title"  class="validate[required]" style="width:100% !important" <?= $exam->on_disabled ?>>
             </div>
+
             <div class="st-line">
                 <label for="exam-course-code"><strong>Course code:</strong></label>
-                <?php if ($canUpdateExam && in_array("editable", $exam->flags)): ?>
-                        <input class="form-control" title="Course code of this exam (i.e. 3FK726)" type="text" value="<?= $exam->course ?>" name="exam-course-code">
-                <?php else: ?>
-                        <span style="border: 1px solid #cecece; padding:5px"><?= empty($exam->course) ? " --- " : $exam->course ?></span>
-                <?php endif; ?>
+                <input class="form-control" title="Course code of this exam (i.e. 3FK726)" type="text" value="<?= $exam->course ?>" name="exam-course-code" <?= $exam->on_disabled ?>>
             </div>
+
             <div class="st-line">
                 <label for="exam-code"><strong>Institution code:</strong></label>
-                <input class="form-control" title="The institition, department or division code from the directory service (i.e. LDAP)" type="text" value="<?= $exam->code ?>" name="exam-code" disabled="disabled">
+                <input class="form-control" title="The institition, department or division code from the directory service (i.e. LDAP)" type="text" value="<?= $exam->code ?>" name="exam-code" <?= $exam->on_disabled ?>>
             </div>
+
             <div class="st-line">
-                <label for="unit"><b>Organization:</b> <span style="color:#F02222">*</span></label>
                 <datalist id="user-department-list">
                     <select id="user-department-select form-control">
                         <?php foreach ($departments as $code => $values) : ?>
@@ -117,169 +123,128 @@ endforeach;
                         <?php endforeach; ?>
                     </select>
                 </datalist>
-                <?php if ($canUpdateExam && in_array("editable", $exam->flags)): ?>
-                        <input class="form-control" title="The organization name from directory service (don't edit unless told so)" type="text" value="<?= $exam->orgunit ?>" name="unit" class="validate[required]" list="user-department-list" onclick="this.value = '';">
-                <?php else: ?>
-                        <span style="border: 1px solid #cecece; padding:5px"><?= $exam->orgunit ?></span>
-                <?php endif; ?>
+
+                <label for="unit"><b>Organization:</b> <span style="color:#F02222">*</span></label>
+                <input class="form-control" title="The organization name from directory service (don't edit unless told so)" type="text" value="<?= $exam->orgunit ?>" name="unit" class="validate[required]" list="user-department-list" onclick="this.value = '';" <?= $exam->on_disabled ?>>
             </div>
         </div>
 
         <div id="tabs-2">
-            <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
+            <div class="alert alert-info" style="padding: 10px">
                 The exam will remain as draft until the start time is set. An exam without end time is treated as an forever ongoing exam (mostly useful for self-diagnostic tests).
             </div>
 
             <div class="st-line">
                 <label for="start"><b>Exam Start time:</b> <span style="color:#F02222">*</span></label>
-                <?php if ($canUpdateExam && in_array("editable", $exam->flags)): ?>
-                        <input class="form-control" type="text" placeholder="yyyy-mm-dd hh:mm" value="<?= $exam->starttime ?>" name="start" class="datepicker validate[required]">
-                <?php else: ?>
-                        <span style="border: 1px solid #cecece; padding:5px"><?= $exam->starttime ?></span>
-                <?php endif; ?>
+                <input class="form-control" type="text" placeholder="yyyy-mm-dd hh:mm" value="<?= $exam->starttime ?>" name="start" class="datepicker validate[required]" <?= $exam->on_disabled ?>>
             </div>
 
             <div class="st-line">
                 <label for="end"><b>Exam End time:</b> </label>
-                <?php if ($canUpdateExam && in_array("editable", $exam->flags)): ?>
-                        <input class="form-control" type="text" placeholder="yyyy-mm-dd hh:mm" value="<?= $exam->endtime ?>" name="end" class="datepicker">
-                <?php else: ?>
-                        <span style="border: 1px solid #cecece; padding:5px"><?= $exam->endtime ?></span>
-                <?php endif; ?>
+                <input class="form-control" type="text" placeholder="yyyy-mm-dd hh:mm" value="<?= $exam->endtime ?>" name="end" class="datepicker" <?= $exam->on_disabled ?>>
             </div>
         </div>
 
         <div id="tabs-3">
-            <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
+            <div class="alert alert-info" style="padding: 10px">
                 Input grade:value pairs on separate lines defining the graduation levels in percent for this examination. The first line must be on form name:0, denoting the failed grade.
             </div>
 
             <div class="st-line">
                 <label for="grade"><strong>Grades:</strong> <span style="color:#F02222">*</span></label>
-                <?php if ($canUpdateExam): ?>
-                        <textarea class="form-control" style="width: 100%" rows="4" title="The newline separated grades" name="grade" class="grade validate[required]" placeholder="<?= str_pad("U:0", 65, " ") . str_pad("G:50", 60, " ") . "VG:75" ?>"><?= trim($exam->grades) ?></textarea>
-                <?php else: ?>
-                        <span style="border: 1px solid #cecece; padding:5px"><?= nl2br(trim($exam->grades)) ?></span>
-                <?php endif; ?>
+                <textarea class="form-control" style="width: 100%" rows="4" title="The newline separated grades" name="grade" class="grade validate[required]" placeholder="<?= str_pad("U:0", 65, " ") . str_pad("G:50", 60, " ") . "VG:75" ?>"><?= trim($exam->grades) ?></textarea>
             </div>
         </div>
 
         <div id="tabs-4">
-            <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
+            <div class="alert alert-info" style="padding: 10px">
                 Student instructions for this exam. Typical information on grades, allowed tools and teacher question time during the exam.
             </div>
 
             <div class="st-line">
                 <label for="exam-desc"><strong>Exam instructions for students:</strong></label>		
-                <?php if ($canUpdateExam && in_array("editable", $exam->flags)): ?>
-                        <textarea class="form-control" id="exam-desc" style="width:99%;" rows="1" placeholder="Write exam description here"><?= trim($exam->descr) ?></textarea>
-                <?php else: ?>
-                        <div style="width:99%;border: 1px solid #cecece; padding:5px"><?= trim($exam->descr) ?></div>
-                <?php endif; ?>
+                <textarea class="form-control" id="exam-desc" style="width:99%;" rows="1" placeholder="Write exam description here" <?= $exam->on_disabled ?>><?= trim($exam->descr) ?></textarea>
             </div>    
         </div>
 
         <div id="tabs-5">
-            <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
+            <div class="alert alert-info" style="padding: 10px">
                 Controls the details to expose in student result file. For example, whether to include statistics or correcting teacher.
             </div>
 
             <div class="st-line">
                 <label for="exam-result"><strong>Student results:</strong></label>		
-                <?php if ($canUpdateExam): ?>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" value="1" title="Expose names and contact information for people involved in the creation and correction process in the result PDF seen by the student." <?= ((($exam->details & Exam::RESULT_EXPOSE_EMPLOYEES) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
-                                Show correcting teachers.                                
-                            </label>
-                        </div>
-                <?php else: ?>
-                        <?= ((($exam->details & Exam::RESULT_EXPOSE_EMPLOYEES) != 0) ? '&#10004; Show correcting teachers.' : '') ?>
-                <?php endif; ?>
 
-                <?php if ($canUpdateExam): ?>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" value="2" title="Include statistics like avarage/mean values and score distribution compared to other students in the result PDF seen by the student." <?= ((($exam->details & Exam::RESULT_OTHERS_STATISTICS) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
-                                Include section with statistics.
-                            </label>
-                        </div>
-                <?php else: ?>
-                        <?= (($exam->details & Exam::RESULT_OTHERS_STATISTICS) != 0) ? '&#10004; Include section with statistics.' : '' ?>
-                <?php endif; ?>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="1" title="Expose names and contact information for people involved in the creation and correction process in the result PDF seen by the student." <?= ((($exam->details & Exam::RESULT_EXPOSE_EMPLOYEES) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
+                        Show correcting teachers.                                
+                    </label>
+                </div>
 
-                <?php if ($canUpdateExam): ?>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" value="64" title="Don't include student grade calculated by the system. This option is useful when the actual grading is finalized outside of the system." <?= ((($exam->details & Exam::HIDE_STUDENT_GRADE_IN_RESULT) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
-                                Hide student grade section.
-                            </label>
-                        </div>
-                <?php else: ?>
-                        <?= (($exam->details & Exam::HIDE_STUDENT_GRADE_IN_RESULT) != 0) ? '&#10004; Hide student grade section.' : '' ?>
-                <?php endif; ?>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="2" title="Include statistics like avarage/mean values and score distribution compared to other students in the result PDF seen by the student." <?= ((($exam->details & Exam::RESULT_OTHERS_STATISTICS) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
+                        Include section with statistics.
+                    </label>
+                </div>
 
-                <?php if ($canUpdateExam): ?>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" value="16" title="Forge (blur/hide) media content like images when rendering the PDF with student results. Select this option if media content should only be viewable by students during the exam." <?= ((($exam->details & Exam::HIDE_MEDIA_CONTENT_IN_RESULT) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
-                                Hide rendered media content (i.e. images).
-                            </label>
-                        </div>
-                <?php else: ?>
-                        <?= (($exam->details & Exam::HIDE_MEDIA_CONTENT_IN_RESULT) != 0) ? '&#10004; Hide rendered media content (i.e. images).' : '' ?>
-                <?php endif; ?>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="64" title="Don't include student grade calculated by the system. This option is useful when the actual grading is finalized outside of the system." <?= ((($exam->details & Exam::HIDE_STUDENT_GRADE_IN_RESULT) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
+                        Hide student grade section.
+                    </label>
+                </div>
+
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="16" title="Forge (blur/hide) media content like images when rendering the PDF with student results. Select this option if media content should only be viewable by students during the exam." <?= ((($exam->details & Exam::HIDE_MEDIA_CONTENT_IN_RESULT) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
+                        Hide rendered media content (i.e. images).
+                    </label>
+                </div>
             </div>
         </div>
 
         <div id="tabs-6">
-            <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
+            <div class="alert alert-info" style="padding: 10px">
                 Controls the details to expose in score board during correction. Affects users having the corrector role.
             </div>
 
             <div class="st-line">
                 <label for="exam-correction"><strong>Exam correction:</strong></label>		
-                <?php if ($canUpdateExam): ?>
-                        <div class="checkbox">
-                            <label>
 
-                                <input type="checkbox" value="4" title="Display student statistics like scoring percentage during correction. Might have an influence on correcting teacher." <?= ((($exam->details & Exam::SHOW_SUMMARY_DURING_CORRECTION) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
-                                Show student's accumulated points in score board.
-                            </label>
-                        </div>
-                <?php else: ?>
-                        <?= (($exam->details & Exam::SHOW_SUMMARY_DURING_CORRECTION) != 0) ? '&#10004; Show student\'s accumulated points in score board.' : '' ?>
-                <?php endif; ?>
+                <div class="checkbox">
+                    <label>
 
-                <?php if ($canUpdateExam): ?>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" value="32" title="Display students anonymous code during correction. Leave disabled if same persons that registered students are going to participate in the answer correction." <?= ((($exam->details & Exam::SHOW_CODE_DURING_CORRECTION) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
-                                Show student's anonymous code in score board.
-                            </label>
-                        </div>
-                <?php else: ?>
-                        <?= (($exam->details & Exam::SHOW_SUMMARY_DURING_CORRECTION) != 0) ? '&#10004; Show student\'s anonymous code in score board.' : '' ?>
-                <?php endif; ?>
+                        <input type="checkbox" value="4" title="Display student statistics like scoring percentage during correction. Might have an influence on correcting teacher." <?= ((($exam->details & Exam::SHOW_SUMMARY_DURING_CORRECTION) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
+                        Show student's accumulated points in score board.
+                    </label>
+                </div>
+
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="32" title="Display students anonymous code during correction. Leave disabled if same persons that registered students are going to participate in the answer correction." <?= ((($exam->details & Exam::SHOW_CODE_DURING_CORRECTION) != 0) ? 'checked="checked"' : '') ?> name="details[]" >
+                        Show student's anonymous code in score board.
+                    </label>
+                </div>
             </div>
         </div>
     </div>
 
-    <?php if ($canUpdateExam): ?>
-            <hr>
-            <div class="st-line">
-                <center>
-                    <span style="min-width: 10em" class="btn btn-success save-exam-settings">
-                        <i class="fa fa-floppy-o"></i>
-                        <span>Save settings</span>
-                    </span>
-                    <span style="min-width: 10em" class="btn btn-success check-exam">
-                        <i class="fa fa-check-square"></i>
-                        <span>Check exam</span>
-                    </span>
-                </center>		
-            </div>   
-    <?php endif; ?> 
+    <hr>
+    <div class="st-line">
+        <center>
+            <span style="min-width: 10em" class="btn btn-success save-exam-settings">
+                <i class="fa fa-floppy-o"></i>
+                <span>Save settings</span>
+            </span>
+            <span style="min-width: 10em" class="btn btn-success check-exam">
+                <i class="fa fa-check-square"></i>
+                <span>Check exam</span>
+            </span>
+        </center>		
+    </div>   
+
 </div>
 
 <script language="javascript">
