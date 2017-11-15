@@ -127,7 +127,7 @@ if (strtotime($exam->endtime) < time()) {
                     <?php endif; ?>
 
                     <?php if (!$decoded && $loadBy != 'question'): ?>
-                            <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; z-index: 1; right: 15px; width: 90px;", "id" => $question->id . "-corrected", "class" => "not-corrected")); ?>
+                            <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; z-index: 1; right: 15px; width: 5%; width: 60px;", "id" => $question->id . "-corrected", "class" => "not-corrected")); ?>
                     <?php endif; ?>
                     <div class="q-heading correction-section-head">
                         <span style="color:#333333; font-weight:normal"><i class="fa fa-pencil-square-o"></i> Question no. <?= $question->slot ?></span>
@@ -363,7 +363,7 @@ if (strtotime($exam->endtime) < time()) {
                                             <?php $scoreData = (is_object($result) && $result->count() ? json_decode($result->score, true) : array()); ?>
                                             <div class="correction-section-box" style="margin-top: 15px" correction="<?= $result->correction ?>">
                                                 <?php if (!$decoded && (count($scoreData) == 0 || !in_array($result->correction, array('completed', 'finalized')))): ?>
-                                                        <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; right: 25px; width: 5%;", "class" => "not-corrected")); ?>
+                                                        <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; right: 25px; width: 5%; min-width: 60px;", "class" => "not-corrected")); ?>
                                                 <?php endif; ?>
                                                 <?php $student = $answer->student; ?>
                                                 <div class="st-ans-box-heading correction-section-head">
