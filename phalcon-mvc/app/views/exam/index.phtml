@@ -30,6 +30,61 @@ foreach ($roles as $role) {
 
 ?>
 
+<style>
+    /**
+     * Some CSS classes are set in section.phtml and details.phtml.
+     */
+    .exam-search-wrapper {
+        min-height: 48px;
+        padding:5px
+    }
+    .exam-search-box {
+        float: right;
+        display: flex;
+        margin-bottom: 5px;
+        min-width: 400px;
+    }
+    .exam-order-by {
+        display: inline-block;
+    }
+    .exam-show-state .toolbtn {
+        width: 120px;
+    }
+
+    @media screen and (max-width: 450px) {
+        .exam-search-box {
+            margin-bottom: 5px;
+            min-width: 100%;
+        }
+        .exam-show-options {
+            margin-bottom: 10px;
+        }
+        .exam-show-options .toolbtn {
+            margin-top: 5px;
+            min-width: 100px;
+            text-align: center;
+        }
+        .exam-name {
+            display: block;
+            padding: 10px;
+        }
+/*        .exam-details .exam-phase {
+            float: right;
+        }*/
+        .exam-details .exam-date {
+            padding: 0;
+            margin: 0;            
+        }
+    }
+
+    @media screen and (max-width: 360px) {
+        .exam-date {
+            margin-left: 20px;
+            margin-top: 5px;
+        }
+    }
+</style>
+
 <div id="unsupported-browser" class="alert alert-warning alert-dismissable" style="display: none">
     <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
     <strong>Possible browser problem!</strong><br>
@@ -54,23 +109,26 @@ foreach ($roles as $role) {
                         <?php endif; ?>
 
                         <label for="ac-<?= $index ?>" class="exam-list-boxes">
-                            <i class="fa fa-chevron-right chevron" style="font-size: 16px; color: #990000"></i>
+                            <i class="fa fa-chevron-right chevron" style="color: #990000"></i>
                             <?= $sections[$role]['title']['name'] ?>
                             <span class="hidden-xs"> - <?= $sections[$role]['title']['desc'] ?></span>
                         </label>
                         <article class="ac-large exam-listing-wrapper">
-                            <div style="padding:5px; margin-bottom: 35px">
-                                <span style="margin:1px 0 0 3px; float:right; height:34px; width:45px" class="toolbtn toolbtn-orange-outline toolbtn-bigger search-exam"><i class="fa fa-search fa-2x" style="padding-top:2px;"></i></span> 
-                                <input class="form-control exam-search-box" style="margin: 1px; float:right; max-width: 300px" type="text" class="exam-search-box" placeholder="Quick search" value="<?= $search ?>"> 
-
+                            <div class="exam-search-wrapper">
+                                <div class="exam-search-box">
+                                    <input class="form-control" type="text" style="display: inline-block;min-height: 38px;" placeholder="Quick search" value="<?= $search ?>"> 
+                                    <span class="toolbtn toolbtn-orange-outline toolbtn-bigger search-exam" style="display: inline-block; margin-left: 5px;">
+                                        <i class="fa fa-search fa-2x"></i>
+                                    </span> 
+                                </div>
                                 <?php if ($role == Roles::CREATOR): ?>
-                                        <a href="<?= $this->url->get('exam/create') ?>"> 
-                                            <span style="float: right; font-size: 14px"> 
-                                                <span class="toolbtn toolbtn-orange-outline toolbtn-bigger" style="margin-right: 5px; line-height: 28px; margin-top: 1px">
+                                        <span class="toolbtn-create-exam"> 
+                                            <a href="<?= $this->url->get('exam/create') ?>"> 
+                                                <span class="toolbtn toolbtn-orange-outline toolbtn-bigger">
                                                     <i class="fa fa-plus-square"></i> Create new exam
                                                 </span> 
-                                            </span> 
-                                        </a>
+                                            </a>
+                                        </span> 
                                 <?php endif; ?>
                             </div>
                             <div class="exam-listing-area" style="min-height:260px"></div>

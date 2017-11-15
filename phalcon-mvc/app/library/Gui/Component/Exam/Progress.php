@@ -58,7 +58,7 @@ class Progress extends PhalconComponent implements Component
                 $this->_role = $role;
 
                 $this->_state = $state;
-                $this->_style = "display: inline-block; min-width: 120px; text-align: left; margin-left: 5px";
+                $this->_style = "display: inline-block; text-align: left";
 
                 if (isset($this->_role)) {
                         if (!$this->user->roles->acquire($this->_role)) {
