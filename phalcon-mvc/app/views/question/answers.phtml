@@ -44,6 +44,7 @@ if (strtotime($exam->endtime) < time()) {
         margin-top: 10px; 
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2);    
         overflow: hidden;
+        background-color: ghostwhite;
     }
     div.correction-section-head {
         background-color: lavender;
@@ -60,10 +61,12 @@ if (strtotime($exam->endtime) < time()) {
     }
 
     #mainview {
-        background-color: ghostwhite; 
-        padding:15px; 
-        border-radius:5px;
-        width: 100%;
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 5px;
+        width: 100%;        
+    }
+    #mainview h3 {
+        color: white;
     }
 
     input.q-points:required {
