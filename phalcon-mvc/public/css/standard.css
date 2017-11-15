@@ -54,6 +54,10 @@ img {
     margin-left: 0.5em;
 }
 
+.oe-right-column {
+    width: 100%;
+}
+
 #oe-header .top-image {
     display: inline-block;
 }
@@ -397,6 +401,7 @@ div[role="dialog"] {
 .tree-menu-container {
     background-color: #eeeeee;
     padding: 10px;
+    max-width: 230px;
 }
 
 .tree-menu-container ul {
@@ -433,9 +438,13 @@ div[role="dialog"] {
 .left-col-user, .left-col-item {
     color: #004276;
     font-size: 0.9em;
-    padding-left: 10px;
+    padding-left: 40px;
 }
 
 .left-col-item {
     cursor: pointer;
+}
+
+.left-col-item span.q {
+    color: #c1002b;
 }
