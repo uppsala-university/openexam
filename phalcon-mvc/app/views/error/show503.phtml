@@ -15,8 +15,14 @@
 <?php $this->partial("error/partial/style"); ?>
 <?php $this->partial("error/partial/script"); ?>
 
-<h1 class="error">Service Unavailable:</h1>
-<p class="error"><?= $error->getMessage(); ?></p>
+<h1 class="error">
+    <i class="fa fa-exclamation-circle" aria-hidden="true" style="color: red"></i>
+    Service temporary unavailable:
+</h1>
+<p class="error">
+    <?= $error->getMessage(); ?>
+</p>
+
 <div class="info">
     <p>The web server is currently unable to handle the HTTP request due to a temporary overloading or maintenance of the server.</p>
     <p>You can click on the <u>retry button</u> below to send the request again. Click on the <u>report button</u> to send an email to the system manager.</p>

@@ -34,7 +34,6 @@ class ErrorController extends GuiController
                 $this->view->setTemplateBefore('error');
                 $this->view->setVars(array(
                         'icon'    => $this->url->get('img/cross-button.png'),
-                        'style'   => $this->request->isAjax() ? "" : "margin-top: 10px",
                         'contact' => $this->config->contact->toArray()
                 ));
         }

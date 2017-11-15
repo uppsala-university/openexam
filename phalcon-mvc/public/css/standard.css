@@ -58,6 +58,10 @@ img {
     width: 100%;
 }
 
+.oe-error {
+    padding: 0 10px 0 10px;
+}
+
 #oe-header .top-image {
     display: inline-block;
 }

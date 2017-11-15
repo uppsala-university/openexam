@@ -15,8 +15,13 @@
 <?php $this->partial("error/partial/style"); ?>
 <?php $this->partial("error/partial/script"); ?>
 
-<h1 class="error">Internal system error:</h1>
-<p class="error"><?= $error->getMessage(); ?></p>
+<h1 class="error">
+    <i class="fa fa-exclamation-circle" aria-hidden="true" style="color: red"></i>
+    Internal system error:
+</h1>
+<p class="error">
+    <?= $error->getMessage(); ?>
+</p>
 
 <div class="info">
     <p>There was an error processing the request. It might be caused by a miss configuration or an external service no longer working.</p>
