@@ -102,7 +102,7 @@ class TaskController extends GuiController
         {
                 $this->roleAction(array(
                         'state' => State::DECODED,
-                        'order' => 'Exam.starttime',
+                        'order' => 'starttime',
                         'match' => array(
                                 'decoded' => true
                         )
