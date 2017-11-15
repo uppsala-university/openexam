@@ -160,7 +160,9 @@ if (in_array("editable", $exam->flags)) {
         </h1>
 
         <?php if ($this->user->hasCapability($exam, 'update')) : ?>
-                <div style="float: left;border: 1px dashed #ddddee;padding: 2px 10px 2px 10px;margin-bottom: 10px; width:100%; max-width: 30em"><?= $check->render(); ?></div>
+                <?php if (!$check->isReady()) : ?>
+                        <div style="float: left;border: 1px dashed #ddddee;padding: 2px 10px 2px 10px;margin-bottom: 10px; width:100%; max-width: 30em"><?= $check->render(); ?></div>
+                <?php endif; ?>
         <?php endif; ?>
 
         <?php if ($this->user->hasCapability('question', 'create') && $exam->is_contributable): ?>
