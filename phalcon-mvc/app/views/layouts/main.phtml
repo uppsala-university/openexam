@@ -27,6 +27,7 @@ $this->profiler->add("view");
 <!-- CSS -->
 <?= Tag::stylesheetLink('bootstrap3/css/bootstrap.min.css'); ?>
 <?= Tag::stylesheetLink('bootstrap3/css/bootstrap-theme.min.css'); ?>
+<?= Tag::stylesheetLink('bootstrap3/css/bootstrap-datetimepicker.min.css'); ?>
 
 <?= Tag::stylesheetLink("css/standard.css"); ?>
 <?= Tag::stylesheetLink("css/accordion.css"); ?>
@@ -35,7 +36,9 @@ $this->profiler->add("view");
 <?= Tag::stylesheetLink("plugins/fancybox-master/dist/jquery.fancybox.min.css"); ?>
 
 <!-- Javascript -->
+<?= Tag::javascriptInclude('js/moment.min.js'); ?>
 <?= Tag::javascriptInclude('bootstrap3/js/bootstrap.min.js'); ?>
+<?= Tag::javascriptInclude('bootstrap3/js/bootstrap-datetimepicker.min.js'); ?>
 <?= Tag::javascriptInclude('plugins/fancybox-master/dist/jquery.fancybox.min.js'); ?>
 
 <?php

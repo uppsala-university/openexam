@@ -466,20 +466,6 @@ $(document).ready(function () {
     });
 
     // 
-    // Generalized event handlers.
-    // 
-    $('body').on("focus", ".datepicker", function () {
-        $(this).datetimepicker({
-            controlType: 'select',
-            timeFormat: 'HH:mm',
-            dateFormat: 'yy-mm-dd',
-            changeMonth: true,
-            changeYear: true,
-            minDate: 0
-        });
-    });
-
-    // 
     // Delete from database and then callback:
     // 
     var deleteQuestion = function (qid, callback) {
