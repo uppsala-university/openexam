@@ -89,6 +89,6 @@
     overflow: auto;
 }
 .ac-container input:checked ~ article.ac-large{
-    min-height: 365px;
+    min-height: 370px;
     overflow: auto;
 }
