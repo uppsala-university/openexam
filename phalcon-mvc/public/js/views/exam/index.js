@@ -301,9 +301,9 @@ $(document).ready(function () {
     // On search string input:
     // 
     $(document).on('keyup', '.exam-search-box', function (e) {
-        data.search = $(this).val().trim();
-        var element = $(this);
-
+        var element = $(this).find('input');
+        data.search = $(this).find('input').val().trim();
+        
         delay(function () {
             if (element.val().length > 1 || element.val().length === 0) {
 
