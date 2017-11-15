@@ -406,7 +406,7 @@ if ($exam->decoded) {
                                     $avgGrades[$grade] ++;
 
                                     ?>
-                                    <td class="gru" style="border-bottom:1px #dedede solid; text-align:center; font-weight:bold; <?= $colorScheme ?>">
+                                    <td class="cc gru" style="<?= $colorScheme ?>">
                                         <?= $grade ?> <?= ($needGraceMarks) ? "(" . floatval((($passAt / 100) * $totalExamScore) - $totalStudentScore) . " pt. less)" : '' ?>
                                     </td>
                             <?php endif; ?>
@@ -493,36 +493,35 @@ if ($exam->decoded) {
             <?php endif; ?>
         </table>
     </div>  
+    <br>
 
-    <h5>Color Codes</h5>
-    <p>Following are the color codes used in the score board:</p>
+    <h4>Color codes used in the score board:</h4>
     <table style="margin:0">
         <tbody>
             <tr class="colorcode">
                 <td class="cc ac">&nbsp;</td>
-                <td>Answer has been corrected.</td>
+                <td class="descr">Answer has been corrected.</td>
             </tr>
             <?php if (!$exam->decoded && $this->user->getPrincipalName() == $exam->creator): ?>
                     <tr class="colorcode">
                         <td class="cc no">&nbsp;</td>
-                        <td>This answer should be corrected by another person.</td>
+                        <td class="descr">This answer should be corrected by another person.</td>
                     </tr>
             <?php endif; ?>                                        
             <tr class="colorcode">
                 <td class="cc na">&nbsp;</td>
-                <td>No answer was given for this question.</td>
+                <td class="descr">No answer was given for this question.</td>
             </tr>
             <tr class="colorcode">
                 <td class="cc nc">&nbsp;</td>
-                <td>The answer is uncorrected or partially corrected.</td>
+                <td class="descr">The answer is uncorrected or partially corrected.</td>
             </tr>
             <tr class="colorcode">
                 <td class="cc gm">&nbsp;</td>
-                <td>Student can pass with some grace marks.</td>
+                <td class="descr">Student can pass with some grace marks.</td>
             </tr>
         </tbody>
     </table>
-    <br />
 </div>
 
 <!-------------- Hidden Divs --------------->
@@ -555,6 +554,54 @@ if ($exam->decoded) {
     }
     .sortme {
         cursor:pointer !important;
+    }
+    table {
+        border-collapse: inherit;
+        border-spacing: 2px;
+    }
+    td.ac {
+        background-color: #ffffff !important;
+        border: 1px solid #cccccc !important;
+        color: #cccccc !important;
+    }
+    td.no {
+        background-color: #dddddd !important;
+        border: 1px solid #999999 !important;
+        color:#606060 !important;
+    }
+    td.na {
+        background-color: #e98e8d !important;
+        border: 1px solid #d96661 !important;
+        color: #ac4142 !important;
+    }
+    td.nc {
+        background-color: #A2FDB1 !important;
+        border: 1px solid #65d02c !important;
+        color: #41612c !important;
+    }
+    td.gm {
+        background-color: #4285F4 !important;
+        border: 1px solid #dddddd !important;
+        color: #ffffff !important;
+    }
+    td.cc {
+        text-align: center;
+        width: 25px;
+    }
+    td.cc a {
+        color: inherit;
+    }
+    td.ac a {
+        color: #c1002b;
+    }
+    td.gru {
+        border-bottom: 1px #dedede solid;
+        font-weight: bold;
+        background-color: #FF6B4F;
+        color: #FFFFCC;
+    }
+    td.descr {
+        padding-left: 5px;
     }
 </style>
 
