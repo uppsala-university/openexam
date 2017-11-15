@@ -36,8 +36,8 @@ foreach ($roles as $role) {
     It looks like you are using an unsupported browser. In case of problem using the system, please try with an modern browser that supports the latest web standards.
 </div>
 
-<div class="jumbotron" style="margin:15px; margin-top: 0px; padding: 25px">
-    <h1>Hi <?= $this->catalog->getFirstName() ?>!</h1>
+<div class="jumbotron" style="margin:15px; margin-top: 0px; padding: 20px">
+    <h1 class="main">Hi <?= $this->catalog->getFirstName() ?>!</h1>
     <div style="padding:10px 0px">
         The content of this page depends on the different roles you have. Information about the different roles (creator, contributor, corrector, invigilator, student) can be found <a href="<?= $this->url->get('/help/manual/teacher') ?>">teacher manual</a>.  
     </div>
