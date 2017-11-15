@@ -95,62 +95,58 @@ if ($exam->decoded) {
         $exam->show_code = false;
 }
 
+if (!$exam->show_save) {
+        $header = array(
+                'head' => "Exam status",
+                'text' => "Following table shows all answers from students to questions for the examination <strong>\"%s\"</strong>",
+                'note' => "You can view the student's answers by student (rows), by question (column) or individual (by index). This exam is not yet finished, so you can only monitor the answering progress for students on this exam."
+        );
+} elseif (!$exam->decoded) {
+        $header = array(
+                'head' => "Exam correction",
+                'text' => "Following table shows all answers from students to questions for the examination <strong>\"%s\"</strong>",
+                'note' => "Correct answers by student (rows), by question (column) or individual (by index). You can only correct answers for questions published by yourself or those you have been assigned the role as corrector for."
+        );
+} else {
+        $header = array(
+                'head' => "Exam score board",
+                'text' => "Following table shows the final result of all students for the examination <strong>\"%s\"</strong>",
+                'note' => "You can view the student's answers by student (rows), by question (column) or individual (by index). This exam has been decoded, so it's no longer possible to change student results."
+        );
+}
+
 ?>
 
 <!-- Main area -->
 <div id="mainview">
-    <?php if (!$exam->show_save): ?>
-            <h3>Exam status</h3>
-            <p>Following table shows all answers from students to questions for the examination <strong>"<?= $exam->name ?>"</strong>. </p>
-            <p>You can view the student's answers by student (rows), by question (column) or individual (by index). This exam is not yet finished, so you can only monitor the answering progress for students on this exam.</p>
-    <?php elseif (!$exam->decoded): ?>
-            <h2>Exam correction</h2>
-            <hr>
-            <p>Following table shows all answers from students to questions for the examination <strong>"<?= $exam->name ?>"</strong>. </p>
-            <div class="alert alert-info alert-dismissable">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                Correct answers by student (rows), by question (column) or individual (by index). You can only correct answers for questions published by yourself or those you have been assigned the role as corrector of.
-            </div>
-    <?php else: ?>
-            <h3>Exam score board</h3>
-            <p>Following table shows the final result of all students for the examination <strong>"<?= $exam->name ?>"</strong>. </p>
-            <p>You can view the student's answers by student (rows), by question (column) or individual (by index). This exam has been decoded, so it's no longer possible to change student results.</p>
-    <?php endif; ?>
 
-    <?php if ($exam->show_missmatch) : ?>
-            <div class="alert alert-warning">Your exam is flagged as decoded, but some answers are still uncorrected. Please contact the system administrator to resolve this issue.</div>;
-    <?php endif; ?>
-
-    <div>
-        <center>
+    <h1 class="page">
+        <?= $header['head'] ?>
+        <div class="tool-icons">
             <?php if ($exam->show_decode): ?>
-                    <button id="decode-exam" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding: 5px 15px; min-width: 220px" title="Click to decode the exam. Confirmation is required as this is an irreversable operation">
-                        <h5>
-                            <i class="fa fa-check-circle fa-lg" style="color:green"></i> 
-                            Decode this exam.
-                        </h5>
-                    </button>
+                    <a href="#" id="decode-exam" class="prevent" title="Click to decode the exam. Confirmation is required as this is an irreversable operation">
+                        <i class="fa fa-check-circle" style="float:right;padding:3px"></i>
+                    </a> 
             <?php endif; ?>
 
             <?php if ($exam->show_download): ?>
-                    <button id="download-scoreboard" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding: 5px 15px; min-width: 220px" title="Download score board in spreadsheet format">
-                        <h5>
-                            <i class="fa fa-file-excel-o fa-lg" style="color:#1D9D73"></i>
-                            <span class="download-msg"> Download score board</span>
-                        </h5>
-                    </button>
+                    <a href="#" id="download-scoreboard" class="prevent" title="Download score board in spreadsheet format">
+                        <i class="fa fa-file-excel-o" style="float:right;padding:3px"></i>
+                    </a> 
             <?php endif; ?>
 
             <?php if ($exam->decoded): ?>
-                    <button id="download-results" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" style="padding: 0px 15px; min-width: 220px" title="Download zip-file containing all students result">
-                        <h5>
-                            <i class="fa fa-file-pdf-o fa-lg" style="color:red"></i>
-                            <span class="download-msg"> Download student results</span>
-                        </h5>
-                    </button>
+                    <a href="#" id="download-results" class="prevent" title="Download zip-file containing all students result">
+                        <i class="fa fa-file-pdf-o" style="float:right;padding:3px"></i>
+                    </a> 
             <?php endif; ?>
-        </center>
-    </div>	
+        </div>            
+    </h1>
+    <p><?= sprintf($header['text'], $exam->name); ?></p>
+    <div class="alert alert-info alert-dismissable">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <?= $header['note'] ?>
+    </div>
 
     <div style="overflow:scroll" id="scoreboard-wrapper">
         <table class="tablesorter">
@@ -808,7 +804,7 @@ if ($exam->decoded) {
                 } else if (mode === 'unsaved') {
                     $('.q-points').each(function () {
                         if (resyncableResults.indexOf($(this).attr('ans-id')) < 0) {
-                            if ($(this).val() !== '' && $(this).attr('res-id') == 0) {
+                            if ($(this).val() !== '' && $(this).attr('res-id') === 0) {
                                 resyncableResults.push($(this).attr('ans-id'));
                             }
                         }
@@ -827,7 +823,7 @@ if ($exam->decoded) {
                     console.log('Unknown resyncable result mode requested: ' + mode);
                     return [];
                 }
-            }
+            };
 
             var saveResults = function (ansIds) {
                 var resultsCreate = [];
@@ -923,7 +919,7 @@ if ($exam->decoded) {
                                         $('a[ans-id="' + e.answer_id + '"]').parent().removeClass('nc').addClass('ac');
                                         $('a[ans-id="' + e.answer_id + '"]').html(tScore.floatval());
 
-                                    })
+                                    });
                                 } else {
                                     $('input[ans-id="' + rData.answer_id + '"]').attr('res-id', rData.id);
 
@@ -1007,7 +1003,6 @@ if ($exam->decoded) {
                 }
             }),
                     downloadButton = $("#download-results")
-                    .button()
                     .on("click", function () {
                         // 
                         // Send AJAX requests to generate results:

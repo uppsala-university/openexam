@@ -75,6 +75,8 @@ var ajax = function (url, data, callback, type, async, showSuccessMsg) {
  * @returns 
  */
 var showMessage = function (message, type) {
+    
+    console.log(message);
 
     if (type === undefined) {
         type = 'info';
@@ -83,14 +85,14 @@ var showMessage = function (message, type) {
     }
 
     if (type === 'success') {
-        $('#msg-box')
+        $('#ajax-message')
                 .attr('class', 'alert alert-' + type)
                 .html(message)
                 .slideDown(300)
-                .delay(2000)
+                .delay(1000)
                 .slideUp(300);
     } else {
-        $('#msg-box')
+        $('#ajax-message')
                 .attr('class', 'alert alert-' + type)
                 .html(message)
                 .slideDown(300);
@@ -133,7 +135,7 @@ $(document).ready(function () {
     if (Function.prototype.oe_module_loaded === undefined) {
         oe_module_loaded = (function () {
             var modules = [];
-            
+
             return function (module) {
                 if (modules.indexOf(module) === -1) {
                     modules.push(module);

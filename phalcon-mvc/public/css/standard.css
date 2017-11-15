@@ -37,9 +37,7 @@ img {
 #oe-container h1 {
     font-size: 2.2em;
     font-weight: normal;
-    margin: 1px 0 10px;
     font-family: Arial,verdana,sans-serif;
-    border-bottom: 1px solid #999;
     color: #444;
     text-transform: none;
 }
@@ -172,6 +170,16 @@ h1.logo {
     margin: 0 0 20px;
 }
 
+h1.page {
+    padding-bottom: 15px;
+    margin: 1px 0 20px;
+}
+
+h1 div.tool-icons {
+    float: right;
+    margin-bottom: 10px;
+}
+
 .exam-list-boxes {
     font-weight: normal;
 }
@@ -189,6 +197,16 @@ h1.logo {
     top: 80px;
     display: none; 
     color: #ddddee;
+}
+
+#ajax-message {
+    display:none; 
+    position: fixed; 
+    top: 0px; 
+    left: 0px; 
+    width: 100%; 
+    text-align: center;
+    z-index: 100000;
 }
 
 #mainview {
