@@ -62,7 +62,7 @@ $config = new Config(
                         'link'  => 'http://www.uu.se',
                         'file'  => 'img/uu_logo.svg',
                         'name'  => 'Uppsala University',
-                        'style' => 'max-height:120px'
+                        'style' => ''
                 )
         ),
         'application' => array(

@@ -65,6 +65,9 @@ img {
 #oe-header .top-image {
     display: inline-block;
 }
+#oe-header .top-image img {
+    max-height: 120px;
+}
 
 #oe-header .top-site {
     padding: 0;
@@ -138,6 +141,10 @@ img {
 
     .oe-columns-container {
         display: block;
+    }
+
+    #oe-header .top-image img {
+        max-height: 80px;
     }
 }
 
