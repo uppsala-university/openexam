@@ -98,7 +98,7 @@ if (in_array("editable", $exam->flags)) {
                 The exam title will be shown for students when selecting exam. The organization should not be edited in normal cases as it affects grouping of exams in statistics.
             </div>
 
-            <div class="st-line">
+            <div>
                 <label for="exam-title"><strong>Exam title:</strong> <span style="color:#F02222">*</span></label>
                 <input class="form-control" title="The exam name" type="text" value="<?= $exam->name ?>" name="exam-title"  class="validate[required]" style="width:100% !important" <?= $exam->on_disabled ?>>
             </div>
@@ -119,17 +119,17 @@ if (in_array("editable", $exam->flags)) {
                 </div>
             </div>
 
-            <div class="st-line">
-                <datalist id="user-department-list">
-                    <select id="user-department-select form-control">
-                        <?php foreach ($departments as $code => $values) : ?>
-                                <?php foreach ($values as $value) : ?>
-                                        <option value="<?= $value ?>" data-code="<?= $code ?>"><?= $value ?></option>
-                                <?php endforeach; ?>
-                        <?php endforeach; ?>
-                    </select>
-                </datalist>
+            <datalist id="user-department-list">
+                <select id="user-department-select form-control">
+                    <?php foreach ($departments as $code => $values) : ?>
+                            <?php foreach ($values as $value) : ?>
+                                    <option value="<?= $value ?>" data-code="<?= $code ?>"><?= $value ?></option>
+                            <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </select>
+            </datalist>
 
+            <div>
                 <label for="unit"><b>Organization:</b> <span style="color:#F02222">*</span></label>
                 <input class="form-control" title="The organization name from directory service (don't edit unless told so)" type="text" value="<?= $exam->orgunit ?>" name="unit" class="validate[required]" list="user-department-list" onclick="this.value = '';" <?= $exam->on_disabled ?>>
             </div>
@@ -172,10 +172,8 @@ if (in_array("editable", $exam->flags)) {
                 Input grade:value pairs on separate lines defining the graduation levels in percent for this examination. The first line must be on form name:0, denoting the failed grade.
             </div>
 
-            <div class="st-line">
-                <label for="grade"><strong>Grades:</strong> <span style="color:#F02222">*</span></label>
-                <textarea class="form-control" style="width: 100%" rows="4" title="The newline separated grades" name="grade" class="grade validate[required]" placeholder="<?= str_pad("U:0", 65, " ") . str_pad("G:50", 60, " ") . "VG:75" ?>"><?= trim($exam->grades) ?></textarea>
-            </div>
+            <label for="grade"><strong>Grades:</strong> <span style="color:#F02222">*</span></label>
+            <textarea class="form-control" style="width: 100%" rows="4" title="The newline separated grades" name="grade" class="grade validate[required]" placeholder="<?= str_pad("U:0", 65, " ") . str_pad("G:50", 60, " ") . "VG:75" ?>"><?= trim($exam->grades) ?></textarea>
         </div>
 
         <div id="tabs-4">
@@ -183,7 +181,7 @@ if (in_array("editable", $exam->flags)) {
                 Student instructions for this exam. Typical information on grades, allowed tools and teacher question time during the exam.
             </div>
 
-            <div class="st-line">
+            <div>
                 <label for="exam-desc"><strong>Exam instructions for students:</strong></label>		
                 <textarea class="form-control" id="exam-desc" style="width:99%;" rows="1" placeholder="Write exam description here" <?= $exam->on_disabled ?>><?= trim($exam->descr) ?></textarea>
             </div>    
@@ -194,7 +192,7 @@ if (in_array("editable", $exam->flags)) {
                 Controls the details to expose in student result file. For example, whether to include statistics or correcting teacher.
             </div>
 
-            <div class="st-line">
+            <div>
                 <label for="exam-result"><strong>Student results:</strong></label>		
 
                 <div class="checkbox">
@@ -232,7 +230,7 @@ if (in_array("editable", $exam->flags)) {
                 Controls the details to expose in score board during correction. Affects users having the corrector role.
             </div>
 
-            <div class="st-line">
+            <div>
                 <label for="exam-correction"><strong>Exam correction:</strong></label>		
 
                 <div class="checkbox">
@@ -254,7 +252,7 @@ if (in_array("editable", $exam->flags)) {
     </div>
 
     <hr>
-    <div class="st-line">
+    <div>
         <center>
             <span style="min-width: 10em" class="btn btn-success save-exam-settings">
                 <i class="fa fa-floppy-o"></i>

@@ -177,7 +177,6 @@ $security = $check->getSecurity();
 
 <?php if (!$readonly) : ?>
         <hr>
-        <div class="st-line">
             <center>
                 <span style="min-width: 6em" class="btn btn-success" id="check-refresh">
                     <i class="fa fa-refresh"></i>
@@ -188,10 +187,8 @@ $security = $check->getSecurity();
                     <span>Close</span>
                 </span>
             </center>		
-        </div>   
 <?php elseif ($role == Roles::CREATOR) : ?>
         <hr>
-        <div class="st-line">
             <center>
                 <span style="min-width: 10em" class="btn btn-success" id="open-manager">
                     <i class="fa fa-gear"></i>
@@ -202,17 +199,14 @@ $security = $check->getSecurity();
                     <span>Show Progress</span>
                 </span>
             </center>		
-        </div>   
 <?php elseif ($role == Roles::INVIGILATOR) : ?>
         <hr>
-        <div class="st-line">
             <center>
                 <span style="min-width: 10em" class="btn btn-success" id="show-progress">
                     <i class="fa fa-tasks"></i>
                     <span>Show Progress</span>
                 </span>
             </center>		
-        </div>   
 <?php endif; ?>
 
 <script>

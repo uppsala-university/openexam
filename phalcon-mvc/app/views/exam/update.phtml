@@ -291,27 +291,24 @@ if (in_array("editable", $exam->flags)) {
     </div>
     <a style="display: none" href="<?= $this->url->get('exam/archive/' . $exam->id); ?>" id="exam-archive-action-online" target="_blank"></a>
     <a style="display: none" href="<?= $this->url->get('exam/archive/' . $exam->id) . '/download'; ?>" id="exam-archive-action-download"></a>
-    <div class="st-line">
-        <center>
-            <span style="min-width: 9em" class="btn btn-default" id="exam-archive-online">
-                <i class="fa fa-external-link"></i>
-                <span>View Online</span>
-            </span>
-            <span style="min-width: 9em" class="btn btn-default" id="exam-archive-download">
-                <i class="fa fa-file-archive-o"></i>
-                <span>Download Archive</span>
-            </span>
-        </center>		
-    </div>
+
+    <center>
+        <span style="min-width: 9em" class="btn btn-default" id="exam-archive-online">
+            <i class="fa fa-external-link"></i>
+            <span>View Online</span>
+        </span>
+        <span style="min-width: 9em" class="btn btn-default" id="exam-archive-download">
+            <i class="fa fa-file-archive-o"></i>
+            <span>Download Archive</span>
+        </span>
+    </center>		
     <hr>
-    <div class="st-line">
-        <center>
-            <span style="min-width: 6em; float: right" class="btn btn-success" id="close-archive">
-                <i class="fa fa-undo"></i>
-                <span>Close</span>
-            </span>
-        </center>		
-    </div>
+    <center>
+        <span style="min-width: 6em; float: right" class="btn btn-success" id="close-archive">
+            <i class="fa fa-undo"></i>
+            <span>Close</span>
+        </span>
+    </center>		
 </div>
 
 <?php
