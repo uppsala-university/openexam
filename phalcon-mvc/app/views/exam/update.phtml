@@ -64,6 +64,9 @@ if (in_array("editable", $exam->flags)) {
         opacity: 0.25;
         filter: grayscale(100%);
     }
+    #qs_area {
+        width: 100%;
+    }
     .qs_area_line_q_parts {
         margin-left: 10px;
     }
@@ -94,14 +97,23 @@ if (in_array("editable", $exam->flags)) {
         padding-left: 10px;
         min-height: 85px;
     }  
+    .qs_area_line_q .q_fields {
+        padding-left: 15px;
+        max-width: 450px;
+    }  
+    .q_fields input[type="text"] {
+        width: 100%;
+        min-width: 300px;
+    }  
     .q_line_op {
         padding-top: 15px; 
         font-size: 15px; 
         text-align: center
     }    
-    .qs_area_line_q .q_fields {
-        padding-left: 15px;
-    }   
+    .q_part_pt {
+        color: grey;
+        font-size: 0.8em;
+    }
     .view-q > i {
         color: #008803;
     }
@@ -121,6 +133,12 @@ if (in_array("editable", $exam->flags)) {
         float: left; 
         margin-right: 3px;
         padding: 2px;
+    }
+
+    @media screen and (max-width: 40.5em) {
+        .q_fields input[type="text"] {
+            min-width: 180px;
+        }
     }
 </style>
 
@@ -210,8 +228,8 @@ if (in_array("editable", $exam->flags)) {
                     <div class="qs_area_line_q" style="display:none">
                         <div class="q_head">
                             <div style="padding-bottom:5px">
-                                <span class="q_part_no" style="font-size:16px; padding-right:0px"></span>
-                                <span class="q_part_pt" style="color:grey; font-size:10px"></span>
+                                <span class="q_part_no" style="padding-right:0px"></span>
+                                <span class="q_part_pt" style="color:grey;"></span>
                             </div>
                             <span class="q_title"></span>
                         </div>

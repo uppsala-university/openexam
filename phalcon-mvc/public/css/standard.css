@@ -127,7 +127,7 @@ img {
     padding-right: 0;
 }
 
-@media screen and (max-width: 40.5em ) {
+@media screen and (max-width: 40.5em) {
     .oe-left-column { 
         margin: 0;
         position: absolute;

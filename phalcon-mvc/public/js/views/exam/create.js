@@ -835,7 +835,7 @@ $(document).ready(function () {
                 // 
                 var ansTypeHtml = '';
                 if (ansType === 'textbox') {
-                    ansTypeHtml = '<input disabled type="text" style="width:350px">';
+                    ansTypeHtml = '<input disabled type="text">';
 
                 } else if (ansType === 'choicebox') {
                     var totalCorrect = 0;
@@ -854,9 +854,9 @@ $(document).ready(function () {
                         ansTypeHtml = ansTypeHtml.replace(new RegExp(/type=\"checkbox\"/g), 'type=\"radio\"');
                     }
                 } else if (ansType === 'canvas') {
-                    ansTypeHtml = '<img width="55%" src="' + baseURL + 'img/canvas.png">';
+                    ansTypeHtml = '<img class="canvas" src="' + baseURL + 'img/canvas.png">';
                 } else {
-                    ansTypeHtml = '<img width="80%" src="' + baseURL + 'img/ckeditor.png">';
+                    ansTypeHtml = '<img class="editor" src="' + baseURL + 'img/ckeditor.png">';
                 }
 
                 $(qPartLine)
