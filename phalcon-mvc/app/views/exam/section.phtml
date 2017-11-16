@@ -131,7 +131,7 @@ $ordering = array(
                                     ?>
                                 </span>
                                 <span class="exam-name">
-                                    <?= strlen(trim($exam->name)) > 0 ? $exam->name : '&lt;Untitled exam&gt;' ?>
+                                    <?= $exam->name ?>
                                     <?= !empty($exam->course) ? " (" . $exam->course . ") " : "" ?>
                                 </span>
                             </a>

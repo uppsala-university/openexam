@@ -78,7 +78,7 @@ if (in_array("editable", $exam->flags)) {
                 </div>
                 <div>
                     <ul style="margin: 15px">
-                        <?php if (trim($exam->name) == '' || empty($exam->starttime) || empty($exam->endtime) || empty($exam->grades)): ?>
+                        <?php if (empty($exam->name) || empty($exam->starttime) || empty($exam->endtime) || empty($exam->grades)): ?>
                                 <li style="color:#c09853">Please fill up all required fields (marked with <span style="color:#F02222">*</span>) on each separate tab. </li>
                         <?php endif; ?>
                         <?php if (count($missingQuestText)): ?>

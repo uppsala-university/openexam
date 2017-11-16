@@ -290,8 +290,8 @@ class ExamController extends GuiController
                 $exam = new Exam();
 
                 if ($exam->save(array(
-                            'name'    => ' ',
-                            'descr'   => ' ',
+                            'name'    => '@@replace@@',
+                            'descr'   => '@@replace@@',
                             'creator' => $this->user->getPrincipalName(),
                             'grades'  => 'U:0&#13;&#10;G:50&#13;&#10;VG:75'
                     )) == false) {

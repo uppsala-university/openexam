@@ -443,6 +443,13 @@ class Exam extends ModelBase
          */
         protected function afterFetch()
         {
+                if ($this->name == '@@replace@@') {
+                        $this->name = null;
+                }
+                if ($this->descr == '@@replace@@') {
+                        $this->descr = null;
+                }
+
                 $this->decoded = $this->decoded == 'Y';
                 $this->published = $this->published == 'Y';
                 $this->testcase = $this->testcase == 'Y';
