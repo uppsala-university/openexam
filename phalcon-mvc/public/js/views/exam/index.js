@@ -74,11 +74,13 @@ $(document).ready(function () {
                                                 'id': exam,
                                                 'starttime': stime,
                                                 'endtime': etime
-                                            }, function (status) {
-                                        if (status) {
-                                            changer.dialog('close');
-                                        }
-                                    });
+                                            },
+                                            function (status) {
+                                                if (status) {
+                                                    changer.dialog('close');
+                                                    readSectionIndex();
+                                                }
+                                            });
                                 },
                                 Cancel: function () {
                                     changer.dialog('destroy');
@@ -110,7 +112,7 @@ $(document).ready(function () {
                         },
                         function (status) {
                             if (status) {
-                                location.reload();
+                                readSectionIndex();
                             }
                         }
                 );
@@ -130,7 +132,7 @@ $(document).ready(function () {
                         },
                         function (status) {
                             if (status) {
-                                location.reload();
+                                readSectionIndex();
                             }
                         }
                 );
@@ -150,7 +152,7 @@ $(document).ready(function () {
                         },
                         function (status) {
                             if (status) {
-                                location.reload();
+                                readSectionIndex();
                             }
                         }
                 );
@@ -210,7 +212,6 @@ $(document).ready(function () {
     // Show exam check dialog:
     // 
     $(document).on('click', '.check-exam', function () {
-        console.log("HERE");
         $.ajax({
             type: "POST",
             data: {
@@ -283,13 +284,14 @@ $(document).ready(function () {
         var examName = $(examLine).find('.exam-name').html();
 
         if (confirm("Are you sure you want to delete exam: '" + jQuery.trim(examName) + "'")) {
+
             ajax(
                     baseURL + 'ajax/core/creator/exam/delete',
                     {"id": examId},
                     function (examData) {
                         $(examLine).slideUp(500, function () {
                             $(this).remove();
-                            location.reload();
+                            readSectionIndex();
                         });
                     },
                     "POST",
@@ -447,6 +449,17 @@ $(document).ready(function () {
         var role = source.attr('section-role');
 
         loadSectionIndex(target, role);
+    };
+
+    // 
+    // Read exam index. Call this function to reload section using current selected
+    // filter options from the data variable.
+    // 
+    var readSectionIndex = function () {
+        if (data.sect) {
+            var source = $(document).find('div[section-role="' + data.sect + '"]');
+            showSectionIndex(source);
+        }
     };
 
     // 

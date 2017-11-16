@@ -76,8 +76,6 @@ var ajax = function (url, data, callback, type, async, showSuccessMsg) {
  */
 var showMessage = function (message, type) {
     
-    console.log(message);
-
     if (type === undefined) {
         type = 'info';
     } else if (type === 'error') {
