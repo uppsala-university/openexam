@@ -21,6 +21,7 @@ use OpenExam\Library\Model\Behavior\Exam as ExamBehavior;
 use OpenExam\Library\Model\Behavior\Generate\Ownership;
 use OpenExam\Library\Model\Behavior\Transform\DateTimeNull;
 use OpenExam\Library\Model\Behavior\Transform\FilterText;
+use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Exception;
 use OpenExam\Library\Model\Filter;
 use OpenExam\Library\Model\Validation\DateTime as DateTimeValidator;
@@ -293,6 +294,17 @@ class Exam extends ModelBase
                         'beforeValidationOnUpdate' => array(
                                 'field' => 'creator',
                                 'force' => false
+                        )
+                )));
+
+                $this->addBehavior(new Trim(array(
+                        'beforeValidationOnCreate' => array(
+                                'field' => array('name', 'descr', 'starttime', 'endtime', 'grades', 'course', 'code'),
+                                'value' => null
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'field' => array('name', 'descr', 'starttime', 'endtime', 'grades', 'course', 'code'),
+                                'value' => null
                         )
                 )));
 
