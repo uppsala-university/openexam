@@ -181,12 +181,36 @@ foreach ($roles as $role) {
 <!--    
     Dialog for changing exam schedule.
 -->
-<div id="exam-datetime-changer" style="display: none" title="Change exam schedule">
-    <div class="exam-datetime-select" style="padding: 10px">
-        <label for="starttime">Start time:</label>
-        <input class="form-control" type="text" value="" id="exam-starttime" name="starttime" placeholder="yyyy-mm-dd hh:mm:ss">
-        <label for="endtime">End time:</label>
-        <input class="form-control" type="text" value="" id="exam-endtime"   name="endtime" placeholder="yyyy-mm-dd hh:mm:ss">
+<div id="exam-datetime-changer" style="display: none;" title="Change exam schedule">
+    <div class="alert alert-info">
+        Input date/time manual or click on the calender icon to select from the datetime picker. 
+        Click on the clock icon at bottom of the picker to select the time. 
+        Either select time by scrolling or clicking on hour/minute to quickly select from a table.
+    </div>
+    <div class="row exam-datetime-select">
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <label for="start"><b>Exam starts:</b> <span style="color:#F02222">*</span></label>
+                <div class="input-group date datetime-exam">
+                    <input class="form-control" type="text" value="" placeholder="yyyy-mm-dd hh:mm" name="starttime" id="exam-starttime">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <label for="start"><b>Exam ends:</b> <span style="color:#F02222">*</span></label>
+                <div class="input-group date datetime-exam">
+                    <input class="form-control" type="text" value="" placeholder="yyyy-mm-dd hh:mm" name="endtime" id="exam-endtime">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

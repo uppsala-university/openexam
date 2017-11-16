@@ -29,19 +29,32 @@ $(document).ready(function () {
                 {
                     'id': exam
                 },
-                function (status) {
-                    if (status) {
-                        var stime = status.starttime;
-                        var etime = status.endtime;
+                function (response) {
+                    if (response) {
+                        var stime = response.starttime;
+                        var etime = response.endtime;
+
+                        if (stime) {
+                            stime = stime.replace(/(:\d+):\d{2}$/, '$1');
+                        }
+                        if (etime) {
+                            etime = etime.replace(/(:\d+):\d{2}$/, '$1');
+                        }
 
                         var changer = $("#exam-datetime-changer");
 
                         changer.find("#exam-starttime").val(stime);
                         changer.find("#exam-endtime").val(etime);
 
+                        $('.datetime-exam').datetimepicker({
+                            format: 'YYYY-MM-DD HH:mm'
+                        });
+
                         changer.dialog({
                             autoOpen: true,
                             modal: true,
+                            width: 800,
+                            height: 600,
                             buttons: {
                                 OK: function () {
 
@@ -303,7 +316,7 @@ $(document).ready(function () {
     $(document).on('keyup', '.exam-search-box', function (e) {
         var element = $(this).find('input');
         data.search = $(this).find('input').val().trim();
-        
+
         delay(function () {
             if (element.val().length > 1 || element.val().length === 0) {
 
