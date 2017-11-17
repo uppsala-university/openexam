@@ -97,7 +97,7 @@ if (strtotime($exam->endtime) < time()) {
 </style>
 
 <h2 class="on-print">
-    <?= Phalcon\Tag::image(array("img/uu_logo.svg", "height" => "55px", "style" => "padding-right:20px")); ?><?= $exam->name ?>
+    <?= Phalcon\Tag::image(array($this->config->brand->logo->file, "height" => "55px", "style" => "padding-right:20px")); ?><?= $exam->name ?>
 </h2>
 
 <div id="mainview">
