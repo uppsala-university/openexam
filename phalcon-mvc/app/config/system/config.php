@@ -61,6 +61,7 @@ $config = new Config(
                 'logo' => array(
                         'link'  => 'http://www.uu.se',
                         'file'  => 'img/uu_logo.svg',
+                        'seal'  => 'img/seal.png',
                         'name'  => 'Uppsala University',
                         'style' => ''
                 )
@@ -255,7 +256,8 @@ $config = new Config(
                 // 
                 'command'   => array(
                         'image' => 'wkhtmltoimage --format png --quality 95 --window-status content-loaded --enable-javascript --javascript-delay 3000 --print-media-type',
-                        'pdf'   => 'wkhtmltopdf --outline --outline-depth 2 --window-status content-loaded --enable-javascript --javascript-delay 3000 --print-media-type --disable-forms'
+//                        'pdf'   => 'wkhtmltopdf --outline --outline-depth 2 --window-status content-loaded --enable-javascript --javascript-delay 3000 --print-media-type --disable-forms'
+                        'pdf'   => 'wkhtmltopdf --outline --outline-depth 2 --window-status content-loaded --enable-javascript --print-media-type --disable-forms'
                 )
         ),
         /**
