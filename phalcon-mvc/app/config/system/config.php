@@ -235,14 +235,18 @@ $config = new Config(
                         'image' => array(
                                 'fmt'              => 'png',
                                 'imageQuality'     => 95,
-                                'enableJavascript' => true
+                                'enableJavascript' => true,
+                                'javascriptDelay'  => 3000,
+                                'windowStatus'     => 'content-loaded'
                         // 'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
                         ),
                         'pdf'   => array(
                                 'produceForms'     => false,
                                 'outline'          => true,
                                 'outlineDepth'     => 2,
-                                'enableJavascript' => true
+                                'enableJavascript' => true,
+                                'javascriptDelay'  => 3000,
+                                'windowStatus'     => 'content-loaded'
                         // 'load.cookieJar' => BASE_DIR . '/cache/cookies.jar'
                         )
                 ),
@@ -250,8 +254,8 @@ $config = new Config(
                 // Options for wkhtmltoxxx command:
                 // 
                 'command'   => array(
-                        'image' => 'wkhtmltoimage --format png --quality 95 --enable-javascript --javascript-delay 3000 --print-media-type',
-                        'pdf'   => 'wkhtmltopdf --outline --outline-depth 2 --enable-javascript --javascript-delay 3000 --print-media-type --disable-forms'
+                        'image' => 'wkhtmltoimage --format png --quality 95 --window-status content-loaded --enable-javascript --javascript-delay 3000 --print-media-type',
+                        'pdf'   => 'wkhtmltopdf --outline --outline-depth 2 --window-status content-loaded --enable-javascript --javascript-delay 3000 --print-media-type --disable-forms'
                 )
         ),
         /**

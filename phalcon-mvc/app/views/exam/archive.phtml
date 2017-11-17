@@ -18,6 +18,7 @@
         <?= Phalcon\Tag::stylesheetLink("css/pdf-rendering.css"); ?>
         <title><?= $exam->name ?></title>
     </head>
+    
     <style>
         .page-first {
             background:url("<?= $this->url->get("img/seal.png") ?>") no-repeat scroll 80px 30px transparent;
@@ -26,6 +27,7 @@
             background:url("<?= $this->url->get("img/seal.png") ?>") no-repeat scroll 100px 200px transparent;
         }
     </style>
+    
     <body>
         <script type="text/x-mathjax-config">
             MathJax.Hub.Config({
@@ -163,5 +165,12 @@
                 </div>	
             </div>
         </div>
+
+        <script>
+                document.addEventListener("DOMContentLoaded", function (event) {
+                    window.status = "content-loaded";       // PDF rendering
+                });
+        </script>
+
     </body>
 </html>
