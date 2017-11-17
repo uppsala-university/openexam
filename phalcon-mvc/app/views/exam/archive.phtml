@@ -10,6 +10,9 @@
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
 
+error_log($this->config->brand->logo->file);
+error_log($this->config->brand->logo->seal);
+
 ?>
 <html>
     <head>
@@ -18,22 +21,29 @@
         <?= Phalcon\Tag::stylesheetLink("css/pdf-rendering.css"); ?>
         <title><?= $exam->name ?></title>
     </head>
-    
+
     <style>
         .page-first {
-            background:url("<?= $this->url->get("img/seal.png") ?>") no-repeat scroll 80px 30px transparent;
+            background:url("<?= $this->url->get($this->config->brand->logo->seal) ?>") no-repeat scroll 80px 30px transparent;
         }
         .page-inner {
-            background:url("<?= $this->url->get("img/seal.png") ?>") no-repeat scroll 100px 200px transparent;
+            background:url("<?= $this->url->get($this->config->brand->logo->seal) ?>") no-repeat scroll 100px 200px transparent;
         }
     </style>
-    
+
     <body>
         <script type="text/x-mathjax-config">
+            var mathjax_typeset_finished = false;
+
             MathJax.Hub.Config({
             extensions: ["tex2jax.js"],
-            jax: ["input/TeX","output/HTML-CSS"],
-            tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+            jax: ["input/TeX", "output/HTML-CSS"],
+            tex2jax: {inlineMath: [["$", "$"], ["\\(", "\\)"]]}
+            });
+
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+            MathJax.Hub.Queue(function () {
+            mathjax_typeset_finished = true;
             });
         </script>
         <?= Phalcon\Tag::javascriptInclude('js/mathjax/MathJax.js'); ?>
@@ -42,7 +52,7 @@
         <div class="page page-first" style='min-height: 1017px; border-bottom:none' >
             <div class="header">
                 <div>
-                    <img src="<?= $this->url->get("img/Logo_UU.jpg") ?>" style="width:200%; z-index: 0" />
+                    <img src="<?= $this->url->get($this->config->brand->logo->file) ?>" style="width:200%; z-index: 0" />
                 </div>
             </div>
             <div class="body" style="float: right;  margin-top: 35%; margin-left: 10%;">
@@ -168,7 +178,14 @@
 
         <script>
                 document.addEventListener("DOMContentLoaded", function (event) {
-                    window.status = "content-loaded";       // PDF rendering
+                    setTimeout(function () {
+                        var timer = setInterval(function () {
+                            if (mathjax_typeset_finished) {
+                                clearInterval(timer);
+                                window.status = "content-loaded";       // PDF rendering
+                            }
+                        }, 1000);
+                    }, 3000);
                 });
         </script>
 
