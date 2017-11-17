@@ -8,9 +8,9 @@ body {
 }
 
 .header {
+    margin-top:10px; 
     margin-left:3%; 
-    background-color:#C91F3C; 
-    width:10%;
+    width:15%;
 }
 .body {
     left: -50%; position: relative; text-align: left;
