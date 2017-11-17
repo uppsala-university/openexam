@@ -446,14 +446,18 @@ div[role="dialog"] {
     color: #999999;
 }
 
-.left-col-user, .left-col-item {
+.left-col-user, 
+.left-col-item {
     color: #004276;
     font-size: 0.9em;
-    padding-left: 40px;
+}
+
+.left-col-user {
+    padding-left: 5px;
 }
 
 .left-col-item {
-    cursor: pointer;
+    padding-left: 20px;
 }
 
 .left-col-item span.q {
