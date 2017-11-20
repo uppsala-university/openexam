@@ -354,4 +354,10 @@ $(document).ready(function () {
         }
     });
 
+    $(document).on('focus', '.user-search', function () {
+        $(this).focus();    // Overflow by purpose
+        return false;
+    });
+
+
 });

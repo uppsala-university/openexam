@@ -159,7 +159,7 @@ $(function () {
         template.find('.lib-resource-image').attr('src', file.src);
         template.find('.text').text(file.name);
         template.find('.lib-item-share').attr('item-share', share);
-
+        
         return template;
     };
 
@@ -347,7 +347,7 @@ $(function () {
                 saveItemName(id, element.find('input').val());
             }
             if (element.attr('id') === 'lib-item-share') {
-                saveItemShare(id, element.find('select option:selected').text());
+                saveItemShare(id, element.find('select option:selected').val());
             }
         }
     };
@@ -356,8 +356,14 @@ $(function () {
         return;
     }
 
+    $(document).on('focus', '.update-lib-item-name', function () {
+        $(this).focus();    // Overflow by purpose
+        return false;
+    });
+
     $(document).on('click', '.update-lib-item-details', function () {
         saveItemDetails($(this));
+        return false;
     });
 
     $(document).on('click', '.select-resource', function () {
@@ -375,22 +381,27 @@ $(function () {
 
     $(document).on('click', '#lib-item-personal', function () {
         showPersonalItems();
+        return false;
     });
 
     $(document).on('click', '#lib-item-expand', function () {
         showExpandedItems();
+        return false;
     });
 
     $(document).on('click', '.lib-item-edit', function () {
         editItemName($(this));
+        return false;
     });
 
     $(document).on('click', '.lib-item-del', function () {
         deleteItem($(this));
+        return false;
     });
 
     $(document).on('click', '.lib-item-share', function () {
         editItemShare($(this));
+        return false;
     });
 
 });
