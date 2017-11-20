@@ -741,6 +741,13 @@ $(document).ready(function () {
     };
 
     // 
+    // Reload MathJAX on page:
+    // 
+    var reloadMathJax = function () {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    };
+
+    // 
     // Reads question data from JSON object (on page storage) and 
     // re-populates questions in main question area
     // 
@@ -883,6 +890,8 @@ $(document).ready(function () {
             $('#qs_area').append($(qLine).show());
 
         });
+        
+        reloadMathJax();
     };
 
     refreshQuestions();
