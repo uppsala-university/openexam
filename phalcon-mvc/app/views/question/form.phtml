@@ -58,7 +58,7 @@ if ($question->status == 'removed') {
         border: 1px dashed #e2e2e2;
         margin-top: 10px;
         background-color: #f9f9f9;
-        padding-top: 10px;
+        padding: 10px 0 6px;
     }
     .q_resources .add_resources a {
         color: #C02E3C;
@@ -67,6 +67,20 @@ if ($question->status == 'removed') {
         margin-left: 2px;
         padding-left: 15px;
     }
+    .q_resources ul {
+        list-style: none;
+        margin: 5px 0 0;
+    }    
+    .q_resources ul li {
+        background-color: #f2f2f2;
+        border: 1px solid #e2e2e2;
+        float: left;
+        margin-right: 8px;
+        padding: 0 5px;
+    }
+    .q_resources ul li i {
+        cursor: pointer;
+    }    
     .ans_type_selector_box_wrap {
         border: 1px dashed #dedede;
         margin-bottom: 5px;
@@ -353,7 +367,7 @@ if ($question->status == 'removed') {
 </div>
 
 <!-- Dialog for resource selection -->
-<div  id="media_selector" style="padding-top:20px; display:none" title="Select or upload supplementary material"></div>
+<div  id="media-library" style="display:none" title="Media file manager"></div>
 
 <script language="javascript">
         var tabId = tabCounter = <?= ($totalQParts ? $totalQParts + 1 : 2) ?>;

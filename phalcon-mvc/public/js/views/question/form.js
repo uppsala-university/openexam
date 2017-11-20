@@ -19,6 +19,8 @@ var qPartTabs = $("#qPartTabs").tabs();
 var tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close'>Remove Tab</span></li>";
 var libJs = '';
 
+$('.lib_resources_list').sortable();
+
 // 
 // Initialize opentip for adding question correctors:
 // 
@@ -147,10 +149,8 @@ $(document).ready(function () {
         }
     });
 
-    if (formJs === 'loaded') {
+    if (oe_module_loaded("question-form")) {
         return;
-    } else {
-        formJs = 'loaded';
     }
 
     // 
@@ -171,38 +171,38 @@ $(document).ready(function () {
             url: baseURL + 'utility/media/library',
             data: {'exam_id': examId},
             success: function (data) {
-                $("#media_selector").html(data);
-                $("#media_selector").dialog({
+                $("#media-library").html(data);
+                $("#media-library").dialog({
                     autoOpen: true,
-                    width: "55%",
+                    width: "75%",
+                    height: 650,
                     modal: true,
                     buttons: {
-                        "Add selected resources to question": function () {
-                            $('#selected-lib-img > li:visible > .title-box').each(function (index, itemTitle) {
-
+                        OK: function () {
+                            $('#lib-selected-list > .lib-item').each(function (index, item) {
                                 // 
-                                // Use filename if name was not given:
+                                // Get name and link from selected item:
                                 // 
-                                if ($(itemTitle).find('input').val().length === 0) {
-                                    $(itemTitle).find('input').val($(this).attr('file-name'));
-                                }
+                                var name = $(item).find('.text').text().trim();
+                                var path = $(item).find('.select-resource').attr('href');
 
                                 // 
                                 // Prefix URL if relative:
                                 // 
-                                if ($(this).attr('file-path')[0] !== '/') {
-                                    $(this).attr('file-path', function (i, href) {
-                                        return baseURL + href;
-                                    });
+                                if (path[0] !== '/') {
+                                    path = baseURL + path;
                                 }
 
+                                // 
+                                // Append selected resources to list in question editor:
+                                // 
                                 $('#' + $(".ui-tabs-active").attr("aria-controls"))
                                         .find('.lib_resources_list')
                                         .append('\
                                                     <li>\
                                                             <i class="fa fa-close resource-item-remove"></i>\
                                                             <i class="fa fa-pencil resource-item-edit"></i>\
-                                                            <a href="' + $(this).attr('file-path') + '" file-path="' + $(this).attr('file-path') + '" target="_blank">' + $(itemTitle).find('input').val() + '</a>\
+                                                            <a href="' + path + '" file-path="' + path + '" target="_blank">' + name + '</a>\
                                                     </li>'
                                                 );
                             });
@@ -227,34 +227,30 @@ $(document).ready(function () {
             url: baseURL + 'utility/media/library',
             data: {'exam_id': examId},
             success: function (data) {
-                $("#media_selector").html(data);
+                $("#media-library").html(data);
 
-                $("#media_selector").find("#audio-tab").parent().find("ul > li > a[href='#audio-tab']").hide();
-                $("#media_selector").find("#video-tab").parent().find("ul > li > a[href='#video-tab']").hide();
-                $("#media_selector").find("#other-tab").parent().find("ul > li > a[href='#other-tab']").hide();
+                $("#media-library").find("#audio-tab").parent().find("ul > li > a[href='#audio-tab']").hide();
+                $("#media-library").find("#video-tab").parent().find("ul > li > a[href='#video-tab']").hide();
+                $("#media-library").find("#other-tab").parent().find("ul > li > a[href='#other-tab']").hide();
 
-                $("#media_selector").dialog({
+                $("#media-library").dialog({
                     autoOpen: true,
                     width: "55%",
                     modal: true,
                     buttons: {
-                        "Set selected resource as canvas background": function () {
-                            $('#selected-lib-img > li:visible > .title-box').each(function (index, itemTitle) {
-
+                        OK: function () {
+                            $('#lib-selected-list > .lib-item').each(function (index, item) {
                                 // 
-                                // Use filename if name was not given:
+                                // Get name and link from selected item:
                                 // 
-                                if ($(itemTitle).find('input').val().length === 0) {
-                                    $(itemTitle).find('input').val($(this).attr('file-name'));
-                                }
+                                var name = $(item).find('.text').text().trim();
+                                var path = $(item).find('.select-resource').attr('href');
 
                                 // 
                                 // Prefix URL if relative:
                                 // 
-                                if ($(this).attr('file-path')[0] !== '/') {
-                                    $(this).attr('file-path', function (i, href) {
-                                        return baseURL + href;
-                                    });
+                                if (path[0] !== '/') {
+                                    path = baseURL + path;
                                 }
 
                                 $('#' + $(".ui-tabs-active").attr("aria-controls"))
@@ -264,7 +260,7 @@ $(document).ready(function () {
                                                     <li>\
                                                             <i class="fa fa-close resource-item-remove"></i>\
                                                             <i class="fa fa-pencil resource-item-edit"></i>\
-                                                            <a href="' + $(this).attr('file-path') + '" file-path="' + $(this).attr('file-path') + '" target="_blank">' + $(itemTitle).find('input').val() + '</a>\
+                                                            <a href="' + path + '" file-path="' + path + '" target="_blank">' + name + '</a>\
                                                     </li>'
                                                 );
                             });

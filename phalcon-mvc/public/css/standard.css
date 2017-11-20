@@ -416,7 +416,6 @@ div[role="dialog"] {
 }
 
 .tree-menu-container ul {
-    border-top: 1px solid white;
 }
 
 .tree-menu-container a {
@@ -428,6 +427,10 @@ div[role="dialog"] {
     list-style: none;
     margin: 0;
     padding: 0;
+}
+
+.menu-level-1 {
+    border-top: 1px solid white;
 }
 
 .menu-item-add {
