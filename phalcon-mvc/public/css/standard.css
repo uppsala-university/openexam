@@ -232,6 +232,12 @@ h1 div.tool-icons {
     padding:15px; 
 }
 
+.data-missing {
+    color: lightsteelblue;
+    text-align: center;
+    font-size: 1.5em;
+}
+
 /**
  * Tooltip (opentip) style.
  */
@@ -407,7 +413,7 @@ div[role="dialog"] {
 }
 
 /**
- * Custom menu on right hand side.
+ * Custom menu on left hand side.
  */
 .tree-menu-container {
     background-color: #eeeeee;
