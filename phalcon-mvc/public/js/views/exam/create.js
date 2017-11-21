@@ -66,6 +66,13 @@ $(document).ready(function () {
             }
         }
     }
+    
+    // 
+    // Toggle left side menu open:
+    // 
+    $("#show-left-menu").click(function() {
+        $(".oe-left-column").toggle();
+    });
 
     // 
     // Sortable questions related.

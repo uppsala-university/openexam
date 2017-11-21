@@ -46,7 +46,6 @@ img {
 }
 
 .oe-left-column, .oe-right-column, footer, header { 
-    min-height: 200px;
     margin: 0.5em;
     padding: 0.5em;
 }
@@ -56,6 +55,7 @@ img {
 }
 
 .oe-right-column {
+    min-height: 260px;
     width: 100%;
 }
 
@@ -130,6 +130,7 @@ img {
 
 @media screen and (max-width: 40.5em) {
     .oe-left-column { 
+        top: 250px;
         margin: 0;
         position: absolute;
         display: none;

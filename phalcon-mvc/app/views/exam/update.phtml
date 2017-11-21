@@ -134,10 +134,20 @@ if (in_array("editable", $exam->flags)) {
         margin-right: 3px;
         padding: 2px;
     }
+    a.show-left-menu {
+        display: none;
+    }
 
     @media screen and (max-width: 40.5em) {
         .q_fields input[type="text"] {
             min-width: 180px;
+        }
+        h1 div.tool-icons {
+            float: none;
+            margin-bottom: 0;
+        }
+        a.show-left-menu {
+            display: inline-block;
         }
     }
 </style>
@@ -169,6 +179,9 @@ if (in_array("editable", $exam->flags)) {
             <div class="tool-icons">
 
                 <?php if ($this->user->hasCapability($exam, 'update')) : ?>
+                        <a href="#" class="prevent show-left-menu">
+                            <i class="fa fa-bars" id="show-left-menu" style="float:left;padding:3px"></i>
+                        </a> 
                         <a href="#" class="prevent exam-settings">
                             <i class="fa fa-gear" id="exam-settings" style="float:right;padding:3px"></i>
                         </a> 
