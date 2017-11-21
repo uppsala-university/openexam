@@ -476,6 +476,7 @@ div[role="dialog"] {
 .left-col-item {
     color: #004276;
     font-size: 0.9em;
+    cursor: pointer;
 }
 
 .left-col-user {
