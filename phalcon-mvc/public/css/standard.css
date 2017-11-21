@@ -142,8 +142,10 @@ img {
 
 @media screen and (max-width: 40.5em) {
     .oe-left-column { 
-        top: 250px;
-        margin: 0;
+        top: 160px;
+        right: 1px;
+        padding: 0;
+        margin: 0;        
         position: absolute;
         display: none;
     }
