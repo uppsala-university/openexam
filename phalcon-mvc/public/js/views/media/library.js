@@ -168,6 +168,7 @@ $(function () {
     // 
     var selectResourceFile = function (resource) {
         addToSelectedFiles(resource.clone());
+        resource.addClass("selected");
         $("#lib-default-msg").hide();   // At least one now
     };
 
