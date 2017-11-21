@@ -119,22 +119,26 @@ var closeToolTips = function ()
  */
 var showDialogWindow = function (target, content, options) {
     var useDialog = $(window).width() > 750;
+    var defaults = {
+        autoOpen: true,
+        width: false,
+        height: "auto",
+        modal: true
+    };
 
     if (options === undefined) {
-        options = {
-            autoOpen: true,
-            width: false,
-            modal: true
-        };
+        options = defaults;
+    } else {
+        options = Object.assign({}, defaults, options);
     }
-    
+
     // 
     // Limit dialog width:
     // 
     if (useDialog && options.width === false) {
         options.width = '600px';
     }
-    
+
     // 
     // Wrap content in div for fancybox:
     // 
