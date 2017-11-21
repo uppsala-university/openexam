@@ -77,7 +77,7 @@ if (in_array("editable", $exam->flags)) {
                     Created: <?= $exam->created ?>
                 </div>
                 <div>
-                    <ul style="margin: 15px">
+                    <ul style="margin-right: 15px">
                         <?php if (empty($exam->name) || empty($exam->starttime) || empty($exam->endtime) || empty($exam->grades)): ?>
                                 <li style="color:#c09853">Please fill up all required fields (marked with <span style="color:#F02222">*</span>) on each separate tab. </li>
                         <?php endif; ?>
@@ -251,8 +251,8 @@ if (in_array("editable", $exam->flags)) {
         </div>
     </div>
 
-    <hr>
-    <div>
+    <div class="oe-dialog-buttons">
+        <hr>
         <center>
             <span style="min-width: 10em" class="btn btn-success save-exam-settings">
                 <i class="fa fa-floppy-o"></i>

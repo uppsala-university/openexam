@@ -26,12 +26,7 @@ $(document).ready(function () {
             data: {'exam_id': examId},
             url: baseURL + 'exam/check',
             success: function (content) {
-                $("#exam-check-box").html(content);
-                $("#exam-check-box").dialog({
-                    autoOpen: true,
-                    width: "50%",
-                    modal: true
-                });
+                showDialogWindow("#exam-check-box", content);
             }
         });
 

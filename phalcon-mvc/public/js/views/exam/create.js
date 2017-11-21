@@ -333,15 +333,7 @@ $(document).ready(function () {
             data: {'exam_id': examId},
             url: baseURL + 'exam/settings/',
             success: function (content) {
-                $("#exam-settings-box").html(content);
-                $("#exam-settings-box").dialog({
-                    autoOpen: true,
-                    width: "50%",
-                    modal: true,
-                    close: function () {
-                        $(this).dialog('destroy');
-                    }
-                });
+                showDialogWindow("#exam-settings-box", content);
             }
         });
 
@@ -359,18 +351,11 @@ $(document).ready(function () {
     // The exam archive download/view online dialog and its related event handlers.
     // 
     $(document).on('click', '.exam-archive', function () {
-        $('#exam-archive-box').dialog({
-            autoOpen: true,
-            width: "50%",
-            modal: true,
-            close: function () {
-                $(this).dialog('destroy');
-            }
-        });
+        showDialogWindow('#exam-archive-box');
     });
 
     $(document).on('click', '#close-archive', function () {
-        $('#exam-archive-box').dialog('destroy');
+        closeDialogWindow('#exam-archive-box');
     });
 
     $(document).on('click', '#exam-archive-download', function () {
@@ -437,37 +422,10 @@ $(document).ready(function () {
             data: {'exam_id': examId},
             url: baseURL + 'exam/students/',
             success: function (content) {
-                $("#manage-students").html(content);
-                $("#manage-students").dialog({
-                    autoOpen: true,
-                    width: "750",
-                    position: ['center', 20],
-                    modal: true,
-                    close: function () {
-                        $(this).dialog('destroy');
-                        location.reload();
-                    }
-                });
+                showDialogWindow("#manage-students", content);
             },
             error: function (error) {
-                $("#manage-students").html(error.responseText);
-                $("#manage-students").dialog({
-                    autoOpen: true,
-                    width: "50%",
-                    position: ['center', 20],
-                    modal: true,
-                    close: function () {
-                        $(this).dialog('destroy');
-                    },
-                    show: {
-                        effect: "blind",
-                        duration: 5
-                    },
-                    hide: {
-                        effect: "blind",
-                        duration: 5
-                    }
-                });
+                showDialogWindow("#manage-students", error.responseText);
             }
         });
     });
@@ -535,11 +493,13 @@ $(document).ready(function () {
                 if (!qid) {
                     qid = qId;
                 }
+                
+                // 
+                // Closing the dialog should prompt user if question should be deleted
+                // if action was create. At this point, the question has already been 
+                // created by the AJAX call.
+                // 
 
-                // 
-                // Delete question created by AJAX call when dialog is closed and user
-                // confirms closing without saving.
-                // 
                 target.dialog({
                     autoOpen: true,
                     width: "60%",

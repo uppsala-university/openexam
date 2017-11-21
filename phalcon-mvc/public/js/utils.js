@@ -75,7 +75,7 @@ var ajax = function (url, data, callback, type, async, showSuccessMsg) {
  * @returns 
  */
 var showMessage = function (message, type) {
-    
+
     if (type === undefined) {
         type = 'info';
     } else if (type === 'error') {
@@ -97,10 +97,79 @@ var showMessage = function (message, type) {
     }
 };
 
+/**
+ * Close/hide opentip dialogs.
+ */
 var closeToolTips = function ()
 {
     for (var i = 0; i < Opentip.tips.length; i++) {
         Opentip.tips[i].hide();
+    }
+};
+
+/**
+ * Open dialog window.
+ * 
+ * Use dialog on desktop sized windows and fancybox on screens having 
+ * width smaller than 750 pixels.
+ * 
+ * @param {String} target The target selector.
+ * @param {String} content The HTML content.
+ * @param {Object} options Optional options.
+ */
+var showDialogWindow = function (target, content, options) {
+    var useDialog = $(window).width() > 750;
+
+    if (options === undefined) {
+        options = {
+            autoOpen: true,
+            width: false,
+            modal: true
+        };
+    }
+    
+    // 
+    // Limit dialog width:
+    // 
+    if (useDialog && options.width === false) {
+        options.width = '600px';
+    }
+    
+    // 
+    // Wrap content in div for fancybox:
+    // 
+    if (content !== undefined) {
+        if (useDialog) {
+            $(target).html(content);
+        } else {
+            $(target).html('<div>' + content + '</div>');
+        }
+    }
+
+    if (useDialog) {
+        $(target).attr('dialog-type', 'jquery-dialog');
+        $(target).dialog(options);
+    } else {
+        $(target).attr('dialog-type', 'fancybox');
+        $(target).css('min-height', $(window).height() - 88);
+//        $(target).find('.oe-dialog-buttons').addClass('oe-center-bottom');
+        $.fancybox.open({
+            src: target,
+            type: 'inline'
+        });
+    }
+};
+
+/**
+ * Close dialog window.
+ * 
+ * @param {String} target The target selector.
+ */
+var closeDialogWindow = function (target) {
+    if ($(target).attr('dialog-type') === 'jquery-dialog') {
+        $(target).dialog('destroy');
+    } else {
+        $.fancybox.close(true);
     }
 };
 

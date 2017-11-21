@@ -26,15 +26,7 @@ $(document).ready(function () {
             data: {'exam_id': examId},
             url: baseURL + 'exam/security',
             success: function (content) {
-                $("#exam-security-box").html(content);
-                $("#exam-security-box").dialog({
-                    autoOpen: true,
-                    width: "50%",
-                    modal: true,
-                    close: function () {
-                        $(this).dialog('destroy');
-                    }
-                });
+                showDialogWindow("#exam-security-box", content);
             }
         });
 
@@ -76,14 +68,7 @@ $(document).ready(function () {
     // Display insert entry popup:
     // 
     $('body').on('click', '#location-insert', function () {
-        $('#locations-list').dialog({
-            autoOpen: true,
-            width: "30%",
-            modal: true,
-            close: function () {
-                $(this).dialog('destroy');
-            }
-        });
+        showDialogWindow('#locations-list');
     });
 
     // 
@@ -165,7 +150,8 @@ $(document).ready(function () {
 
             showMessage('Security settings updated successful', 'success');
         }
-        $("#exam-security-box").dialog('close');
+        
+        closeDialogWindow("#exam-security-box");
     });
 
 });
