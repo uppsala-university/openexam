@@ -142,12 +142,13 @@ img {
 
 @media screen and (max-width: 40.5em) {
     .oe-left-column { 
-        top: 160px;
+        top: 162px;
         right: 1px;
         padding: 0;
         margin: 0;        
         position: absolute;
         display: none;
+        z-index: 1;
     }
 
     .oe-right-column { 

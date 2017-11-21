@@ -429,6 +429,14 @@ $(document).ready(function () {
             }
         });
     });
+    
+    // 
+    // Set element title to exam status.
+    // 
+    $(document).on('mouseover', '.exam-status-check', function() {
+        var message = $(this).parent().find('span').text();
+        $(this).attr('title', message);
+    });
 
     // 
     // Delete from database and then callback:

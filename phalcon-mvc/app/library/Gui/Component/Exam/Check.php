@@ -33,6 +33,10 @@ class Check extends ExamStatusCheck implements Component
          * Render as button.
          */
         const RENDER_BUTTON = 2;
+        /**
+         * Render as badge.
+         */
+        const RENDER_BADGE = 3;
 
         /**
          * The icon color.
@@ -135,15 +139,21 @@ class Check extends ExamStatusCheck implements Component
                         return false;
                 }
 
-                if ($this->_mode == self::RENDER_LABEL) {
-                        printf("<i class=\"fa fa-2x fa-%s-circle\" style=\"color: %s\"></i>\n", $this->_icon, $this->_color);
-                        printf("<span style=\"vertical-align: super\">%s: %s</span>\n", $this->_text, $this->_task);
-                }
-                if ($this->_mode == self::RENDER_BUTTON) {
-                        printf("<span style=\"padding: 2px 10px 2px 10px; font-size: 11px\" class=\"btn btn-default\">\n");
-                        printf("<i class=\"fa fa-1x fa-%s-circle\" style=\"color: %s\"></i>\n", $this->_icon, $this->_color);
-                        printf("<span>%s: %s</span>\n", $this->_text, $this->_task);
-                        printf("</span>\n");
+                switch ($this->_mode) {
+                        case self::RENDER_LABEL:
+                                printf("<i class=\"exam-status-check fa fa-2x fa-%s-circle\" style=\"color: %s\"></i>\n", $this->_icon, $this->_color);
+                                printf("<span style=\"vertical-align: super\">%s: %s</span>\n", $this->_text, $this->_task);
+                                break;
+                        case self::RENDER_BADGE;
+                                printf("<i class=\"exam-status-check fa fa-%s-circle\" style=\"color: %s\"></i>\n", $this->_icon, $this->_color);
+                                printf("<span style=\"display: none\">%s: %s</span>\n", $this->_text, $this->_task);
+                                break;
+                        case self::RENDER_BUTTON;
+                                printf("<span style=\"padding: 2px 10px 2px 10px;\" class=\"btn btn-default\">\n");
+                                printf("<i class=\"exam-status-check fa fa-1x fa-%s-circle\" style=\"color: %s\"></i>\n", $this->_icon, $this->_color);
+                                printf("<span style=\"display: none\">%s: %s</span>\n", $this->_text, $this->_task);
+                                printf("</span>\n");
+                                break;
                 }
         }
 
