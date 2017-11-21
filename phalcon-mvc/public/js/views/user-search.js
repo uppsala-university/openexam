@@ -24,7 +24,8 @@ function attachCatalogSearch(index, element)
     var userman = $("#user-insert-box").clone();
     var opentip = $(element).opentip({
         style: "drops",
-        tipJoint: "top left"
+        tipJoint: "top left",
+        offset: [0, 10]
     });
 
     opentip.isfor = 'uu-id' + (index + 1);
@@ -235,7 +236,6 @@ function addUserRole(item, anchor, model)
                 user: item.id
             },
             function (response) {
-
                 // 
                 // Prepare item to be added:
                 // 
@@ -243,7 +243,7 @@ function addUserRole(item, anchor, model)
                         // 
                         // Hide default message, if it was visible:
                         // 
-                        .find('.menuLevel1')
+                        .find('.menu-level-1')
                         .find('.left-col-def-msg')
                         .hide()
                         .end()
@@ -274,7 +274,7 @@ function addUserRole(item, anchor, model)
                 // 
                 // Add item to the menu:
                 // 
-                anchor.closest('li').find('.menuLevel1').show().append(entry);
+                anchor.closest('li').find('.menu-level-1').show().append(entry);
 
                 // 
                 // Append to staff list:
