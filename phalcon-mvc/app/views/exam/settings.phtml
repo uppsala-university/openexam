@@ -70,14 +70,9 @@ if (in_array("editable", $exam->flags)) {
                 Please note that you may return at anytime to complete the exam settings. Remember to press the 'Save settings' button. Use 'Check exam' to detect missing tasks to complete.
             </div>
 
-            <div style="min-height: 140px">
-                <div class="alert alert-success" style="width: 50%; float: right; margin-left: 20px">
-                    Total number of students in exam: <?= count($exam->getStudents()) ?> <br />
-                    Total exam points: <?= $totalScore ?> <br><br>
-                    Created: <?= $exam->created ?>
-                </div>
-                <div>
-                    <ul style="margin-right: 15px">
+            <div class="row">
+                <div class="col-sm-6">
+                    <ul>
                         <?php if (empty($exam->name) || empty($exam->starttime) || empty($exam->endtime) || empty($exam->grades)): ?>
                                 <li style="color:#c09853">Please fill up all required fields (marked with <span style="color:#F02222">*</span>) on each separate tab. </li>
                         <?php endif; ?>
@@ -88,7 +83,13 @@ if (in_array("editable", $exam->flags)) {
                                 <li style="color:#c09853">Some questions don't have any credits: <?= implode(", ", $missingPoints) ?></li>
                         <?php endif; ?>
                     </ul>
-
+                </div>
+                <div class="col-sm-6">
+                    <div class="alert alert-success">
+                        Total number of students in exam: <?= count($exam->getStudents()) ?> <br />
+                        Total exam points: <?= $totalScore ?> <br><br>
+                        Created: <?= $exam->created ?>
+                    </div>                        
                 </div>
             </div>
         </div>
