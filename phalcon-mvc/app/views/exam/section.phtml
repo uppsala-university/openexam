@@ -15,7 +15,6 @@
 
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Gui\Component\Exam\Progress;
-use Phalcon\Tag;
 
 $sections = include('sections.inc');
 
@@ -48,9 +47,6 @@ $ordering = array(
 );
 
 ?>
-
-<?= Tag::stylesheetLink('plugins/jquery-ui/jquery-ui.min.css'); ?>
-<?= Tag::javascriptInclude('plugins/jquery-ui/jquery-ui.min.js'); ?>
 
 <style>
     .pagination > .active > a {

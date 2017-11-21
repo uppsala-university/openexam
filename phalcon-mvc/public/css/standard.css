@@ -374,6 +374,9 @@ h1 div.tool-icons {
 /**
  * jQuery UI fixes:
  */
+.ui-dialog .ui-dialog-content {
+    overflow: visible;
+}
 .ui-tabs { 
     position: relative; 
     padding: .2em; zoom: 1; 
