@@ -45,7 +45,8 @@ img {
     display: flex;
 }
 
-.oe-left-column, .oe-right-column, footer, header {  
+.oe-left-column, .oe-right-column, footer, header { 
+    min-height: 200px;
     margin: 0.5em;
     padding: 0.5em;
 }
