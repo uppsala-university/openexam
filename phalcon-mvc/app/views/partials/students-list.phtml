@@ -27,10 +27,19 @@ if (!$cdt->etime) {
 
 ?>
 
+<style>
+    .student-search-box {
+        display: flex;
+    }
+    .student-search-box input {
+        margin-right: 5px;
+    }
+</style>
+
 <div id="tabs-2">
     <h4>Registered students in this exam</h4>
 
-    <div class="alert alert-info gw-box fade in" style="padding-top: 8px; padding-bottom: 8px; position: inherit; width: unset; font-weight: normal; text-align: left">
+    <div class="alert alert-info gw-box fade in">
         Click inside table cells to edit their content. Dates are omitted from display whenever they coincidence with exam start or end date. 
         Input time as hh:mm with optional date, use the suggested date/time as a guide.
     </div>
@@ -55,9 +64,9 @@ if (!$cdt->etime) {
                     <span></span>
                 </span>
             </div>
-            <div style="float:right">
+            <div class="student-search-box" style="float:right">
                 <input class="form-control" id="search-students" type="text" placeholder="Filter students"/>
-                <span class="toolbtn toolbtn-orange filter-students"><i style="color:#FFF" class="fa fa-search"></i></span>
+                <span class="toolbtn toolbtn-orange-outline filter-students"><i class="fa fa-search fa-2x"></i></span>
             </div>
             <table id="all-students-table" style="width:100%" class="tablesorter">
                 <thead>
