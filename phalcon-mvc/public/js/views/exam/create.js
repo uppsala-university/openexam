@@ -422,7 +422,7 @@ $(document).ready(function () {
             data: {'exam_id': examId},
             url: baseURL + 'exam/students/',
             success: function (content) {
-                showDialogWindow("#manage-students", content);
+                showDialogWindow("#manage-students", content, {width: 780});
             },
             error: function (error) {
                 showDialogWindow("#manage-students", error.responseText);

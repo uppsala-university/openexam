@@ -194,7 +194,7 @@ $(document).ready(function () {
             data: {'exam_id': $(this).attr('data-id')},
             url: baseURL + 'exam/students/',
             success: function (content) {
-                showDialogWindow("#manage-students", content);
+                showDialogWindow("#manage-students", content, {width: 780});
             }
         });
     });
