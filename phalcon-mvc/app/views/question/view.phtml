@@ -28,17 +28,6 @@
     }
 </style>
 
-<?php if ($viewMode == 'all'): ?>
-        <script type="text/x-mathjax-config">
-            MathJax.Hub.Config({
-            extensions: ["tex2jax.js"],
-            jax: ["input/TeX","output/HTML-CSS"],
-            tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
-            });
-        </script>
-        <?= Phalcon\Tag::javascriptInclude('js/mathjax/MathJax.js'); ?>
-<?php endif; ?>
-
 <div class='col-xs-12'>
 
     <!-- Question title row -->
