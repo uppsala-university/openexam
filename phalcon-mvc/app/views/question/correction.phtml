@@ -159,12 +159,12 @@ if (!$exam->show_save) {
         color: #ac4142 !important;
     }
     td.nc {
-        background-color: #A2FDB1 !important;
+        background-color: #a2fdb1 !important;
         border: 1px solid #65d02c !important;
         color: #41612c !important;
     }
     td.gm {
-        background-color: #4285F4 !important;
+        background-color: #4285f4 !important;
         border: 1px solid #dddddd !important;
         color: #ffffff !important;
     }
@@ -193,19 +193,19 @@ if (!$exam->show_save) {
     #table-wrapper { 
         overflow-x:scroll;
         overflow-y:visible;
-        width:calc(100% - 200px);
+        width:calc(100% - 190px);
         margin-left: 188px;
     }
     #table-wrapper td, 
     #table-wrapper th {
         padding: 5px 20px;
-        width: 200px;
+        width: 190px;
         text-align: center;            
     }
     #table-wrapper th:first-child,
     #table-wrapper td:first-child {
         position: absolute;
-        left: 5px;
+        left: 15px;
         text-align: left;
     }
     #table-wrapper th {
@@ -213,8 +213,13 @@ if (!$exam->show_save) {
     }
     #table-wrapper td.student {
         border-bottom:1px #dedede solid; 
-        border-right:5px solid #DDDDDD; 
-        background-color:#FFFFFF;
+        border-right:5px solid #dddddd; 
+        background-color:#ffffff;
+        white-space: nowrap;
+    }
+    #table-wrapper td.grade {
+    }
+    #table-wrapper td.score {
     }
     #table-wrapper td.percent {
         border-bottom:1px #dedede solid; 
@@ -405,7 +410,7 @@ if (!$exam->show_save) {
                                         }
 
                                         ?>
-                                        <td class="cc <?= $cc ?>">
+                                        <td class="score cc <?= $cc ?>">
                                             <?php if ($cLink): ?>
                                                     <a data-fancybox="ajax" 
                                                        data-caption="<?= $exam->name ?>"
@@ -509,7 +514,7 @@ if (!$exam->show_save) {
                                         $avgGrades[$grade] ++;
 
                                         ?>
-                                        <td class="cc gru" style="<?= $colorScheme ?>">
+                                        <td class="grade cc gru" style="<?= $colorScheme ?>">
                                             <?= $grade ?> <?= ($needGraceMarks) ? "(" . floatval((($passAt / 100) * $totalExamScore) - $totalStudentScore) . " pt. less)" : '' ?>
                                         </td>
                                 <?php endif; ?>
