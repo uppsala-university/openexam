@@ -120,13 +120,13 @@ if (strtotime($exam->endtime) < time()) {
 
             ?>
 
-            <?php if ($loading == 'question'): ?>
+            <?php if ($loadBy == 'question'): ?>
                     <div class="q-wrapper correction-section-box">
                 <?php else: ?>
                         <div class="q-wrapper correction-section-box" correction="<?= $result->correction ?>">
                     <?php endif; ?>
 
-                    <?php if (!$decoded && $loading != 'question'): ?>
+                    <?php if (!$decoded && $loadBy != 'question'): ?>
                             <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; z-index: 1; right: 15px; width: 5%; width: 60px;", "id" => $question->id . "-corrected", "class" => "not-corrected")); ?>
                     <?php endif; ?>
                     <div class="q-heading correction-section-head">
@@ -147,7 +147,7 @@ if (strtotime($exam->endtime) < time()) {
 
                         ?>
                         <?php foreach ($questParts as $qPartTitle => $qPart): ?>
-                                <div class="q-part-wrapper" style=" <?= $loading != 'question' ? '1px dashed #dedede' : 'none' ?>">
+                                <div class="q-part-wrapper" style=" <?= $loadBy != 'question' ? '1px dashed #dedede' : 'none' ?>">
 
                                     <?php if (count($questParts) > 1): ?>
                                             <div style="q-part-heading">
@@ -208,7 +208,7 @@ if (strtotime($exam->endtime) < time()) {
                                         <?php endif; ?>
 
                                         <?php
-                                        if ($loading != 'question'):
+                                        if ($loadBy != 'question'):
 
                                                 // filter answer for this question from list of answers
                                                 $qSpecificAns = array();
@@ -356,7 +356,7 @@ if (strtotime($exam->endtime) < time()) {
                                 <?php $qPartCounter++; ?>
                         <?php endforeach; ?>        
 
-                        <?php if ($loading == 'question'): ?>
+                        <?php if ($loadBy == 'question'): ?>
                                 <div class="st-ans-box">
                                     <?php foreach ($answers as $answer): ?>
                                             <?php $result = $answer->getResult(); ?>

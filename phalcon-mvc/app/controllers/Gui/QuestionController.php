@@ -378,7 +378,7 @@ class QuestionController extends GuiController
          * 
          * Allowed to Roles: corrector, decoder
          */
-        public function correctionAction($eid, $loadAnswersBy = null, $loadBy = array())
+        public function correctionAction($eid, $mode = null, $loading = array())
         {
                 //
                 // Sanitize:
@@ -395,7 +395,7 @@ class QuestionController extends GuiController
                 // 
                 // Find display mode:
                 // 
-                preg_match('/^\/([a-z]+)\/([0-9]+)/', $loadAnswersBy, $loadBy);
+                preg_match('/^\/([a-z]+)\/([0-9]+)/', $mode, $loading);
 
                 // 
                 // Use corrector role unless being creator or decoder:
@@ -413,17 +413,17 @@ class QuestionController extends GuiController
                         $exam->show_code = false;
                 }
 
-                if (count($loadBy)) {
+                if (count($loading)) {
 
-                        switch ($loadBy[1]) {
+                        switch ($loading[1]) {
                                 case 'student':
-                                        $this->correctionLoadStudent($exam, $loadBy[2]);
+                                        $this->correctionLoadStudent($exam, $loading[2]);
                                         break;
                                 case 'question':
-                                        $this->correctionLoadQuestion($exam, $loadBy[2]);
+                                        $this->correctionLoadQuestion($exam, $loading[2]);
                                         break;
                                 case 'answer':
-                                        $this->correctionLoadAnswer($exam, $loadBy[2]);
+                                        $this->correctionLoadAnswer($exam, $loading[2]);
                                         break;
                                 default:
                                         throw new Exception("Unable to load answers for provided criteria");
@@ -471,12 +471,12 @@ class QuestionController extends GuiController
                 if ($exam->show_code) {
                         $this->view->setVars(array(
                                 'heading' => sprintf('Student (Code: %s)', $student->code),
-                                'loadBy'  => 'student'
+                                'loading' => 'student'
                         ));
                 } else {
                         $this->view->setVars(array(
                                 'heading' => sprintf('Student (ID: %d)', $sid),
-                                'loadBy'  => 'student'
+                                'loading' => 'student'
                         ));
                 }
 
@@ -515,12 +515,12 @@ class QuestionController extends GuiController
                 if ($exam->show_code) {
                         $this->view->setVars(array(
                                 'heading' => sprintf('Question (Q%d) answered by student (Code: %s)', $question->slot, $student->code),
-                                'loadBy'  => 'answer'
+                                'loading' => 'answer'
                         ));
                 } else {
                         $this->view->setVars(array(
                                 'heading' => sprintf('Question (Q%d) answered by student (ID: %d)', $question->slot, $answer->student_id),
-                                'loadBy'  => 'answer'
+                                'loading' => 'answer'
                         ));
                 }
 
@@ -554,7 +554,7 @@ class QuestionController extends GuiController
 
                 $this->view->setVars(array(
                         'heading' => sprintf('Question (Q%d)', $question->slot),
-                        'loadBy'  => 'question'
+                        'loading' => 'question'
                 ));
 
                 if ($exam->show_code) {
