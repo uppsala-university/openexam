@@ -111,6 +111,21 @@ class TaskController extends GuiController
         }
 
         /**
+         * Student exam task.
+         */
+        public function upcomingAction()
+        {
+                $this->roleAction(array(
+                        'state' => State::UPCOMING | State::RUNNING,
+                        'order' => 'starttime',
+                        'match' => array(
+                                'published' => true
+                        )
+                    ), Roles::STUDENT, 'student-upcoming'
+                );
+        }
+
+        /**
          * Task helper method.
          * 
          * @param array $filter The filter options.
