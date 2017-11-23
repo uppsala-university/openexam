@@ -39,10 +39,6 @@ if (strtotime($exam->endtime) < time()) {
     }
 
     div.correction-section-box {
-        border-radius: 5px; 
-        margin-left: 10px; 
-        margin-top: 10px; 
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2);    
         overflow: hidden;
         background-color: ghostwhite;
     }
@@ -62,11 +58,12 @@ if (strtotime($exam->endtime) < time()) {
 
     #mainview {
         background-color: rgba(0, 0, 0, 0.3);
-        border-radius: 5px;
-        width: 100%;        
+        width: 100%;       
+        padding: 0;
     }
     #mainview h3 {
         color: white;
+        text-align: center;
     }
 
     input.q-points:required {
@@ -79,20 +76,45 @@ if (strtotime($exam->endtime) < time()) {
         display: <?= $exam->show_save ? '' : 'none' ?>
     }
     @media print {
+        body {
+            font-size: smaller;
+        }
         .no-print {
             display: none;
         }
         input.q-points {
             padding: 10px;
         }
-        body {
-            font-size: smaller;
+        #mainview {
+            color: black;
+            background-color: white;
+        }
+        #mainview h3 {
+            padding-top: 20px;
+            color: black;
+        }
+        div.correction-section-box {
+            border-radius: 5px; 
+            margin-left: 10px; 
+            margin-top: 10px; 
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2);    
+            background-color: ghostwhite;
         }
     }
     @media screen {
         .on-print {
             display: none;
         }
+    }
+    @media screen and (min-width: 900px) {
+        #mainview h3 {
+            position: fixed;
+            background-color: rgba(0,0,0,0.8);
+            width: 100%;
+            padding: 9px;
+            top: -20px;
+            z-index: 2;
+        }    
     }
 </style>
 
@@ -127,7 +149,7 @@ if (strtotime($exam->endtime) < time()) {
                     <?php endif; ?>
 
                     <?php if (!$decoded && $loading != 'question'): ?>
-                            <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; z-index: 1; right: 15px; width: 5%; width: 60px;", "id" => $question->id . "-corrected", "class" => "not-corrected")); ?>
+                            <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; z-index: 1; right: 0px; width: 5%; min-width: 60px;", "id" => $question->id . "-corrected", "class" => "not-corrected")); ?>
                     <?php endif; ?>
                     <div class="q-heading correction-section-head">
                         <span style="color:#333333; font-weight:normal"><i class="fa fa-pencil-square-o"></i> Question no. <?= $question->slot ?></span>
@@ -363,7 +385,7 @@ if (strtotime($exam->endtime) < time()) {
                                             <?php $scoreData = (is_object($result) && $result->count() ? json_decode($result->score, true) : array()); ?>
                                             <div class="correction-section-box" style="margin-top: 15px" correction="<?= $result->correction ?>">
                                                 <?php if (!$decoded && (count($scoreData) == 0 || !in_array($result->correction, array('completed', 'finalized')))): ?>
-                                                        <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; right: 25px; width: 5%; min-width: 60px;", "class" => "not-corrected")); ?>
+                                                        <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; right: 10px; width: 5%; min-width: 60px;", "class" => "not-corrected")); ?>
                                                 <?php endif; ?>
                                                 <?php $student = $answer->student; ?>
                                                 <div class="st-ans-box-heading correction-section-head">
