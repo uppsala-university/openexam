@@ -217,6 +217,9 @@ if (!$exam->show_save) {
         background-color:#ffffff;
         white-space: nowrap;
     }
+    #table-wrapper td.student a.icon {
+        padding-right: 5px;
+    }
     #table-wrapper td.grade {
     }
     #table-wrapper td.score {
@@ -224,6 +227,34 @@ if (!$exam->show_save) {
     #table-wrapper td.percent {
         border-bottom:1px #dedede solid; 
         background-color:#ffffcc;
+    }
+
+    @media screen and (max-width: 40.5em) {
+        #table-wrapper {
+            width: calc(100% - 100px);
+            margin-left: 98px;
+        }
+        #table-wrapper td, #table-wrapper th {
+            padding: 5px 5px;
+            width: 100px;
+        }
+        #table-wrapper a span.student {
+            display: none;
+        }
+    }
+
+    @media screen and (max-width: 25em) {
+        #table-wrapper {
+            width: calc(100% - 60px);
+            margin-left: 58px;
+        }
+        #table-wrapper td, #table-wrapper th {
+            padding: 5px 5px;
+            width: 60px;
+        }
+        #table-wrapper th:first-child {
+            color: transparent;
+        }
     }
 </style>
 
@@ -280,7 +311,8 @@ if (!$exam->show_save) {
                                        data-caption="<?= $exam->name ?>"
                                        data-src="<?= $href ?>" 
                                        data-type="ajax" 
-                                       href="javascript:;">
+                                       href="javascript:;"
+                                       title="<?= $desc ?>">
                                         Q<?= $question->slot ?><br>Max. <?= floatval($question->score) ?>
                                     </a>
                                 </th>
@@ -428,18 +460,23 @@ if (!$exam->show_save) {
                                 <?php endforeach; ?>
                                 <td class="student">
                                     <?php if ($exam->decoded): ?>
-                                            <a title="download result in pdf format" href="<?= $this->url->get('result/' . $exam->id . '/download/' . $student->id) ?>">
-                                                <i class="fa fa-file-pdf-o" style="color:red"></i>
+                                            <a class="icon"
+                                               title="Download result in PDF-file format" 
+                                               href="<?= $this->url->get('result/' . $exam->id . '/download/' . $student->id) ?>">
+                                                <i class="fa fa-file-pdf-o"></i>
                                             </a>    
-                                            &nbsp; &nbsp; &nbsp;
                                     <?php endif; ?> 
-                                    <a data-fancybox="ajax" 
+                                    <a class="icon"
+                                       data-fancybox="ajax" 
                                        data-caption="<?= $exam->name ?>"
                                        data-src="<?= $this->url->get('exam/' . $exam->id . '/correction/student/' . $student->id) ?>" 
                                        data-type="ajax" 
                                        href="javascript:;" 
                                        ans-id="<?= $answer->id ?>">
-                                           <?= $exam->decoded ? $student->code : Student . '(' . $student->id . ')' ?>
+                                        <i class="fa fa-graduation-cap"></i>
+                                        <span class="student">
+                                            <?= $exam->decoded ? $student->code : Student . '(' . $student->id . ')' ?>
+                                        </span>
                                     </a>
                                 </td>
                                 <?php if ($exam->show_code): ?>
