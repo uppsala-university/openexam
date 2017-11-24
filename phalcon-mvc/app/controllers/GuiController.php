@@ -278,7 +278,7 @@ class GuiController extends ControllerBase
                                 return true;
                         } else {
                                 throw new SecurityException(sprintf(
-                                    "You are not allowed to access this exam. Please contact <a href=\"mailto:%s\">%s</a> if you think this is an error.", $this->config->contact->addr, $this->config->contact->name
+                                    "You are not allowed to access this exam. Please contact <a href='mailto:%s'>%s</a> if you think this is an error.", $this->config->contact->addr, $this->config->contact->name
                                 ), Error::METHOD_NOT_ALLOWED
                                 );
                         }
@@ -296,7 +296,7 @@ class GuiController extends ControllerBase
                                 return true;
                         } else {
                                 throw new SecurityException(sprintf(
-                                    "You are not allowed to access this question. Please contact <a href=\"mailto:%s\">%s</a> if you think this is an error.", $this->config->contact->addr, $this->config->contact->name
+                                    "You are not allowed to access this question. Please contact <a href='mailto:%s'>%s</a> if you think this is an error.", $this->config->contact->addr, $this->config->contact->name
                                 ), Error::METHOD_NOT_ALLOWED
                                 );
                         }
@@ -317,7 +317,7 @@ class GuiController extends ControllerBase
                 // Nuke access with a proper contact us message:
                 // 
                 throw new SecurityException(sprintf(
-                    "You are not allowed to access this URL. Please contact <a href=\"mailto:%s\">%s</a> if you think this is an error.", $this->config->contact->addr, $this->config->contact->name
+                    "You are not allowed to access this URL. Please contact <a href='mailto:%s'>%s</a> if you think this is an error.", $this->config->contact->addr, $this->config->contact->name
                 ), Error::METHOD_NOT_ALLOWED
                 );
         }
