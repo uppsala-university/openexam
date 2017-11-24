@@ -36,16 +36,6 @@ class Question extends ModelBehavior
         {
                 if ($type == 'afterCreate') {
                         $this->trustedContextCall(function($user, $role) use($model) {
-                                
-                                // 
-                                // Don't add exam creator as question corrector.
-                                // 
-                                if ($role == Roles::CREATOR) {
-                                        if ($user->getPrincipalName() == $model->exam->creator) {
-                                                return;
-                                        }
-                                }
-
                                 // 
                                 // Add caller as question corrector:
                                 // 
