@@ -43,17 +43,17 @@ class SignupController extends GuiController
 {
 
         /**
-         * The teacher signup object.
+         * The teacher sign-up object.
          * @var Teacher
          */
         private $_teacher;
         /**
-         * The student signup object.
+         * The student sign-up object.
          * @var Student
          */
         private $_student;
         /**
-         * Should signup be enabled or not?
+         * Should sign-up be enabled or not?
          * @var boolean
          */
         private $_enabled = false;
@@ -87,14 +87,31 @@ class SignupController extends GuiController
                 unset($this->_teacher);
         }
 
+        /**
+         * Start action for sign-up.
+         * @return boolean
+         */
         public function indexAction()
         {
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess();
+
+                // 
+                // Check if signup should use wizard mode. Otherwise simply 
+                // forward caller to process action.
+                // 
                 if ($this->config->signup->wizard == false) {
                         $this->dispatcher->forward(array(
                                 'action' => 'process'
                         ));
                         return false;
                 }
+
+                // 
+                // Pass data to view:
+                // 
                 if (!$this->setViewData()) {
                         $this->view->pick(array("signup/missing"));
                 }
@@ -106,22 +123,49 @@ class SignupController extends GuiController
                 }
         }
 
+        /**
+         * Reload signup status.
+         * @return boolean
+         */
         public function reloadAction()
         {
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess();
+
+                // 
+                // Forward to index action:
+                // 
                 $this->dispatcher->forward(array(
                         'action' => 'index'
                 ));
                 return false;
         }
 
+        /**
+         * Process sign-up action.
+         */
         public function processAction()
         {
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess();
+
+                // 
+                // Handle case if sign-up was disabled in system config:
+                // 
                 if (!$this->setViewData()) {
                         $this->view->pick(array("signup/missing"));
                 } else {
                         $this->view->setVar('wait', $this->url->get('/img/ui-anim_basic_16x16.gif'));
                         $this->view->setVar('done', $this->url->get('/img/tick-circle.png'));
                 }
+
+                // 
+                // Next mode for sign-up:
+                // 
                 if ($this->config->signup->wizard == false) {
                         $this->view->setVar('next', $this->url->get($this->config->session->startPage));
                         $this->view->setVar('wizard', false);
@@ -131,24 +175,56 @@ class SignupController extends GuiController
                 }
         }
 
+        /**
+         * Sign-up finished action.
+         */
         public function finishedAction()
         {
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess();
+
+                // 
+                // Goto start page:
+                // 
                 $this->view->setVar('startpage', $this->url->get($this->config->session->startPage));
         }
 
+        /**
+         * Remove teacher role.
+         */
         public function removeAction()
         {
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess();
+
+                // 
+                // Is caller an employee?:
+                // 
                 $this->view->setVar('employee', $this->user->affiliation->isEmployee());
                 $this->_teacher->remove();
         }
 
+        /**
+         * Set data for view.
+         * @return boolean
+         */
         private function setViewData()
         {
+                // 
+                // Reload if not logged in:
+                // 
                 if ($this->user->getUser() == null) {
                         $this->view->setVar('reload', $this->url->get('/signup/reload'));
                         return $this->_enabled = true;
                 }
 
+                // 
+                // Caller is an employee:
+                // 
                 if ($this->user->affiliation->isEmployee()) {
                         $this->_enabled = true;
                         $this->view->setVar('teacher', $this->_teacher);
@@ -156,6 +232,10 @@ class SignupController extends GuiController
                                 sprintf("id IN (%s)", implode(",", $this->_teacher->getExams()))
                         ));
                 }
+
+                // 
+                // Caller is a student:
+                // 
                 if ($this->user->affiliation->isStudent()) {
                         $this->_enabled = true;
                         $this->view->setVar('student', $this->_student);
@@ -164,6 +244,9 @@ class SignupController extends GuiController
                         ));
                 }
 
+                // 
+                // Return status whether continue:
+                // 
                 return $this->_enabled;
         }
 

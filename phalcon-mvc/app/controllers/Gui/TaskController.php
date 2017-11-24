@@ -134,6 +134,8 @@ class TaskController extends GuiController
          */
         private function roleAction($filter, $role, $sect = null)
         {
+                $this->checkAccess();
+
                 if (!isset($sect)) {
                         $sect = $role;
                 }

@@ -92,17 +92,6 @@ $router->add(
     )
 );
 
-/*
-  $router->add(
-  "/exam/:int/view/?(.*)?", array(
-  "controller" => "exam",
-  "action"     => "view",
-  "examId"     => 1,
-  "questId"    => 2,
-  "namespace"  => "OpenExam\Controllers\Gui"
-  )
-  ); */
-
 $router->add(
     "/question/:action/:params", array(
         "controller" => "question",
@@ -124,7 +113,7 @@ $router->add(
     "/exam/:int", array(
         "controller" => "exam",
         "action"     => "instruction",
-        "examId"     => 1,
+        "exam_id"    => 1,
         "namespace"  => "OpenExam\Controllers\Gui"
     )
 );
@@ -133,7 +122,7 @@ $router->add(
     "/result/:int/:action", array(
         "controller" => "result",
         "action"     => 2,
-        "examId"     => 1,
+        "exam_id"    => 1,
         "namespace"  => "OpenExam\Controllers\Gui"
     )
 );
@@ -142,15 +131,14 @@ $router->add(
     "/result/:int/:action/:int", array(
         "controller" => "result",
         "action"     => 2,
-        "examId"     => 1,
-        "studentId"  => 3,
+        "exam_id"    => 1,
+        "student_id" => 3,
         "namespace"  => "OpenExam\Controllers\Gui"
     )
 );
 
-//@ToDO: combine following rules to make them more generic
 $router->add(
-    "/exam/{examId}/question/{questId}", array(
+    "/exam/{exam_id}/question/{question_id}", array(
         "controller" => "question",
         "action"     => "view",
         "namespace"  => "OpenExam\Controllers\Gui"
@@ -159,11 +147,11 @@ $router->add(
 
 $router->add(
     "/exam/:int/correction/:params", array(
-        "controller" => "question",
-        "action"     => "correction",
-        "examId"     => 1,
-        "questId"    => 2,
-        "namespace"  => "OpenExam\Controllers\Gui"
+        "controller"  => "question",
+        "action"      => "correction",
+        "exam_id"     => 1,
+        "question_id" => 2,
+        "namespace"   => "OpenExam\Controllers\Gui"
     )
 );
 

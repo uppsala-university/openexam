@@ -52,6 +52,8 @@ class AuthController extends GuiController
          */
         public function formAction($name = null, $service = "web")
         {
+                $this->checkAccess();
+
                 if (!$this->auth->activate($name, $service)) {
                         return false;
                 }
@@ -74,6 +76,8 @@ class AuthController extends GuiController
          */
         public function selectAction($service = "web")
         {
+                $this->checkAccess();
+
                 if (!($chain = $this->auth->getChain($service))) {
                         return false;
                 }
@@ -97,6 +101,8 @@ class AuthController extends GuiController
          */
         public function loginAction()
         {
+                $this->checkAccess();
+
                 if (!($auth = $this->auth->getAuthenticator())) {
                         return false;
                 }
@@ -118,11 +124,13 @@ class AuthController extends GuiController
          */
         public function logoutAction()
         {
+                $this->checkAccess();
+
                 $auth = $this->auth->getAuthenticator();
                 $icon = $this->url->get("/img/tick-circle.png");
 
                 $this->view->setTemplateBefore('cardbox');
-                
+
                 $this->view->setVars(array(
                         'auth' => $auth,
                         'icon' => $icon
@@ -135,6 +143,8 @@ class AuthController extends GuiController
          */
         public function discoverAction($service = "web")
         {
+                $this->checkAccess();
+
                 $this->view->disable();
 
                 $result = array();

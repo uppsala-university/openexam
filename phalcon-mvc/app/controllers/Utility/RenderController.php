@@ -36,6 +36,7 @@ class RenderController extends GuiController
          */
         public function pdfAction()
         {
+                $this->checkAccess();                
                 $render = $this->getRender('pdf', 'file.pdf');
                 $render->send($render->filename, array(array('page' => $render->url)));
         }
@@ -49,6 +50,7 @@ class RenderController extends GuiController
          */
         public function imageAction($format = 'png')
         {
+                $this->checkAccess();                
                 $render = $this->getRender('image', "file.$format");
                 $render->setFormat($format);
                 $render->send($render->filename, array('in' => $render->url));
@@ -62,6 +64,7 @@ class RenderController extends GuiController
          */
         public function pngAction()
         {
+                $this->checkAccess();                
                 $render = $this->getRender('image', 'file.png');
                 $render->setFormat('png');
                 $render->send($render->filename, array('in' => $render->url));
@@ -75,6 +78,7 @@ class RenderController extends GuiController
          */
         public function jpgAction()
         {
+                $this->checkAccess();                
                 $render = $this->getRender('image', 'file.jpg');
                 $render->setFormat('jpg');
                 $render->send($render->filename, array('in' => $render->url));
@@ -88,6 +92,7 @@ class RenderController extends GuiController
          */
         public function bmpAction()
         {
+                $this->checkAccess();                
                 $render = $this->getRender('image', 'file.bmp');
                 $render->setFormat('bmp');
                 $render->send($render->filename, array('in' => $render->url));
@@ -101,6 +106,7 @@ class RenderController extends GuiController
          */
         public function svgAction()
         {
+                $this->checkAccess();                
                 $render = $this->getRender('image', 'file.svg');
                 $render->setFormat('svg');
                 $render->send($render->filename, array('in' => $render->url));

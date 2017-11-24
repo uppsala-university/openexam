@@ -30,14 +30,25 @@ class ImportController extends GuiController
         /**
          * Student import action.
          */
-        public function studentsAction($mode = null)
+        public function studentsAction($mode)
         {
                 $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
 
-                if (!isset($mode)) {
+                // 
+                // Sanitize request parameters:
+                // 
+                if (!($mode = $this->filter->sanitize($mode, "string"))) {
                         throw new Exception("Expected mode parameter", Error::BAD_REQUEST);
                 }
 
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess();
+
+                // 
+                // Process import task:
+                // 
                 switch ($mode) {
                         case 'file':
                                 $this->studentFileAction();
@@ -52,7 +63,7 @@ class ImportController extends GuiController
 
         public function missingAction()
         {
-                
+                $this->checkAccess();
         }
 
         /**

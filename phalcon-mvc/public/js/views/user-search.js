@@ -191,8 +191,8 @@ function addCorrector(item, anchor, model)
         ajax(
                 baseURL + 'ajax/core/' + role + '/corrector/create',
                 {
-                    "question_id": qid,
-                    "user": item.id
+                    question_id: qid,
+                    user: item.id
                 },
                 function (status) {
                     entry.find('.left-col-user').attr('data-rec', status.id);

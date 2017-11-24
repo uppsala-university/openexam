@@ -237,7 +237,7 @@ $security = $check->getSecurity();
             $('.exam-check-publish').click(function () {
                 $.ajax({
                     type: "POST",
-                    data: {'id': examId, 'published': 1},
+                    data: {id: examId, published: 1},
                     url: baseURL + 'ajax/core/creator/exam/update',
                 });
             });
@@ -245,7 +245,7 @@ $security = $check->getSecurity();
             $('.exam-check-unpublish').click(function () {
                 $.ajax({
                     type: "POST",
-                    data: {'id': examId, 'published': 0},
+                    data: {id: examId, published: 0},
                     url: baseURL + 'ajax/core/creator/exam/update',
                 });
             });

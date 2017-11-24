@@ -50,13 +50,31 @@ class ResultController extends GuiController
         /**
          * Generate and save student result in PDF format.
          * 
-         * @param int $eid
-         * @param int $sid
-         * 
-         * result/{exam_id}/generate/{student_id}
+         * @param int $eid The exam ID.
+         * @param int $sid The student ID.
          */
         public function generateAction($eid, $sid)
         {
+                //
+                // Sanitize:
+                // 
+                if (!($eid = $this->filter->sanitize($eid, "int"))) {
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                }
+                if (!($sid = $this->filter->sanitize($sid, "int"))) {
+                        throw new Exception("Missing or invalid student ID", Error::PRECONDITION_FAILED);
+                }
+
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
+
+                // 
+                // The actual PDF-generation handler:
+                // 
                 $result = new ResultHandler($eid);
 
                 // 
@@ -79,13 +97,33 @@ class ResultController extends GuiController
         }
 
         /**
-         * Download individual PDF-file or zip-archive containing all.
+         * Download individual PDF-file or ZIP-archive containing all.
          * 
-         * result/{exam_id}/download
-         * Allowed to Roles: contributor, 
+         * @param int $eid The exam ID.
+         * @param int $sid The student ID.
          */
-        public function downloadAction($eid, $sid = null)
+        public function downloadAction($eid, $sid = 0)
         {
+                //
+                // Sanitize:
+                // 
+                if (!($eid = $this->filter->sanitize($eid, "int"))) {
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                }
+                if (!($sid = $this->filter->sanitize($sid, "int"))) {
+                        throw new Exception("Missing or invalid student ID", Error::PRECONDITION_FAILED);
+                }
+
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
+
+                // 
+                // The actual PDF-generation handler:
+                // 
                 $result = new ResultHandler($eid);
 
                 // 
@@ -106,41 +144,30 @@ class ResultController extends GuiController
         }
 
         /**
-         * Result viewing against an exam
-         * Logged in person can download his own exam result only.
+         * Result viewing for an exam.
          * 
-         * If logged in person was not a student in this exam, check if he is 
-         * among those who have permission to download result of all students 
-         * in this exam.
-         * 
-         * In this case, check if allowed person has request to download result 
-         * of a specific studnet (by student_id). Can have 1 pdf against 1 student.
-         * Otherwise dump results of all students in this exam in one view. 
-         * (result of all students in 1 pdf)
-         * 
-         * result/{exam_id}/view
-         * 
-         * Allowed to Roles: creator
+         * The calling student can download his own exam result only. If caller
+         * is staff, the check if person is among those having permission to 
+         * download result of all students.
          */
         public function viewAction()
         {
-                $data = array();
-                $sids = array();        // Student ID's
                 // 
-                // Sanitize request parameters:
+                // Get sanitized request parameters:
                 // 
-                $eid = $this->dispatcher->getParam('examId', 'int');
-                $sid = $this->dispatcher->getParam('studentId', 'int');
+                if (!($eid = $this->dispatcher->getParam("exam_id"))) {
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                }
+                if (!($sid = $this->dispatcher->getParam("student_id"))) {
+                        throw new Exception("Missing or invalid question ID", Error::PRECONDITION_FAILED);
+                }
 
                 // 
-                // Check required parameters:
+                // Check route access:
                 // 
-                if (empty($eid)) {
-                        throw new Exception("The exam ID is missing", Error::PRECONDITION_FAILED);
-                }
-                if (empty($sid)) {
-                        throw new Exception("The student ID is missing", Error::PRECONDITION_FAILED);
-                }
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
 
                 // 
                 // Get exam data:
@@ -163,6 +190,9 @@ class ResultController extends GuiController
                 if (!$handler->canAccess($sid)) {
                         throw new ModelException("You are not allowed to access student result.", Error::FORBIDDEN);
                 }
+
+                $data = array();
+                $sids = array();
 
                 $sids[] = $student->id;
                 $data['students'][] = $student;
@@ -273,13 +303,14 @@ class ResultController extends GuiController
         }
 
         /**
-         * Generate exam summary to show to teachers
-         * 
-         * result/summary/{exam_id}
+         * Generate exam summary to show to teachers.
          */
         public function summaryAction()
         {
-                
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess();
         }
 
         /**
@@ -290,7 +321,19 @@ class ResultController extends GuiController
          */
         public function exportScoreBoardAction($eid, $download = false)
         {
-                $eid = $this->filter->sanitize($eid, "int");
+                //
+                // Sanitize:
+                // 
+                if (!($eid = $this->filter->sanitize($eid, "int"))) {
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                }
+
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
 
                 // 
                 // Get exam data:
@@ -313,7 +356,7 @@ class ResultController extends GuiController
                                 return;
                         }
                         if (!($data = $this->request->getPost('score_board'))) {
-                                throw new Exception("Failed to generate Excel (HTML) Spreadsheet.");
+                                throw new Exception("Failed to generate Excel (HTML) spreadsheet.");
                         }
 
                         file_put_contents($source, utf8_decode($data));

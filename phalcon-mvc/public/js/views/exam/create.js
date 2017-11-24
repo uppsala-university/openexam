@@ -66,11 +66,11 @@ $(document).ready(function () {
             }
         }
     }
-    
+
     // 
     // Toggle left side menu open:
     // 
-    $("#show-left-menu").click(function() {
+    $("#show-left-menu").click(function () {
         $(".oe-left-column").toggle();
     });
 
@@ -100,7 +100,10 @@ $(document).ready(function () {
             stop: function (event, ui) {
                 var topicArr = [];
                 $('.sortable-q-topic > li').each(function (i, topicItem) {
-                    topicArr.push({"id": $(topicItem).find('.topic-name').attr('data-id'), "slot": i + 1});
+                    topicArr.push({
+                        id: $(topicItem).find('.topic-name').attr('data-id'),
+                        slot: i + 1
+                    });
                 });
 
                 // 
@@ -186,7 +189,7 @@ $(document).ready(function () {
         var model = $(this).closest('.menu-level-1').parent().find('a').attr('data-model');
         var reqUrl = baseURL + 'ajax/core/' + role + '/' + model + '/delete';
         var thisItem = $(this);
-        ajax(reqUrl, {"id": $(this).attr('data-ref')}, function (json) {
+        ajax(reqUrl, {id: $(this).attr('data-ref')}, function (json) {
             $(thisItem).closest('li').remove();
         });
 
@@ -330,7 +333,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: "POST",
-            data: {'exam_id': examId},
+            data: {exam_id: examId},
             url: baseURL + 'exam/settings/',
             success: function (content) {
                 showDialogWindow("#exam-settings-box", content);
@@ -393,7 +396,16 @@ $(document).ready(function () {
             details += Number($(element).val());
         });
 
-        data = {"id": examId, "name": examTitle, "descr": examDesc, "orgunit": org, "grades": grades, "details": details, "course": course, "code": code};
+        data = {
+            id: examId,
+            name: examTitle,
+            descr: examDesc,
+            orgunit: org,
+            grades: grades,
+            details: details,
+            course: course,
+            code: code
+        };
 
         if (start !== '') {
             data["starttime"] = start;
@@ -419,7 +431,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: "POST",
-            data: {'exam_id': examId},
+            data: {exam_id: examId},
             url: baseURL + 'exam/students/',
             success: function (content) {
                 showDialogWindow("#manage-students", content, {width: 780});
@@ -429,11 +441,11 @@ $(document).ready(function () {
             }
         });
     });
-    
+
     // 
     // Set element title to exam status.
     // 
-    $(document).on('mouseover', '.exam-status-check', function() {
+    $(document).on('mouseover', '.exam-status-check', function () {
         var message = $(this).parent().find('span').text();
         $(this).attr('title', message);
     });
@@ -484,9 +496,9 @@ $(document).ready(function () {
         $.ajax({
             type: "POST",
             data: {
-                'q_id': qid,
-                'exam_id': examId,
-                'role': role
+                question_id: qid,
+                exam_id: examId,
+                role: role
             },
             url: baseURL + 'question/' + action,
             success: function (content) {
@@ -501,7 +513,7 @@ $(document).ready(function () {
                 if (!qid) {
                     qid = qId;
                 }
-                
+
                 // 
                 // Closing the dialog should prompt user if question should be deleted
                 // if action was create. At this point, the question has already been 
@@ -865,7 +877,7 @@ $(document).ready(function () {
             $('#qs_area').append($(qLine).show());
 
         });
-        
+
         reloadMathJax();
     };
 

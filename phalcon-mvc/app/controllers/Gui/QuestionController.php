@@ -8,7 +8,8 @@
 // File:    QuestionController.php
 // Created: 2014-09-29 12:49:30
 // 
-// Author:  Ahsan Shahzad (MedfarmDoIT)
+// Author:  Ahsan Shahzad (Medfarm DoIT)
+// Author:  Anders Lövgren (BMC-IT)
 // 
 
 namespace OpenExam\Controllers\Gui;
@@ -35,22 +36,26 @@ class QuestionController extends GuiController
 {
 
         /**
-         * Add question view
-         * question/create
-         * 
-         * Allowed to Roles: creator, contributor
+         * Create new question.
          */
         public function createAction()
         {
                 // 
                 // Sanitize:
                 // 
-                if (!($eid = $this->request->getPost('exam_id', "int"))) {
+                if (!($eid = $this->dispatcher->getParam("eid"))) {
                         throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
-                if (!($role = $this->request->getPost('role', "string"))) {
+                if (!($role = $this->dispatcher->getParam("role"))) {
                         throw new Exception("Missing required role", Error::PRECONDITION_FAILED);
                 }
+
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
 
                 // 
                 // Try to find exam in request parameter:
@@ -99,22 +104,26 @@ class QuestionController extends GuiController
         }
 
         /**
-         * Update question view
-         * question/update
-         * 
-         * Allowed to Roles: creator, contributor
+         * Question editing view.
          */
         public function updateAction()
         {
                 // 
                 // Sanitize:
                 // 
-                if (!($qid = $this->request->getPost('q_id', "int"))) {
+                if (!($qid = $this->dispatcher->getParam("qid"))) {
                         throw new Exception("Missing or invalid question ID", Error::PRECONDITION_FAILED);
                 }
-                if (!($role = $this->request->getPost('role', "string"))) {
+                if (!($role = $this->dispatcher->getParam("role"))) {
                         throw new Exception("Missing required role", Error::PRECONDITION_FAILED);
                 }
+
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'qid' => $qid
+                ));
 
                 // 
                 // Fetch data for view:
@@ -144,55 +153,48 @@ class QuestionController extends GuiController
         }
 
         /**
-         * Question view for student and for test exam
-         * For students and for exam manager
+         * View single or all question.
          * 
-         * exam/{exam_id}/question/{question_id}?
-         * 
-         * Allowed to Roles: creator, students
+         * Used by students during exam or by others for question preview.
          */
         public function viewAction()
         {
                 // 
-                // Initialization:
+                // Show all questions:
                 // 
-                $questions = $answers = array();
-                $exam = false;
+                if (is_null($this->dispatcher->getParam("qid"))) {
+                        $this->dispatcher->setParam("qid", -1);
+                }
 
                 // 
                 // Get sanitized request parameters:
                 // 
-                $eid = $this->dispatcher->getParam("examId", "int");
-                $qid = $this->dispatcher->getParam("questId", "int");
-
-                // 
-                // Load exam object using primary role (if any). If primary 
-                // role is unset, then use roles allowed to access this action.
-                // 
-                // TODO: Keep access list of allowed roles in parent controller.
-                // 
-                if ($this->user->hasPrimaryRole()) {
-                        $exam = Exam::findFirst($eid);
+                if (!($eid = $this->dispatcher->getParam("eid"))) {
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                }
+                if (!($qid = $this->dispatcher->getParam("qid"))) {
+                        throw new Exception("Missing or invalid question ID", Error::PRECONDITION_FAILED);
                 }
 
                 // 
-                // Using corrector instead of contributor might be a better option.
+                // Check route access:
                 // 
-                if (!$exam) {
-                        $role = $this->user->setPrimaryRole(Roles::CREATOR);
-                        $exam = Exam::findFirst($eid);
-                }
-                if (!$exam) {
-                        $role = $this->user->setPrimaryRole(Roles::CONTRIBUTOR);
-                        $exam = Exam::findFirst($eid);
-                }
-                if (!$exam) {
-                        $role = $this->user->setPrimaryRole(Roles::STUDENT);
-                        $exam = Exam::findFirst($eid);
-                }
-                if (!$exam) {
+                $this->checkAccess(array(
+                        'eid' => $eid,
+                        'qid' => $qid
+                ));
+
+                // 
+                // Fetch exam for view:
+                // 
+                if (!($exam = Exam::findFirst($eid))) {
                         throw new Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
+
+                // 
+                // Additional view parameters:
+                // 
+                $questions = $answers = array();
 
                 // 
                 // Is the exam accessed in test mode?:
@@ -266,7 +268,7 @@ class QuestionController extends GuiController
                         // This exam has no questions.
                         // 
                         $viewMode = 'none';
-                } elseif ($qid) {
+                } elseif ($qid > 0) {
                         $viewMode = 'single';
 
                         //
@@ -371,19 +373,26 @@ class QuestionController extends GuiController
         }
 
         /**
-         * Question correction
-         * Allows corrector's to check student answers in exam.
+         * Question correction.
          * 
-         * exam/{exam_id}/correction/{correction-by}/{question_id}
-         * 
-         * Allowed to Roles: corrector, decoder
+         * Display score board or loads views for answer correction. The loading
+         * is defined by mode and is either by student, question or answer.
          */
         public function correctionAction($eid, $mode = null, $loading = array())
         {
                 //
                 // Sanitize:
                 // 
-                $eid = $this->dispatcher->getParam("examId", "int");
+                if (!($eid = $this->filter->sanitize($eid, "int"))) {
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                }
+
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
 
                 // 
                 // Load exam data:
@@ -398,13 +407,6 @@ class QuestionController extends GuiController
                 preg_match('/^\/([a-z]+)\/([0-9]+)/', $mode, $loading);
 
                 // 
-                // Use corrector role unless being creator or decoder:
-                // 
-                if (!($this->user->acquire(array(Roles::CREATOR, Roles::DECODER), $eid))) {
-                        $this->user->setPrimaryRole(Roles::CORRECTOR);
-                }
-
-                // 
                 // Show anonymous code during correction:
                 // 
                 if (($exam->details & Exam::SHOW_CODE_DURING_CORRECTION) != 0) {
@@ -413,27 +415,71 @@ class QuestionController extends GuiController
                         $exam->show_code = false;
                 }
 
+                // 
+                // Show correction table or view:
+                // 
                 if (count($loading)) {
-
-                        switch ($loading[1]) {
-                                case 'student':
-                                        $this->correctionLoadStudent($exam, $loading[2]);
-                                        break;
-                                case 'question':
-                                        $this->correctionLoadQuestion($exam, $loading[2]);
-                                        break;
-                                case 'answer':
-                                        $this->correctionLoadAnswer($exam, $loading[2]);
-                                        break;
-                                default:
-                                        throw new Exception("Unable to load answers for provided criteria");
-                        }
-
-                        $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
-                        $this->view->pick('question/answers');
+                        $this->showCorrectionView($exam, $loading[1], $loading[2]);
                 } else {
-                        $this->correctionLoadBoard($exam);
+                        $this->showCorrectionTable($exam);
                 }
+        }
+
+        /**
+         * Display score board table.
+         * @param Exam $exam The exam model.
+         */
+        private function showCorrectionTable($exam)
+        {
+                // 
+                // Load data for score board:
+                // 
+                $this->correctionLoadBoard($exam);
+
+                // 
+                // Reset primary role as the view is not correctly dealing 
+                // with roles yet.
+                // 
+                $this->user->setPrimaryRole(null);
+        }
+
+        /**
+         * Display answer correction view.
+         * 
+         * @param Exam $exam The exam model.
+         * @param string $mode The load mode.
+         * @param int $id The object ID.
+         * @throws Exception
+         */
+        private function showCorrectionView($exam, $mode, $id)
+        {
+                // 
+                // Answer correction requires being corrector:
+                // 
+                $this->user->setPrimaryRole(Roles::CORRECTOR);
+
+                // 
+                // Load data for answer correction:
+                // 
+                switch ($mode) {
+                        case 'student':
+                                $this->correctionLoadStudent($exam, $id);
+                                break;
+                        case 'question':
+                                $this->correctionLoadQuestion($exam, $id);
+                                break;
+                        case 'answer':
+                                $this->correctionLoadAnswer($exam, $id);
+                                break;
+                        default:
+                                throw new Exception("Unable to load answers for provided criteria");
+                }
+
+                // 
+                // Show same view without decorations:
+                // 
+                $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
+                $this->view->pick('question/answers');
 
                 // 
                 // Reset primary role as the view is not correctly dealing 

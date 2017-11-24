@@ -31,11 +31,13 @@ class IndexController extends GuiController
 
         public function indexAction()
         {
+                $this->checkAccess();
                 $this->view->disableLevel(View::LEVEL_BEFORE_TEMPLATE);
         }
 
         public function aboutAction()
         {
+                $this->checkAccess();
                 $this->view->setTemplateBefore('cardbox');
         }
 

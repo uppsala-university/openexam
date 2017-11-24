@@ -103,7 +103,10 @@ function syncAnswers(async, redirectToAfterSync)
 
                     if (canvasData.getImage()) {
                         var canvasUrl = canvasData.getImage().toDataURL();
-                        ansJson[qPartName]["ans"].push({"canvasJson": canvasJson, "canvasUrl": canvasUrl});
+                        ansJson[qPartName]["ans"].push({
+                            canvasJson: canvasJson,
+                            canvasUrl: canvasUrl
+                        });
                     }
                 }
             } else {
@@ -119,7 +122,11 @@ function syncAnswers(async, redirectToAfterSync)
         $.ajax({
             type: "POST",
             url: baseURL + 'ajax/core/student/answer/update',
-            data: {"id": ansId, "answer": JSON.stringify(ansJson), "answered": 1},
+            data: {
+                id: ansId,
+                answer: JSON.stringify(ansJson),
+                answered: 1
+            },
             async: async,
             dataType: "json",
             timeout: 5000,

@@ -40,7 +40,7 @@ class ErrorController extends GuiController
 
         public function indexAction()
         {
-                
+                $this->checkAccess();
         }
 
         /**
@@ -48,6 +48,7 @@ class ErrorController extends GuiController
          */
         public function show404Action()
         {
+                $this->checkAccess();
                 $this->view->setVar('error', $this->dispatcher->getParam('error'));
         }
 
@@ -56,6 +57,7 @@ class ErrorController extends GuiController
          */
         public function show500Action()
         {
+                $this->checkAccess();
                 $this->view->setVar('error', $this->dispatcher->getParam('error'));
         }
 
@@ -64,6 +66,7 @@ class ErrorController extends GuiController
          */
         public function show503Action()
         {
+                $this->checkAccess();
                 $this->view->setVar('error', $this->dispatcher->getParam('error'));
         }
 
@@ -72,6 +75,7 @@ class ErrorController extends GuiController
          */
         public function showErrorAction()
         {
+                $this->checkAccess();
                 $this->view->setVar('error', $this->dispatcher->getParam('error'));
         }
 

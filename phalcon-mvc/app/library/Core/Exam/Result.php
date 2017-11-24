@@ -440,7 +440,7 @@ class Result extends Component
                 // 
                 // Find student in students on this exam.
                 // 
-                if (!isset($sid)) {
+                if (!$sid) {
                         $found = $this->_exam->students->filter(function($student) {
                                 if ($student->user == $this->user->getPrincipalName()) {
                                         return $student;

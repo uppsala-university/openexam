@@ -72,7 +72,7 @@ foreach ($exam->students as $student) {
 
                 $.ajax({
                     type: "POST",
-                    data: {'exam_id': examId},
+                    data: {exam_id: examId},
                     url: baseURL + 'exam/students/',
                     success: function (content) {
                         // 
@@ -250,7 +250,7 @@ foreach ($exam->students as $student) {
                 var studId = $(this).attr('stud-id');
                 ajax(
                         baseURL + 'ajax/core/invigilator/lock/delete',
-                        {"id": dataId},
+                        {id: dataId},
                         function (status) {
                             $('a[data-id="' + studId + '"]').click();
                         });
@@ -264,7 +264,7 @@ foreach ($exam->students as $student) {
                 var studId = $(this).attr('stud-id');
                 ajax(
                         baseURL + 'ajax/core/invigilator/lock/update',
-                        {"id": $(this).attr('data-id'), "status": "approved"},
+                        {id: $(this).attr('data-id'), status: "approved"},
                         function (status) {
                             $('a[data-id="' + studId + '"]').click();
                         }
@@ -306,7 +306,7 @@ foreach ($exam->students as $student) {
                     url: baseURL + 'exam/lock',
                     type: 'POST',
                     cache: false,
-                    data: {"student_id": $(this).attr('data-id')}
+                    data: {student_id: $(this).attr('data-id')}
                 }).done(function (result) {
                     $('.st-detail-rows').hide();
                     $('#st-detail-row' + sid).show(500).insertAfter(row).find('td').html(result);
@@ -327,7 +327,7 @@ foreach ($exam->students as $student) {
                 if (confirm("Are you sure you want to delete this student?")) {
                     ajax(
                             baseURL + 'ajax/core/invigilator/student/delete',
-                            {"id": $(this).attr('data-id')},
+                            {id: $(this).attr('data-id')},
                             function (status) {
                                 jQuery.each(studentList, function (i, sData) {
                                     if (typeof sData !== 'undefined' && sData.id === $(student).attr('data-id')) {
@@ -373,7 +373,7 @@ foreach ($exam->students as $student) {
                                 st[1] = jQuery.trim(tmp);
                             }
 
-                            stData.push({'exam_id': examId, "user": st[0], "code": st[1]});
+                            stData.push({exam_id: examId, user: st[0], code: st[1]});
                         }
                     });
 
@@ -469,7 +469,7 @@ foreach ($exam->students as $student) {
                 // Process table body. Add students to object array:
                 // 
                 $('#table-import-students tbody tr').each(function () {
-                    var stuobj = {'exam_id': examId};
+                    var stuobj = {exam_id: examId};
                     $(this).find('td').each(function (i) {
                         switch (sthead[i]) {
                             case 'user':
@@ -534,7 +534,7 @@ foreach ($exam->students as $student) {
 
                     var delStudent = [];
                     $('input[name="students[]"]:checked').each(function (i, elem) {
-                        delStudent.push({'id': $(this).val()});
+                        delStudent.push({id: $(this).val()});
                     });
                     ajax(
                             baseURL + 'ajax/core/invigilator/student/delete',

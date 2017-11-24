@@ -23,7 +23,7 @@ $(document).ready(function () {
     $('.exam-check').click(function () {
         $.ajax({
             type: "POST",
-            data: {'exam_id': examId},
+            data: {exam_id: examId},
             url: baseURL + 'exam/check',
             success: function (content) {
                 showDialogWindow("#exam-check-box", content);

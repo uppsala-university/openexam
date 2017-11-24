@@ -57,7 +57,7 @@ $(document).ready(function () {
             // 
             grant: function (obj) {
                 _starting(obj);
-                ajax(baseURL + 'ajax/signup/insert', {'id': ''}, function (data) {
+                ajax(baseURL + 'ajax/signup/insert', {id: ''}, function (data) {
                     if (data === false) {
                         _finished(obj, "This role has already been granted");
                     } else {
@@ -70,7 +70,7 @@ $(document).ready(function () {
             // 
             clone: function (obj, exam) {
                 _starting(obj);
-                ajax(baseURL + 'ajax/signup/teacher', {'id': exam}, function (data) {
+                ajax(baseURL + 'ajax/signup/teacher', {id: exam}, function (data) {
                     if (data === false) {
                         _finished(obj, 'This exam has already been copied');
                     } else {
@@ -83,7 +83,7 @@ $(document).ready(function () {
             // 
             register: function (obj, exam) {
                 _starting(obj);
-                ajax(baseURL + 'ajax/signup/student', {'id': exam}, function (data) {
+                ajax(baseURL + 'ajax/signup/student', {id: exam}, function (data) {
                     if (data === false) {
                         _finished(obj, 'Already subscribed on this exam');
                     } else {

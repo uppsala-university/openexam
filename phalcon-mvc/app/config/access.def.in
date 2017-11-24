@@ -132,7 +132,7 @@ return array(
                         'index'       => array('*'),
                         'create'      => array('teacher'),
                         'update'      => array('creator', 'contributor'),
-                        'replicate'   => array('creator'),
+                        'replicate'   => array('teacher'),
                         'instruction' => array('creator', 'student'),
                         'students'    => array('invigilator'),
                         'settings'    => array('creator'),
@@ -140,13 +140,13 @@ return array(
                         'check'       => array('creator', 'invigilator'),
                         'lock'        => array('creator', 'invigilator'),
                         'archive'     => array('creator'),
-                        'section'     => array('*')
+                        'start'       => array('student')
                 ),
                 'question' => array(
                         'create'      => array('creator', 'contributor'),
                         'update'      => array('creator', 'contributor'),
-                        'view'        => array('creator', 'student'),
-                        'correction'  => array('corrector', 'creator', 'decoder')
+                        'view'        => array('creator', 'contributor', 'student'),
+                        'correction'  => array('creator', 'decoder', 'corrector')
                 ),
                 'result' => array(
                         'view'        => array('decoder', 'student'),
@@ -158,6 +158,19 @@ return array(
                 ),
                 'export' => array(
                         'students'    => array('invigilator')
+                ),
+                'task'   => array(
+                        'contribute'  => array('contributor'),
+                        'correct'     => array('corrector'),
+                        'invigilate'  => array('invigilator'),
+                        'decode'      => array('decoder'),
+                        'result'      => array('student', 'decoder'),
+                        'ongoing'     => array('student')
+                ),
+                'media'  => array(
+                        'library'     => array('contributor'),
+                        'upload'      => array('contributor'),
+                        'view'        => array('contributor', 'student')
                 )
         )
 );

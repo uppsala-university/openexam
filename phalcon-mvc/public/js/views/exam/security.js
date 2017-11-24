@@ -23,7 +23,7 @@ $(document).ready(function () {
     $('.exam-security').click(function () {
         $.ajax({
             type: "POST",
-            data: {'exam_id': examId},
+            data: {exam_id: examId},
             url: baseURL + 'exam/security',
             success: function (content) {
                 showDialogWindow("#exam-security-box", content);
@@ -88,15 +88,15 @@ $(document).ready(function () {
             // Save lockdown parameters:
             // 
             var lockdown = {
-                'enable': $(document).find('#lockdown-enable').attr('checked') === 'checked',
-                'method': $(document).find('#lockdown-method').val()
+                enable: $(document).find('#lockdown-enable').attr('checked') === 'checked',
+                method: $(document).find('#lockdown-method').val()
             };
 
             ajax(
                     baseURL + 'ajax/core/creator/exam/update',
                     {
-                        "id": examId,
-                        "lockdown": JSON.stringify(lockdown)
+                        id: examId,
+                        lockdown: JSON.stringify(lockdown)
                     }, function () {
             }, 'POST', true, false);
 
@@ -109,21 +109,21 @@ $(document).ready(function () {
                 switch (item.attr('entry')) {
                     case 'new':
                         add.push({
-                            'exam_id': examId,
-                            'name': item.find('td:eq(0)').text().replace(/\s*\-\>\s*/g, ';'),
-                            'addr': item.find('td:eq(1)').html().replace(/\<br\/?\>/g, ';')
+                            exam_id: examId,
+                            name: item.find('td:eq(0)').text().replace(/\s*\-\>\s*/g, ';'),
+                            addr: item.find('td:eq(1)').html().replace(/\<br\/?\>/g, ';')
                         });
                         break;
                     case 'update':
                         update.push({
-                            'id': item.attr('id'),
-                            'name': item.find('td:eq(0)').text().replace(/\s*\-\>\s*/g, ';'),
-                            'addr': item.find('td:eq(1)').html().replace(/\<br\/?\>/g, ';')
+                            id: item.attr('id'),
+                            name: item.find('td:eq(0)').text().replace(/\s*\-\>\s*/g, ';'),
+                            addr: item.find('td:eq(1)').html().replace(/\<br\/?\>/g, ';')
                         });
                         break;
                     case 'remove':
                         remove.push({
-                            'id': item.attr('id')
+                            id: item.attr('id')
                         });
                         break;
                 }
@@ -150,7 +150,7 @@ $(document).ready(function () {
 
             showMessage('Security settings updated successful', 'success');
         }
-        
+
         closeDialogWindow("#exam-security-box");
     });
 

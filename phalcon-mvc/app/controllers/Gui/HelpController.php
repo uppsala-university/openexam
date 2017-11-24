@@ -83,6 +83,7 @@ class HelpController extends GuiController
          */
         public function indexAction()
         {
+                $this->checkAccess();
                 $this->view->setVar('help', self::$_help);
         }
 
@@ -101,6 +102,8 @@ class HelpController extends GuiController
          */
         public function manualAction($target = null, $language = null, $format = "pdf")
         {
+                $this->checkAccess();
+
                 $languages = array(
                         'swedish' => 'sv',
                         'english' => 'en'
@@ -178,6 +181,7 @@ class HelpController extends GuiController
 
         /**
          * Send manual in requested format.
+         * 
          * @param string $path The absolute path.
          * @param string $name The file name.
          * @param string $format Requested format (e.g. pdf)

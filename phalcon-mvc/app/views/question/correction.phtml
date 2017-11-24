@@ -769,7 +769,7 @@ if ($exam->decoded) {
                     // decode exam
                     ajax(
                             baseURL + 'ajax/core/decoder/exam/update',
-                            {"id": examId, "decoded": "Y"},
+                            {id: examId, decoded: "Y"},
                             function (status) {
                                 location.reload();
                             }
@@ -949,9 +949,22 @@ if ($exam->decoded) {
 
                     if (stringJson !== '{}') {
                         if (resId !== 0) {
-                            resultsUpdate.push({id: resId, "answer_id": ansId, "score": stringJson, "comment": correctorComents, "corrector_id": correctorId, "correction": correctionStatus});
+                            resultsUpdate.push({
+                                id: resId,
+                                answer_id: ansId,
+                                score: stringJson,
+                                comment: correctorComents,
+                                corrector_id: correctorId,
+                                correction: correctionStatus
+                            });
                         } else {
-                            resultsCreate.push({"answer_id": ansId, "score": stringJson, "comment": correctorComents, "corrector_id": correctorId, "correction": correctionStatus});
+                            resultsCreate.push({
+                                answer_id: ansId,
+                                score: stringJson,
+                                comment: correctorComents,
+                                corrector_id: correctorId,
+                                correction: correctionStatus
+                            });
                             totalCreated++;
                         }
                     } else {

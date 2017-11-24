@@ -70,11 +70,19 @@ class MonitorController extends GuiController
 
         public function indexAction()
         {
-                
+                $this->checkAccess();
         }
 
         public function performanceAction()
         {
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess();
+
+                // 
+                // Require caller being an employee:
+                // 
                 if ($this->user->affiliation->isEmployee() == false) {
                         throw new SecurityException("Only available for employees", Error::FORBIDDEN);
                 }
@@ -82,7 +90,7 @@ class MonitorController extends GuiController
 
         public function diagnosticsAction()
         {
-                
+                $this->checkAccess();                
         }
 
         /**
@@ -90,6 +98,7 @@ class MonitorController extends GuiController
          */
         public function countersAction()
         {
+                $this->checkAccess();                
                 $content = array();
 
                 $performance = new Performance();
@@ -129,6 +138,8 @@ class MonitorController extends GuiController
          */
         public function counterAction($type, $subtype = null)
         {
+                $this->checkAccess();                
+                
                 if ($this->user->affiliation->isEmployee() == false) {
                         throw new SecurityException("Only available for employees", Error::FORBIDDEN);
                 }
@@ -215,6 +226,8 @@ class MonitorController extends GuiController
          */
         public function healthAction($details = self::HEALTH_DYNAMIC)
         {
+                $this->checkAccess();                
+                
                 if ($this->request->has('details')) {
                         $details = $this->request->get('details', 'int');
                 }
@@ -237,6 +250,8 @@ class MonitorController extends GuiController
          */
         private function getHealth($details)
         {
+                $this->checkAccess();                
+                
                 $cachekey = sprintf("health-level-%d", $details);
                 $lifetime = self::HEALTH_CHECK_LIFETIME;
 

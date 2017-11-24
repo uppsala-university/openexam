@@ -27,7 +27,7 @@ $(document).ready(function () {
         ajax(
                 baseURL + 'ajax/core/invigilator/exam/read',
                 {
-                    'id': exam
+                    id: exam
                 },
                 function (response) {
                     if (response) {
@@ -71,9 +71,9 @@ $(document).ready(function () {
                                     ajax(
                                             baseURL + 'ajax/core/invigilator/exam/update',
                                             {
-                                                'id': exam,
-                                                'starttime': stime,
-                                                'endtime': etime
+                                                id: exam,
+                                                starttime: stime,
+                                                endtime: etime
                                             },
                                             function (status) {
                                                 if (status) {
@@ -107,8 +107,8 @@ $(document).ready(function () {
                 ajax(
                         baseURL + 'ajax/core/creator/exam/update',
                         {
-                            'id': $(this).attr('data-id'),
-                            'published': 1
+                            id: $(this).attr('data-id'),
+                            published: 1
                         },
                         function (status) {
                             if (status) {
@@ -127,8 +127,8 @@ $(document).ready(function () {
                 ajax(
                         baseURL + 'ajax/core/creator/exam/update',
                         {
-                            "id": $(this).attr('data-id'),
-                            "published": 0
+                            id: $(this).attr('data-id'),
+                            published: 0
                         },
                         function (status) {
                             if (status) {
@@ -147,8 +147,8 @@ $(document).ready(function () {
                 ajax(
                         baseURL + 'ajax/core/decoder/exam/update',
                         {
-                            "id": $(this).attr('data-id'),
-                            "decoded": 1
+                            id: $(this).attr('data-id'),
+                            decoded: 1
                         },
                         function (status) {
                             if (status) {
@@ -191,7 +191,7 @@ $(document).ready(function () {
     $(document).on('click', '.manage-students', function () {
         $.ajax({
             type: "POST",
-            data: {'exam_id': $(this).attr('data-id')},
+            data: {exam_id: $(this).attr('data-id')},
             url: baseURL + 'exam/students/',
             success: function (content) {
                 showDialogWindow("#manage-students", content, {width: 780});
@@ -206,8 +206,8 @@ $(document).ready(function () {
         $.ajax({
             type: "POST",
             data: {
-                'exam_id': $(this).attr('data-id'),
-                'readonly': 1
+                exam_id: $(this).attr('data-id'),
+                readonly: 1
             },
             url: baseURL + 'exam/check',
             success: function (content) {
@@ -273,7 +273,7 @@ $(document).ready(function () {
 
             ajax(
                     baseURL + 'ajax/core/creator/exam/delete',
-                    {"id": examId},
+                    {id: examId},
                     function (examData) {
                         $(examLine).slideUp(500, function () {
                             $(this).remove();

@@ -13,14 +13,12 @@
 
 namespace OpenExam\Controllers\Utility;
 
-use Exception as StandardException;
+use Exception;
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Core\Error;
 use OpenExam\Library\Model\Exception as ModelException;
 use OpenExam\Library\Render\Renderer;
-use OpenExam\Library\Security\Exception as SecurityException;
-use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Student;
 
@@ -43,54 +41,30 @@ class ExportController extends GuiController
          * @param int $eid The exam ID.
          * @param string $download
          */
-        public function studentsAction($eid = null, $download = null)
+        public function studentsAction($eid, $download = null)
         {
-                if (!isset($eid)) {
-                        throw new StandardException("Missing exam ID", Error::BAD_REQUEST);
-                }
-                if (!$this->user->roles->acquire(Roles::INVIGILATOR, $eid)) {
-                        throw new SecurityException("This page is only accessable for invigilators.", Error::METHOD_NOT_ALLOWED);
-                } else {
-                        $this->user->setPrimaryRole(Roles::INVIGILATOR);
+                // 
+                // Sanitize request parameters:
+                // 
+                if (!($eid = $this->filter->sanitize($eid, "int"))) {
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
+
+                // 
+                // Load view or download PDF.
+                // 
                 if (isset($download)) {
                         $this->studentsDownload($eid);
-                        return true;
+                } else {
+                        $this->studentsShowView($eid);
                 }
-
-                // 
-                // Get students in this exam and exam data.
-                // 
-                if (($stud = Student::find("exam_id = $eid")) == false) {
-                        throw new ModelException("Failed find student on exam");
-                }
-                if (($exam = Exam::findFirst($eid)) == false) {
-                        throw new ModelException("Failed get exam data");
-                }
-
-                // 
-                // Sort student list on lastname. We need to access each
-                // student to get lastname decoration.
-                // 
-                $students = array();
-                foreach ($stud as $s) {
-                        $students[] = $s;
-                }
-                usort($students, function($s1, $s2) {
-                        return strcmp($s1->lname, $s2->lname);
-                });
-
-                // 
-                // Exam contact information.
-                // 
-                $contact = $this->catalog->getPrincipal($exam->creator, Principal::ATTR_PN);
-
-                $this->view->setVar('students', $students);
-                $this->view->setVar('exam', $exam);
-                $this->view->setvar('contact', $contact);
-
-                $this->view->setLayout(null);
         }
 
         /**
@@ -126,6 +100,52 @@ class ExportController extends GuiController
                                 'page' => $target
                         )
                 ));
+        }
+
+        /**
+         * Show students.
+         * @throws ModelException
+         */
+        private function studentsShowView($eid)
+        {
+                // 
+                // Get students in this exam and exam data.
+                // 
+                if (($stud = Student::find("exam_id = $eid")) == false) {
+                        throw new ModelException("Failed find student on exam");
+                }
+                if (($exam = Exam::findFirst($eid)) == false) {
+                        throw new ModelException("Failed get exam data");
+                }
+
+                // 
+                // Sort student list on lastname. We need to access each
+                // student to get lastname decoration.
+                // 
+                $students = array();
+                foreach ($stud as $s) {
+                        $students[] = $s;
+                }
+                usort($students, function($s1, $s2) {
+                        return strcmp($s1->lname, $s2->lname);
+                });
+
+                // 
+                // Exam contact information.
+                // 
+                $contact = $this->catalog->getPrincipal($exam->creator, Principal::ATTR_PN);
+
+                // 
+                // Set data for view:
+                // 
+                $this->view->setVar('students', $students);
+                $this->view->setVar('exam', $exam);
+                $this->view->setvar('contact', $contact);
+
+                // 
+                // Use no layout at all:
+                // 
+                $this->view->setLayout(null);
         }
 
 }

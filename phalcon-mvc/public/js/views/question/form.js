@@ -169,7 +169,7 @@ $(document).ready(function () {
     $('body').on('click', '.add_media', function () {
         $.ajax({
             url: baseURL + 'utility/media/library',
-            data: {'exam_id': examId},
+            data: {exam_id: examId},
             success: function (data) {
                 $("#media-library").html(data);
                 $("#media-library").dialog({
@@ -225,7 +225,7 @@ $(document).ready(function () {
     $('body').on('click', '.set_canvas_background', function () {
         $.ajax({
             url: baseURL + 'utility/media/library',
-            data: {'exam_id': examId},
+            data: {exam_id: examId},
             success: function (data) {
                 $("#media-library").html(data);
 
@@ -337,7 +337,9 @@ $(document).ready(function () {
                 // 
                 ajax(
                         baseURL + 'ajax/core/creator/corrector/delete',
-                        {"id": $(delCorrector).parent().find('span').attr('data-rec')},
+                        {
+                            id: $(delCorrector).parent().find('span').attr('data-rec')
+                        },
                         function (status) {
                             $(delCorrector).parent().slideUp(500, function () {
                                 $(this).remove();

@@ -30,7 +30,6 @@ use OpenExam\Models\Exam;
 use OpenExam\Models\Lock;
 use OpenExam\Models\Question;
 use OpenExam\Models\Topic;
-use OpenExam\Plugins\Security\Model\ObjectAccess;
 use Phalcon\Mvc\Model\Transaction\Failed as TransactionFailed;
 use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Phalcon\Mvc\View;
@@ -55,18 +54,9 @@ class ExamController extends GuiController
         public function indexAction()
         {
                 // 
-                // Try to acquire all roles:
+                // Check route access:
                 // 
-                $this->user->acquire(array(
-                        Roles::ADMIN,
-                        Roles::CONTRIBUTOR,
-                        Roles::CORRECTOR,
-                        Roles::CREATOR,
-                        Roles::DECODER,
-                        Roles::INVIGILATOR,
-                        Roles::STUDENT,
-                        Roles::TEACHER
-                ));
+                $this->checkAccess();
 
                 // 
                 // Special handling for student pseudo roles that differentiate
@@ -182,6 +172,12 @@ class ExamController extends GuiController
                 }
 
                 // 
+                // Set primary role and check route access:
+                // 
+                $this->dispatcher->setParam('role', $role);
+                $this->checkAccess();
+
+                // 
                 // Get request parameters:
                 // 
                 $order = $this->request->getPost('order', 'string', 'created');
@@ -204,11 +200,6 @@ class ExamController extends GuiController
                 }
 
                 // 
-                // Set primary role for model access:
-                // 
-                $this->user->setPrimaryRole($role);
-
-                // 
                 // Use QueryBuilder to get exams. Don't use model result for pagination 
                 // as adviced by phalcon docs.
                 // 
@@ -226,7 +217,7 @@ class ExamController extends GuiController
                 foreach ($match as $key => $val) {
                         $builder->andWhere("$key = '$val'");
                 }
-                
+
                 // 
                 // Execute PHQL query statement:
                 // 
@@ -281,12 +272,18 @@ class ExamController extends GuiController
         }
 
         /**
-         * Show create view for exam. 
-         * 
-         * On exam create request, new records are inserted 
+         * Create exam and redirect.
          */
         public function createAction()
         {
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess();
+
+                // 
+                // Create new exam:
+                // 
                 $exam = new Exam();
 
                 if ($exam->save(array(
@@ -300,14 +297,15 @@ class ExamController extends GuiController
                         );
                 }
 
+                // 
+                // Redirect to exam management view. The last argument is to
+                // popup the exam settings dialog:
+                // 
                 return $this->response->redirect('exam/update/' . $exam->id . '/creator/new-exam');
         }
 
         /**
-         * Update view for exam
-         * exam/update/{exam-id}
-         * 
-         * Allowed for roles: creator, contributor
+         * Update exam view.
          * 
          * @param int $eid Exam ID
          * @param string $role The exam role.
@@ -326,13 +324,12 @@ class ExamController extends GuiController
                 }
 
                 // 
-                // Check if minimum required access for requested role pass:
+                // Check route access:
                 // 
-                if ($this->capabilities->hasPermission($role, 'exam', ObjectAccess::READ)) {
-                        $this->user->setPrimaryRole($role);
-                } else {
-                        throw new Exception("Invalid URL.", Error::BAD_REQUEST);
-                }
+                $this->checkAccess(array(
+                        'eid'  => $eid,
+                        'role' => $role
+                ));
 
                 // 
                 // Fetch data:
@@ -360,30 +357,42 @@ class ExamController extends GuiController
         }
 
         /**
-         * Allows exam creator to replicate his exam.
+         * Clone existing exam to copy.
          * 
          * @param int $eid The exam ID.
          */
         public function replicateAction($eid)
         {
-                // 
-                // Notice: 
-                // All roles have a default behavior. We need to filter out 
-                // caller from being assigned twice.
-                // 
-
                 if (!($eid = $this->filter->sanitize($eid, "int"))) {
                         throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
+
+                // 
+                // Must be owner of exam or admin:
+                // 
                 if (!$this->user->roles->acquire(Roles::CREATOR, $eid) &&
                     !$this->user->roles->acquire(Roles::ADMIN, $eid)) {
                         throw new Exception("Only creator or admins can replicate exams", Error::FORBIDDEN);
                 }
 
+                // 
+                // Get exam to clone:
+                // 
                 if (!($oldExam = Exam::findFirst($eid))) {
                         throw new Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
+
+                // 
+                // Patch exam name to make it easy to spot:
+                // 
+                $oldExam->name .= " (copy:" . time() . ")";
 
                 // 
                 // Start transaction with rollback on error:
@@ -392,6 +401,12 @@ class ExamController extends GuiController
                 $transactionManager->setDbService('dbwrite');
 
                 $transaction = $transactionManager->get();
+
+                // 
+                // Notice: 
+                // All roles have a default behavior. We need to filter out 
+                // caller from being assigned twice.
+                // 
 
                 try {
                         // 
@@ -412,6 +427,11 @@ class ExamController extends GuiController
                                 sprintf("Failed save new exam (%s)", $newExam->getMessages()[0])
                                 );
                         }
+
+                        // 
+                        // Proceed as creator of the new exam:
+                        // 
+                        $this->user->setPrimaryRole(Roles::CREATOR);
 
                         // 
                         // Replicate other data if options are provided for replication.
@@ -635,9 +655,16 @@ class ExamController extends GuiController
                 // 
                 // Sanitize:
                 // 
-                if (!($eid = $this->dispatcher->getParam("examId", "int"))) {
+                if (!($eid = $this->dispatcher->getParam("eid"))) {
                         throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
+
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
 
                 // 
                 // Fetch exam data either as creator or student:
@@ -688,10 +715,7 @@ class ExamController extends GuiController
         }
 
         /**
-         * Load popup for student management under the exam
-         * exam/students
-         * 
-         * Allowed to Roles: invigilator
+         * Load student management view.
          */
         public function studentsAction()
         {
@@ -703,9 +727,16 @@ class ExamController extends GuiController
                 // 
                 // Sanitize:
                 // 
-                if (!($eid = $this->request->get('exam_id', "int"))) {
+                if (!($eid = $this->dispatcher->getParam("eid"))) {
                         throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
+
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
 
                 // 
                 // Try to find exam in request parameter:
@@ -738,10 +769,7 @@ class ExamController extends GuiController
         }
 
         /**
-         * Load popup for exam settings
-         * exam/settings
-         * 
-         * Allowed to Roles: creator
+         * Load exam settings view.
          */
         public function settingsAction()
         {
@@ -753,9 +781,16 @@ class ExamController extends GuiController
                 // 
                 // Sanitize:
                 // 
-                if (!($eid = $this->request->get('exam_id', "int"))) {
+                if (!($eid = $this->dispatcher->getParam("eid"))) {
                         throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
+
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
 
                 // 
                 // Try to find exam in request parameter:
@@ -777,10 +812,7 @@ class ExamController extends GuiController
         }
 
         /**
-         * Load popup for exam security
-         * exam/security
-         * 
-         * Allowed to Roles: creator
+         * Load exam security view.
          */
         public function securityAction()
         {
@@ -792,9 +824,16 @@ class ExamController extends GuiController
                 // 
                 // Sanitize:
                 // 
-                if (($eid = $this->request->getPost("exam_id", "int")) == null) {
+                if (!($eid = $this->dispatcher->getParam("eid"))) {
                         throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
+
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
 
                 // 
                 // Try to find exam in request parameter:
@@ -825,6 +864,13 @@ class ExamController extends GuiController
                 $exam = $this->dispatcher->getParam('exam');
 
                 // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $exam->id
+                ));
+
+                // 
                 // Set view data:
                 // 
                 $this->view->setVars(array(
@@ -850,6 +896,13 @@ class ExamController extends GuiController
                 }
 
                 // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
+
+                // 
                 // Try to find exam in request parameter:
                 // 
                 if (($exam = Exam::findFirst($eid)) == false) {
@@ -872,12 +925,20 @@ class ExamController extends GuiController
         public function startAction()
         {
                 // 
-                // Get exams since one week ago:
+                // Check route access:
                 // 
-                $this->user->setPrimaryRole(Roles::STUDENT);
+                $this->checkAccess();
+
+                // 
+                // Get exams since one week ago. Add a special case for exams 
+                // without endtime set.
+                // 
                 if (!($exams = Exam::find(array(
-                            'conditions' => "published = 'Y' AND OpenExam\Models\Exam.endtime > :endtime:",
-                            'order'      => 'starttime DESC',
+                            'conditions' => "published = 'Y' AND "
+                            . "("
+                            . " OpenExam\Models\Exam.endtime > :endtime: OR "
+                            . " OpenExam\Models\Exam.endtime IS NULL"
+                            . ")",
                             'bind'       => array(
                                     'endtime' => strftime("%F", time() - 604800)
                             )
@@ -889,7 +950,8 @@ class ExamController extends GuiController
                 // Filter exams on upcoming and ongoing state:
                 // 
                 $exams = $exams->filter(function($exam) {
-                        if ($exam->state & State::UPCOMING || $exam->state & State::RUNNING) {
+                        if ($exam->state & State::UPCOMING ||
+                            $exam->state & State::RUNNING) {
                                 return $exam;
                         }
                 });
@@ -904,18 +966,17 @@ class ExamController extends GuiController
                                         'examId' => $exams[0]->id
                                 )
                         ));
-                        return true;
+                } else {
+                        $this->dispatcher->forward(array(
+                                'controller' => 'task',
+                                'action'     => 'upcoming'
+                        ));
                 }
 
                 // 
-                // Let caller select exam. Pick index view and tell it to 
-                // expand the upcoming exam tab.
+                // Stop action here:
                 // 
-                $this->view->setVars(array(
-                        'roleBasedExamList' => array('student-upcoming' => $exams),
-                        'expandExamTabs'    => array('student-upcoming')
-                ));
-                $this->view->pick(array('exam/index'));
+                return true;
         }
 
         /**
@@ -933,14 +994,25 @@ class ExamController extends GuiController
                 // 
                 // Sanitize:
                 // 
-                if (($eid = $this->request->getPost("exam_id", "int")) == null) {
+                if (!($eid = $this->dispatcher->getParam("eid"))) {
                         throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
+
+                // 
+                // Require readonly parameter to be integer:
+                // 
                 if ($this->request->hasPost('readonly')) {
                         if (($readonly = $this->request->getPost("readonly", "int")) == null) {
                                 throw new Exception("Missing readonly parameter", Error::PRECONDITION_FAILED);
                         }
                 }
+
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
 
                 // 
                 // Dialog is readonly:
@@ -952,19 +1024,13 @@ class ExamController extends GuiController
                 }
 
                 // 
-                // Set dailog role:
-                // 
-                if (($roles = $this->user->acquire(array(Roles::CREATOR, Roles::INVIGILATOR), $eid))) {
-                        $this->view->setVar('role', $roles[0]);
-                }
-
-                // 
                 // Try to find exam in request parameter:
                 // 
                 if (($exam = Exam::findFirst($eid)) == false) {
                         throw new Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
+                $this->view->setVar('role', $this->user->getPrimaryRole());
                 $this->view->setVar('check', new Check($exam));
                 $this->view->setVar('exam_id', $eid);
         }
@@ -978,6 +1044,11 @@ class ExamController extends GuiController
                 // Render view as popup page:
                 // 
                 $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
+
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess();
 
                 // 
                 // Load exam lock (if any) from request parameters:
@@ -1016,11 +1087,11 @@ class ExamController extends GuiController
                 }
 
                 // 
-                // Check required parameters:
+                // Check route access:
                 // 
-                if (empty($eid)) {
-                        throw new Exception("The exam ID is missing", Error::PRECONDITION_FAILED);
-                }
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
 
                 // 
                 // Get exam data:
@@ -1058,7 +1129,7 @@ class ExamController extends GuiController
                 // 
                 // Fetch question data:
                 // 
-                $data['examScore'] = 0;
+                $data = array('examScore' => 0);
                 $questions = $exam->getQuestions(array("order" => "slot", 'conditions' => "status = 'active'"));
 
                 foreach ($questions as $question) {

@@ -37,7 +37,7 @@ class StatisticsController extends GuiController
          */
         public function indexAction()
         {
-                
+                $this->checkAccess();
         }
 
         /**
@@ -46,6 +46,8 @@ class StatisticsController extends GuiController
          */
         public function summaryAction($division = null)
         {
+                $this->checkAccess();
+
                 $statistics = new Statistics($division);
 
                 $content = array(
@@ -66,6 +68,8 @@ class StatisticsController extends GuiController
          */
         public function organizationAction($division = null)
         {
+                $this->checkAccess();
+
                 $statistics = new Statistics($division);
 
                 $content = array(
@@ -93,6 +97,8 @@ class StatisticsController extends GuiController
          */
         public function roleAction($role, $division = null)
         {
+                $this->checkAccess();
+
                 if ($this->user->affiliation->isEmployee() == false) {
                         throw new SecurityException("Only available for employees", Error::FORBIDDEN);
                 }
@@ -121,6 +127,8 @@ class StatisticsController extends GuiController
          */
         public function examsAction($division = null)
         {
+                $this->checkAccess();
+
                 $statistics = new Statistics($division);
                 $exams = $statistics->getExams();
 
@@ -143,6 +151,8 @@ class StatisticsController extends GuiController
          */
         public function usersAction($division = null)
         {
+                $this->checkAccess();
+
                 if ($this->user->affiliation->isEmployee() == false) {
                         throw new SecurityException("Only available for employees", Error::FORBIDDEN);
                 }
@@ -171,6 +181,8 @@ class StatisticsController extends GuiController
          */
         public function employeesAction($division = null)
         {
+                $this->checkAccess();
+
                 if ($this->user->affiliation->isEmployee() == false) {
                         throw new SecurityException("Only available for employees", Error::FORBIDDEN);
                 }
@@ -199,6 +211,8 @@ class StatisticsController extends GuiController
          */
         public function studentsAction($division = null)
         {
+                $this->checkAccess();
+
                 if ($this->user->affiliation->isEmployee() == false) {
                         throw new SecurityException("Only available for employees", Error::FORBIDDEN);
                 }

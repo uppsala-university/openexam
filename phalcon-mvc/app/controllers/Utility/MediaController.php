@@ -19,7 +19,6 @@ use Exception;
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
 use OpenExam\Library\Core\Size;
-use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Resource;
 use Phalcon\Mvc\View;
 use RuntimeException;
@@ -47,14 +46,16 @@ class MediaController extends GuiController
                 // 
                 // Sanitize:
                 // 
-                if (!($eid = $this->request->get('exam_id', 'int'))) {
-                        throw new Exception("Expected exam ID", Error::PRECONDITION_FAILED);
+                if (!($eid = $this->dispatcher->getParam("eid"))) {
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
 
                 // 
-                // Set contributor role.
+                // Check route access:
                 // 
-                $this->user->setPrimaryRole(Roles::CONTRIBUTOR);
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
 
                 // 
                 // Fetch shared resources filtered on sharing levels:
@@ -174,6 +175,11 @@ class MediaController extends GuiController
                 $this->view->disable();
 
                 // 
+                // Check route access:
+                // 
+                $this->checkAccess();
+                
+                // 
                 // Find media type of this file to set file upload directory:
                 // 
                 $files = $this->request->getUploadedFiles(true);
@@ -227,6 +233,11 @@ class MediaController extends GuiController
                         throw new Exception('Invalid request', Error::PRECONDITION_FAILED);
                 }
 
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess();
+                
                 // 
                 // Prevent disclose of system files:
                 // 
