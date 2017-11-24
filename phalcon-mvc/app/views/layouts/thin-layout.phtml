@@ -11,7 +11,6 @@
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
 
-
 use Phalcon\Tag;
 
 // 
@@ -54,8 +53,6 @@ $this->profiler->add("view");
 
 <?php
 $answerData = json_decode($answer->answer, true); // highlight-q
-$testMode = $exam->creator == $this->user->getPrincipalName();
-
 // 
 // An exam should have an start time, but end time is optional. Set time
 // diff == 0 if end time is unset and don't start the clock.
