@@ -53,8 +53,7 @@ $(document).ready(function () {
                         changer.dialog({
                             autoOpen: true,
                             modal: true,
-                            width: 800,
-                            height: 600,
+                            width: 550,
                             buttons: {
                                 OK: function () {
 
