@@ -211,7 +211,7 @@ if (in_array("editable", $exam->flags)) {
 
         <?php if ($this->user->hasCapability('question', 'create') && $exam->is_contributable): ?>
                 <a href="#" class="add_new_qs">
-                    <div style="display: block; float:right">
+                    <div style="display: block; float:right; clear:both">
                         <span class="btn btn-success">
                             <i class="fa fa-plus-circle"></i>
                             <span>Add new question</span>
