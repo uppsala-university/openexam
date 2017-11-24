@@ -35,6 +35,19 @@ foreach ($exam->students as $student) {
     .st-exam-item-save {
         white-space: nowrap;
     }
+    #st-mng-wrapper h3.ui-state-default {
+        border-radius: 0px;
+        padding-top: 0.8em;
+    }
+    #student-file-import .dropdown-menu {
+        top: 280px;
+        left: 125px;
+    }
+    #st-mng-wrapper #file-type {
+        /*        width: 100%;*/
+        display: initial;
+        margin-left: 10px;
+    }
 </style>
 
 <div id="st-mng-wrapper" exam-id="<?= $this->request->getPost('exam_id') ?>">

@@ -376,6 +376,8 @@ h1 div.tool-icons {
  */
 .ui-dialog .ui-dialog-content {
     overflow: visible;
+    z-index: 500;
+    min-width: 100%;
 }
 .ui-tabs { 
     position: relative; 
@@ -418,7 +420,7 @@ h1 div.tool-icons {
 .ui-tabs .ui-tabs-panel { 
     display: block; 
     border-width: 0; 
-    padding: 3em 1.4em; 
+    padding: 10px;
     background: none; 
 } 
 .ui-tabs .ui-tabs-hide { 

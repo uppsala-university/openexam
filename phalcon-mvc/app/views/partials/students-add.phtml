@@ -16,7 +16,7 @@
 <div id="tabs-1">
 
     <div class="accordion">
-        <h3>Add single or multiple students</h3>
+        <h3>Add single or multiple</h3>
         <div>
             <p>
                 Write identities (username or personal number) and anonymous code (optional, system will generate one if missing) of single or multiple students. 
@@ -47,7 +47,7 @@
                 </p>
                 <form id="student-file-import" name="student-file-import">
                     <input class="form-control" type="file" name="file[]" />                                
-                    <div class="btn-group" style="padding-top: 5px">
+                    <div style="padding-top: 5px">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> Filetype 
                             <span class="caret"></span>
                         </button>
@@ -82,16 +82,20 @@
                     Supply the name of a group to import students from. The name could e.g. be a course code or a domain group. The search can be restricted to a single domain.
                 </p>
                 <form id="student-file-import" name="student-group-import">
-                    <div>
-                        <label for="group">Group name:</label>
-                        <input class="form-control" id="group-name" type="text" name="group" placeholder="3MK579" /><br />
-                        <label for="domain">Domain:</label> 
-                        <select class="form-control" id="domain-name" name="domain">
-                            <option></option>
-                            <?php foreach ($domains as $domain): ?>
-                                    <option><?= $domain ?></option>
-                            <?php endforeach; ?>
-                        </select>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="group">Group name:</label>
+                            <input class="form-control" id="group-name" type="text" name="group" placeholder="3MK579" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="domain">Domain:</label> 
+                            <select class="form-control" id="domain-name" name="domain">
+                                <option></option>
+                                <?php foreach ($domains as $domain): ?>
+                                        <option><?= $domain ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                     </div>
                 </form>
             </div>
