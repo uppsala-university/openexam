@@ -23,22 +23,10 @@ return array(
                         'desc' => 'create and manage an exam'
                 ),
                 'show-options' => array(
-                        'check-exam'  => array(
-                                'target'        => 'check-exam',
-                                'show-on-flags' => array(
-                                        '*'
-                                )
-                        ),
                         'del-exam'    => array(
                                 'target'        => 'del-exam',
                                 'show-on-flags' => array(
                                         "deletable",
-                                )
-                        ),
-                        'reuse-exam'  => array(
-                                'target'        => 'reuse-exam',
-                                'show-on-flags' => array(
-                                        'reusable'
                                 )
                         ),
                         'test-exam'   => array(
@@ -53,10 +41,22 @@ return array(
                                         "published"
                                 )
                         ),
+                        'reuse-exam'  => array(
+                                'target'        => 'reuse-exam',
+                                'show-on-flags' => array(
+                                        'reusable'
+                                )
+                        ),
                         'manage-exam' => array(
                                 'target'        => 'exam/update/{exam-id}/creator',
                                 'show-on-flags' => array(
                                         "*"
+                                )
+                        ),
+                        'check-exam'  => array(
+                                'target'        => 'check-exam',
+                                'show-on-flags' => array(
+                                        '*'
                                 )
                         )
                 )
@@ -87,12 +87,6 @@ return array(
                         'desc' => 'register students or change schedule'
                 ),
                 'show-options' => array(
-                        'check-exam'     => array(
-                                'target'        => 'check-exam',
-                                'show-on-flags' => array(
-                                        '*'
-                                )
-                        ),
                         'change-time'    => array(
                                 'target'        => 'change-time',
                                 'show-on-flags' => array(
@@ -103,6 +97,12 @@ return array(
                                 'target'        => 'manage-students',
                                 'show-on-flags' => array(
                                         "examinatable"
+                                )
+                        ),
+                        'check-exam'     => array(
+                                'target'        => 'check-exam',
+                                'show-on-flags' => array(
+                                        '*'
                                 )
                         )
                 )
@@ -125,12 +125,6 @@ return array(
                                         "decoded"
                                 )
                         ),
-                        'ans-correction'    => array(
-                                'target'        => 'exam/{exam-id}/correction',
-                                'show-on-flags' => array(
-                                        "correctable"
-                                )
-                        ),
                         'exam-not-finished' => array(
                                 'target'        => '#',
                                 'show-on-flags' => array(
@@ -138,6 +132,12 @@ return array(
                                         "running",
                                 )
                         ),
+                        'ans-correction'    => array(
+                                'target'        => 'exam/{exam-id}/correction',
+                                'show-on-flags' => array(
+                                        "correctable"
+                                )
+                        )
                 )
         ),
         Roles::DECODER               => array(
@@ -146,6 +146,11 @@ return array(
                         'desc' => 'view and decode results'
                 ),
                 'show-options' => array(
+                        'decode-closed'   => array(
+                                'target'        => '#',
+                                'show-on-flags' => array(
+                                )
+                        ),
                         'download-result' => array(
                                 'target'        => 'exam/{exam-id}/correction/download-results',
                                 'show-on-flags' => array(
@@ -165,12 +170,7 @@ return array(
                                 'show-on-flags' => array(
                                         "decodable"
                                 )
-                        ),
-                        'decode-closed'   => array(
-                                'target'        => '#',
-                                'show-on-flags' => array(
-                                )
-                        ),
+                        )
                 )
         ),
         Roles::STUDENT . '-upcoming' => array(
