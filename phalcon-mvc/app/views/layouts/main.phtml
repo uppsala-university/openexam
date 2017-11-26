@@ -82,6 +82,12 @@ $user = $this->user->getUser();
 
 $link = new NavigateMenuActivator($ctrl, $user);
 
+if ($theme == 'high-contrast') {
+        $theme_high_contrast = "active";
+} else {
+        $theme_high_contrast = "";
+}
+
 ?>
 
 <!-- Header area -->
@@ -203,6 +209,13 @@ $link = new NavigateMenuActivator($ctrl, $user);
                                         <li>
                                             <?= Tag::linkTo('utility/monitor/diagnostics', 'Diagnostics') ?>
                                         </li>
+                                        <li role="separator" class="divider"></li>
+                                        <li class="<?= $theme_high_contrast ?>">
+                                            <a href="#" id="theme-high-contrast">
+                                                <i class="fa fa-adjust" aria-hidden="true"></i>
+                                                High Contrast
+                                            </a>
+                                        </li>
                                     </ul>
                                 </li>
                         <?php endif; ?>
@@ -272,7 +285,7 @@ $link = new NavigateMenuActivator($ctrl, $user);
 
 <!-- Footer area -->
 <div id="oe-footer">
-        <div class="footer-text">
-            <div class="sidfot vcard" style="width: auto;"> &copy; 2010-<?= date('Y') ?> <a class="url fn org" href="http://www.uu.se/">Uppsala University</a> <a class="url fn org" href="http://www.bmc.uu.se/">BMC</a> </div>
-        </div>
+    <div class="footer-text">
+        <div class="sidfot vcard" style="width: auto;"> &copy; 2010-<?= date('Y') ?> <a class="url fn org" href="http://www.uu.se/">Uppsala University</a> <a class="url fn org" href="http://www.bmc.uu.se/">BMC</a> </div>
+    </div>
 </div>

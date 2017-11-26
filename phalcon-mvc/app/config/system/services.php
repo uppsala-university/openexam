@@ -134,7 +134,7 @@ $di->set('flash', function() {
  * Database connection is created based on the parameters defined in the configuration file.
  */
 $di->set('dbread', function() use ($config, $di) {
-        $factory = new \OpenExam\Library\Database\Adapter\Factory();
+        $factory = new OpenExam\Library\Database\Adapter\Factory();
         $factory->setConfig($config->dbread->config);
         $factory->setParams($config->dbread->params);
         $factory->setInstance($config->application->instance);
@@ -142,7 +142,7 @@ $di->set('dbread', function() use ($config, $di) {
         return $factory->getAdapter();
 }, true);
 $di->set('dbwrite', function() use ($config, $di) {
-        $factory = new \OpenExam\Library\Database\Adapter\Factory();
+        $factory = new OpenExam\Library\Database\Adapter\Factory();
         $factory->setConfig($config->dbwrite->config);
         $factory->setParams($config->dbwrite->params);
         $factory->setInstance($config->application->instance);
@@ -150,31 +150,31 @@ $di->set('dbwrite', function() use ($config, $di) {
         return $factory->getAdapter();
 }, true);
 $di->set('dbaudit', function() use ($config, $di) {
-        $factory = new \OpenExam\Library\Database\Adapter\Factory();
+        $factory = new OpenExam\Library\Database\Adapter\Factory();
         $factory->setConfig($config->dbaudit->config);
         $factory->setParams($config->dbaudit->params);
         $factory->setDI($di);
         return $factory->getAdapter();
 }, true);
 $di->set('dbcache', function() use($config) {
-        $frontend = new \Phalcon\Cache\Frontend\Data(array(
+        $frontend = new Phalcon\Cache\Frontend\Data(array(
                 'lifetime' => $config->dbcache->lifetime
         ));
 
         if ($config->dbcache->upper) {
                 $options = $config->dbcache->upper->options->toArray();
                 $options['prefix'] = $config->application->instance . '-' . $options['prefix'] . '-';
-                $upper = \OpenExam\Library\Database\Cache\Backend::create($config->dbcache->upper->backend, $frontend, $options);
+                $upper = OpenExam\Library\Database\Cache\Backend::create($config->dbcache->upper->backend, $frontend, $options);
         }
 
         if ($config->dbcache->lower) {
                 $options = $config->dbcache->lower->options->toArray();
                 $options['prefix'] = $config->application->instance . '-' . $options['prefix'] . '-';
-                $lower = \OpenExam\Library\Database\Cache\Backend::create($config->dbcache->lower->backend, $frontend, $options);
+                $lower = OpenExam\Library\Database\Cache\Backend::create($config->dbcache->lower->backend, $frontend, $options);
         }
 
         if (isset($upper) && isset($lower)) {
-                $distributed = new \OpenExam\Library\Database\Cache\Strategy\Distributed($frontend);
+                $distributed = new OpenExam\Library\Database\Cache\Strategy\Distributed($frontend);
                 $distributed->setUpperBackend($upper);
                 $distributed->setLowerBackend($lower);
                 return $distributed;
@@ -196,12 +196,22 @@ $di->set('audit', function() use ($config) {
 }, true);
 
 /**
- * Start the session the first time some component request the session service
+ * Start the session the first time some component request the session service.
  */
 $di->set('session', function() use ($config) {
         $session = new OpenExam\Library\Database\SessionAdapter($config->session);
         $session->start();
         return $session;
+}, true);
+
+/**
+ * The cookies service.
+ */
+$di->set(
+    'cookies', function () {
+        $cookies = new Phalcon\Http\Response\Cookies();
+        $cookies->useEncryption(false);
+        return $cookies;
 }, true);
 
 /**
@@ -318,7 +328,7 @@ $di->set('catalog', function() use($config, $di) {
                 $manager->register($service(), $domains, $name);
         }
         $manager->setDomain($config->user->domain);     // Set default domain.
-        $manager->setCache(new \OpenExam\Library\Catalog\DirectoryCache());
+        $manager->setCache(new OpenExam\Library\Catalog\DirectoryCache());
         return $manager;
 }, true);
 

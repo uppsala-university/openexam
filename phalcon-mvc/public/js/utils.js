@@ -313,4 +313,71 @@ $(document).ready(function () {
         window.print();
     }
 
+    // 
+    // Set cookie. To delete a cookie, pass exdays == 0. Create a session cookie by
+    // using exdays == -1 (default).
+    // 
+    function setCookie(cname, cvalue, exdays) {
+        exdays = exdays || -1;
+
+        if (exdays < 0) {
+            document.cookie = cname + "=" + cvalue + ";path=/";
+            return;
+        }
+
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    // 
+    // Get cookie.
+    // 
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) === ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) === 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    // 
+    // Set high contrast theme.
+    // 
+    var setHighContrast = function (enable) {
+        if (enable) {
+            $(document).find('body').addClass("high-contrast");
+            setCookie("theme", "high-contrast");
+        } else {
+            $(document).find('body').removeClass("high-contrast");
+            setCookie("theme", "", 0);
+        }
+    };
+
+    // 
+    // Handle high contrast theme toggle on/off:
+    // 
+    $(document).on('click', '#theme-high-contrast', function () {
+        console.log($(this));
+
+        if ($(this).parent().hasClass("active")) {
+            setHighContrast(false);
+            $(this).parent().removeClass("active");
+        } else {
+            setHighContrast(true);
+            $(this).parent().addClass("active");
+        }
+
+        return false;
+    });
 });

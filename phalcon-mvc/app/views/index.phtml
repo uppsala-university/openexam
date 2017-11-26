@@ -30,7 +30,22 @@ use Phalcon\Tag;
         </script>
     </head>
 
-    <body class="fixed-header">
+    <style>
+        @media screen {
+            body.high-contrast:not(img) {
+                filter: invert(100%);
+                background-color: black;
+            }
+            body.high-contrast .top-image img {
+                filter: invert(0%);            
+            }
+            body.high-contrast img {
+                filter: invert(100%);
+            }
+        }
+    </style>
+
+    <body class="fixed-header <?= $theme ?>">
         <?= $this->getContent(); ?>
 
         <!-- Content to show when AJAX request is in progress -->

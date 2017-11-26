@@ -51,6 +51,14 @@ class GuiController extends ControllerBase
                 $this->view->setVar("authenticators", $this->auth->getChain("web"));
 
                 // 
+                // Set user interface theme:
+                // 
+                if($this->cookies->has("theme")) {
+                        $theme = $this->cookies->get("theme")->getValue();
+                        $this->view->setVar("theme", $theme);
+                }
+
+                // 
                 // Try to acquire all roles:
                 // 
                 $this->user->acquire(array(

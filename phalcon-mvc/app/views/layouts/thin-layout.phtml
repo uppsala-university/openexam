@@ -105,6 +105,12 @@ if (isset($_COOKIE['sc']) && $_COOKIE['sc'] == 0) {
         $tt->sc = true;
 }
 
+if ($theme == 'high-contrast') {
+        $theme_high_contrast = "active";
+} else {
+        $theme_high_contrast = "";
+}
+
 ?>
 
 <header>
@@ -135,6 +141,13 @@ if (isset($_COOKIE['sc']) && $_COOKIE['sc'] == 0) {
                             <div class="zoom" id="demo"></div>
                         </div>
                         <br style="clear:both" />
+                    </li>
+                    <li role="separator" class="divider"></li>
+                    <li class="<?= $theme_high_contrast ?>">
+                        <a href="#" id="theme-high-contrast">
+                            <i class="fa fa-adjust" aria-hidden="true"></i>
+                            High Contrast
+                        </a>
                     </li>
                 </ul>
             </li>        
