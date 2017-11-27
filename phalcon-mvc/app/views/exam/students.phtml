@@ -475,14 +475,17 @@ foreach ($exam->students as $student) {
                 // Create column type lookup table:
                 // 
                 $('#table-import-students thead tr th').each(function (i) {
-                    sthead[i] = $(this).val();
+                    sthead[i] = $(this).attr("value");
                 });
 
                 // 
                 // Process table body. Add students to object array:
                 // 
                 $('#table-import-students tbody tr').each(function () {
-                    var stuobj = {exam_id: examId};
+                    var stuobj = {
+                        exam_id: examId
+                    };
+
                     $(this).find('td').each(function (i) {
                         switch (sthead[i]) {
                             case 'user':
