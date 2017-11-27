@@ -112,7 +112,7 @@ abstract class ImportBase extends Component implements Import
                         throw new ImportException(_("The file don't reference an uploaded file, possible file attack."), Error::BAD_REQUEST);
                 }
                 if ($this->_mime == FileImport::OCTET_STREAM) {
-                        $this->_mime = FileImport::getMimeType($this->_mime);
+                        $this->_mime = FileImport::getMimeType($this->_file);
                 }
 
                 $accepted = false;
