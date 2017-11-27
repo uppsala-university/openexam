@@ -140,6 +140,11 @@ img {
     margin: 30px 10px 10px;
 }
 
+.oe-disabled {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
 @media screen and (max-width: 40.5em) {
     .oe-left-column { 
         top: 162px;

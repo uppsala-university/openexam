@@ -111,7 +111,7 @@ if ($question->status == 'removed') {
 
 <!-- Question form that appears in dialog -->
 <div  id="question-form" style="padding-top:20px; ">
-    <div id="qPartTabs" style="<?= $question->is_editable ? 'display:block' : 'pointer-events: none; opacity: 0.4;'; ?>">
+    <div id="qPartTabs" class="<?= $question->is_editable ? '' : 'oe-disabled'; ?>">
         <?php $tabCounter = 1 ?>
         <ul id="q-part-tabs" style=" <?= ($totalQParts <= 1 ? "display:none" : "") ?>">
             <li><a href="#q-part-<?= $tabCounter ?>">Part a</a><span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></li>
