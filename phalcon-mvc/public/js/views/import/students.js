@@ -41,7 +41,7 @@ $(document).ready(function () {
     $("#table-import-students > tbody > tr:first > td").each(function (column, td) {
         var head = $(this).closest('table').find('th').eq($(this).index());
         if (head.attr('value') === undefined) {
-            head.find('a[value=' + $(this).text() + ']').trigger("click");
+            head.find('a[value="' + $(this).text() + '"]').trigger("click");
         }
     });
 
