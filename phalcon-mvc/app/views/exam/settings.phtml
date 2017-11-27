@@ -121,7 +121,7 @@ if (in_array("editable", $exam->flags)) {
             </div>
 
             <datalist id="user-department-list">
-                <select id="user-department-select form-control">
+                <select id="user-department-select" class="form-control">
                     <?php foreach ($departments as $code => $values) : ?>
                             <?php foreach ($values as $value) : ?>
                                     <option value="<?= $value ?>" data-code="<?= $code ?>"><?= $value ?></option>
