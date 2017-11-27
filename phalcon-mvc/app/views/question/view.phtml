@@ -36,9 +36,14 @@
 
     <!-- Question title row -->
     <?php if ($testMode): ?>
-            <div class="alert alert-info alert-dismissable" style="margin:15px 0px;">  
+            <div class="alert alert-info clearfix" style="margin:15px 0px;">  
                 <strong>Test mode activated.</strong> <br/>
                 You are currently previewing the student view in test mode. Please note that answers will <strong>not</strong> be saved.<br/>
+                <a href="<?= $this->url->get('exam/index') ?>" class="btn btn-primary pull-right">
+                    <i class="icon-ok-circle"> 
+                        <span>Finished</span>
+                    </i>
+                </a>
             </div>
     <?php endif; ?>
 
