@@ -9,9 +9,15 @@ use Phalcon\Tag;
 // 
 // File:    index.phtml
 // 
-// Author:  Ahsan Shahzad (Medfarm DoIT)
 // Author:  Anders Lövgren (BMC-IT)
+// Author:  Ahsan Shahzad (Medfarm DoIT)
 // 
+// 
+// Add polyfill from //cdn.polyfill.io/v2/polyfill.min.js:
+// 
+if (strpos(filter_input(INPUT_SERVER, 'HTTP_USER_AGENT'), 'Trident/7.0; rv:11.0') !== false) {
+        $polyfill = 'js/polyfill/polyfill-ie11.js';
+}
 
 ?>
 <!DOCTYPE html>
@@ -24,6 +30,10 @@ use Phalcon\Tag;
 
         <?= Tag::javascriptInclude('js/jquery.min.js'); ?>        
         <?= Tag::javascriptInclude('js/utils.js'); ?>
+
+        <?php if (isset($polyfill)) : ?>
+                <?= Tag::javascriptInclude($polyfill); ?>
+        <?php endif; ?>
 
         <script language="javascript">
                 var baseURL = '<?= $this->url->get() ?>';

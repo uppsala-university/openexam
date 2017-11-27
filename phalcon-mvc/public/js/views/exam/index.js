@@ -366,15 +366,6 @@ $(document).ready(function () {
     });
 
     // 
-    // Fake object.assing for IE 11:
-    // 
-    if (Object.assign === undefined) {
-        Object.prototype.assign = function (obj) {
-            return $.extend({}, obj);
-        };
-    }
-
-    // 
     // Filter options for current section.
     // 
     var data = Object.assign({}, filter);
