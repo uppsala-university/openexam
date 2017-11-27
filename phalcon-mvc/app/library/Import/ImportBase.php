@@ -27,6 +27,11 @@ abstract class ImportBase extends Component implements Import
 {
 
         /**
+         * The MIME type for unknown.
+         */
+        const MIME_UNKNWON = 'application/octet-stream';
+
+        /**
          * The sections to import.
          * @var int
          */
@@ -120,6 +125,8 @@ abstract class ImportBase extends Component implements Import
 
                 if (!isset($this->_mime)) {
                         $accepted = true;       // Give it a try
+                } elseif ($this->_mime == self::MIME_UNKNWON) {
+                        $accepted = true;       // No usable information                      
                 } else {
                         if (is_array($this->_accept)) {
                                 foreach ($this->_accept as $type) {
