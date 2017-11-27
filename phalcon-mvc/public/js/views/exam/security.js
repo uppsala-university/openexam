@@ -36,7 +36,15 @@ $(document).ready(function () {
     // Enable/disable lockdown:
     // 
     $('body').on('click', "#lockdown-enable", function () {
-        // TODO: disable edit of child elements.
+        var container = $(this).closest('.exam-security-box');
+
+        if ($(this).is(":checked")) {
+            container.find('.locations').removeClass('oe-disabled');
+            container.find('.lockdown-method').removeClass('oe-disabled');
+        } else {
+            container.find('.locations').addClass('oe-disabled');
+            container.find('.lockdown-method').addClass('oe-disabled');
+        }
     });
 
     // 
@@ -83,13 +91,14 @@ $(document).ready(function () {
     // 
     $('body').on('click', "#close-security", function () {
         if ($(this).hasClass("save")) {
+            var container = $(this).closest('.exam-security-box');
 
             // 
             // Save lockdown parameters:
             // 
             var lockdown = {
-                enable: $(document).find('#lockdown-enable').attr('checked') === 'checked',
-                method: $(document).find('#lockdown-method').val()
+                enable: container.find('#lockdown-enable').is(':checked'),
+                method: container.find('#lockdown-method').val()
             };
 
             ajax(
@@ -104,7 +113,7 @@ $(document).ready(function () {
             // Save access list (from table):
             // 
             var add = [], update = [], remove = [];
-            $('body').find('#locations-table tr').each(function () {
+            container.find('#locations-table tr').each(function () {
                 var item = $(this);
                 switch (item.attr('entry')) {
                     case 'new':

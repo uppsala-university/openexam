@@ -43,7 +43,7 @@ class DisplayLocation
 
                                 printf("<li addr='%s' disp='%s'>\n", $location['addr'], $key);
                                 printf("<b>%s</b><br/><div class='location-addresses'>%s</br/></div>\n", $key, implode('<br/>', $location['disp']));
-                                printf("<span style='min-width: 6em' class='btn btn-success' id='location-add'>\n");
+                                printf("<span class='btn btn-success' id='location-add'>\n");
                                 printf("<i class='fa fa-plus-circle'></i>\n");
                                 printf("<span>Add</span>\n");
                                 printf("</span>\n");
@@ -74,12 +74,16 @@ class DisplayLocation
 
     <div class="checkbox">
         <label>
-            <input id="lockdown-enable" class="save" type="checkbox" <?= $exam->lockdown->enable ? "checked" : "" ?>> 
+            <?php if ($exam->lockdown->enable) : ?>
+                    <input id="lockdown-enable" class="save" type="checkbox" checked="true"> 
+            <?php else : ?>
+                    <input id="lockdown-enable" class="save" type="checkbox" > 
+            <?php endif; ?>
             Enable lockdown                
         </label>
     </div>
 
-    <div class="locations">
+    <div class="locations <?= $exam->lockdown->enable ? '' : 'oe-disabled' ?>">
         <p><b>This exam should only be accessable from these locations:</b></p>
         <table id="locations-table" class="table table-hover">
             <thead><tr><th>Location</th><th>Address</th></tr></thead>
@@ -89,7 +93,7 @@ class DisplayLocation
                             <td contenteditable="true"><?= $key ?></td>
                             <td contenteditable="true"><?= str_replace(';', '<br/>', $location['addr']) ?></td>
                             <td>
-                                <span style="min-width: 6em" class="btn btn-success" id="location-remove">
+                                <span class="btn btn-success" id="location-remove">
                                     <i class="fa fa-cut"></i>
                                     <span>Remove</span>
                                 </span>
@@ -102,7 +106,7 @@ class DisplayLocation
             <div class="alert alert-info">
                 Select locations from recent used, system pre-defined or current action locations.
             </div>
-            <span style="min-width: 6em; float: right" class="btn btn-success" id="locations-details">
+            <span style="float: right" class="btn btn-success" id="locations-details">
                 <i class="fa fa-list-alt"></i>
                 <span>Details</span>
             </span>
@@ -126,9 +130,9 @@ class DisplayLocation
         </span>
     </div>
 
-    <div class="lockdown-method">
+    <div class="lockdown-method <?= $exam->lockdown->enable ? '' : 'oe-disabled' ?>">
         <p><b>Use this method for client side locking:</b></p>
-        <select id="lockdown-method form-control" class="save">
+        <select id="lockdown-method" class="save form-control">
             <option value="" <?= $exam->lockdown->method == "" ? "selected" : "" ?>>---</option>
             <option value="fwexamd" <?= $exam->lockdown->method == "fwexamd" ? "selected" : "" ?>>fwexamd</option>
         </select>
