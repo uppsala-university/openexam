@@ -184,6 +184,33 @@ $(document).ready(function () {
         return false;
     });
 
+    var toggleExamDetails = function (button, target) {
+        var container = button.closest('.exam-details');
+        container.find('.exam-properties').hide();
+        container.find('.exam-properties.' + target).show(100);
+    };
+
+    // 
+    // Toggle display of phase view in exam details.
+    // 
+    $(document).on('click', '.exam-state', function () {
+        toggleExamDetails($(this), 'state');
+    });
+
+    // 
+    // Toggle display of staff view in exam details.
+    // 
+    $(document).on('click', '.exam-staff', function () {
+        toggleExamDetails($(this), 'staff');
+    });
+
+    // 
+    // Toggle display of staff view in exam details.
+    // 
+    $(document).on('click', '.exam-other', function () {
+        toggleExamDetails($(this), 'other');
+    });
+
     // 
     // Show student management dialog:
     // 

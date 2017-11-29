@@ -25,11 +25,31 @@ use OpenExam\Library\Core\Exam\State;
         border: 1px solid #eeeeee;
         border-radius: 5px;
         margin-top: 30px;
-        padding: 15px;
         background-color: #ffffff;
+    }
+    .exam-details .header {
+        background-color: #666699;
+        border-radius: 4px 4px 0 0;
+        padding: 3px;
+        padding-left: 15px;
+    }
+    .exam-details .content {
+        padding: 3px 15px 10px 3px;       
+    }
+    .exam-details .overview {
+        border-bottom: 1px solid ghostwhite;
+    }
+    .exam-details .header span {
+        background-color: #7777aa;
+        border: 1px solid #555588;
+
     }
     .exam-properties {
         margin-top: 10px;
+        min-height: 100px;
+    }
+    .exam-properties.other {
+        column-count: 1;
     }
     @media screen and (max-width: 750px) {
         .exam-properties {
@@ -39,72 +59,106 @@ use OpenExam\Library\Core\Exam\State;
 </style>
 
 <div class="exam-details">
-    <div class="exam-phase" style="display: inline-block; float: right">
-        <?php $phase->render() ?>
+    <div class="header">
+        <span class="toolbtn exam-state">State</span>
+        <span class="toolbtn exam-staff">Staff</span>
+        <span class="toolbtn exam-other">Other</span>
     </div>
-    <div class="exam-date" style="display: inline-block; padding-left: 10px">
-        <?php $datetime->render() ?>
-    </div>
+    <div class="content">
+        <div class="overview">
+            <div class="exam-phase" style="display: inline-block; float: right">
+                <?php $phase->render() ?>
+            </div>
+            <div class="exam-date" style="display: inline-block; padding-left: 10px">
+                <?php $datetime->render() ?>
+            </div>
+        </div>
 
-    <div class="exam-properties">
-        <ul>
-            <?php
-            $state = $exam->getState();
+        <div class="exam-properties state">
+            <ul>
+                <?php
+                $state = $exam->getState();
 
-            if ($state->has(State::DRAFT)) {
-                    printf("<li>%s</li>\n", "This exam is an draft (not yet scheduled)");
-            }
+                if ($state->has(State::DRAFT)) {
+                        printf("<li>%s</li>\n", "This exam is an draft (not yet scheduled)");
+                }
 
-            if ($state->has(State::UPCOMING)) {
-                    printf("<li>%s</li>\n", "This exam is scheduled, but has not yet started");
-            } elseif ($state->has(State::RUNNING)) {
-                    printf("<li>%s</li>\n", "This exam is currently ongoing");
-            } elseif ($state->has(State::FINISHED)) {
-                    printf("<li>%s</li>\n", "This exam has been finished");
-            }
+                if ($state->has(State::UPCOMING)) {
+                        printf("<li>%s</li>\n", "This exam is scheduled, but has not yet started");
+                } elseif ($state->has(State::RUNNING)) {
+                        printf("<li>%s</li>\n", "This exam is currently ongoing");
+                } elseif ($state->has(State::FINISHED)) {
+                        printf("<li>%s</li>\n", "This exam has been finished");
+                }
 
-            if ($state->has(State::ANSWERED)) {
-                    printf("<li>%s</li>\n", "This exam has answers from students");
-            }
-            if ($state->has(State::CONTRIBUTABLE)) {
-                    printf("<li>%s</li>\n", "Questions can still be contributed");
-            }
-            if ($state->has(State::CORRECTABLE)) {
-                    printf("<li>%s</li>\n", "Answers can still be corrected on this exam");
-            }
-            if ($state->has(State::CORRECTED)) {
-                    printf("<li>%s</li>\n", "All answers has been fully corrected");
-            }
+                if ($state->has(State::ANSWERED)) {
+                        printf("<li>%s</li>\n", "This exam has answers from students");
+                }
+                if ($state->has(State::CONTRIBUTABLE)) {
+                        printf("<li>%s</li>\n", "Questions can still be contributed");
+                }
+                if ($state->has(State::CORRECTABLE)) {
+                        printf("<li>%s</li>\n", "Answers can still be corrected on this exam");
+                }
+                if ($state->has(State::CORRECTED)) {
+                        printf("<li>%s</li>\n", "All answers has been fully corrected");
+                }
 
-            if ($state->has(State::DECODED)) {
-                    printf("<li>%s</li>\n", "This exam has been decoded");
-            } elseif ($state->has(State::DECODABLE)) {
-                    printf("<li>%s</li>\n", "This exam can be decoded");
-            }
+                if ($state->has(State::DECODED)) {
+                        printf("<li>%s</li>\n", "This exam has been decoded");
+                } elseif ($state->has(State::DECODABLE)) {
+                        printf("<li>%s</li>\n", "This exam can be decoded");
+                }
 
-            if ($state->has(State::DELETABLE)) {
-                    printf("<li>%s</li>\n", "Can be deleted (no answers exist or exam is flagged as testcase)");
-            }
-            if ($state->has(State::EDITABLE)) {
-                    printf("<li>%s</li>\n", "The exam can still be edited");
-            }
-            if ($state->has(State::EXAMINATABLE)) {
-                    printf("<li>%s</li>\n", "Student can be registered and start/endtime can be changed");
-            }
-            if ($state->has(State::LOCKDOWN)) {
-                    printf("<li>%s</li>\n", "Lockdown mode is enabled on this exam");
-            }
-            if ($state->has(State::PUBLISHED)) {
-                    printf("<li>%s</li>\n", "Exam has been published");
-            }
-            if ($state->has(State::REUSABLE)) {
-                    printf("<li>%s</li>\n", "Can be reused as new exam");
-            }
-            if ($state->has(State::TESTCASE)) {
-                    printf("<li>%s</li>\n", "Marked as testcase (always deletable)");
-            }
+                if ($state->has(State::DELETABLE)) {
+                        printf("<li>%s</li>\n", "Can be deleted (no answers exist or exam is flagged as testcase)");
+                }
+                if ($state->has(State::EDITABLE)) {
+                        printf("<li>%s</li>\n", "The exam can still be edited");
+                }
+                if ($state->has(State::EXAMINATABLE)) {
+                        printf("<li>%s</li>\n", "Student can be registered and start/endtime can be changed");
+                }
+                if ($state->has(State::LOCKDOWN)) {
+                        printf("<li>%s</li>\n", "Lockdown mode is enabled on this exam");
+                }
+                if ($state->has(State::PUBLISHED)) {
+                        printf("<li>%s</li>\n", "Exam has been published");
+                }
+                if ($state->has(State::REUSABLE)) {
+                        printf("<li>%s</li>\n", "Can be reused as new exam");
+                }
+                if ($state->has(State::TESTCASE)) {
+                        printf("<li>%s</li>\n", "Marked as testcase (always deletable)");
+                }
 
-            ?>
-        </ul>
+                ?>
+            </ul>
+        </div>
+
+        <div class="exam-properties staff" style="display: none">
+            <ul>
+                <?php
+                $users = $exam->getStaff()->getData('users');
+
+                foreach ($users as $user => $data) {
+                        printf("<li><a href=\"mailto:%s\">%s</a>: %s</li>\n", $data['mail'][0], $data['name'], implode(", ", $data['role']));
+                }
+
+                ?>
+            </ul>
+        </div>
+
+        <div class="exam-properties other" style="display: none">
+            <ul>
+                <li>Questions: <?= $exam->questions->count() ?></li>
+                <li>Students:  <?= $exam->students->count() ?></li>
+            </ul>
+        </div>
+
     </div>
 </div>
+
+<script>
+
+</script>
