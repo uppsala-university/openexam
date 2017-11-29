@@ -486,7 +486,7 @@ $(document).ready(function () {
     // 
     // This function is called when creating or updating a question. The controller will 
     // create a empty question and return HTML for further editing if this function is 
-    // called qith qid == 0.
+    // called with qid == 0.
     // 
     var loadQuestion = function (pos, action, qid)
     {
@@ -503,6 +503,7 @@ $(document).ready(function () {
             url: baseURL + 'question/' + action,
             success: function (content) {
                 target
+                        .attr('q-id', qid)
                         .attr('q-no', pos)
                         .attr('title', title)
                         .html(content);
@@ -513,7 +514,7 @@ $(document).ready(function () {
                 if (!qid) {
                     qid = qId;
                 }
-
+                
                 // 
                 // Closing the dialog should prompt user if question should be deleted
                 // if action was create. At this point, the question has already been 
@@ -685,8 +686,8 @@ $(document).ready(function () {
                         // 
                         // Question was successfully created. Save ID and status in JSON object:
                         // 
-                        qJson["questId"] = qData.id;
-                        qJson["status"] = qData.status;
+                        qJson["questId"] = data.id;
+                        qJson["status"] = 'active';
                     }
 
                     // 
