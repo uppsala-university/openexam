@@ -187,7 +187,7 @@ $(document).ready(function () {
     var toggleExamDetails = function (button, target) {
         var container = button.closest('.exam-details');
         container.find('.exam-properties').hide();
-        container.find('.exam-properties.' + target).show(100);
+        container.find('.exam-properties.' + target).fadeIn(100).show();
     };
 
     // 
@@ -205,7 +205,14 @@ $(document).ready(function () {
     });
 
     // 
-    // Toggle display of staff view in exam details.
+    // Toggle display of roles view in exam details.
+    // 
+    $(document).on('click', '.exam-roles', function () {
+        toggleExamDetails($(this), 'roles');
+    });
+
+    // 
+    // Toggle display of other view in exam details.
     // 
     $(document).on('click', '.exam-other', function () {
         toggleExamDetails($(this), 'other');
