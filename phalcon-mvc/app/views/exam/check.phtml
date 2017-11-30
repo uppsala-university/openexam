@@ -1,8 +1,5 @@
 <?php
 
-use OpenExam\Library\Core\Exam\Check;
-use OpenExam\Library\Security\Roles;
-
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -13,6 +10,10 @@ use OpenExam\Library\Security\Roles;
 // 
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
+
+
+use OpenExam\Library\Core\Exam\Check;
+use OpenExam\Library\Security\Roles;
 
 $status = $check->getStatus();
 $security = $check->getSecurity();
@@ -87,6 +88,24 @@ $security = $check->getSecurity();
 </div>
 
 <div style="padding-bottom: 3px">
+    <?php if ($check->hasStartTime()) : ?>
+            <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has been scheduled (start time is set)</span>
+    <?php else : ?>
+            <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam has not been scheduled (start time is missing)</span>
+            <?php if (!$readonly) : ?>
+                    <div style="display: block; float:right; clear: both">
+                        <a href="#" class="exam-check-set-starttime prevent">
+                            <span class="btn btn-success btn-sm">
+                                <i class="fa fa-check"></i>
+                                <span>Fix this problem</span>
+                            </span>
+                        </a>
+                    </div>
+            <?php endif; ?>
+    <?php endif; ?>
+</div>
+
+<div style="padding-bottom: 3px">
     <?php if ($check->isPublished()) : ?>
             <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has been published</span>
             <?php if (!$readonly) : ?>
@@ -104,24 +123,6 @@ $security = $check->getSecurity();
             <?php if (!$readonly) : ?>
                     <div style="display: block; float:right; clear: both">
                         <a href="#" class="exam-check-publish prevent">
-                            <span class="btn btn-success btn-sm">
-                                <i class="fa fa-check"></i>
-                                <span>Fix this problem</span>
-                            </span>
-                        </a>
-                    </div>
-            <?php endif; ?>
-    <?php endif; ?>
-</div>
-
-<div style="padding-bottom: 3px">
-    <?php if ($check->hasStartTime()) : ?>
-            <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has been scheduled (start time is set)</span>
-    <?php else : ?>
-            <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam has not been scheduled (start time is missing)</span>
-            <?php if (!$readonly) : ?>
-                    <div style="display: block; float:right; clear: both">
-                        <a href="#" class="exam-check-set-starttime prevent">
                             <span class="btn btn-success btn-sm">
                                 <i class="fa fa-check"></i>
                                 <span>Fix this problem</span>
@@ -218,9 +219,19 @@ $security = $check->getSecurity();
         $(document).ready(function () {
             var examId = <?= $exam_id ?>;
 
-            if (oe_module_loaded("exam-check")) {
-                return;
-            }
+            var reloadExamStatus = function () {
+                $.ajax({
+                    type: "POST",
+                    data: {exam_id: examId},
+                    url: baseURL + '/exam/check',
+                    success: function (response) {
+                        $("#exam-check-box").html(response);
+                    },
+                    error: function (response) {
+                        $("#exam-check-box").html(response.responseText);
+                    }
+                });
+            };
 
             $('.exam-check-set-name').click(function () {
                 $('#exam-settings').trigger('click');
@@ -235,19 +246,23 @@ $security = $check->getSecurity();
             });
 
             $('.exam-check-publish').click(function () {
-                $.ajax({
-                    type: "POST",
-                    data: {id: examId, published: 1},
-                    url: baseURL + 'ajax/core/creator/exam/update',
-                });
+                ajax(
+                        baseURL + 'ajax/core/creator/exam/update',
+                        {id: examId, published: 1},
+                        function () {
+                            reloadExamStatus();
+                        }
+                );
             });
 
             $('.exam-check-unpublish').click(function () {
-                $.ajax({
-                    type: "POST",
-                    data: {id: examId, published: 0},
-                    url: baseURL + 'ajax/core/creator/exam/update',
-                });
+                ajax(
+                        baseURL + 'ajax/core/creator/exam/update',
+                        {id: examId, published: 0},
+                        function () {
+                            reloadExamStatus();
+                        }
+                );
             });
 
             $('.exam-check-set-starttime').click(function () {
@@ -258,14 +273,17 @@ $security = $check->getSecurity();
                 $('#exam-security').trigger('click');
             });
 
+            if (oe_module_loaded("exam-check")) {
+                return;
+            }
+
             $('body').on('click', "#check-close", function () {
                 closeDialogWindow("#exam-check-box");
                 location.reload();
             });
 
             $('body').on('click', "#check-refresh", function () {
-                closeDialogWindow("#exam-check-box");
-                $('.exam-check').trigger('click');
+                reloadExamStatus();
             });
 
             $('body').on('click', "#open-manager", function () {
