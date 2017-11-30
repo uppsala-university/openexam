@@ -80,6 +80,9 @@ class DateTime extends Validator implements ValidatorInterface
                         }
                         if ($current[$field] == $record->$field) {
                                 continue;
+                        }                        
+                        if (strtotime($current[$field]) == strtotime($record->$field)) {
+                                continue;
                         }
                         if (!($time = strtotime($record->$field))) {
                                 $message = sprintf("Failed parse %s to timestamp", $record->$field);
