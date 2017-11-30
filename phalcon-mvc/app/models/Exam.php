@@ -13,6 +13,7 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Core\Exam\Check;
 use OpenExam\Library\Core\Exam\Grades;
 use OpenExam\Library\Core\Exam\Staff;
 use OpenExam\Library\Core\Exam\State;
@@ -216,6 +217,11 @@ class Exam extends ModelBase
          * @var Staff 
          */
         private $_staff;
+        /**
+         * The exam check.
+         * @var Check
+         */
+        private $_check;
 
         protected function initialize()
         {
@@ -512,6 +518,30 @@ class Exam extends ModelBase
                 } else {
                         return $this->_state;
                 }
+        }
+
+        /**
+         * Get exam check.
+         * @return Check
+         */
+        public function getCheck()
+        {
+                if (!isset($this->_check)) {
+                        return $this->_check = new Check($this);
+                } else {
+                        return $this->_check;
+                }
+        }
+
+        /**
+         * Get exam status.
+         * 
+         * Use Check::STATUS_XXX for comparing readiness state of this exam.
+         * @return int
+         */
+        public function getStatus()
+        {
+                return $this->getCheck()->getStatus();
         }
 
         /**
