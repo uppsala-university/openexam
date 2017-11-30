@@ -20,6 +20,11 @@ $sections = include('sections.inc');
 
 $buttons = array(
         'check-exam'        => '<span class="toolbtn toolbtn-orange"><i class="fa fa-thumbs-o-up"></i> Status</span>',
+        'check-exam-status' => array(
+                1 => '<span class="toolbtn toolbtn-red-outline"><i class="fa fa-thumbs-o-up"></i> Status</span>',
+                2 => '<span class="toolbtn toolbtn-orange-outline"><i class="fa fa-thumbs-o-up"></i> Status</span>',
+                3 => '<span class="toolbtn toolbtn-green-outline"><i class="fa fa-thumbs-o-up"></i> Status</span>'
+        ),
         'manage-exam'       => '<span class="toolbtn toolbtn-green"><i class="fa fa-gear"></i> Manage</span>',
         'test-exam'         => '<span class="toolbtn toolbtn-blue"><i class="fa fa-thumbs-o-up"></i> Preview</span>',
         'del-exam'          => '<span class="toolbtn toolbtn-red"><i class="fa fa-trash"></i> Delete</span>',
@@ -135,6 +140,14 @@ $ordering = array(
                         <div style="float:right">
                             <div class="exam-show-options">
                                 <?php foreach ($sections[$sect]['show-options'] as $op => $opData): ?>
+                                        <?php
+                                        if ($op == 'check-exam') {
+                                                $button = $buttons['check-exam-status'][$exam->getStatus()];
+                                        } else {
+                                                $button = $buttons[$op];
+                                        }
+
+                                        ?>
 
                                         <?php $isUrl = preg_match('/.*\/.*/', $opData['target']); ?>
                                         <?php if ($opData['show-on-flags'][0] == '*' || count(array_diff($opData['show-on-flags'], $exam->flags)) != count($opData['show-on-flags'])) : ?>
@@ -143,7 +156,7 @@ $ordering = array(
                                                    href="<?= $this->url->get($href) ?>" 
                                                    class="<?= ($isUrl ? '' : $opData['target'] . ' prevent') ?>"
                                                    >
-                                                       <?= $buttons[$op] ?>
+                                                       <?= $button ?>
                                                 </a>
                                         <?php endif; ?>
 
@@ -172,7 +185,10 @@ $ordering = array(
         <?php if ($page->total_pages > 1): ?>
                 <div style="text-align: center;">
                     <ul class="pagination" style="margin: 0;">
-                        <?php for ($i = 1; $i <= $page->total_pages; $i++): ?>
+                        <?php
+                        for ($i = 1; $i <= $page->total_pages; $i++):
+
+                                ?>
                                 <?php if ($i == $page->current) : ?>
                                         <li class="active" page="<?= $i ?>">
                                             <a href="#"><?= $i ?><span class="sr-only">(current)</span></a> 
