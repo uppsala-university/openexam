@@ -136,7 +136,7 @@ class Check
          */
         public function hasQuestions()
         {
-                return $this->getQuestionsCount() > 0;
+                return $this->getQuestions() > 0;
         }
 
         /**
@@ -147,7 +147,7 @@ class Check
         {
                 if (!$this->_exam->lockdown->enable) {
                         return false;
-                } elseif ($this->getAccessCount() == 0) {
+                } elseif ($this->getLocations() == 0) {
                         return false;
                 } else {
                         return true;
@@ -181,7 +181,7 @@ class Check
                 if ($this->_exam->lockdown->enable) {
                         $level |= self::SECURITY_LOCKDOWN;
                 }
-                if ($this->getAccessCount() > 0) {
+                if ($this->getLocations() > 0) {
                         $level |= self::SECURITY_LOCATION;
                 }
 
@@ -203,7 +203,7 @@ class Check
          */
         public function hasStudents()
         {
-                return $this->getStudentsCount() > 0;
+                return $this->getStudents() > 0;
         }
 
         /**
@@ -276,7 +276,7 @@ class Check
          * Get number of active questions.
          * @return int
          */
-        private function getQuestionsCount()
+        public function getQuestions()
         {
                 return Question::count(array(
                             'conditions' => "exam_id = :exam: AND status = 'active'",
@@ -290,7 +290,7 @@ class Check
          * Get number of access lists (exam locations).
          * @return int
          */
-        private function getAccessCount()
+        public function getLocations()
         {
                 return Access::count(array(
                             'conditions' => "exam_id = :exam:",
@@ -304,7 +304,7 @@ class Check
          * Get number of students.
          * @return int
          */
-        private function getStudentsCount()
+        public function getStudents()
         {
                 return Student::count(array(
                             'conditions' => "exam_id = :exam:",

@@ -1,7 +1,5 @@
 <?php
 
-use OpenExam\Library\Core\Exam\State;
-
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -12,6 +10,10 @@ use OpenExam\Library\Core\Exam\State;
 // 
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
 // 
+
+
+use OpenExam\Library\Core\Exam\Check;
+use OpenExam\Library\Core\Exam\State;
 
 if ($this->user->roles->isStaff()) {
         $exam->show_state = true;
@@ -196,8 +198,24 @@ if ($this->user->roles->isStaff()) {
         <?php if ($exam->show_other) : ?>
                 <div class="exam-properties other" style="display: none">
                     <ul>
-                        <li>Questions: <?= $exam->questions->count() ?></li>
-                        <li>Students:  <?= $exam->students->count() ?></li>
+                        <?php $check = $exam->getCheck(); ?>
+
+                        <li>Questions: <?= $check->getQuestions() ?></li>
+                        <li>Students:  <?= $check->getStudents() ?></li>
+                        <li>Locations:  <?= $check->getLocations() ?></li>
+
+                        <?php $security = $check->getSecurity(); ?>
+                        <?php if ($security == Check::SECURITY_NONE) : ?>
+                                <li>Security: None</li>
+                        <?php elseif ($security == Check::SECURITY_FULL) : ?>
+                                <li>Security: Full</li>
+                        <?php elseif (($security & Check::SECURITY_LOCKDOWN) == 0) : ?>
+                                <li>Security: Partial (lockdown missing)</li>
+                        <?php elseif (($security & Check::SECURITY_LOCATION) == 0) : ?>
+                                <li>Security: Partial (no locations defined)</li>
+                        <?php else : ?>
+                                <li>Security: Partial</li>
+                        <?php endif; ?>
                     </ul>
                 </div>
         <?php endif; ?>
