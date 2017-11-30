@@ -71,27 +71,46 @@
     // on from where the view is used :-( (AL).
     // 
     $qSize = count($quest);
-    $questionNo = 0;
     $unanswered = 0;
 
-    foreach ($quest as $qKey => $qObj):
+    $prevQuestId = $nextQuestId = $currQuestId = false;
+    $qNumber = 0;
+    $qIndexes = array();
+
+    // 
+    // Set ID of previous and next question. Random access is only supported 
+    // if result set is an array.
+    // 
+    if (count($quest) == 1) {
+            foreach ($questions as $index => $question) {
+                    $qIndexes[$index] = $question->id;
+            }
+
+            $target = current($quest);  // Get first from array
+
+            foreach ($qIndexes as $index => $qIndex) {
+                    if ($target->id == $qIndex) {
+                            if (isset($qIndexes[$index - 1])) {
+                                    $prevQuestId = $qIndexes[$index - 1];
+                            }
+                            if (isset($qIndexes[$index + 1])) {
+                                    $nextQuestId = $qIndexes[$index + 1];
+                            }
+
+                            $currQuestId = $qIndex;
+
+                            break;
+                    }
+            }
+    }
+
+    ?>
+
+    <?php foreach ($quest as $qObj) : ?>
+            <?php
             if (!$qObj->id) {
                     continue;
             }
-
-            // calculate question number
-            $prevQuestId = $nextQuestId = 0;
-            if (count($quest) == 1):
-                    foreach ($questions as $questionNo => $qTmp):
-                            if ($qTmp->id == $qObj->id):
-                                    $prevQuestId = isset($questions[$questionNo - 1]) ? $questions[$questionNo - 1]->id : 0;
-                                    $nextQuestId = isset($questions[$questionNo + 1]) ? $questions[$questionNo + 1]->id : 0;
-                                    break;
-                            endif;
-                    endforeach;
-            endif;
-
-            $questionNo++;
 
             $qParts = json_decode($qObj->quest, true);
             $answerData = json_decode($answer[$qObj->id]->answer, true);
@@ -103,7 +122,7 @@
                 <div class="col-sm-12">
                     <div class="box bordered-box blue-border">
                         <div class="box-content box-double-padding" style="font-family:verdana; <?= $viewMode == 'all' ? 'border-bottom: 10px solid #BE2435' : '' ?>">
-                            <i class="q-no icon-q<?= $questionNo ?> text-contrast">:</i>
+                            <i class="q-no icon-q<?= $qObj->slot ?> text-contrast">:</i>
                             <?php $partCount = 1; ?>
                             <?php foreach ($qParts as $qPart => $qPartData): ?>
 
@@ -186,7 +205,7 @@
                                                                         <?php foreach ($qPartData['ans_area']['data'] as $qPartOpt => $ans): ?>
                                                                                 <div class="checkbox">
                                                                                     <label>
-                                                                                        <input <?= $type == 'radio' ? 'name="' . $questionNo . '-' . $qPart . '"' : '' ?> type="<?= $type ?>" value="<?= htmlspecialchars($qPartOpt) ?>" class="changeable" <?= isset($answerData[$qPart]['ans']) && in_array($qPartOpt, $answerData[$qPart]['ans']) ? 'checked="checked"' : '' ?>>
+                                                                                        <input <?= $type == 'radio' ? 'name="' . $qObj->slot . '-' . $qPart . '"' : '' ?> type="<?= $type ?>" value="<?= htmlspecialchars($qPartOpt) ?>" class="changeable" <?= isset($answerData[$qPart]['ans']) && in_array($qPartOpt, $answerData[$qPart]['ans']) ? 'checked="checked"' : '' ?>>
                                                                                         <?= $qPartOpt ?>
                                                                                     </label>
                                                                                 </div>
@@ -195,7 +214,7 @@
                                                                     </div>                                                                        
                                                             <?php else: ?>
                                                                     <div id="ansBkp<?= $qPart ?>" style="display:none"><?= $answerData[$qPart]['ans'][0] ?></div>
-                                                                    <textarea id="q-<?= $questionNo ?>_part-<?= $qPart ?>" class="form-control changeable ckeditor" word-count-limit="<?= $qPartData['ans_area']['word_count'] ?>" native-spell-check="<?= $qPartData['ans_area']['spell_check'] ?>" style="display: none"><?= $answerData[$qPart]['ans'][0] ?></textarea>
+                                                                    <textarea id="q-<?= $qObj->slot ?>_part-<?= $qPart ?>" class="form-control changeable ckeditor" word-count-limit="<?= $qPartData['ans_area']['word_count'] ?>" native-spell-check="<?= $qPartData['ans_area']['spell_check'] ?>" style="display: none"><?= $answerData[$qPart]['ans'][0] ?></textarea>
                                                             <?php endif; ?>
                                                         </div>
                                                 <?php endif; ?>
@@ -312,7 +331,7 @@
         <strong>Important to know:</strong><br><br>
         <ul>
             <li>All your answers are continuously saved every 10 seconds if changed or when switching between question.</li><br>
-            <li>It is highly recomended that you <u>don't</u> use "back" and "forward" buttons in the browser to navigate between questions. Always use the 
+            <li>It is highly recommended that you <u>don't</u> use "back" and "forward" buttons in the browser to navigate between questions. Always use the 
                 <button class="btn btn-xs" disabled="disabled"><i class="icon-arrow-left"></i> Prev. Question </button> and 
                 <button class="btn btn-xs btn-success" disabled="disabled"> Next Question <i class="icon-arrow-right"></i></button> 
                 buttons or question links in left hand side menu.</li><br>
@@ -328,7 +347,7 @@
 
 <script language="javascript" type="text/javascript">
 <?php if (!$testMode && $viewMode == 'single'): ?>
-                var qName = '<?= $questionNo ?>';
+                var qName = '<?= $qObj->slot ?>';
                 var ansId = '<?= $answer[$qObj->id]->id ?>';
                 if (ansId === '') {
                     alert("System will not be able to save your answer for this question. Please report this issue to exam invigilators immediately.");

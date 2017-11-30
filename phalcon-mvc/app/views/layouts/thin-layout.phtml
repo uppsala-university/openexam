@@ -213,9 +213,9 @@ $allQs = $exam->getQuestions(array(
                         <?php foreach ($allQs as $qNo => $question): ?>
                                 <?php $questionData = json_decode($question->quest); ?>
 
-                                <li class='<?= ($viewMode == 'single' && $question->id == $quest[0]->id ? 'active' : '') ?>' id="q<?= $qNo + 1 ?>_short">
+                                <li class='<?= ($viewMode == 'single' && $question->id == $quest[0]->id ? 'active' : '') ?>' id="q<?= $question->slot ?>_short">
                                     <a class="sync-answer" href="#" hlink="<?= $this->url->get('exam/' . $exam->id . '/question/' . $question->id) ?>" style=" <?= (in_array($question->id, $highlightedQs) === TRUE ? 'background-color: #FEFF99;' : '') ?>"><!--#FBC676-->
-                                        <div style="float:left; width:20%"><i class="icon-q<?= $qNo + 1 ?>" ></i></div>
+                                        <div style="float:left; width:20%"><i class="icon-q<?= $question->slot ?>" ></i></div>
                                         <div style="float:left; width:80%; max-height:27px"><span><?= substr(strip_tags($questionData->a->q_text), 0, 58) ?></span></div>
                                     </a>
                                 </li>
