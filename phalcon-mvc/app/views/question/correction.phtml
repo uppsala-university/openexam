@@ -20,7 +20,7 @@ use Phalcon\Tag;
 $overallQuestScore = array();
 $totalExamScore = $totalStudentScore = 0;
 
-$studentIds = array();
+$studentIds = array_keys($answers);
 
 $grades = preg_split('/[\r\n]+/', $exam->grades);
 $examGrades = array();
@@ -298,7 +298,7 @@ if (!$exam->show_save) {
             <table>
                 <thead>
                     <tr>
-                        <?php foreach ($questions as $qNo => $question): ?>
+                        <?php foreach ($questions as $question): ?>
                                 <?php
                                 $href = $this->url->get('exam/' . $exam->id . '/correction/question/' . $question->id);
                                 $desc = "Correctors: ";
@@ -362,28 +362,15 @@ if (!$exam->show_save) {
                 <tbody>
                     <?php foreach ($students as $student): ?>
                             <tr>
-                                <?php
-                                // 
-                                // Create an answer lookup table:
-                                // 
-                                $studans = $student->answers;
-                                $answers = array();
-                                if ($studans->count() == 0) {
-                                        continue;
-                                }
-                                foreach ($studans as $a) {
-                                        $answers[$a->question_id] = $a;
-                                }
-
-                                ?>
-
                                 <?php $totalStudentScore = 0; ?>
                                 <?php
                                 foreach ($questions as $question):
 
                                         $result = null;
                                         $qScore = 0;
-                                        $answer = isset($answers[$question->id]) ? $answers[$question->id] : false;
+
+                                        $answer = $answers[$student->id][$question->id];
+
                                         if ($answer) {
 
                                                 $result = $answer->result;
@@ -562,11 +549,7 @@ if (!$exam->show_save) {
                                         </td>
                                 <?php endif; ?>
                             </tr>
-                            <?php
-                            $studentIds[] = $student->id;
-                    endforeach;
-
-                    ?>
+                    <?php endforeach; ?>
                 </tbody>	
                 <?php if ($exam->show_summary): ?>
                         <tfoot>
