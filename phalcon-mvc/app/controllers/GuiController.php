@@ -53,7 +53,7 @@ class GuiController extends ControllerBase
                 // 
                 // Set user interface theme:
                 // 
-                if($this->cookies->has("theme")) {
+                if ($this->cookies->has("theme")) {
                         $theme = $this->cookies->get("theme")->getValue();
                         $this->view->setVar("theme", $theme);
                 }
@@ -272,6 +272,14 @@ class GuiController extends ControllerBase
                                 $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rule is '*')", $controller, $action));
                         }
                         return true;
+                }
+
+                // 
+                // Using roles == '@' means any roles:
+                // 
+                if ($permit[0] == '@') {
+                        $permit = $this->capabilities->getRoles();
+                        $permit = array_diff($permit, array('teacher', 'corrector'));
                 }
 
                 // 
