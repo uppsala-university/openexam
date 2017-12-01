@@ -110,10 +110,11 @@ foreach ($roles as $role) {
 </div>
 
 <section class="ac-container">
-    <?php foreach ($roles as $index => $role) : ?>
-            <?php if (array_key_exists($role, $sections)) : ?>
-                    <div section-role="<?= $role ?>" section-state="<?= $state[$role] ?>">
-                        <?php if (in_array($role, $expand)): ?>
+    <?php foreach ($roles as $index => $sect) : ?>
+            <?php if (array_key_exists($sect, $sections)) : ?>
+                    <?php $role = explode("-", $sect)[0] ?>
+                    <div section-role="<?= $role ?>" section-type="<?= $sect ?>" section-state="<?= $state[$sect] ?>">
+                        <?php if (in_array($sect, $expand)): ?>
                                 <input id="ac-<?= $index ?>" name="accordion-1" type="radio" checked="" />
                         <?php else: ?>
                                 <input id="ac-<?= $index ?>" name="accordion-1" type="radio"/>
@@ -121,8 +122,8 @@ foreach ($roles as $role) {
 
                         <label for="ac-<?= $index ?>" class="exam-list-boxes">
                             <i class="fa fa-chevron-right chevron" style="color: #990000"></i>
-                            <?= $sections[$role]['title']['name'] ?>
-                            <span class="hidden-xs"> - <?= $sections[$role]['title']['desc'] ?></span>
+                            <?= $sections[$sect]['title']['name'] ?>
+                            <span class="hidden-xs"> - <?= $sections[$sect]['title']['desc'] ?></span>
                         </label>
                         <article class="ac-large exam-listing-wrapper">
                             <div class="exam-search-wrapper">

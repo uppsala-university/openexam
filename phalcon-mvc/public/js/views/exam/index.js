@@ -166,14 +166,15 @@ $(document).ready(function () {
     // 
     $(document).on('click', '.exam-state-show', function () {
         var exam = $(this).closest('li').attr('data-id');
+        var role = $(this).closest('div[section-role]').attr('section-role');
         var target = $(this).closest('li').children('.exam-state-view').children('div');
 
         target.toggle();
 
         if (target.is(":visible")) {
             $.ajax({
-                type: "GET",
-                data: null,
+                type: "POST",
+                data: {role: role},
                 url: baseURL + 'exam/details/' + exam,
                 success: function (response) {
                     target.html(response);
@@ -407,13 +408,14 @@ $(document).ready(function () {
     // 
     // Initialize section data:
     // 
-    $('[section-role]').each(function () {
+    $('[section-type]').each(function () {
         // 
         // Store filter options in section element:
         // 
         var options = Object.assign({}, filter);
 
-        options.sect = $(this).attr('section-role');
+        options.sect = $(this).attr('section-type');
+        options.role = $(this).attr('section-role');
         options.state = Number($(this).attr('section-state'));
 
         $(this).data(options);
@@ -456,9 +458,9 @@ $(document).ready(function () {
     // 
     var showSectionIndex = function (source) {
         var target = source.find('.exam-listing-area');
-        var role = source.attr('section-role');
+        var type = source.attr('section-type');
 
-        loadSectionIndex(target, role);
+        loadSectionIndex(target, type);
     };
 
     // 
@@ -467,7 +469,7 @@ $(document).ready(function () {
     // 
     var readSectionIndex = function () {
         if (data.sect) {
-            var source = $(document).find('div[section-role="' + data.sect + '"]');
+            var source = $(document).find('div[section-type="' + data.sect + '"]');
             showSectionIndex(source);
         }
     };
@@ -498,7 +500,7 @@ $(document).ready(function () {
     // 
     if (expand.length > 0) {
         for (var i = 0; i < expand.length; ++i) {
-            var source = '[section-role="' + expand[i] + '"]';
+            var source = '[section-type="' + expand[i] + '"]';
             var parent = $(document).find(source);
 
             showSectionIndex(parent);

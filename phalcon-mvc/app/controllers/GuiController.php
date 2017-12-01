@@ -279,7 +279,6 @@ class GuiController extends ControllerBase
                 // 
                 if ($permit[0] == '@') {
                         $permit = $this->capabilities->getRoles();
-                        $permit = array_diff($permit, array('teacher', 'corrector'));
                 }
 
                 // 
