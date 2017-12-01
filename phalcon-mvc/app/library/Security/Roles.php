@@ -21,6 +21,7 @@ use OpenExam\Models\Exam;
 use OpenExam\Models\Invigilator;
 use OpenExam\Models\Student;
 use OpenExam\Models\Teacher;
+use OpenExam\Models\Question;
 use Phalcon\Mvc\User\Component;
 use ReflectionClass;
 
@@ -398,6 +399,9 @@ class Roles extends Component
                                 return true;
                         }
                 } elseif ($role == self::CORRECTOR) {
+                        // 
+                        // Check if corrector on question followed by exam:
+                        // 
                         if ($id != 0) {
                                 $parameters = array(
                                         "user = :user: AND question_id = :id:",
@@ -416,6 +420,10 @@ class Roles extends Component
                                         // 
                                         $this->addRole($role, $corrector->question->exam->id);
                                 }
+                                $this->addRole($role, $id);
+                                $user->setPrimaryRole($rold);
+                                return true;
+                        } elseif ($this->isCorrector($id)) {
                                 $this->addRole($role, $id);
                                 $user->setPrimaryRole($rold);
                                 return true;
@@ -506,6 +514,28 @@ class Roles extends Component
                     $role == self::ADMIN ||
                     $role == self::TRUSTED ||
                     $role == self::SYSTEM;
+        }
+
+        /**
+         * Check if caller is corrector on exam.
+         * @param int $id The exam ID.
+         * @return boolean
+         */
+        public function isCorrector($id)
+        {
+                try {
+                        $role = $this->user->setPrimaryRole(self::CORRECTOR);
+
+                        if (isset($this->_roles[$id][self::CORRECTOR])) {
+                                return true;
+                        } elseif ($id != 0) {
+                                return Exam::findFirstById($id);
+                        } else {
+                                return Exam::findFirst();
+                        }
+                } finally {
+                        $this->user->setPrimaryRole($role);
+                }
         }
 
 }
