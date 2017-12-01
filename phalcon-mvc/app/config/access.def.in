@@ -52,7 +52,9 @@ return array(
                         'invigilator' => '*',
                         'student'     => 'read',
                         'corrector'   => '*',
-                        'access'      => '*'
+                        'access'      => '*',
+                        'answer'      => 'read',
+                        'result'      => 'read'
                 ),
                 'contributor' => array(
                         'exam'        => 'read',
@@ -73,7 +75,11 @@ return array(
                         'decoder'     => 'read',
                         'invigilator' => 'read',
                         'student'     => '*',
-                        'access'      => 'modify'
+                        'access'      => 'modify',
+                        // Required for monitor exams:
+                        'question'    => 'read',
+                        'corrector'   => 'read',
+                        'answer'      => 'read'
                 ),
                 'decoder'     => array(
                         'exam'        => 'modify',
@@ -86,7 +92,8 @@ return array(
                         'contributor' => 'read',
                         'decoder'     => 'read',
                         'invigilator' => 'read',
-                        'student'     => 'read'
+                        'student'     => 'read',
+                        'corrector'   => 'read'
                 ),
                 'corrector'   => array(
                         'exam'        => 'read',
@@ -95,7 +102,10 @@ return array(
                         'answer'      => 'read',
                         'result'      => '*',
                         'student'     => 'read',
-                        'corrector'   => 'read'
+                        'corrector'   => 'read',
+                        'contributor' => 'read',
+                        'decoder'     => 'read',
+                        'invigilator' => 'read'
                 ),
                 'student'     => array(
                         'exam'        => 'read',
@@ -110,9 +120,9 @@ return array(
         // 
         // Controller access map.
         // 
-        // Defines which roles are allowed to execute action on a controller.        
-        // The data structure are protection -> controller -> actions -> roles,
-        // where actions or roles uses '*' to denote all access. 
+        // Defines which roles are allowed to execute controller actions. The       
+        // data structure are protection -> controller -> actions -> roles, where
+        // actions or roles uses '*' to denote all access. 
         // 
         // The protection is either public, protected or private. Using 
         // protected means that authentication is required, but might be
@@ -140,13 +150,14 @@ return array(
                         'check'       => array('creator', 'invigilator'),
                         'lock'        => array('creator', 'invigilator'),
                         'archive'     => array('creator'),
-                        'start'       => array('student')
+                        'start'       => array('student'),
+                        'details'     => array('@')
                 ),
                 'question' => array(
                         'create'      => array('creator', 'contributor'),
                         'update'      => array('creator', 'contributor'),
                         'view'        => array('creator', 'contributor', 'student'),
-                        'correction'  => array('creator', 'decoder', 'corrector')
+                        'correction'  => array('creator', 'decoder', 'corrector', 'invigilator')
                 ),
                 'result' => array(
                         'view'        => array('decoder', 'student'),
