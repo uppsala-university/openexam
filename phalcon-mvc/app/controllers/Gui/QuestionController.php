@@ -435,12 +435,6 @@ class QuestionController extends GuiController
                 // Load data for score board:
                 // 
                 $this->correctionLoadBoard($exam);
-
-                // 
-                // Reset primary role as the view is not correctly dealing 
-                // with roles yet.
-                // 
-                $this->user->setPrimaryRole(null);
         }
 
         /**
@@ -453,11 +447,6 @@ class QuestionController extends GuiController
          */
         private function showCorrectionView($exam, $mode, $id)
         {
-                // 
-                // Answer correction requires being corrector:
-                // 
-                $this->user->setPrimaryRole(Roles::CORRECTOR);
-
                 // 
                 // Load data for answer correction:
                 // 
@@ -480,12 +469,6 @@ class QuestionController extends GuiController
                 // 
                 $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
                 $this->view->pick('question/answers');
-
-                // 
-                // Reset primary role as the view is not correctly dealing 
-                // with roles yet.
-                // 
-                $this->user->setPrimaryRole(null);
         }
 
         /**
@@ -493,17 +476,11 @@ class QuestionController extends GuiController
          * @param Exam $exam The exam.
          * @param int $sid The student ID.
          */
-        private function correctionLoadStudent($exam, $sid)
+        private function correctionLoadStudent($exam, $sid, $ids = array())
         {
                 // 
-                // Find questions and answers for student:
+                // Get questions with respect to primary role:
                 // 
-                if (!($student = Student::findFirst($sid))) {
-                        throw new Exception("Failed fetch student model", Error::BAD_REQUEST);
-                }
-                if (!($answers = $student->answers)) {
-                        throw new Exception("Failed fetch answer models", Error::BAD_REQUEST);
-                }
                 if (!($questions = Question::find(array(
                             'conditions' => "exam_id = :exam: AND status = 'active'",
                             'bind'       => array(
@@ -511,7 +488,26 @@ class QuestionController extends GuiController
                             ),
                             'order'      => 'slot ASC'
                     )))) {
-                        throw new Exception("Failed fetch question models", Error::BAD_REQUEST);
+                        throw new Exception("Failed fetch question ID's", Error::BAD_REQUEST);
+                }
+                if (!($student = Student::findFirst($sid))) {
+                        throw new Exception("Failed fetch student model", Error::BAD_REQUEST);
+                }
+
+                // 
+                // Get answers related to questions only:
+                // 
+                foreach ($questions as $question) {
+                        $ids[] = $question->id;
+                }
+
+                if (!($answers = Answer::find(array(
+                            'conditions' => sprintf("id IN (%s) AND student_id = :student:", implode(",", $ids)),
+                            'bind'       => array(
+                                    'student' => $student->id
+                            )
+                    )))) {
+                        throw new Exception("Failed fetch answer models", Error::BAD_REQUEST);
                 }
 
                 if ($exam->show_code) {
@@ -636,10 +632,10 @@ class QuestionController extends GuiController
          * Get data for score board.
          * @param Exam $exam The exam.
          */
-        private function correctionLoadBoard($exam)
+        private function correctionLoadBoard($exam, $answers = array())
         {
                 // 
-                // Fetch all data for score board:
+                // Fetch questions influenced by primary role:
                 // 
                 if (!($questions = Question::find(array(
                             'conditions' => "exam_id = :exam: AND status = 'active'",
@@ -650,8 +646,21 @@ class QuestionController extends GuiController
                     )))) {
                         throw new Exception("Failed fetch question models", Error::BAD_REQUEST);
                 }
+
+                // 
+                // Read all students:
+                // 
                 if (!($students = $exam->students)) {
                         throw new Exception("Failed fetch student models", Error::BAD_REQUEST);
+                }
+
+                // 
+                // Read answers restricted by questions and create lookup table:
+                // 
+                foreach ($questions as $question) {
+                        foreach ($question->answers as $answer) {
+                                $answers[$answer->student_id][$answer->question_id] = $answer;
+                        }
                 }
 
                 // 
@@ -660,7 +669,8 @@ class QuestionController extends GuiController
                 $this->view->setVars(array(
                         'exam'      => $exam,
                         'questions' => $questions,
-                        'students'  => $students
+                        'students'  => $students,
+                        'answers'   => $answers
                 ));
         }
 
