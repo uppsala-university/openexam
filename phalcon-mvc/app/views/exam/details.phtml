@@ -15,15 +15,15 @@
 use OpenExam\Library\Core\Exam\Check;
 use OpenExam\Library\Core\Exam\State;
 
-if ($this->user->roles->isStaff()) {
-        $exam->show_state = true;
-        $exam->show_staff = true;
-        $exam->show_roles = true;
-        $exam->show_other = true;
-} else {
+if ($this->user->roles->isStudent($exam->id)) {
         $exam->show_state = true;
         $exam->show_staff = false;
         $exam->show_roles = false;
+        $exam->show_other = true;
+} else {
+        $exam->show_state = true;
+        $exam->show_staff = true;
+        $exam->show_roles = true;
         $exam->show_other = true;
 }
 
