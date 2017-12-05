@@ -17,7 +17,7 @@
          backupGlobals="false"
          backupStaticAttributes="false"
          verbose="true"
-         colors="false"
+         colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
