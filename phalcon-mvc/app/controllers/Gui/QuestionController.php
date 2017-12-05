@@ -490,19 +490,26 @@ class QuestionController extends GuiController
                     )))) {
                         throw new Exception("Failed fetch question ID's", Error::BAD_REQUEST);
                 }
+
+                // 
+                // Get student model:
+                // 
                 if (!($student = Student::findFirst($sid))) {
                         throw new Exception("Failed fetch student model", Error::BAD_REQUEST);
                 }
 
                 // 
-                // Get answers related to questions only:
+                // Collect ID of related questions only:
                 // 
                 foreach ($questions as $question) {
                         $ids[] = $question->id;
                 }
 
+                // 
+                // Get answers by question ID's:
+                // 
                 if (!($answers = Answer::find(array(
-                            'conditions' => sprintf("id IN (%s) AND student_id = :student:", implode(",", $ids)),
+                            'conditions' => sprintf("question_id IN (%s) AND student_id = :student:", implode(",", $ids)),
                             'bind'       => array(
                                     'student' => $student->id
                             )
@@ -510,6 +517,9 @@ class QuestionController extends GuiController
                         throw new Exception("Failed fetch answer models", Error::BAD_REQUEST);
                 }
 
+                // 
+                // Set header based on exam settings:
+                // 
                 if ($exam->show_code) {
                         $this->view->setVars(array(
                                 'heading' => sprintf('Student (Code: %s)', $student->code),
@@ -554,6 +564,9 @@ class QuestionController extends GuiController
                         throw new Exception("Failed fetch student model", Error::BAD_REQUEST);
                 }
 
+                // 
+                // Set header based on exam settings:
+                // 
                 if ($exam->show_code) {
                         $this->view->setVars(array(
                                 'heading' => sprintf('Question (Q%d) answered by student (Code: %s)', $question->slot, $student->code),
@@ -594,6 +607,9 @@ class QuestionController extends GuiController
                         throw new Exception("Failed fetch answer model", Error::BAD_REQUEST);
                 }
 
+                // 
+                // Set header based on exam settings:
+                //                 
                 $this->view->setVars(array(
                         'heading' => sprintf('Question (Q%d)', $question->slot),
                         'loading' => 'question'
