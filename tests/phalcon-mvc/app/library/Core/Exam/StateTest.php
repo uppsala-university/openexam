@@ -86,7 +86,6 @@ class StateTest extends TestCase
                 $this->addQuestion();
                 $this->addCorrector();
 
-//                $this->_state = new State($this->_exam);
                 $this->_state = $this->_exam->getState();
         }
 

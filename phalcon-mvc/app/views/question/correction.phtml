@@ -18,21 +18,15 @@ use OpenExam\Models\Student;
 use Phalcon\Tag;
 
 $overallQuestScore = array();
-$totalExamScore = $totalStudentScore = 0;
+$totalStudentScore = 0;
 
 $studentIds = array_keys($answers);
 
-$grades = preg_split('/[\r\n]+/', $exam->grades);
-$examGrades = array();
-$passAt = 1000;
-foreach ($grades as $k => $grade) :
-        $t = explode(":", $grade);
-        $examGrades[$t[0]] = $t[1];
-        $avgGrades[$t[0]] = 0;
-        if ($k == 1) :
-                $passAt = $t[1];
-        endif;
-endforeach;
+$grades = $exam->getGrade();
+
+$examGrades = $grades->getGrades();
+$avgGrades = array_fill_keys(array_keys($examGrades), 0);
+
 arsort($examGrades);
 
 if (($exam->details & Exam::SHOW_SUMMARY_DURING_CORRECTION) != 0) {
@@ -178,11 +172,24 @@ if (!$exam->show_save) {
     td.ac a {
         color: #c1002b;
     }
+    td.grade {
+        font-weight: bold;        
+        text-align: center;
+    }
     td.gru {
         border-bottom: 1px #dedede solid;
-        font-weight: bold;
-        background-color: #FF6B4F;
-        color: #FFFFCC;
+        background-color: #ff6b4f;
+        color: #ffffcc;
+    }
+    td.grp, td.grh {
+        border-bottom: 1px #dedede solid;
+        background-color: #8bc540;
+        color: #41612c;        
+    }
+    td.grc {
+        border-bottom: 1px #dedede solid;
+        background-color: #4285f4;
+        color: #ffffcc;
     }
     td.descr {
         padding-left: 5px;
@@ -321,7 +328,6 @@ if (!$exam->show_save) {
                                         Q<?= $question->slot ?><br>Max. <?= floatval($question->score) ?>
                                     </a>
                                 </th>
-                                <?php $totalExamScore += $question->score; ?>
                         <?php endforeach; ?>
 
                         <th>
@@ -346,7 +352,7 @@ if (!$exam->show_save) {
                         <?php if ($exam->show_percent): ?>
                                 <th>
                                     Total score
-                                    <div class="total-score">Max. <?= floatval($totalExamScore) ?></div>
+                                    <div class="total-score">Max. <?= floatval($grades->getMaximum()) ?></div>
                                 </th> 
                                 <th>
                                     %
@@ -491,25 +497,13 @@ if (!$exam->show_save) {
                                 <?php if ($exam->show_percent): ?>
                                         <td class="percent">
                                             <?= $totalStudentScore ?>
+                                        </td>
+                                        <td class="percent">
+                                            <?= sprintf("%1.1f", $grades->getNormalized($totalStudentScore)) ?>%
                                             <?php
                                             if ($answer) {
                                                     $avgScore[] = $totalStudentScore;
-                                            }
-                                            // 
-                                            // Fix division by zero warning:
-                                            // 
-                                            if ($totalStudentScore == 0 && $totalExamScore == 0) {
-                                                    $totalStudentScore = 0;
-                                                    $totalExamScore = 1;
-                                            }
-
-                                            ?>                                                                
-                                        </td>
-                                        <td class="percent">
-                                            <?= sprintf("%1.1f", ($totalStudentScore / $totalExamScore) * 100) ?>%
-                                            <?php
-                                            if ($answer) {
-                                                    $avgPercentage[] = floatval(($totalStudentScore / $totalExamScore) * 100);
+                                                    $avgPercentage[] = floatval($grades->getNormalized($totalStudentScore));
                                             }
 
                                             ?>
@@ -517,35 +511,26 @@ if (!$exam->show_save) {
                                 <?php endif ?>
                                 <?php if ($exam->show_grades): ?>
                                         <?php
-                                        $needGraceMarks = false;
-                                        foreach ($examGrades as $grade => $limit) {
-                                                // 
-                                                // Fix division by zero warning:
-                                                // 
-                                                if ($totalStudentScore == 0 && $totalExamScore == 0) {
-                                                        $totalStudentScore = 0;
-                                                        $totalExamScore = 1;
-                                                }
-                                                if ((($totalStudentScore / $totalExamScore) * 100) >= $limit) {
-                                                        end($examGrades);
-                                                        if (key($examGrades) == $grade) {
-                                                                if ($passAt - (($totalStudentScore / $totalExamScore) * 100) <= 5) {
-                                                                        $colorScheme = 'background-color:#4285F4; color:#FFFFCC';
-                                                                        $needGraceMarks = true;
-                                                                } else {
-                                                                        $colorScheme = 'background-color:#FF6B4F; color:#FFFFCC';
-                                                                }
-                                                        } else {
-                                                                $colorScheme = 'background-color:#8BC540; color:#41612c';
-                                                        }
-                                                        break;
-                                                }
-                                        }
+                                        $close = $grades->isClose($totalStudentScore);
+                                        $grade = $grades->getGrade($totalStudentScore);
                                         $avgGrades[$grade] ++;
 
+                                        if ($close) {
+                                                $color = "grc";
+                                        } elseif ($grades->isLowest($grade)) {
+                                                $color = "gru";
+                                        } elseif ($grades->isHighest($grade)) {
+                                                $color = "grh";
+                                        } else {
+                                                $color = "grp";
+                                        }
+
                                         ?>
-                                        <td class="grade cc gru" style="<?= $colorScheme ?>">
-                                            <?= $grade ?> <?= ($needGraceMarks) ? "(" . floatval((($passAt / 100) * $totalExamScore) - $totalStudentScore) . " pt. less)" : '' ?>
+                                        <td class="grade cc <?= $color ?>">
+                                            <?= $grade ?>
+                                            <?php if ($close) : ?>
+                                                    <?= "(+" . floatval($grades->getMissing($totalStudentScore)) . "p -> " . $grades->getNextGrade($grade) . ")" ?>
+                                            <?php endif; ?>
                                         </td>
                                 <?php endif; ?>
                             </tr>
@@ -606,7 +591,7 @@ if (!$exam->show_save) {
                                 <?php if ($exam->show_percent): ?>
                                         <td class="cc aa">
                                             <?php if (is_array($avgScore)) : ?>
-                                                    <?= floatval(array_sum($avgScore) / count($avgScore)) ?> (<?= floatval($totalExamScore) ?>)
+                                                    <?= floatval(array_sum($avgScore) / count($avgScore)) ?> (<?= floatval($grades->getMaximum()) ?>)
                                             <?php endif; ?>
                                         </td>
                                         <td class="cc aa">
@@ -749,7 +734,9 @@ if ($exam->decoded) {
 
                 var msg = "Please note that once an exam gets decoded, it will not be possible to change student score any more. \r\n Are you sure you want to decode this exam?";
                 if (confirm(msg)) {
-                    // decode exam
+                    // 
+                    // Decode exam:
+                    // 
                     ajax(
                             baseURL + 'ajax/core/decoder/exam/update',
                             {id: examId, decoded: "Y"},

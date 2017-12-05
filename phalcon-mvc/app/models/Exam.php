@@ -14,7 +14,7 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Core\Exam\Check;
-use OpenExam\Library\Core\Exam\Grades;
+use OpenExam\Library\Core\Exam\Grade;
 use OpenExam\Library\Core\Exam\Staff;
 use OpenExam\Library\Core\Exam\State;
 use OpenExam\Library\Core\Pattern;
@@ -217,6 +217,11 @@ class Exam extends ModelBase
          * @var Staff 
          */
         private $_staff;
+        /**
+         * The exam grade.
+         * @var Grade 
+         */
+        private $_grade;
         /**
          * The exam check.
          * @var Check
@@ -521,6 +526,19 @@ class Exam extends ModelBase
         }
 
         /**
+         * Get examination graduation.
+         * @return Grades
+         */
+        public function getGrade()
+        {
+                if (!isset($this->_grade)) {
+                        return $this->_grade = new Grade($this);
+                } else {
+                        return $this->_grade;
+                }
+        }
+        
+        /**
          * Get exam check.
          * @return Check
          */
@@ -542,15 +560,6 @@ class Exam extends ModelBase
         public function getStatus()
         {
                 return $this->getCheck()->getStatus();
-        }
-
-        /**
-         * Get examination graduation.
-         * @return Grades
-         */
-        public function getGrades()
-        {
-                return new Grades($this);
         }
 
         /**
