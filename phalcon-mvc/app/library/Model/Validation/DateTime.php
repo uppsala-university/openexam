@@ -54,6 +54,15 @@ class DateTime extends Validator implements ValidatorInterface
                 } else {
                         $current = array();
                 }
+                
+                // 
+                // Get grace period in seconds:
+                // 
+                if ($this->isSetOption("grace")) {
+                        $grace = $this->getOption("grace");
+                } else {
+                        $grace = 60;
+                }
 
                 // 
                 // Support using string as field name:
@@ -89,7 +98,7 @@ class DateTime extends Validator implements ValidatorInterface
                                 $this->appendMessage($message);
                                 return false;
                         }
-                        if ($time < time()) {
+                        if ($time + $grace < time()) {
                                 $message = sprintf("The datetime string '%s' for %s has a value in the past", $record->$field, $field);
                                 $this->appendMessage($message);
                                 return false;
