@@ -279,7 +279,10 @@ if ($theme == 'high-contrast') {
 
 <!-- Content area -->
 <div id="oe-container">
-    <div id="ajax-message" class="alert"></div>
+    <div id="ajax-message" class="alert">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <p id="ajax-message-content"></p>
+    </div>
     <?= $this->getContent() ?>
 </div>
 

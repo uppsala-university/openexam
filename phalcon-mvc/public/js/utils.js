@@ -83,17 +83,19 @@ var showMessage = function (message, type) {
     }
 
     if (type === 'success') {
+        $('#ajax-message-content').html(message);
         $('#ajax-message')
                 .attr('class', 'alert alert-' + type)
-                .html(message)
                 .slideDown(300)
                 .delay(1000)
                 .slideUp(300);
+        $('#ajax-message > a').hide();
     } else {
+        $('#ajax-message-content').html(message);
         $('#ajax-message')
-                .attr('class', 'alert alert-' + type)
-                .html(message)
+                .attr('class', 'alert alert-' + type + ' alert-dismissable')
                 .slideDown(300);
+        $('#ajax-message > a').show();
     }
 };
 
@@ -380,4 +382,14 @@ $(document).ready(function () {
 
         return false;
     });
+
+    // 
+    // Animate closing bootstrap alert:
+    // 
+    $('body').on('close.bs.alert', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(e.target).slideUp();
+    });
+
 });
