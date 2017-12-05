@@ -471,7 +471,7 @@ if (!$exam->show_save) {
                                        data-src="<?= $this->url->get('exam/' . $exam->id . '/correction/student/' . $student->id) ?>" 
                                        data-type="ajax" 
                                        href="javascript:;" 
-                                       ans-id="<?= $answer->id ?>">
+                                       stud-id="<?= $student->id ?>">
                                         <i class="fa fa-graduation-cap"></i>
                                         <span class="student">
                                             <?= $exam->decoded ? $student->code : Student . '(' . $student->id . ')' ?>
