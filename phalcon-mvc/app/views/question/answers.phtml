@@ -10,8 +10,6 @@
 //          Anders Lövgren (BMC-IT)
 // 
 
-$decoded = $exam->decoded;
-
 if (strtotime($exam->endtime) < time()) {
         $exam->show_save = true;
 } else {
@@ -41,6 +39,10 @@ if (strtotime($exam->endtime) < time()) {
     div.correction-section-box {
         overflow: hidden;
         background-color: ghostwhite;
+        margin-bottom: 10px;
+    }
+    div.correction-section-box[corrector="0"] {
+        filter: grayscale(100);
     }
     div.correction-section-head {
         background-color: lavender;
@@ -122,14 +124,19 @@ if (strtotime($exam->endtime) < time()) {
 </h2>
 
 <div id="mainview">
-    <h3><?= $decoded ? "Answer correction" : "Correct the answers" ?> for <?= $heading ?>.</h3>
+    <h3><?= $exam->decoded ? "Answer correction" : "Correct the answers" ?> for <?= $heading ?>.</h3>
     <?php foreach ($questions as $question): ?>
             <?php
             $correctAns = array();
             $qCorrectorList = array();
 
-            foreach ($question->getCorrectors() as $qCorrector) {
-                    $qCorrectorList[$qCorrector->id] = $qCorrector->user;
+            $question->corrector = 0;
+
+            foreach ($question->getCorrectors() as $corrector) {
+                    if ($this->user->getPrincipalName() == $corrector->user) {
+                            $question->corrector = $corrector->id;
+                            break;
+                    }
             }
 
             foreach ($answers as $answer) {
@@ -141,13 +148,13 @@ if (strtotime($exam->endtime) < time()) {
 
             ?>
 
-            <?php if ($loading == 'question'): ?>
-                    <div class="q-wrapper correction-section-box">
-                <?php else: ?>
-                        <div class="q-wrapper correction-section-box" correction="<?= $result->correction ?>">
+            <?php if ($loading == 'question') : ?>
+                    <div class="q-wrapper correction-section-box" corrector="<?= $question->corrector ?>">
+                <?php else : ?>
+                        <div class="q-wrapper correction-section-box" corrector="<?= $question->corrector ?>" correction="<?= $result->correction ?>">
                     <?php endif; ?>
 
-                    <?php if (!$decoded && $loading != 'question'): ?>
+                    <?php if (!$exam->decoded && $loading != 'question'): ?>
                             <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; z-index: 1; right: 0px; width: 5%; min-width: 60px;", "id" => $question->id . "-corrected", "class" => "not-corrected")); ?>
                     <?php endif; ?>
                     <div class="q-heading correction-section-head">
@@ -161,7 +168,7 @@ if (strtotime($exam->endtime) < time()) {
                     endif;
 
                     ?>
-                    <div class="q-body" style="padding:10px; <?= (!in_array($this->user->getPrincipalName(), $qCorrectorList) ? "opacity:0.6" : "") ?>">
+                    <div class="q-body" style="padding:10px;">
                         <?php
                         $qPartCounter = 1;
                         $perOptPoints = array();
@@ -245,7 +252,7 @@ if (strtotime($exam->endtime) < time()) {
                                                 foreach ($qSpecificAns as $qSpecAns):
                                                         $result = $qSpecAns->getResult();
                                                         $scoreData = (is_object($result) && $result->count() ? json_decode($result->score, true) : array());
-                                                        if ($decoded || (count($scoreData) && $result->correction != 'partial')):
+                                                        if ($exam->decoded || (count($scoreData) && $result->correction != 'partial')):
 
                                                                 ?>
                                                                 <script>
@@ -327,7 +334,7 @@ if (strtotime($exam->endtime) < time()) {
                                                                         }
 
                                                                         ?>
-                                                                        <?php if (!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
+                                                                        <?php if (!$exam->decoded && $question->corrector): ?>
                                                                                 <input type="text" class="form-control q-points changeable" style="max-width: 80px" ans-id="<?= $qSpecAns->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" value="<?= $score ?>" max-pt="<?= floatval($qPart['q_points']) ?>" required="required">								
                                                                         <?php else: ?>
                                                                                 <?= floatval($scoreData[$qPartTitle]) ?>
@@ -339,7 +346,7 @@ if (strtotime($exam->endtime) < time()) {
                                                         </div>
 
                                                         <?php if (count($qSpecificAns)): ?>
-                                                                <?php if (!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
+                                                                <?php if (!$exam->decoded && $question->corrector): ?>
                                                                         <?php if (count($questParts) == $qPartCounter): ?>
                                                                                 <div class="savable" style="padding-bottom: 10px; padding-left:35px">
                                                                                     <i class="fa fa-comments"></i>
@@ -347,7 +354,7 @@ if (strtotime($exam->endtime) < time()) {
                                                                                     <textarea class="form-control changeable no-print" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?= $qSpecAns->id ?>"><?= $result->comment ?></textarea>
                                                                                 </div>
                                                                                 <div class="savable" style="padding-bottom: 10px; padding-left: 45px;">
-                                                                                    <input class="btn btn-success save-result no-print" type="button" ans-id="<?= $qSpecAns->id ?>" value="Save result for this question" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
+                                                                                    <input class="btn btn-success save-result no-print" type="button" ans-id="<?= $qSpecAns->id ?>" value="Save result for this question" corrector-id="<?= $question->corrector ?>">
                                                                                 </div>
                                                                         <?php endif; ?>
                                                                 <?php else: ?>
@@ -382,8 +389,8 @@ if (strtotime($exam->endtime) < time()) {
                                     <?php foreach ($answers as $answer): ?>
                                             <?php $result = $answer->getResult(); ?>
                                             <?php $scoreData = (is_object($result) && $result->count() ? json_decode($result->score, true) : array()); ?>
-                                            <div class="correction-section-box" style="margin-top: 15px" correction="<?= $result->correction ?>">
-                                                <?php if (!$decoded && (count($scoreData) == 0 || !in_array($result->correction, array('completed', 'finalized')))): ?>
+                                            <div class="correction-section-box" style="margin-top: 15px" corrector="<?= $question->corrector ?>" correction="<?= $result->correction ?>">
+                                                <?php if (!$exam->decoded && (count($scoreData) == 0 || !in_array($result->correction, array('completed', 'finalized')))): ?>
                                                         <?= Phalcon\Tag::image(array("img/not-corrected.gif", "style" => "position: absolute; right: 10px; width: 5%; min-width: 60px;", "class" => "not-corrected")); ?>
                                                 <?php endif; ?>
                                                 <?php $student = $answer->student; ?>
@@ -408,7 +415,7 @@ if (strtotime($exam->endtime) < time()) {
 
                                                 ?>
 
-                                                <div class="st-ans-box-body q-body" style="padding-top:15px; <?= (!in_array($this->user->getPrincipalName(), $qCorrectorList) ? "opacity:0.6;" : "") ?>">
+                                                <div class="st-ans-box-body q-body" style="padding-top:15px;">
                                                     <div class="st-ans-parts-wrapper" style="padding-bottom:15px;">
                                                         <?php $qPartCounter = 1; ?>
                                                         <?php foreach ($ansData as $qPartTitle => $qPart): ?>
@@ -419,7 +426,7 @@ if (strtotime($exam->endtime) < time()) {
                                                                             </div>
                                                                     <?php endif; ?>
                                                                     <div class="st-ans-part-content">
-                                                                        <ul class="st-ans-ul" style="margin: 5px 0 0 30px; list-style:none; background-color:<?= (!$decoded && !count($scoreData)) ? '#F5FAF5' : '#F9F9F9' ?>; padding:5px; border-left:5px solid #f0f0f0; max-width:95%">
+                                                                        <ul class="st-ans-ul" style="margin: 5px 0 0 30px; list-style:none; background-color:<?= (!$exam->decoded && !count($scoreData)) ? '#F5FAF5' : '#F9F9F9' ?>; padding:5px; border-left:5px solid #f0f0f0; max-width:95%">
                                                                             <?php $totalCorrect = 0; ?>
                                                                             <?php
                                                                             if (isset($correctAns[$question->id][$qPartTitle])) {
@@ -474,7 +481,7 @@ if (strtotime($exam->endtime) < time()) {
 
                                                                             ?>
 
-                                                                            <?php if (!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
+                                                                            <?php if (!$exam->decoded && $question->corrector): ?>
                                                                                     <input type="text" class="form-control q-points changeable" style="max-width: 80px" ans-id="<?= $answer->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" value="<?= isset($scoreData[$qPartTitle]) ? $scoreData[$qPartTitle] : ($qPart['type'] == 'choicebox' ? round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2) : '') ?>"  max-pt="<?= floatval($questParts[$qPartTitle]['q_points']) ?>" required="required">
                                                                             <?php else: ?>
                                                                                     <?= floatval($scoreData[$qPartTitle]) ?>
@@ -483,7 +490,7 @@ if (strtotime($exam->endtime) < time()) {
                                                                         </span>
                                                                     </div>
 
-                                                                    <?php if (!$decoded && in_array($this->user->getPrincipalName(), $qCorrectorList)): ?>
+                                                                    <?php if (!$exam->decoded && $question->corrector): ?>
                                                                             <?php if (count($ansData) == $qPartCounter): ?>
                                                                                     <div class="savable" style="padding-top: 10px; padding-left:35px">
                                                                                         <i class="fa fa-comments"></i>
@@ -492,7 +499,7 @@ if (strtotime($exam->endtime) < time()) {
                                                                                     </div>
 
                                                                                     <div class="savable no-print" style="padding-top: 10px; padding-left: 45px;">
-                                                                                        <input class="btn btn-success save-result no-print" type="button" ans-id="<?= $answer->id ?>" value="Save this result" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>">
+                                                                                        <input class="btn btn-success save-result no-print" type="button" ans-id="<?= $answer->id ?>" value="Save this result" corrector-id="<?= $question->corrector ?>">
                                                                                     </div>
                                                                             <?php endif; ?>
                                                                     <?php else: ?>
@@ -528,7 +535,8 @@ if (strtotime($exam->endtime) < time()) {
         <br />
     </div>
 </div>
-<?php if ($decoded == false) : ?>
+
+<?php if ($exam->decoded == false) : ?>
         <div class="no-print" style="position: fixed; top: 55px; right: 70px; padding: 10px; background-color: whitesmoke; border-radius: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2); z-index: 2">
             <div>
                 <?php
@@ -538,8 +546,7 @@ if (strtotime($exam->endtime) < time()) {
 
                 ?>
             </div>
-            <hr>
-            <input type="button" class="btn btn-success btn-lg save-all-result savable" corrector-id="<?= array_search($this->user->getPrincipalName(), $qCorrectorList) ?>" value="Save all results »">
+            <hr style="clear: both; margin: 0">
             <div style="padding-left: 10px; padding-top: 5px">
                 <div class="checkbox">
                     <label>
@@ -553,7 +560,16 @@ if (strtotime($exam->endtime) < time()) {
                         Hide media and resource files
                     </label>
                 </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" class="hide-uncorrectable">
+                        Hide uncorrectable answers
+                    </label>
+                </div>
             </div>
+            <?php if ($question->corrector) : ?>
+                    <input type="button" class="btn btn-success btn-lg save-all-result savable" corrector-id="<?= $question->corrector ?>" value="Save all results »">
+            <?php endif; ?>
         </div>
 <?php endif; ?>
 
