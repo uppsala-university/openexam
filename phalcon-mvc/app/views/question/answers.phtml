@@ -67,7 +67,7 @@ if (strtotime($exam->endtime) < time()) {
         color: white;
         text-align: center;
     }
-    
+
     input.q-points:required {
         background-color: #ffffff;
     }
@@ -534,6 +534,7 @@ if (strtotime($exam->endtime) < time()) {
                 <?php
                 printf("<a href=\"#\" style=\"float: right; padding: 5px\" onclick=\"return render_pdf_document('%s','%s')\" title=\"Download current view as PDF document\"><i class=\"fa fa-file-pdf-o fa-2x\" aria-hidden=\"true\"></i></a>\n", urlencode($this->request->get("_url")), $this->url->get("utility/render/pdf"));
                 printf("<a href=\"#\" style=\"float: right; padding: 5px\" onclick=\"return online_url_document('%s')\" title=\"View online in print friendly format\"><i class=\"fa fa-print fa-2x\" aria-hidden=\"true\"></i></a>\n", $this->url->get($this->request->get('_url')));
+                printf("<a href=\"#\" style=\"float: right; padding: 5px\" id=\"reset-student-results\" title=\"Reset all results found on this view\"><i class=\"fa fa-window-restore fa-2x\" aria-hidden=\"true\"></i></a>");
 
                 ?>
             </div>

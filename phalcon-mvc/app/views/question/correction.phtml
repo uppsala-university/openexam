@@ -724,6 +724,11 @@ if ($exam->decoded) {
                 return;
             }
 
+            $(document).on('click', '#reset-student-results', function () {
+                resetStudentResults();
+                return false;
+            });
+
             $(document).on('click', '.save-result', function () {
                 var tmp = [];
                 tmp.push($(this).attr('ans-id'));
@@ -870,6 +875,48 @@ if ($exam->decoded) {
                 }
             };
 
+            // 
+            // Get results that can be reset.
+            // 
+            var getChangableResults = function () {
+                var results = [];
+
+                $(".q-points.changeable").each(function (index, item) {
+                    var result = Number($(item).attr('res-id'));
+                    if (results.indexOf(result) === -1 && result !== 0) {
+                        results.push(result);
+                    }
+                });
+
+                return results;
+            };
+
+            // 
+            // Reset all results.
+            // 
+            var resetStudentResults = function () {
+                var results = getChangableResults();
+
+                if (results.length === 0) {
+                    return false;
+                }
+
+                var msg = "Clicking OK will reset the " + results.length + " results found on this page in the database. This view will then reload and you will need to fill them in again. \r\n Are you sure you want to reset these results?";
+
+                if (confirm(msg)) {
+                    ajax(
+                            baseURL + 'ajax/core/corrector/result/delete',
+                            JSON.stringify(results),
+                            function (response) {
+                                location.reload();
+                            }
+                    );
+                }
+            };
+
+            // 
+            // Save results to database.
+            // 
             var saveResults = function (ansIds) {
                 var resultsCreate = [];
                 var resultsUpdate = [];
