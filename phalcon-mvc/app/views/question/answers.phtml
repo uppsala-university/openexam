@@ -129,7 +129,11 @@ if (strtotime($exam->endtime) < time()) {
             <?php
             $correctAns = array();
 
-            $question->corrector = 0;
+            if ($exam->decoded) {
+                    $question->corrector = "none";
+            } else {
+                    $question->corrector = 0;
+            }
 
             foreach ($question->correctors as $corrector) {
                     if ($this->user->getPrincipalName() == $corrector->user) {
