@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.33, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.38, for Linux (x86_64)
 --
 -- Host: localhost    Database: openexam2prod
 -- ------------------------------------------------------
--- Server version	5.6.33-log
+-- Server version	5.6.38-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -183,7 +183,7 @@ CREATE TABLE `exams` (
   `orgdep` varchar(100) DEFAULT NULL,
   `orggrp` varchar(100) DEFAULT NULL,
   `grades` varchar(200) NOT NULL,
-  `course` varchar(20) DEFAULT NULL,
+  `course` varchar(30) DEFAULT NULL,
   `code` varchar(20) DEFAULT NULL,
   `testcase` enum('Y','N') NOT NULL DEFAULT 'N',
   `lockdown` varchar(500) NOT NULL DEFAULT '{"enable":true}',
@@ -291,7 +291,7 @@ CREATE TABLE `profile` (
   `server` varchar(60) DEFAULT NULL,
   `data` varchar(1024) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -357,14 +357,17 @@ CREATE TABLE `results` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `answer_id` int(11) NOT NULL,
   `corrector_id` int(11) NOT NULL,
+  `question_id` int(11) NOT NULL,
   `correction` enum('waiting','partial','completed','finalized') NOT NULL DEFAULT 'waiting',
   `score` varchar(1024) NOT NULL,
   `comment` text,
   PRIMARY KEY (`id`),
   KEY `answer_id` (`answer_id`),
   KEY `corrector_id` (`corrector_id`),
+  KEY `question_id` (`question_id`),
   CONSTRAINT `results_ibfk_1` FOREIGN KEY (`answer_id`) REFERENCES `answers` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `results_ibfk_2` FOREIGN KEY (`corrector_id`) REFERENCES `correctors` (`id`) ON DELETE CASCADE
+  CONSTRAINT `results_ibfk_2` FOREIGN KEY (`corrector_id`) REFERENCES `correctors` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `results_ibfk_3` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -514,4 +517,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-11-15 16:46:10
+-- Dump completed on 2017-12-06  3:49:29

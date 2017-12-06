@@ -24,6 +24,7 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  * The result model.
  * 
  * @property Answer $answer The related answer.
+ * @property Question $question The related question.
  * @property Corrector $corrector The related corrector.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
@@ -92,6 +93,10 @@ class Result extends ModelBase
                         'foreignKey' => true,
                         'alias'      => 'answer'
                 ));
+                $this->belongsTo('question_id', 'OpenExam\Models\Question', 'id', array(
+                        'foreignKey' => true,
+                        'alias'      => 'question'
+                ));
                 $this->belongsTo('corrector_id', 'OpenExam\Models\Corrector', 'id', array(
                         'foreignKey' => true,
                         'alias'      => 'corrector',
@@ -131,6 +136,7 @@ class Result extends ModelBase
                         'id'           => 'id',
                         'answer_id'    => 'answer_id',
                         'corrector_id' => 'corrector_id',
+                        'question_id'  => 'question_id',
                         'correction'   => 'correction',
                         'score'        => 'score',
                         'comment'      => 'comment'

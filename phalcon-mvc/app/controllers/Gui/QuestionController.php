@@ -648,7 +648,7 @@ class QuestionController extends GuiController
          * Get data for score board.
          * @param Exam $exam The exam.
          */
-        private function correctionLoadBoard($exam, $answers = array())
+        private function correctionLoadBoard($exam, $answers = array(), $results = array())
         {
                 // 
                 // Fetch questions influenced by primary role:
@@ -680,13 +680,23 @@ class QuestionController extends GuiController
                 }
 
                 // 
+                // Read results restricted by questions and create lookup table:
+                // 
+                foreach ($questions as $question) {
+                        foreach ($question->results as $result) {
+                                $results[$result->answer_id] = $result;
+                        }
+                }
+
+                // 
                 // Pass data to view:
                 // 
                 $this->view->setVars(array(
                         'exam'      => $exam,
                         'questions' => $questions,
                         'students'  => $students,
-                        'answers'   => $answers
+                        'answers'   => $answers,
+                        'results'   => $results
                 ));
         }
 

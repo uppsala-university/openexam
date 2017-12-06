@@ -37,6 +37,7 @@ use Phalcon\Mvc\Model\Validator\Uniqueness;
  * corrector role) is defined by the user property.
  * 
  * @property Answer[] $answers The answers for this question.
+ * @property Result[] $results The results for this question.
  * @property Corrector[] $correctors The correctors for this question.
  * @property Exam $exam The related exam.
  * @property Topic $topic The related topic.
@@ -134,6 +135,9 @@ class Question extends ModelBase
 
                 $this->hasMany('id', 'OpenExam\Models\Answer', 'question_id', array(
                         'alias' => 'answers'
+                ));
+                $this->hasMany('id', 'OpenExam\Models\Result', 'question_id', array(
+                        'alias' => 'results'
                 ));
                 $this->hasMany('id', 'OpenExam\Models\Corrector', 'question_id', array(
                         'alias'    => 'correctors',
