@@ -38,8 +38,8 @@ if ($exam->decoded && $exam->enquiry) {
 <div id="exam-decode-step-2" class="exam-decode-step" style="display: none">
     <b>Step 2</b>
     <p>
-        Continue to next step will enquiry your exam. 
-        Doing this will lock it for further correction and reveal students identities. 
+        Continue with next step will enquiry your exam. 
+        Doing so will lock further correction and reveal students identities. 
         This state is useful for investigation. 
         As the exam is not yet decoded, students can't access their results on this exam.
     </p>
@@ -49,8 +49,8 @@ if ($exam->decoded && $exam->enquiry) {
 <div id="exam-decode-step-3" class="exam-decode-step" style="display: none">
     <b>Step 3</b>
     <p>
-        Continue to next step will decode your exam. 
-        Once the exam has been decode, students can access it and download their result.
+        Continue with next step will decode your exam. 
+        Once the exam has been decoded, students can access it to download their result.
         Consider if you like to change some settings for result generation before continue.
     </p>
     <label><input type="checkbox"> I understand and like to decode this exam.</label>
@@ -102,7 +102,7 @@ if ($exam->decoded && $exam->enquiry) {
                         baseURL + 'ajax/core/decoder/exam/update',
                         {
                             id: examId,
-                            enquiry: "Y"
+                            enquiry: 1
                         },
                         function (status) {
                             currDecodeStep();
@@ -126,8 +126,8 @@ if ($exam->decoded && $exam->enquiry) {
                         baseURL + 'ajax/core/decoder/exam/update',
                         {
                             id: examId,
-                            decoded: "Y",
-                            enquiry: "N"
+                            enquiry: 0,
+                            decoded: 1
                         },
                         function (status) {
                             currDecodeStep();
