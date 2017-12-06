@@ -873,12 +873,12 @@ if ($exam->show_user) {
                 $(source).find(".cc").css('width', '80px');
                 $.ajax({
                     type: "POST",
-                    url: baseURL + 'result/exportScoreBoard/' + examId,
+                    url: baseURL + 'result/export/' + examId,
                     data: {score_board: '<table border="1">' + $(source).html() + '</table>'}
                 })
                         .done(function (resp) {
                             if (resp === 'exported') {
-                                location.href = baseURL + 'result/exportScoreBoard/' + examId + "/1";
+                                location.href = baseURL + 'result/export/' + examId + "/1";
                             }
                         });
 

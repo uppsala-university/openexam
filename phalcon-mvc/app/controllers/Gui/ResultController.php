@@ -319,7 +319,7 @@ class ResultController extends GuiController
          * @param int $eid The exam ID.
          * @param bool $download True for sending data.
          */
-        public function exportScoreBoardAction($eid, $download = false)
+        public function exportAction($eid, $download = false)
         {
                 //
                 // Sanitize:
