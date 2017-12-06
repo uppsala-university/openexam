@@ -31,4 +31,4 @@ ALTER TABLE results ADD CONSTRAINT FOREIGN KEY (question_id)
 -- 
 -- Add enquiry enum field:
 -- 
-ALTER TABLE exams MODIFY enquiry enum('Y','N') NOT NULL DEFAULT 'N' AFTER details;
+ALTER TABLE exams ADD enquiry enum('Y','N') NOT NULL DEFAULT 'N' AFTER details;
