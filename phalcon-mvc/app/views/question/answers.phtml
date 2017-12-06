@@ -125,14 +125,13 @@ if (strtotime($exam->endtime) < time()) {
 
 <div id="mainview">
     <h3><?= $exam->decoded ? "Answer correction" : "Correct the answers" ?> for <?= $heading ?>.</h3>
-    <?php foreach ($questions as $question): ?>
+    <?php foreach ($questions as $question) : ?>
             <?php
             $correctAns = array();
-            $qCorrectorList = array();
 
             $question->corrector = 0;
 
-            foreach ($question->getCorrectors() as $corrector) {
+            foreach ($question->correctors as $corrector) {
                     if ($this->user->getPrincipalName() == $corrector->user) {
                             $question->corrector = $corrector->id;
                             break;
@@ -238,7 +237,9 @@ if (strtotime($exam->endtime) < time()) {
                                         <?php
                                         if ($loading != 'question'):
 
-                                                // filter answer for this question from list of answers
+                                                // 
+                                                // Filter answer for this question from list of answers
+                                                // 
                                                 $qSpecificAns = array();
                                                 foreach ($answers as $answer) {
                                                         if ($answer->question_id == $question->id) {
@@ -335,7 +336,7 @@ if (strtotime($exam->endtime) < time()) {
 
                                                                         ?>
                                                                         <?php if (!$exam->decoded && $question->corrector): ?>
-                                                                                <input type="text" class="form-control q-points changeable" style="max-width: 80px" ans-id="<?= $qSpecAns->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" value="<?= $score ?>" max-pt="<?= floatval($qPart['q_points']) ?>" required="required">								
+                                                                                <input type="text" class="form-control q-points changeable" style="max-width: 80px" qst-id="<?= $qSpecAns->question_id ?>" ans-id="<?= $qSpecAns->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" value="<?= $score ?>" max-pt="<?= floatval($qPart['q_points']) ?>" required="required">								
                                                                         <?php else: ?>
                                                                                 <?= floatval($scoreData[$qPartTitle]) ?>
                                                                         <?php endif; ?>	
@@ -351,10 +352,10 @@ if (strtotime($exam->endtime) < time()) {
                                                                                 <div class="savable" style="padding-bottom: 10px; padding-left:35px">
                                                                                     <i class="fa fa-comments"></i>
                                                                                     Comments:<br />
-                                                                                    <textarea class="form-control changeable no-print" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?= $qSpecAns->id ?>"><?= $result->comment ?></textarea>
+                                                                                    <textarea class="form-control changeable no-print" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" qst-id="<?= $qSpecAns->question_id ?>" ans-id="<?= $qSpecAns->id ?>"><?= $result->comment ?></textarea>
                                                                                 </div>
                                                                                 <div class="savable" style="padding-bottom: 10px; padding-left: 45px;">
-                                                                                    <input class="btn btn-success save-result no-print" type="button" ans-id="<?= $qSpecAns->id ?>" value="Save result for this question" corrector-id="<?= $question->corrector ?>">
+                                                                                    <input class="btn btn-success save-result no-print" type="button" qst-id="<?= $qSpecAns->question_id ?>" ans-id="<?= $qSpecAns->id ?>" value="Save result for this question" corrector-id="<?= $question->corrector ?>">
                                                                                 </div>
                                                                         <?php endif; ?>
                                                                 <?php else: ?>
@@ -482,7 +483,7 @@ if (strtotime($exam->endtime) < time()) {
                                                                             ?>
 
                                                                             <?php if (!$exam->decoded && $question->corrector): ?>
-                                                                                    <input type="text" class="form-control q-points changeable" style="max-width: 80px" ans-id="<?= $answer->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" value="<?= isset($scoreData[$qPartTitle]) ? $scoreData[$qPartTitle] : ($qPart['type'] == 'choicebox' ? round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2) : '') ?>"  max-pt="<?= floatval($questParts[$qPartTitle]['q_points']) ?>" required="required">
+                                                                                    <input type="text" class="form-control q-points changeable" style="max-width: 80px" qst-id="<?= $answer->question_id ?>" ans-id="<?= $answer->id ?>" res-id="<?= count($scoreData) ? $result->id : 0 ?>" q-part="<?= $qPartTitle ?>" value="<?= isset($scoreData[$qPartTitle]) ? $scoreData[$qPartTitle] : ($qPart['type'] == 'choicebox' ? round($perOptPoints[$question->id][$qPartTitle] * $totalCorrect, 2) : '') ?>"  max-pt="<?= floatval($questParts[$qPartTitle]['q_points']) ?>" required="required">
                                                                             <?php else: ?>
                                                                                     <?= floatval($scoreData[$qPartTitle]) ?>
                                                                             <?php endif; ?>
@@ -495,11 +496,11 @@ if (strtotime($exam->endtime) < time()) {
                                                                                     <div class="savable" style="padding-top: 10px; padding-left:35px">
                                                                                         <i class="fa fa-comments"></i>
                                                                                         Comments:<br />
-                                                                                        <textarea class="form-control changeable no-print" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" ans-id="<?= $answer->id ?>"><?= $result->comment ?></textarea>
+                                                                                        <textarea class="form-control changeable no-print" placeholder="Add your comments here for the student" style="margin-left: 15px; width:30%" qst-id="<?= $answer->question_id ?>" ans-id="<?= $answer->id ?>"><?= $result->comment ?></textarea>
                                                                                     </div>
 
                                                                                     <div class="savable no-print" style="padding-top: 10px; padding-left: 45px;">
-                                                                                        <input class="btn btn-success save-result no-print" type="button" ans-id="<?= $answer->id ?>" value="Save this result" corrector-id="<?= $question->corrector ?>">
+                                                                                        <input class="btn btn-success save-result no-print" type="button" qst-id="<?= $answer->question_id ?>" ans-id="<?= $answer->id ?>" value="Save this result" corrector-id="<?= $question->corrector ?>">
                                                                                     </div>
                                                                             <?php endif; ?>
                                                                     <?php else: ?>

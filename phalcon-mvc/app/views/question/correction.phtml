@@ -385,8 +385,9 @@ if (!$exam->show_save) {
 
                                         if ($answer) {
 
-                                                $result = $answer->result;
-                                                if (is_object($result) && $result->count()) {
+                                                if (isset($results[$answer->id])) {
+                                                        $result = $results[$answer->id];
+                                                        
                                                         // 
                                                         // Fixes for invalid JSON score data:
                                                         // 
@@ -437,7 +438,7 @@ if (!$exam->show_save) {
                                         } elseif (!$answer->answered) {
                                                 $cc = 'na';
                                                 $cLink = false;
-                                        } elseif (is_object($result) && $result->count() && in_array($result->correction, array('completed', 'finalized'))) {
+                                        } elseif (isset($result) && in_array($result->correction, array('completed', 'finalized'))) {
                                                 $cc = 'ac';
                                         } elseif (!in_array($this->user->getPrincipalName(), $qCorrectorList)) {
                                                 $cc = 'no';
@@ -455,7 +456,7 @@ if (!$exam->show_save) {
                                                        href="javascript:;" 
                                                        ans-id="<?= $answer->id ?>"
                                                        class="fill">
-                                                           <?= (is_object($result) && $result->count()) ? $qScore : '<i class="fa fa-check-square-o"></i>' ?>
+                                                           <?= (isset($result) ? $qScore : '<i class="fa fa-check-square-o"></i>') ?>
                                                     </a>
                                             <?php else: ?>
                                                     <i class="fa fa-ban"></i>
@@ -545,14 +546,14 @@ if (!$exam->show_save) {
                 <?php if ($exam->show_summary): ?>
                         <tfoot>
                             <tr class="avarage">
-                                <?php foreach ($questions as $q): ?>
+                                <?php foreach ($questions as $question): ?>
                                         <?php
                                         // 
                                         // Avarage:
                                         // 
-                                        if (isset($overallQuestScore[$q->id])) {
-                                                $sumScores = array_sum($overallQuestScore[$q->id]);
-                                                $numScores = count($overallQuestScore[$q->id]);
+                                        if (isset($overallQuestScore[$question->id])) {
+                                                $sumScores = array_sum($overallQuestScore[$question->id]);
+                                                $numScores = count($overallQuestScore[$question->id]);
                                         } else {
                                                 $numScores = 0;
                                         }
@@ -569,15 +570,15 @@ if (!$exam->show_save) {
                                         // 
                                         // Tooltip:
                                         // 
-                                        $ansCount = count($overallQuestScore[$q->id]);
+                                        $ansCount = count($overallQuestScore[$question->id]);
 
                                         // 
                                         // Load correction status HTML fragment:
                                         // 
                                         $this->partial("partials/question-info", array(
-                                                'question'  => $q,
+                                                'question'  => $question,
                                                 'corrected' => $ansCount,
-                                                'percent'   => $q->score == 0 ? 0 : sprintf("%.02d", ($avgScores / $q->score) * 100),
+                                                'percent'   => $question->score == 0 ? 0 : sprintf("%.02d", ($avgScores / $question->score) * 100),
                                                 'avarage'   => $avgScores
                                             )
                                         );
@@ -950,11 +951,12 @@ if ($exam->decoded) {
                     var correctorComents = $(saveResultBtn).parent().parent().find('textarea').val();
                     var correctorId = parseInt($(saveResultBtn).attr('corrector-id'));
                     var resultJson = {};
-                    var resId = 0, ansId = 0;
+                    var resId = 0, ansId = 0, qstId = 0;
                     var correctionStatus = 'completed';
 
                     $(saveResultBtn).closest('.q-body').find('.q-points').each(function (index, element) {
-                        if (resId === 0 && ansId === 0) {
+                        if (resId === 0 && ansId === 0 && qstId === 0) {
+                            qstId = parseInt($(element).attr('qst-id'));
                             ansId = parseInt($(element).attr('ans-id'));
                             resId = parseInt($(element).attr('res-id'));
                         }
@@ -980,6 +982,7 @@ if ($exam->decoded) {
                         if (resId !== 0) {
                             resultsUpdate.push({
                                 id: resId,
+                                question_id: qstId,
                                 answer_id: ansId,
                                 score: stringJson,
                                 comment: correctorComents,
@@ -988,6 +991,7 @@ if ($exam->decoded) {
                             });
                         } else {
                             resultsCreate.push({
+                                question_id: qstId,
                                 answer_id: ansId,
                                 score: stringJson,
                                 comment: correctorComents,
