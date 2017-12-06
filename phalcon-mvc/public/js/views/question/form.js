@@ -185,6 +185,7 @@ $(document).ready(function () {
                                 // 
                                 var name = $(item).find('.text').text().trim();
                                 var path = $(item).find('.select-resource').attr('href');
+                                var form = $('#question-form');
 
                                 // 
                                 // Prefix URL if relative:
@@ -196,7 +197,7 @@ $(document).ready(function () {
                                 // 
                                 // Append selected resources to list in question editor:
                                 // 
-                                $('#' + $(".ui-tabs-active").attr("aria-controls"))
+                                $('#' + form.find('.ui-tabs-active').attr("aria-controls"))
                                         .find('.lib_resources_list')
                                         .append('\
                                                     <li>\
@@ -245,6 +246,7 @@ $(document).ready(function () {
                                 // 
                                 var name = $(item).find('.text').text().trim();
                                 var path = $(item).find('.select-resource').attr('href');
+                                var form = $('#question-form');
 
                                 // 
                                 // Prefix URL if relative:
@@ -253,7 +255,7 @@ $(document).ready(function () {
                                     path = baseURL + path;
                                 }
 
-                                $('#' + $(".ui-tabs-active").attr("aria-controls"))
+                                $('#' + form.find('.ui-tabs-active').attr("aria-controls"))
                                         .find('.lib_canvas_background')
                                         .empty()
                                         .append('\
