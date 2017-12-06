@@ -119,6 +119,15 @@ class Phase implements Component
                 }
 
                 // 
+                // The enquiry phase:
+                // 
+                if ($this->_state->has(State::ENQUIRY)) {
+                        $output($this->completed);
+                } else {
+                        $output($this->pending, true);
+                }
+
+                // 
                 // The decoding phase:
                 // 
                 if ($this->_state->has(State::DECODED)) {

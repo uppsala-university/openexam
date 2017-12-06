@@ -1,0 +1,218 @@
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    decode.phtml
+// Created: 2017-12-06 15:23:49
+// 
+// Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
+// 
+
+if ($exam->decoded && $exam->enquiry) {
+        $exam->show_step = 4;
+} elseif ($exam->enquiry) {
+        $exam->show_step = 3;
+} else {
+        $exam->show_step = 1;
+}
+
+?>
+
+<h1>Decode wizard for exam <?= $exam->name ?></h1>
+
+<div class="alert alert-info">
+    This dialog is for decoding the exam. Click cancel button to stop this wizard at any time or next to advance to next step.
+</div>
+
+<div id="exam-decode-step-1" class="exam-decode-step" style="display: none">
+    <b>Step 1</b>
+    <p>
+        You should only run this wizard when correction is completed. 
+        Each step will provide enough information and no changes will be done without your confirmation.
+    </p>
+    <label><input type="checkbox"> Skip this wizard and decode this exam.</label>
+</div>
+
+<div id="exam-decode-step-2" class="exam-decode-step" style="display: none">
+    <b>Step 2</b>
+    <p>
+        Continue to next step will enquiry your exam. 
+        Doing this will lock it for further correction and reveal students identities. 
+        This state is useful for investigation. 
+        As the exam is not yet decoded, students can't access their results on this exam.
+    </p>
+    <label><input type="checkbox"> I understand and like to enquiry this exam.</label>
+</div>
+
+<div id="exam-decode-step-3" class="exam-decode-step" style="display: none">
+    <b>Step 3</b>
+    <p>
+        Continue to next step will decode your exam. 
+        Once the exam has been decode, students can access it and download their result.
+        Consider if you like to change some settings for result generation before continue.
+    </p>
+    <label><input type="checkbox"> I understand and like to decode this exam.</label>
+</div>
+
+<div id="exam-decode-step-4" class="exam-decode-step" style="display: none">
+    <b>Step 4</b>
+    <p>
+        <i class="fa fa-check-square-o fa-2x" aria-hidden="true" style="color: limegreen"></i> 
+        Your exam has now been decoded. Click on the close button to finish this wizard.
+    </p>
+</div>
+
+<div class="alert alert-warning" id="exam-decode-warn" style="display: none"></div>
+
+<div class="oe-dialog-buttons">
+    <hr>
+    <center>
+        <span style="min-width: 6em" class="btn btn-default" id="exam-decode-cancel">
+            <i class="fa fa-ban" aria-hidden="true"></i>
+            <span>Cancel</span>
+        </span>
+        <span style="min-width: 6em" class="btn btn-success" id="exam-decode-next">
+            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            <span>Next</span>
+        </span>
+    </center>		
+</div>
+
+<script>
+        var examId = <?= $exam->id ?>;
+        var wizardStep = <?= $exam->show_step ?>;
+
+        $(document).ready(function () {
+
+            // 
+            // Enquiry exam.
+            // 
+            var enquiryExam = function () {
+                if ($("#exam-decode-step-2 input").is(':checked') === false) {
+                    $("#exam-decode-warn").text("Please confirm that you like to enquiry this exam.");
+                    $("#exam-decode-warn").show(200);
+
+                    --wizardStep;
+                    return false;
+                }
+
+                ajax(
+                        baseURL + 'ajax/core/decoder/exam/update',
+                        {
+                            id: examId,
+                            enquiry: "Y"
+                        },
+                        function (status) {
+                            currDecodeStep();
+                        }
+                );
+            };
+
+            // 
+            // Decode exam.
+            // 
+            var decodeExam = function () {
+                if ($("#exam-decode-step-3 input").is(':checked') === false) {
+                    $("#exam-decode-warn").text("Please confirm that you like to decode this exam.");
+                    $("#exam-decode-warn").show();
+
+                    --wizardStep;
+                    return false;
+                }
+
+                ajax(
+                        baseURL + 'ajax/core/decoder/exam/update',
+                        {
+                            id: examId,
+                            decoded: "Y",
+                            enquiry: "N"
+                        },
+                        function (status) {
+                            currDecodeStep();
+                        }
+                );
+            };
+
+            // 
+            // Bypass wizard and decode direct if checkbox is checked.
+            // 
+            var checkFastTrack = function () {
+                if ($("#exam-decode-step-1 input").is(':checked')) {
+                    $("#exam-decode-step-3 input").prop('checked', true);
+                    wizardStep = 4;
+                    decodeExam();
+                } else {
+                    currDecodeStep();
+                }
+            };
+
+            // 
+            // Show wizard page.
+            // 
+            var currDecodeStep = function () {
+                $(".exam-decode-step").hide();
+                $("#exam-decode-step-" + wizardStep).show();
+
+                if (wizardStep === 4) {
+                    $("#exam-decode-next").hide();
+                    $("#exam-decode-cancel > span").text("Close");
+                    $("#exam-decode-cancel > i").
+                            removeClass("fa-ban").
+                            addClass("fa-times");
+                }
+            };
+
+            // 
+            // Move to next wizard page.
+            // 
+            var nextDecodeStep = function () {
+
+                if (wizardStep === 4) {
+                    return;
+                }
+
+                switch (++wizardStep) {
+                    case 2:
+                        checkFastTrack();
+                        break;
+                    case 3:
+                        enquiryExam();
+                        break;
+                    case 4:
+                        decodeExam();
+                        break;
+                    default:
+                        currDecodeStep();
+                }
+            };
+
+            // 
+            // Display first wizard page.
+            // 
+            currDecodeStep();
+
+            // 
+            // Prevent multiple event handlers.
+            // 
+            if (oe_module_loaded('exam-decode')) {
+                return;
+            }
+
+            $(document).on('click', '#exam-decode-cancel', function () {
+                closeDialogWindow("#exam-decode-box");
+            });
+
+            $(document).on('click', '#exam-decode-next', function () {
+                nextDecodeStep();
+            });
+
+            $(".exam-decode-step input[type='checkbox']").change(function () {
+                if ($(this).is(":checked")) {
+                    $("#exam-decode-warn").hide(200);
+                }
+            });
+
+        });
+</script>

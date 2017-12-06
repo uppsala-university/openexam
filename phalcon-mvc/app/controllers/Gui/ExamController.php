@@ -1191,4 +1191,40 @@ class ExamController extends GuiController
                 $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
         }
 
+        /**
+         * Decode an exam.
+         * 
+         * @param int $eid The exam ID.
+         * @throws Exception
+         * @throws ModelException
+         */
+        public function decodeAction($eid)
+        {
+                // 
+                // Sanitize request parameters:
+                // 
+                if (!($eid = $this->filter->sanitize($eid, "int"))) {
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                }
+
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
+
+                // 
+                // Get exam data:
+                // 
+                if (!($exam = Exam::findFirst($eid))) {
+                        throw new ModelException("Failed find exam", Error::PRECONDITION_FAILED);
+                }
+                
+                // 
+                // Set data for view:
+                // 
+                $this->view->setVar('exam', $exam);
+        }
+
 }

@@ -90,6 +90,8 @@ class Progress extends PhalconComponent implements Component
                 // 
                 if ($this->_state->has(State::DECODED)) {
                         $output("grey", "battery-4", "decoded", false, $this->tr->_("Decoded"));
+                } elseif ($this->_state->has(State::ENQUIRY)) {
+                        $output("red", "battery-4", "enquiry", true, $this->tr->_("Enquiry"));
                 } elseif ($this->_state->has(State::CORRECTED)) {
                         $output("orange", "battery-3", "corrected", true, $this->tr->_("Corrected"));
                 } elseif ($this->_state->has(State::FINISHED)) {

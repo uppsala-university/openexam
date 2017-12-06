@@ -122,6 +122,7 @@ return array(
                         'view-scoreboard'   => array(
                                 'target'        => 'exam/{exam-id}/correction',
                                 'show-on-flags' => array(
+                                        "enquiry",
                                         "decoded"
                                 )
                         ),
@@ -162,6 +163,7 @@ return array(
                                 'show-on-flags' => array(
                                         "correctable",
                                         "decodable",
+                                        "enquiry",
                                         "decoded"
                                 )
                         ),

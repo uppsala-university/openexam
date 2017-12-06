@@ -128,6 +128,10 @@ if ($this->user->roles->isStudent($exam->id)) {
                                 printf("<li>%s</li>\n", "All answers has been fully corrected");
                         }
 
+                        if ($state->has(State::ENQUIRY)) {
+                                printf("<li>%s</li>\n", "This exam is under investigation");
+                        }
+                        
                         if ($state->has(State::DECODED)) {
                                 printf("<li>%s</li>\n", "This exam has been decoded");
                         } elseif ($state->has(State::DECODABLE)) {

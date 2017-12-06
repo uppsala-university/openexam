@@ -126,6 +126,10 @@ class State extends Component
          * Examination has been fully corrected.
          */
         const CORRECTED = 0x10000;
+        /**
+         * Examination is in enquiry state (under investigation before decode).
+         */
+        const ENQUIRY = 0x20000;
 
         /**
          * @var Exam 
@@ -308,7 +312,9 @@ class State extends Component
                 $this->setAnswered();
                 $this->setCorrected();
 
-                if ($this->_exam->decoded) {
+                if ($this->_exam->enquiry) {
+                        $this->_state |= self::ENQUIRY | self::DECODABLE | self::FINISHED;
+                } elseif ($this->_exam->decoded) {
                         $this->_state |= self::DECODED | self::DECODABLE | self::FINISHED;
                 } elseif (!isset($this->_exam->starttime)) {
                         $this->_state |= self::CONTRIBUTABLE | self::EXAMINATABLE | self::EDITABLE | self::DRAFT;

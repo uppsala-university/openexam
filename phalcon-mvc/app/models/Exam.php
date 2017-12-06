@@ -41,7 +41,8 @@ use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
  * models are related.
  * 
  * An exam is in one of these states: preparing, upcoming, active, finished 
- * or decoded.
+ * or decoded. The enquiry step defines an intermediate state before decoding
+ * if the exam needs some investigation.
  * 
  * The grades property (array) is defined as JSON in the database. It is
  * either an object defining grades or an array defining the function body
@@ -142,6 +143,11 @@ class Exam extends ModelBase
          * @var integer
          */
         public $details;
+        /**
+         * Does this exam needs an enquiry?
+         * @var bool 
+         */
+        public $enquiry;
         /**
          * Is this exam decoded?
          * @var bool
@@ -365,6 +371,7 @@ class Exam extends ModelBase
                         'updated'   => 'updated',
                         'creator'   => 'creator',
                         'details'   => 'details',
+                        'enquiry'   => 'enquiry',
                         'decoded'   => 'decoded',
                         'published' => 'published',
                         'orgunit'   => 'orgunit',
@@ -420,6 +427,9 @@ class Exam extends ModelBase
                 if (!isset($this->details)) {
                         $this->details = $this->getDI()->getConfig()->result->details;
                 }
+                if (!isset($this->enquiry)) {
+                        $this->enquiry = false;
+                }
                 if (!isset($this->decoded)) {
                         $this->decoded = false;
                 }
@@ -442,6 +452,7 @@ class Exam extends ModelBase
          */
         protected function beforeSave()
         {
+                $this->enquiry = $this->enquiry ? 'Y' : 'N';
                 $this->decoded = $this->decoded ? 'Y' : 'N';
                 $this->published = $this->published ? 'Y' : 'N';
                 $this->testcase = $this->testcase ? 'Y' : 'N';
@@ -455,6 +466,7 @@ class Exam extends ModelBase
          */
         protected function afterSave()
         {
+                $this->enquiry = $this->enquiry == 'Y';
                 $this->decoded = $this->decoded == 'Y';
                 $this->published = $this->published == 'Y';
                 $this->testcase = $this->testcase == 'Y';
@@ -473,6 +485,7 @@ class Exam extends ModelBase
                         $this->descr = null;
                 }
 
+                $this->enquiry = $this->enquiry == 'Y';
                 $this->decoded = $this->decoded == 'Y';
                 $this->published = $this->published == 'Y';
                 $this->testcase = $this->testcase == 'Y';
@@ -537,7 +550,7 @@ class Exam extends ModelBase
                         return $this->_grade;
                 }
         }
-        
+
         /**
          * Get exam check.
          * @return Check

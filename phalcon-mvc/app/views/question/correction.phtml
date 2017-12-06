@@ -36,7 +36,9 @@ if (($exam->details & Exam::SHOW_CODE_DURING_CORRECTION) != 0) {
         $exam->show_code = true;
 }
 
-if ($exam->decoded || $this->user->acquire(array(Roles::DECODER, Roles::CREATOR), $exam->id)) {
+if ($exam->decoded ||
+    $exam->enquiry ||
+    $this->user->acquire(array(Roles::DECODER, Roles::CREATOR), $exam->id)) {
         $exam->show_grades = true;
         $exam->show_percent = true;
 }
@@ -47,13 +49,16 @@ if ($this->user->acquire(array(Roles::DECODER, Roles::CREATOR), $exam->id)) {
         $exam->show_download = false;
 }
 
-if (!$exam->decoded && $this->user->roles->acquire(Roles::DECODER, $exam->id) && $exam->getState()->isCorrected()) {
+if ($exam->decoded == false &&
+    $this->user->roles->acquire(Roles::DECODER, $exam->id) &&
+    $exam->getState()->isCorrected()) {
         $exam->show_decode = true;
 } else {
         $exam->show_decode = false;
 }
 
-if ($exam->decoded && !$exam->getState()->isCorrected()) {
+if ($exam->decoded &&
+    $exam->getState()->isCorrected() == false) {
         $exam->show_download = false;
         $exam->show_decode = false;
         $exam->decoded = false;
@@ -85,8 +90,11 @@ if (!isset($exam->show_code)) {
 // 
 // Don't display separate column with code if already decoded:
 // 
-if ($exam->decoded) {
+if ($exam->decoded | $exam->enquiry) {
         $exam->show_code = false;
+        $exam->show_user = true;
+} else {
+        $exam->show_user = false;
 }
 
 if (!$exam->show_save) {
@@ -95,17 +103,23 @@ if (!$exam->show_save) {
                 'text' => "Following table shows all answers from students to questions for the examination <strong>\"%s\"</strong>",
                 'note' => "You can view the student's answers by student (rows), by question (column) or individual (by index). This exam is not yet finished, so you can only monitor the answering progress for students on this exam."
         );
-} elseif (!$exam->decoded) {
+} elseif ($exam->enquiry) {
         $header = array(
-                'head' => "Exam correction",
-                'text' => "Following table shows all answers from students to questions for the examination <strong>\"%s\"</strong>",
-                'note' => "Correct answers by student (rows), by question (column) or individual (by index). You can only correct answers for questions published by yourself or those you have been assigned the role as corrector for."
+                'head' => "Exam investigation",
+                'text' => "Following table shows the final result of all students for the examination <strong>\"%s\"</strong>",
+                'note' => "You can view the student's answers by student (rows), by question (column) or individual (by index). This exam in enquiry state (correction has finished, but decoding is on hold). In this phase its no longer possible to change student results."
         );
-} else {
+} elseif ($exam->decoded) {
         $header = array(
                 'head' => "Exam score board",
                 'text' => "Following table shows the final result of all students for the examination <strong>\"%s\"</strong>",
                 'note' => "You can view the student's answers by student (rows), by question (column) or individual (by index). This exam has been decoded, so it's no longer possible to change student results."
+        );
+} else {
+        $header = array(
+                'head' => "Exam correction",
+                'text' => "Following table shows all answers from students to questions for the examination <strong>\"%s\"</strong>",
+                'note' => "Correct answers by student (rows), by question (column) or individual (by index). You can only correct answers for questions published by yourself or those you have been assigned the role as corrector for."
         );
 }
 
@@ -293,7 +307,7 @@ if (!$exam->show_save) {
                     </a> 
             <?php endif; ?>
 
-            <?php if ($exam->decoded): ?>
+            <?php if ($exam->show_user): ?>
                     <a href="#" id="download-results" class="prevent" title="Download zip-file containing all students result">
                         <i class="fa fa-file-pdf-o" style="float:right;padding:3px"></i>
                     </a> 
@@ -347,7 +361,7 @@ if (!$exam->show_save) {
                                     Code
                                 </th>
                         <?php endif; ?>
-                        <?php if ($exam->decoded): ?>
+                        <?php if ($exam->show_user): ?>
                                 <th>
                                     F. name
                                 </th>
@@ -474,7 +488,7 @@ if (!$exam->show_save) {
 
                                 <?php endforeach; ?>
                                 <td class="student">
-                                    <?php if ($exam->decoded): ?>
+                                    <?php if ($exam->show_user): ?>
                                             <a class="icon"
                                                title="Download result in PDF-file format" 
                                                href="<?= $this->url->get('result/' . $exam->id . '/download/' . $student->id) ?>">
@@ -490,7 +504,7 @@ if (!$exam->show_save) {
                                        stud-id="<?= $student->id ?>">
                                         <i class="fa fa-graduation-cap"></i>
                                         <span class="student">
-                                            <?= $exam->decoded ? $student->code : Student . '(' . $student->id . ')' ?>
+                                            <?= $exam->show_user ? $student->code : Student . '(' . $student->id . ')' ?>
                                         </span>
                                     </a>
                                 </td>
@@ -499,7 +513,7 @@ if (!$exam->show_save) {
                                             <?= $student->code ?>
                                         </td>
                                 <?php endif; ?>
-                                <?php if ($exam->decoded): ?>
+                                <?php if ($exam->show_user): ?>
                                         <td class="student">
                                             <?= $student->fname ?>
                                         </td>
@@ -599,7 +613,7 @@ if (!$exam->show_save) {
                                 <?php if ($exam->show_code): ?>
                                         <th align="right" style="vertical-align:top;"></th>
                                 <?php endif; ?>
-                                <?php if ($exam->decoded): ?>
+                                <?php if ($exam->show_user): ?>
                                         <th align="right" style="vertical-align:top;"></th>
                                         <th align="right" style="vertical-align:top;"></th>
                                         <th align="right" style="vertical-align:top;"></th>
@@ -666,6 +680,8 @@ if (!$exam->show_save) {
     <div id="progressbar"></div>
 </div>
 
+<div id="exam-decode-box" title="Exam decode wizard"></div>
+
 <?php
 // 
 // Question is currently first in table. Calculate number of columns last in
@@ -683,7 +699,7 @@ if ($exam->show_grades) {
 if ($exam->show_code) {
         $colReorderCount += 1;
 }
-if ($exam->decoded) {
+if ($exam->show_user) {
         $colReorderCount = 7;
 }
 
@@ -762,20 +778,16 @@ if ($exam->decoded) {
             });
 
             $(document).on('click', '#decode-exam', function () {
-
-                var msg = "Please note that once an exam gets decoded, it will not be possible to change student score any more. \r\n Are you sure you want to decode this exam?";
-                if (confirm(msg)) {
-                    // 
-                    // Decode exam:
-                    // 
-                    ajax(
-                            baseURL + 'ajax/core/decoder/exam/update',
-                            {id: examId, decoded: "Y"},
-                            function (status) {
-                                location.reload();
-                            }
-                    );
-                }
+                $.ajax({
+                    type: "GET",
+                    url: baseURL + 'exam/decode/' + examId,
+                    success: function (content) {
+                        showDialogWindow("#exam-decode-box", content);
+                    },
+                    error: function (content) {
+                        showDialogWindow("#exam-decode-box", content.responseText);
+                    }
+                });
             });
 
             $(document).on('change', '.hide-completed', function () {
