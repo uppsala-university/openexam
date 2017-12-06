@@ -120,13 +120,13 @@ return array(
         // 
         // Controller access map.
         // 
-        // Defines which roles are allowed to execute controller actions. The       
-        // data structure are protection -> controller -> actions -> roles, where
-        // actions or roles uses '*' to denote all access. 
+        // Defines which roles are allowed to execute controller actions. The data 
+        // structure are protection -> controller -> actions -> roles, where actions 
+        // or roles uses '*' to denote all access. 
         // 
-        // The protection is either public, protected or private. Using 
-        // protected means that authentication is required, but might be
-        // handled internal by the controller/action.
+        // The protection is either public, protected or private. Using protected 
+        // means that authentication is required, but might be handled internal by 
+        // the controller/action.
         // 
         'public' => array(
                 'index' => array('*'),
@@ -151,7 +151,8 @@ return array(
                         'lock'        => array('creator', 'invigilator'),
                         'archive'     => array('creator'),
                         'start'       => array('student'),
-                        'details'     => array('@')
+                        'details'     => array('@'),
+                        'decode'      => array('decoder')
                 ),
                 'question' => array(
                         'create'      => array('creator', 'contributor'),
