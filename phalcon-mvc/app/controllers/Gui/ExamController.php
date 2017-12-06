@@ -963,7 +963,7 @@ class ExamController extends GuiController
                         $this->dispatcher->forward(array(
                                 'action' => 'instruction',
                                 'params' => array(
-                                        'examId' => $exams[0]->id
+                                        'eid' => $exams[0]->id
                                 )
                         ));
                 } else {
