@@ -16,8 +16,6 @@
 // 
 
 var qPartTabs = $("#qPartTabs").tabs();
-var tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close'>Remove Tab</span></li>";
-var libJs = '';
 
 $('.lib_resources_list').sortable();
 
@@ -37,16 +35,20 @@ $('.search-catalog-service').each(function (index, element) {
 // 
 var addQuestPartTab = function () {
 
-    var qPartTitle = String.fromCharCode(96 + tabCounter);
-    var label = "Part " + qPartTitle,
-            id = "q-part-" + tabId,
-            li = $(tabTemplate.replace(/#\{href\}/g, "#" + id).replace(/#\{label\}/g, label)),
-            tabContentHtml = qPartTabs.find("#q-parts-wrapper > .ui-tabs-panel")
+    var template = $("#question-form-tab-template").clone();
+    var id = "q-part-" + tabId;
+    var title = String.fromCharCode(96 + tabCounter);
+
+    template.find('a').attr('href', '#' + id);
+    template.find('a').text("Part " + title);
+    template.removeAttr('id').show();
+
+    var tabContentHtml = qPartTabs.find("#q-parts-wrapper > .ui-tabs-panel")
             .filter(':first')
             .html()
             .replace('checked="checked"', "");  // Clear selected answer type
 
-    qPartTabs.find(".ui-tabs-nav").append(li);
+    qPartTabs.find(".ui-tabs-nav").append(template);
     qPartTabs.find("#q-parts-wrapper").append("<div id='" + id + "' class='q-part'>" + tabContentHtml + "</div>");
 
     // 

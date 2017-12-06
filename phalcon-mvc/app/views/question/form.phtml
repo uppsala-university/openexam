@@ -109,6 +109,12 @@ if ($question->status == 'removed') {
     }
 </style>
 
+<!-- Template for new question tab -->
+<li id="question-form-tab-template" role="tab" tabindex="0" class="ui-tabs-tab ui-corner-top ui-state-default ui-tab ui-tabs-active ui-state-active" aria-controls="q-part-1" aria-labelledby="ui-id-1" aria-selected="true" aria-expanded="true" style="display: none">
+    <a href="#q-part-x" role="presentation" tabindex="-1" class="ui-tabs-anchor" id="ui-id-1">Template</a>
+    <span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span>
+</li>
+
 <!-- Question form that appears in dialog -->
 <div  id="question-form" style="padding-top:20px; ">
     <div id="qPartTabs" class="<?= $question->is_editable ? '' : 'oe-disabled'; ?>">
