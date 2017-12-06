@@ -163,7 +163,8 @@ return array(
                 'result' => array(
                         'view'        => array('decoder', 'student'),
                         'generate'    => array('decoder'),
-                        'download'    => array('corrector', 'decoder', 'student')
+                        'download'    => array('corrector', 'decoder', 'student'),
+                        'export'      => array('corrector', 'decoder')
                 ),
                 'import' => array(
                         'students'    => array('invigilator')
