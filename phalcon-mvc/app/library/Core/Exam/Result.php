@@ -17,9 +17,11 @@ use Exception;
 use OpenExam\Library\Core\Error;
 use OpenExam\Library\Model\Exception as ModelException;
 use OpenExam\Library\Render\Renderer;
+use OpenExam\Library\Security\Roles;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Student;
 use Phalcon\Mvc\User\Component;
+use RuntimeException;
 use ZipArchive;
 
 /**
@@ -65,14 +67,28 @@ class Result extends Component
          */
         public function __construct($eid)
         {
+                if (!$this->user->hasPrimaryRole()) {
+                        throw new RuntimeException("Access results without primary role is not allowed");
+                }
+
                 if (!is_numeric($eid)) {
                         $this->_exam = $eid;
                 } elseif (!($this->_exam = Exam::findFirst($eid))) {
                         throw new ModelException("Failed find target exam.", Error::PRECONDITION_FAILED);
                 }
 
-                if ($this->_exam->decoded == false) {
-                        throw new ModelException("Result can't be downloaded before exam has been decoded.", Error::LOCKED);
+                if ($this->user->getPrimaryRole() == Roles::STUDENT) {
+                        if ($this->_exam->decoded == false) {
+                                throw new ModelException("Result can't be downloaded before exam has been decoded.", Error::LOCKED);
+                        }
+                }
+                
+                if ($this->user->getPrimaryRole() == Roles::DECODER ||
+                    $this->user->getPrimaryRole() == Roles::CREATOR) {
+                        if ($this->_exam->decoded == false &&
+                            $this->_exam->enquiry == false) {
+                                throw new ModelException("Result can't be downloaded on exam not decoded or enquired.", Error::LOCKED);
+                        }
                 }
         }
 
