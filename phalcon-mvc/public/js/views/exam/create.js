@@ -631,23 +631,28 @@ $(document).ready(function () {
             }
 
             // 
-            // Get answer type:
+            // Get answer type and options:
             // 
             var ansType = $(qPart).find('input[class=ans_type_selector]:checked');
+            var ansOpts = $(ansType).closest('.ans_type_selector_box_wrap').find('.ans_type');
+            
+            // 
+            // Set answer type:
+            // 
             qJson[qPartTitle]["ans_area"]["type"] = $(ansType).val();
-
+            
             // 
             // Populate answer area related data in JSON object:
             // 
             if ($(ansType).val() === 'choicebox') {
                 qJson[qPartTitle]["ans_area"]["data"] = {};
-                $(ansType).closest('.ans_type_selector_box_wrap').find('.ans_type').find('.question_opts > div > div').each(function (i, optElement) {
+                ansOpts.find('.question_opts > div > div').each(function (i, optElement) {
                     qJson[qPartTitle]["ans_area"]["data"][$(optElement).html()] = $(optElement).parent().find('input').is(':checked');
                 });
             } else if ($(ansType).val() === 'textarea') {
                 qJson[qPartTitle]["ans_area"]["data"] = [];
-                qJson[qPartTitle]["ans_area"]["word_count"] = $(ansType).parent().parent().find('input[name="word-count"]:checked').val();
-                qJson[qPartTitle]["ans_area"]["spell_check"] = $(ansType).parent().parent().find('input[name="spell-check"]:checked').val() === "on";
+                qJson[qPartTitle]["ans_area"]["word_count"] = ansOpts.find('input[name="word-count"]:checked').val();
+                qJson[qPartTitle]["ans_area"]["spell_check"] = ansOpts.find('input[name="spell-check"]:checked').val() === "on";
             } else {
                 qJson[qPartTitle]["ans_area"]["data"] = [];
             }
