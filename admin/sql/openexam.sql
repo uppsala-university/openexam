@@ -176,6 +176,7 @@ CREATE TABLE `exams` (
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `creator` varchar(60) NOT NULL,
   `details` int(11) NOT NULL DEFAULT '3',
+  `enquiry` enum('Y','N') NOT NULL DEFAULT 'N',
   `decoded` enum('Y','N') NOT NULL DEFAULT 'N',
   `published` enum('Y','N') DEFAULT 'N',
   `orgunit` varchar(150) NOT NULL,
@@ -517,4 +518,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-12-06  3:49:29
+-- Dump completed on 2017-12-06 19:10:17
