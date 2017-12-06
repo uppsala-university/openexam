@@ -387,7 +387,7 @@ if (!$exam->show_save) {
 
                                                 if (isset($results[$answer->id])) {
                                                         $result = $results[$answer->id];
-                                                        
+
                                                         // 
                                                         // Fixes for invalid JSON score data:
                                                         // 
@@ -867,8 +867,10 @@ if ($exam->decoded) {
                 } else if (mode === 'unsaved') {
                     $('.q-points').each(function () {
                         if (resyncableResults.indexOf($(this).attr('ans-id')) < 0) {
-                            if ($(this).val() !== '' && $(this).attr('res-id') === 0) {
-                                resyncableResults.push($(this).attr('ans-id'));
+                            if (Number($(this).attr('res-id')) === 0) {
+                                if ($(this).val() !== '' || $(this).val() !== 0) {
+                                    resyncableResults.push($(this).attr('ans-id'));
+                                }
                             }
                         }
                     });
