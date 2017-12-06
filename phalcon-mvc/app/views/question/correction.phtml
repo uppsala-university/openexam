@@ -202,6 +202,12 @@ if (!$exam->show_save) {
     /**
      * Fixed first column:
      */
+    #table-wrapper-top-scroll {
+        overflow-x: scroll;
+        overflow-y: visible;
+        width: calc(100% - 190px);
+        margin-left: 188px;
+    }    
     #table-wrapper { 
         overflow-x:scroll;
         overflow-y:visible;
@@ -240,7 +246,6 @@ if (!$exam->show_save) {
         border-bottom:1px #dedede solid; 
         background-color:#ffffcc;
     }
-
     @media screen and (max-width: 40.5em) {
         #table-wrapper {
             width: calc(100% - 100px);
@@ -302,6 +307,9 @@ if (!$exam->show_save) {
     </div>
 
     <div id="scoreboard-wrapper">
+        <div id="table-wrapper-top-scroll">
+            <div>&nbsp;</div>
+        </div>
         <div id="table-wrapper">
             <table>
                 <thead>
@@ -700,6 +708,16 @@ if ($exam->decoded) {
                     $(this).remove();
                 }
             });
+
+            $("#table-wrapper-top-scroll").scroll(function () {
+                $("#table-wrapper")
+                        .scrollLeft($("#table-wrapper-top-scroll").scrollLeft());
+            });
+            $("#table-wrapper").scroll(function () {
+                $("#table-wrapper-top-scroll")
+                        .scrollLeft($("#table-wrapper").scrollLeft());
+            });
+            $("#table-wrapper-top-scroll > div").width($("#table-wrapper > table").width());
 
             // 
             // Attach fancybox on anchors:
