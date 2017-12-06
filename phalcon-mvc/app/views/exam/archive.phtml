@@ -54,7 +54,7 @@
             </div>
             <div class="body" style="float: right;  margin-top: 35%; margin-left: 10%;">
                 <div class="main-box">
-                    <h1><?= $exam->name ?></h1>
+                    <h2><?= $exam->name ?></h2>
                     <div>
                         <span style="color:#000; font-size:14px"><?= $exam->orgunit ?></span>
                     </div>
@@ -78,7 +78,7 @@
         <div class="page page-inner">
             <div class="body" >
                 <div class="body-content" style="height:950px">
-                    <h1>Exam description</h1>
+                    <h2>Exam description</h2>
                     <div>
                         <div>
                             <?= $exam->descr ?>
@@ -95,7 +95,7 @@
                             <div class="body" >
                                 <div class="body-content">
                                     <div class="quest">
-                                        <h1 class="q-<?= $question->id ?>">Question <?= $question->slot ?> </h1>
+                                        <h2 class="q-<?= $question->id ?>">Question <?= $question->slot ?> </h2>
 
                                         <?php foreach ($data['qData'][$question->id]['qParts'] as $pTitle => $pData): ?>
                                                 <div class="quest-part">
@@ -164,7 +164,7 @@
         <div class="page page-inner">
             <div class="body" >
                 <div class="body-content" style="height:950px">
-                    <h1>Reference</h1>
+                    <h2>Reference</h2>
                     <div style="margin-top:15px">
                         <span style="font-size:15px; color:#3d749b">Responsable for examination:</span><br>
                         <span class="uu-color">Main responsible person for the examination is <a href="mailto:<?= $this->catalog->getMail($exam->creator) ?>" style="color:#990000; text-decoration:none"><?= $this->catalog->getName($exam->creator) ?></a></span><br>
