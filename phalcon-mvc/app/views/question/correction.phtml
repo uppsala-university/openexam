@@ -367,6 +367,12 @@ if (!$exam->show_save) {
                 </thead>	
                 <tbody>
                     <?php foreach ($students as $student): ?>
+                            <?php
+                            if (!isset($answers[$student->id])) {
+                                    continue;
+                            }
+
+                            ?>
                             <tr>
                                 <?php $totalStudentScore = 0; ?>
                                 <?php
