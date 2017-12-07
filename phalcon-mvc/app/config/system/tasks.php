@@ -89,3 +89,10 @@ if (extension_loaded('posix')) {
             get_current_user(), gethostname()
         ));
 }
+
+// 
+// Replace our special services in default dependency injector:
+// 
+$dd = Phalcon\Di::getDefault();
+$dd->set('user', $di->get('user'));
+$dd->set('flash', $di->get('flash'));
