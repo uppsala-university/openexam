@@ -220,6 +220,13 @@ $(document).ready(function () {
     });
 
     // 
+    // Toggle display of grade view in exam details.
+    // 
+    $(document).on('click', '.exam-grade', function () {
+        toggleExamDetails($(this), 'grade');
+    });
+
+    // 
     // Show student management dialog:
     // 
     $(document).on('click', '.manage-students', function () {

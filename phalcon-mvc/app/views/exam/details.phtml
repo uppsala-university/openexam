@@ -20,11 +20,13 @@ if ($this->user->roles->isStudent($exam->id)) {
         $exam->show_staff = false;
         $exam->show_roles = false;
         $exam->show_other = true;
+        $exam->show_grade = true;
 } else {
         $exam->show_state = true;
         $exam->show_staff = true;
         $exam->show_roles = true;
         $exam->show_other = true;
+        $exam->show_grade = true;
 }
 
 ?>
@@ -69,6 +71,11 @@ if ($this->user->roles->isStudent($exam->id)) {
         .exam-properties {
             column-count: 1;
         }
+        .exam-details .toolbtn {
+                min-width: 65px;
+                margin: 2px;
+                text-align: center;
+        }
     }
 </style>
 
@@ -76,6 +83,9 @@ if ($this->user->roles->isStudent($exam->id)) {
     <div class="header">
         <?php if ($exam->show_state) : ?>
                 <span class="toolbtn exam-state">State</span>
+        <?php endif; ?>
+        <?php if ($exam->show_other) : ?>
+                <span class="toolbtn exam-grade">Grade</span>
         <?php endif; ?>
         <?php if ($exam->show_staff) : ?>
                 <span class="toolbtn exam-staff">Staff</span>
@@ -131,7 +141,7 @@ if ($this->user->roles->isStudent($exam->id)) {
                         if ($state->has(State::ENQUIRY)) {
                                 printf("<li>%s</li>\n", "This exam is under investigation");
                         }
-                        
+
                         if ($state->has(State::DECODED)) {
                                 printf("<li>%s</li>\n", "This exam has been decoded");
                         } elseif ($state->has(State::DECODABLE)) {
@@ -158,6 +168,30 @@ if ($this->user->roles->isStudent($exam->id)) {
                         }
                         if ($state->has(State::TESTCASE)) {
                                 printf("<li>%s</li>\n", "Marked as testcase (always deletable)");
+                        }
+
+                        ?>
+                    </ul>
+                </div>
+        <?php endif; ?>
+
+        <?php if ($exam->show_grade) : ?>
+                <div class="exam-properties grade" style="display: none">
+                    <ul>
+                        <?php
+                        $grade = $exam->getGrade();
+
+                        if ($grade->useScores()) {
+                                printf("<li>This exam uses points instead of percent</li>\n");
+                        }
+                        if (($maximum = $grade->getMaximum())) {
+                                printf("<li>Maximum score is " . floatval($maximum) . "p on this exam</li>\n");
+                        }
+                        foreach ($grade->getGrades() as $name => $limit) {
+                                printf("<li>$name >= " .
+                                    floatval($limit) . "%% (" .
+                                    floatval($grade->getPoints($limit)) .
+                                    "p)</li>\n");
                         }
 
                         ?>
