@@ -18,7 +18,7 @@ if (strtotime($exam->endtime) < time()) {
 if ($exam->decoded | $exam->enquiry) {
         $exam->show_readonly = true;
 } else {
-        $exam->show_readonly = true;
+        $exam->show_readonly = false;
 }
 
 ?>
