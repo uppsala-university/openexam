@@ -12,14 +12,9 @@ use Phalcon\Tag;
 // Author:  Anders Lövgren (BMC-IT)
 // Author:  Ahsan Shahzad (Medfarm DoIT)
 // 
-// 
-// Add polyfill from //cdn.polyfill.io/v2/polyfill.min.js:
-// 
-if (strpos(filter_input(INPUT_SERVER, 'HTTP_USER_AGENT'), 'Trident/7.0; rv:11.0') !== false) {
-        $polyfill = 'js/polyfill/polyfill-ie11.js';
-}
 
 ?>
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -31,8 +26,8 @@ if (strpos(filter_input(INPUT_SERVER, 'HTTP_USER_AGENT'), 'Trident/7.0; rv:11.0'
         <?= Tag::javascriptInclude('js/jquery.min.js'); ?>        
         <?= Tag::javascriptInclude('js/utils.js'); ?>
 
-        <?php if (isset($polyfill)) : ?>
-                <?= Tag::javascriptInclude($polyfill); ?>
+        <?php if ($this->polyfill->setContent()) : ?>
+                <?= Tag::javascriptInclude($this->polyfill->getPath()); ?>
         <?php endif; ?>
 
         <script language="javascript">

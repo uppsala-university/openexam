@@ -84,6 +84,7 @@ $config = new Config(
                 'logsDir'        => BASE_DIR . '/logs',
                 'baseDir'        => BASE_DIR . '/',
                 'docsDir'        => PROJ_DIR . '/docs',
+                'polyfillsDir'   => BASE_DIR . '/public/js/polyfill',
                 /**
                  * These should always be user defined:
                  */

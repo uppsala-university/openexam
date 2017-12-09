@@ -380,4 +380,11 @@ $di->set('profiler', function() use ($config) {
         return new OpenExam\Library\Monitor\Performance\Profiler($config->profile);
 }, true);
 
+/**
+ * The web browser polyfill service.
+ */
+$di->set('polyfill', function() {
+        return new OpenExam\Library\Gui\Browser\Polyfill();
+}, true);
+
 return $di;
