@@ -99,6 +99,11 @@ $di->set('dispatcher', function() use ($di) {
         $eventsManager = $di->getShared('eventsManager');
         $security = new OpenExam\Plugins\Security\DispatchListener();
         $eventsManager->attach('dispatch', $security);
+        $eventsManager->attach('dispatch', function($event, $dispatcher) {
+                if ($event->getType() == 'beforeDispatchLoop' && strstr($dispatcher->getActionName(), "-")) {
+                        $dispatcher->setActionName(lcfirst(Phalcon\Text::camelize($dispatcher->getActionName())));
+                }
+        });
         $dispatcher = new Phalcon\Mvc\Dispatcher();
         $dispatcher->setEventsManager($eventsManager);
         return $dispatcher;
