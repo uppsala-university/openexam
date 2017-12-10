@@ -13,30 +13,17 @@
 ?>
 
 <style type="text/css">
-    .credentials {
-        width: 45%;
-        display: inline-block;
-    }    
-    .credentials form {
-        margin-top: 20px;
-        margin-left: 30px;
-    }
-    .credentials h4 {
-        color: #999999;
-    }
     h2.identity {
-        background: url("<?= $this->url->get("/img/kgpg_identity.png") ?>") no-repeat right;
+        background: url("<?= $this->url->get("/img/kgpg_identity.png") ?>") no-repeat right 0px;
     }
     div.status {
-        width: 45%;
-        float: right;
-        padding: 20px;
-        border-radius: 5px;
-        margin: 20px 10px;
+        padding: 10px 25px 0 25px;
     }
     #status-info {
+        padding: 20px;
         color: #5555aa;
         background-color: #ffffff;
+        border-radius: 5px;
         border: 1px solid lightskyblue;
     }
     #status-success {
@@ -53,8 +40,8 @@
 <div class="oe-login">
     <h2 class="identity">Login using <?= $form->getUserOption('description'); ?></h2>
     <hr/>
-    <div>
-        <div class="credentials">
+    <div class="row">
+        <div class="credentials col-sm-6">
             <form action="<?= $form->getAction(); ?>" method="POST">
                 <?php if ($form->has('fcode')) { ?>
                         <p>
@@ -87,11 +74,9 @@
                 </p>
             </form>
         </div>
-        <div class="status" id="status-info">
-            <div style="float: left; display: inline-block; width: 15%">
+        <div class="status col-sm-6">
+            <div id="status-info">
                 <i class="fa fa-info-circle fa-2x"></i>
-            </div>
-            <div style="float: left; display: inline-block; width: 85%">
                 <?= $form->getUserOption('information') ?>
             </div>
         </div>

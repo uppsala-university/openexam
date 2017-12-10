@@ -14,14 +14,14 @@
 
 <style type="text/css">
     h2.identity {
-        background: url("<?=$this->url->get("/img/kgpg_identity.png")?>") no-repeat right;
+        background: url("<?= $this->url->get("/img/kgpg_identity.png") ?>") no-repeat right;
     }
 </style>
 
 <div class="oe-login">
     <h2 class="identity">Authentication is required to continue</h2>
     <hr/>
-    <h4>Select authentication method</h4>
+    <label>Select authentication method:</label>
     <form action="<?= $form->getAction(); ?>" method="POST">
         <?= $form->render("embed"); ?>
         <p>

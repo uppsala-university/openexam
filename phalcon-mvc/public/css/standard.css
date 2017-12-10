@@ -145,6 +145,24 @@ img {
     opacity: 0.4;
 }
 
+/**
+ * Login form:
+ */
+.oe-login {
+    background: none repeat scroll 0 0 ghostwhite;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 0 20px;
+    padding: 15px;
+    max-width: 650px;
+}
+.oe-login form {
+    margin: 10px;
+}
+.oe-login h4 {
+    color: #999999;
+}
+
 @media screen and (max-width: 40.5em) {
     .oe-left-column { 
         top: 162px;
@@ -168,25 +186,10 @@ img {
     #oe-header .top-image img {
         max-height: 80px;
     }
-}
-
-/**
- * Login form:
- */
-.oe-login {
-    background: none repeat scroll 0 0 ghostwhite;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin: 0 20px;
-    padding: 15px;
-    max-width: 650px;
-}
-.oe-login form {
-    margin-top: 20px;
-    margin-left: 30px;
-}
-.oe-login h4 {
-    color: #999999;
+    
+    .oe-login {
+        margin: 0;
+    }
 }
 
 /**
