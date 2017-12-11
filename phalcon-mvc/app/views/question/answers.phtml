@@ -547,7 +547,7 @@ if ($exam->decoded | $exam->enquiry) {
 </div>
 
 <?php if ($exam->decoded == false) : ?>
-        <div class="no-print" style="position: fixed; top: 55px; right: 70px; padding: 10px; background-color: whitesmoke; border-radius: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2); z-index: 2">
+        <div class="no-print" style="position: fixed; bottom: -30px; right: 30px; padding: 10px; background-color: whitesmoke; border-radius: 5px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.2); z-index: 2;">
             <div>
                 <?php
                 printf("<a href=\"#\" style=\"float: right; padding: 5px\" onclick=\"return render_pdf_document('%s','%s')\" title=\"Download current view as PDF document\"><i class=\"fa fa-file-pdf-o fa-2x\" aria-hidden=\"true\"></i></a>\n", urlencode($this->request->get("_url")), $this->url->get("utility/render/pdf"));
