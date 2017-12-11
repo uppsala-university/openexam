@@ -15,21 +15,19 @@
 <?php $this->partial("error/partial/style"); ?>
 <?php $this->partial("error/partial/script"); ?>
 
-<div class="oe-error">
-    <h1 class="header">
-        <i class="fa fa-exclamation-circle" aria-hidden="true" style="color: red"></i>
-        Service temporary unavailable:
-    </h1>
+<h1 class="header">
+    <i class="fa fa-exclamation-circle" aria-hidden="true" style="color: red"></i>
+    Service temporary unavailable:
+</h1>
 
-    <p class="message">
-        <?= $error->getMessage(); ?>
-    </p>
+<p class="message">
+    <?= $error->getMessage(); ?>
+</p>
 
-    <div class="info">
-        <p>The web server is currently unable to handle the HTTP request due to a temporary overloading or maintenance of the server.</p>
-        <p>You can click on the <u>retry button</u> below to send the request again. Click on the <u>report button</u> to send an email to the system manager.</p>
-        <button class="btn btn-primary" value="retry"  onclick="document.location.href = ''">Retry</button>
-        <button class="btn btn-warning" value="report" onclick="return report_exception()">Report</button>
-        <span id="notice" style="display: block"></span>
-    </div>
+<div class="info">
+    <p>The web server is currently unable to handle the HTTP request due to a temporary overloading or maintenance of the server.</p>
+    <p>You can click on the <u>retry button</u> below to send the request again. Click on the <u>report button</u> to send an email to the system manager.</p>
+    <button class="btn btn-primary" value="retry"  onclick="document.location.href = ''">Retry</button>
+    <button class="btn btn-warning" value="report" onclick="return report_exception()">Report</button>
+    <span id="notice" style="display: block"></span>
 </div>

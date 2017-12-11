@@ -59,10 +59,10 @@ img {
     width: 100%;
 }
 
-.oe-error {
-    padding: 0 10px 0 10px;
+.oe-error,
+.oe-pending {
+    padding: 5px 20px 0 20px;
 }
-
 #oe-header .top-image {
     display: inline-block;
 }
