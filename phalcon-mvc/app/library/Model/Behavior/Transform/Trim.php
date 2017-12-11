@@ -21,7 +21,7 @@ use Phalcon\Mvc\ModelInterface;
  * 
  * The field option is either a string or an array of fields to trim. If trimming
  * the field result in an empty string, then replace the field value. The value
- * to replace with is optional an defaults to null.
+ * to replace with is optional and defaults to null.
  *
  * @author Anders Lövgren (QNET)
  */
@@ -47,11 +47,14 @@ class Trim extends ModelBehavior
                                 if (!isset($model->$f)) {
                                         continue;
                                 }
+                                if (strstr($model->$f, "&nbsp;")) {
+                                        $model->$f = str_replace("&nbsp;", " ", $model->$f);
+                                }
                                 if (strlen(trim($model->$f)) == 0) {
                                         $model->$f = $value;
                                 }
                         }
-                        
+
                         return true;
                 }
         }
