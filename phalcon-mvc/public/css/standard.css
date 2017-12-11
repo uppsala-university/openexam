@@ -68,6 +68,7 @@ img {
 }
 #oe-header .top-image img {
     max-height: 120px;
+    max-width: 130px;
 }
 
 #oe-header .top-site {
