@@ -231,7 +231,7 @@ foreach ($roles as $role) {
 -->
 <div id="exam-check-box" style="display:none" title="Exam status check" ></div>    
 
-<?= Tag::javascriptInclude('js/views/exam/index.js') ?>
+<?= Tag::javascriptInclude('js/views/exam/index.js?rev=1') ?>
 
 <script>
         var examSections = <?= json_encode($sections); ?>;

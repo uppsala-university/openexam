@@ -28,10 +28,10 @@ use Phalcon\Tag;
 <?= Tag::javascriptInclude('js/opentip-jquery.min.js'); ?>
 <?= Tag::javascriptInclude('js/opentip-style.js'); ?>
 
-<?= Tag::javascriptInclude('js/views/exam/create.js'); ?>
-<?= Tag::javascriptInclude('js/views/exam/security.js'); ?>
-<?= Tag::javascriptInclude('js/views/exam/check.js'); ?>
-<?= Tag::javascriptInclude('js/views/user-search.js'); ?>
+<?= Tag::javascriptInclude('js/views/exam/create.js?rev=1'); ?>
+<?= Tag::javascriptInclude('js/views/exam/security.js?rev=1'); ?>
+<?= Tag::javascriptInclude('js/views/exam/check.js?rev=1'); ?>
+<?= Tag::javascriptInclude('js/views/user-search.js?rev=1'); ?>
 
 <?php $examQs = $exam->getQuestions(array("order" => "slot")); ?>
 
