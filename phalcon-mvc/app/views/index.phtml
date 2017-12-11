@@ -26,10 +26,6 @@ use Phalcon\Tag;
         <?= Tag::javascriptInclude('js/jquery.min.js'); ?>        
         <?= Tag::javascriptInclude('js/utils.js'); ?>
 
-        <?php if ($this->polyfill->setContent()) : ?>
-                <?= Tag::javascriptInclude($this->polyfill->getPath()); ?>
-        <?php endif; ?>
-
         <script language="javascript">
                 var baseURL = '<?= $this->url->get() ?>';
         </script>
@@ -58,6 +54,10 @@ use Phalcon\Tag;
             <i class="fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom"></i>
         </div>
     </body>
+
+    <?php if ($this->polyfill->setContent()) : ?>
+            <?= Tag::javascriptInclude($this->polyfill->getPath()); ?>
+    <?php endif; ?>
 
     <script>
             document.addEventListener("DOMContentLoaded", function (event) {
