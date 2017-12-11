@@ -17,6 +17,7 @@ use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Core\Pattern;
 use OpenExam\Library\Model\Behavior\Student as StudentBehavior;
 use OpenExam\Library\Model\Behavior\Transform\DateTimeNull;
+use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
 use OpenExam\Library\Model\Validation\DateTime as DateTimeValidator;
 use OpenExam\Library\Model\Validation\Sequence as SequenceValidator;
@@ -120,6 +121,17 @@ class Student extends Role
                         )
                 )));
 
+                $this->addBehavior(new Trim(array(
+                        'beforeValidationOnCreate' => array(
+                                'field' => array('user', 'code', 'tag'),
+                                'value' => null
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'field' => array('user', 'code', 'tag'),
+                                'value' => null
+                        )
+                )));
+                
                 // 
                 // Required for datetime validator:
                 // 

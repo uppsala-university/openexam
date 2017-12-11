@@ -16,6 +16,7 @@ namespace OpenExam\Models;
 use OpenExam\Library\Model\Behavior\Generate\Maximum;
 use OpenExam\Library\Model\Behavior\Generate\Unique;
 use OpenExam\Library\Model\Behavior\Generate\UUID;
+use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
@@ -126,6 +127,17 @@ class Topic extends ModelBase
                         'beforeUpdate' => array(
                                 'field' => 'uuid',
                                 'force' => false
+                        )
+                )));
+
+                $this->addBehavior(new Trim(array(
+                        'beforeValidationOnCreate' => array(
+                                'field' => array('uuid', 'name', 'grades', 'depend'),
+                                'value' => null
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'field' => array('uuid', 'name', 'grades', 'depend'),
+                                'value' => null
                         )
                 )));
         }

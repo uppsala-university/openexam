@@ -14,6 +14,7 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\Transform\FilterText;
+use OpenExam\Library\Model\Behavior\Transform\Trim;
 
 /**
  * The room model.
@@ -48,6 +49,17 @@ class Room extends ModelBase
                         'alias'    => 'computers',
                         'reusable' => true
                 ));
+
+                $this->addBehavior(new Trim(array(
+                        'beforeValidationOnCreate' => array(
+                                'field' => array('name', 'description'),
+                                'value' => null
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'field' => array('name', 'description'),
+                                'value' => null
+                        )
+                )));
 
                 // 
                 // TODO: better do filtering on client side.

@@ -13,6 +13,7 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Room as RoomModelGuard;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
@@ -104,6 +105,17 @@ class Computer extends ModelBase
                         'beforeValidationOnCreate' => array(
                                 'field'  => 'created',
                                 'format' => 'Y-m-d H:i:s'
+                        )
+                )));
+
+                $this->addBehavior(new Trim(array(
+                        'beforeValidationOnCreate' => array(
+                                'field' => array('hostname', 'ipaddr', 'password'),
+                                'value' => null
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'field' => array('hostname', 'ipaddr', 'password'),
+                                'value' => null
                         )
                 )));
         }

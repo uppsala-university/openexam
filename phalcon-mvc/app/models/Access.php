@@ -13,6 +13,7 @@
 
 namespace OpenExam\Models;
 
+use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
@@ -85,6 +86,17 @@ class Access extends ModelBase
                         'alias'      => 'exam',
                         'reusable'   => true
                 ));
+
+                $this->addBehavior(new Trim(array(
+                        'beforeValidationOnCreate' => array(
+                                'field' => array('name', 'addr'),
+                                'value' => null
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'field' => array('name', 'addr'),
+                                'value' => null
+                        )
+                )));
         }
 
         /**

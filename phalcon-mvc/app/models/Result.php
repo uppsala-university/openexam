@@ -14,6 +14,7 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\Transform\FilterText;
+use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Answer as AnswerModelGuard;
 use OpenExam\Library\Model\Guard\Corrector as CorrectorModelGuard;
 use OpenExam\Library\Model\Validation\InvalidFormat;
@@ -102,6 +103,17 @@ class Result extends ModelBase
                         'alias'      => 'corrector',
                         'reusable'   => true
                 ));
+
+                $this->addBehavior(new Trim(array(
+                        'beforeValidationOnCreate' => array(
+                                'field' => array('score', 'comment'),
+                                'value' => null
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'field' => array('score', 'comment'),
+                                'value' => null
+                        )
+                )));
 
                 // 
                 // TODO: better do filtering on client side.

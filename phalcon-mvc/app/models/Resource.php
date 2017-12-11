@@ -15,6 +15,7 @@ namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\Generate\Ownership;
 use OpenExam\Library\Model\Behavior\Transform\Remove;
+use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
 use Phalcon\Mvc\Model\Validator\Inclusionin;
 
@@ -129,6 +130,17 @@ class Resource extends ModelBase
                         )
                     )
                 ));
+                
+                $this->addBehavior(new Trim(array(
+                        'beforeValidationOnCreate' => array(
+                                'field' => array('name', 'descr', 'path', 'type', 'subtype', 'user'),
+                                'value' => null
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'field' => array('name', 'descr', 'path', 'type', 'subtype', 'user'),
+                                'value' => null
+                        )
+                )));
         }
 
         /**

@@ -14,6 +14,7 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\Transform\Remove;
+use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Answer as AnswerModelGuard;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
 
@@ -80,6 +81,17 @@ class File extends ModelBase
                         )
                     )
                 ));
+                
+                $this->addBehavior(new Trim(array(
+                        'beforeValidationOnCreate' => array(
+                                'field' => array('name', 'path', 'type', 'subtype'),
+                                'value' => null
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'field' => array('name', 'path', 'type', 'subtype'),
+                                'value' => null
+                        )
+                )));
         }
 
         /**

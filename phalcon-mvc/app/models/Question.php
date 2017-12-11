@@ -20,6 +20,7 @@ use OpenExam\Library\Model\Behavior\Generate\UUID;
 use OpenExam\Library\Model\Behavior\Question as QuestionBehavior;
 use OpenExam\Library\Model\Behavior\Transform\FilterText;
 use OpenExam\Library\Model\Behavior\Transform\Remove;
+use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
 use OpenExam\Library\Model\Guard\Topic as TopicModelGuard;
 use OpenExam\Library\Security\Roles;
@@ -194,6 +195,17 @@ class Question extends ModelBase
                         )
                     )
                 ));
+
+                $this->addBehavior(new Trim(array(
+                        'beforeValidationOnCreate' => array(
+                                'field' => array('uuid', 'user', 'name', 'grades'),
+                                'value' => null
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'field' => array('uuid', 'user', 'name', 'grades'),
+                                'value' => null
+                        )
+                )));
 
                 // 
                 // TODO: better do filtering on client side.

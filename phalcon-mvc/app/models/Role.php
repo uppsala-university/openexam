@@ -16,6 +16,7 @@ namespace OpenExam\Models;
 use OpenExam\Library\Catalog\DirectoryService;
 use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Core\Pattern;
+use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Models\ModelBase;
 use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
@@ -57,6 +58,17 @@ class Role extends ModelBase
         protected function initialize()
         {
                 parent::initialize();
+
+                $this->addBehavior(new Trim(array(
+                        'beforeValidationOnCreate' => array(
+                                'field' => "user",
+                                'value' => null
+                        ),
+                        'beforeValidationOnUpdate' => array(
+                                'field' => "user",
+                                'value' => null
+                        )
+                )));
         }
 
         public function validation()
