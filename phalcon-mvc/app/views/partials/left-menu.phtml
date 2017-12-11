@@ -17,7 +17,10 @@ $userRoles = array(
         'invigilator' => 'Invigilators'
 );
 $i = 1;
+
 $exam->is_editable = in_array("editable", $exam->flags);
+$exam->is_finished = in_array("finished", $exam->flags);
+$exam->is_contributable = in_array("contributable", $exam->flags);
 
 ?>
 
@@ -34,7 +37,7 @@ $exam->is_editable = in_array("editable", $exam->flags);
                         </a>
                         <?php if ($this->user->hasCapability($model, 'create')) : ?>
                                 <a href="#" class="search-catalog-service">
-                                    <?php if (in_array("editable", $exam->flags)) : ?>
+                                    <?php if ($exam->is_editable) : ?>
                                             <i class="menu-item-add fa fa-plus-circle" aria-hidden="true"></i>
                                     <?php else: ?>
                                             <i class="menu-item-off fa fa-gear" aria-hidden="true"></i>
@@ -92,7 +95,7 @@ $exam->is_editable = in_array("editable", $exam->flags);
 
                 <?php if ($this->user->hasCapability('student', 'create')) : ?>
                         <a href="#" class="manage-students">
-                            <?php if ($exam->is_editable) : ?>
+                            <?php if (!$exam->is_finished) : ?>
                                     <i class="menu-item-add fa fa-plus-circle" aria-hidden="true"></i>
                             <?php else: ?>
                                     <i class="menu-item-off fa fa-gear" aria-hidden="true"></i>
@@ -110,7 +113,7 @@ $exam->is_editable = in_array("editable", $exam->flags);
                     &nbsp;Questions &nbsp;
                 </a>
 
-                <?php if ($this->user->hasCapability('question', 'create') && $exam->is_editable): ?>
+                <?php if ($this->user->hasCapability('question', 'create') && $exam->is_contributable): ?>
                         <a href="#" class="add_new_qs">
                             <i class="menu-item-add fa fa-plus-circle add_new_qs" aria-hidden="true"></i>
                         </a>
