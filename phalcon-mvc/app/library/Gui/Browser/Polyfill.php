@@ -257,7 +257,7 @@ class Polyfill extends Component
                         throw new RuntimeException(sprintf("Failed download polyfill from %s", $this->_download));
                 }
 
-                if (!file_put_contents($this->_file, $result)) {
+                if (!file_put_contents($this->_file, sprintf("/* %s */\n%s", $this->_agent, $result))) {
                         throw new RuntimeException("Failed write to polyfill cache");
                 }
 
