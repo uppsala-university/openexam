@@ -1015,24 +1015,24 @@ class ExamController extends GuiController
                 ));
 
                 // 
-                // Dialog is readonly:
-                // 
-                if (isset($readonly)) {
-                        $this->view->setVar('readonly', $readonly);
-                } else {
-                        $this->view->setVar('readonly', false);
-                }
-
-                // 
                 // Try to find exam in request parameter:
                 // 
                 if (($exam = Exam::findFirst($eid)) == false) {
                         throw new Exception("Failed fetch exam model", Error::BAD_REQUEST);
                 }
 
+                // 
+                // Dialog is readonly:
+                // 
+                if (isset($readonly)) {
+                        $exam->is_readonly = $readonly;
+                } else {
+                        $exam->is_readonly = false;
+                }
+
                 $this->view->setVar('role', $this->user->getPrimaryRole());
                 $this->view->setVar('check', new Check($exam));
-                $this->view->setVar('exam_id', $eid);
+                $this->view->setVar('exam', $exam);
         }
 
         /**
@@ -1220,7 +1220,7 @@ class ExamController extends GuiController
                 if (!($exam = Exam::findFirst($eid))) {
                         throw new ModelException("Failed find exam", Error::PRECONDITION_FAILED);
                 }
-                
+
                 // 
                 // Set data for view:
                 // 

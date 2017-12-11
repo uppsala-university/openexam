@@ -18,6 +18,10 @@ use OpenExam\Library\Security\Roles;
 $status = $check->getStatus();
 $security = $check->getSecurity();
 
+if (in_array("finished", $exam->flags)) {
+        $exam->is_readonly = true;
+}
+
 ?>
 
 <?php if ($status == Check::STATUS_IS_READY) : ?>
@@ -38,7 +42,7 @@ $security = $check->getSecurity();
             <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has an name</span>
     <?php else : ?>
             <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam name is missing</span>
-            <?php if (!$readonly) : ?>
+        <?php if (!$exam->is_readonly) : ?>
                     <div style="display: block; float:right; clear: both">
                         <a href="#" class="exam-check-set-name prevent">
                             <span class="btn btn-success btn-sm">
@@ -48,7 +52,7 @@ $security = $check->getSecurity();
                         </a>
                     </div>
             <?php endif; ?>
-    <?php endif; ?>
+<?php endif; ?>
 </div>
 
 <div style="padding-bottom: 3px">
@@ -56,7 +60,7 @@ $security = $check->getSecurity();
             <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Questions has been added</span>
     <?php else : ?>
             <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Questions are missing</span>
-            <?php if (!$readonly) : ?>
+        <?php if (!$exam->is_readonly) : ?>
                     <div style="display: block; float:right; clear: both">
                         <a href="#" class="exam-check-add-questions prevent">
                             <span class="btn btn-success btn-sm">
@@ -66,7 +70,7 @@ $security = $check->getSecurity();
                         </a>
                     </div>
             <?php endif; ?>
-    <?php endif; ?>
+<?php endif; ?>
 </div>
 
 <div style="padding-bottom: 3px">
@@ -74,7 +78,7 @@ $security = $check->getSecurity();
             <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Students has been added</span>
     <?php else : ?>
             <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Students are missing</span>
-            <?php if (!$readonly) : ?>
+        <?php if (!$exam->is_readonly) : ?>
                     <div style="display: block; float:right; clear: both">
                         <a href="#" class="exam-check-add-students prevent">
                             <span class="btn btn-success btn-sm">
@@ -84,7 +88,7 @@ $security = $check->getSecurity();
                         </a>
                     </div>
             <?php endif; ?>
-    <?php endif; ?>
+<?php endif; ?>
 </div>
 
 <div style="padding-bottom: 3px">
@@ -92,7 +96,7 @@ $security = $check->getSecurity();
             <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has been scheduled (start time is set)</span>
     <?php else : ?>
             <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam has not been scheduled (start time is missing)</span>
-            <?php if (!$readonly) : ?>
+        <?php if (!$exam->is_readonly) : ?>
                     <div style="display: block; float:right; clear: both">
                         <a href="#" class="exam-check-set-starttime prevent">
                             <span class="btn btn-success btn-sm">
@@ -102,13 +106,13 @@ $security = $check->getSecurity();
                         </a>
                     </div>
             <?php endif; ?>
-    <?php endif; ?>
+<?php endif; ?>
 </div>
 
 <div style="padding-bottom: 3px">
     <?php if ($check->isPublished()) : ?>
             <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has been published</span>
-            <?php if (!$readonly) : ?>
+        <?php if (!$exam->is_readonly) : ?>
                     <div style="display: block; float:right; clear: both">
                         <a href="#" class="exam-check-unpublish prevent">
                             <span class="btn btn-success btn-sm">
@@ -120,7 +124,7 @@ $security = $check->getSecurity();
             <?php endif; ?>
     <?php else : ?>
             <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam is not yet published</span>
-            <?php if (!$readonly) : ?>
+        <?php if (!$exam->is_readonly) : ?>
                     <div style="display: block; float:right; clear: both">
                         <a href="#" class="exam-check-publish prevent">
                             <span class="btn btn-success btn-sm">
@@ -130,7 +134,7 @@ $security = $check->getSecurity();
                         </a>
                     </div>
             <?php endif; ?>
-    <?php endif; ?>
+<?php endif; ?>
 </div>
 
 <h3>Security</h3>
@@ -138,13 +142,13 @@ $security = $check->getSecurity();
         <div style="padding-bottom: 3px">
             <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam is using all security settings</span>
         </div>
-<?php else : ?>
+    <?php else : ?>
         <div style="padding-bottom: 3px">
             <?php if ($security & Check::SECURITY_LOCKDOWN) : ?>
                     <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has lockdown enabled</span>
             <?php else : ?>
                     <i class="fa fa-exclamation-circle fa-2x" style="min-width: 30px; color: #c1002b"></i><span>Exam lockdown is not set</span>
-                    <?php if (!$readonly) : ?>
+                <?php if (!$exam->is_readonly) : ?>
                             <div style="display: block; float:right; clear: both">
                                 <a href="#" class="exam-check-set-security prevent">
                                     <span class="btn btn-success btn-sm">
@@ -154,14 +158,14 @@ $security = $check->getSecurity();
                                 </a>
                             </div>
                     <?php endif; ?>
-            <?php endif; ?>
+        <?php endif; ?>
         </div>
         <div style="padding-bottom: 3px">
             <?php if ($security & Check::SECURITY_LOCATION) : ?>
                     <i class="fa fa-check fa-2x" style="min-width: 30px; color: #00d95a"></i><span>Exam has allowed locations set</span>
             <?php else : ?>
                     <i class="fa fa-warning fa-2x" style="min-width: 30px; color: #ffd900"></i><span>Allowed exam locations are not set</span>
-                    <?php if (!$readonly) : ?>
+                <?php if (!$exam->is_readonly) : ?>
                             <div style="display: block; float:right; clear: both">
                                 <a href="#" class="exam-check-set-security prevent">
                                     <span class="btn btn-success btn-sm">
@@ -171,11 +175,11 @@ $security = $check->getSecurity();
                                 </a>
                             </div>
                     <?php endif; ?>
-            <?php endif; ?>
+        <?php endif; ?>
         </div>
 <?php endif; ?>
 
-<?php if (!$readonly) : ?>
+<?php if (!$exam->is_readonly) : ?>
         <div class="oe-dialog-buttons">
             <hr>
             <center>
@@ -217,7 +221,7 @@ $security = $check->getSecurity();
 
 <script>
         $(document).ready(function () {
-            var examId = <?= $exam_id ?>;
+            var examId = <?= $exam->id ?>;
 
             var reloadExamStatus = function () {
                 $.ajax({
