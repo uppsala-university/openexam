@@ -1,5 +1,7 @@
 <?php
 
+use Phalcon\Tag;
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -10,8 +12,6 @@
 // Author:  Ahsan Shahzad (Medfarm DoIT)
 // Author:  Anders Lövgren (QNET)
 // 
-
-use Phalcon\Tag;
 
 function set_resource_defaults($type, $resource, $url)
 {
@@ -27,8 +27,8 @@ function set_resource_defaults($type, $resource, $url)
 
 ?>
 
-<?= Tag::stylesheetLink('plugins/jquery-file-upload/css/jquery.fileupload.css'); ?>
-<?= Tag::javascriptInclude('plugins/jquery-file-upload/js/jquery.fileupload.js'); ?>
+<?= Tag::stylesheetLink('plugins/jquery-file-upload/css/jquery.fileupload.css?ver=9.5.7'); ?>
+<?= Tag::javascriptInclude('plugins/jquery-file-upload/js/jquery.fileupload.js?ver=9.5.7'); ?>
 <?= Tag::javascriptInclude('js/views/media/library.js?rev=1'); ?>
 
 <style>

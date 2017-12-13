@@ -1,4 +1,8 @@
 <?php
+
+use OpenExam\Models\Exam;
+use Phalcon\Tag;
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -15,8 +19,8 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <?= Phalcon\Tag::stylesheetLink("css/font-awesome.css"); ?>
-        <?= Phalcon\Tag::stylesheetLink("css/pdf-rendering.css"); ?>
+        <?= Tag::stylesheetLink("css/font-awesome.css?ver=4.7.0"); ?>
+        <?= Tag::stylesheetLink("css/pdf-rendering.css?rev=1"); ?>
         <title>View results</title>
     </head>
     <style>
@@ -35,13 +39,7 @@
             tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
             });
         </script>
-        <?= Phalcon\Tag::javascriptInclude('js/mathjax/MathJax.js'); ?>
-
-        <?php
-
-        use OpenExam\Models\Exam;
-
-        ?>
+        <?= Tag::javascriptInclude('js/mathjax/MathJax.js'); ?>
 
         <?php $allStudents = $exam->getStudents(); ?>
         <?php foreach ($data['students'] as $student): ?>

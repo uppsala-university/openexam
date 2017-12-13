@@ -1,4 +1,7 @@
 <?php
+
+use Phalcon\Tag;
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -11,11 +14,12 @@
 // 
 
 ?>
+
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <?= Phalcon\Tag::stylesheetLink("css/font-awesome.css"); ?>
-        <?= Phalcon\Tag::stylesheetLink("css/pdf-rendering.css"); ?>
+        <?= Tag::stylesheetLink("css/font-awesome.css?ver=4.7.0"); ?>
+        <?= Tag::stylesheetLink("css/pdf-rendering.css?rev=1"); ?>
         <title><?= $exam->name ?></title>
     </head>
 
@@ -43,7 +47,7 @@
             mathjax_typeset_finished = true;
             });
         </script>
-        <?= Phalcon\Tag::javascriptInclude('js/mathjax/MathJax.js'); ?>
+        <?= Tag::javascriptInclude('js/mathjax/MathJax.js'); ?>
 
         <!-- Main page -->
         <div class="page page-first" style='min-height: 1017px; border-bottom:none' >

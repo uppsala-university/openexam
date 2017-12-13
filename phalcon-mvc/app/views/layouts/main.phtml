@@ -13,11 +13,6 @@ use Phalcon\Tag;
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // Author:  Ahsan Shahzad (MedfarmDoIT)
 // 
-
-?>
-
-<?php
-// 
 // Add profiling check point:
 // 
 $this->profiler->add("view");
@@ -25,25 +20,25 @@ $this->profiler->add("view");
 ?>
 
 <!-- CSS -->
-<?= Tag::stylesheetLink('bootstrap3/css/bootstrap.min.css'); ?>
-<?= Tag::stylesheetLink('bootstrap3/css/bootstrap-theme.min.css'); ?>
-<?= Tag::stylesheetLink('bootstrap3/css/bootstrap-datetimepicker.min.css'); ?>
+<?= Tag::stylesheetLink('bootstrap3/css/bootstrap.min.css?ver=3.3.7'); ?>
+<?= Tag::stylesheetLink('bootstrap3/css/bootstrap-theme.min.css?ver=3.3.7'); ?>
+<?= Tag::stylesheetLink('bootstrap3/css/bootstrap-datetimepicker.min.css?ver=4.17.47'); ?>
 
-<?= Tag::stylesheetLink('plugins/jquery-ui/jquery-ui.min.css'); ?>
+<?= Tag::stylesheetLink('plugins/jquery-ui/jquery-ui.min.css?ver=1.12.1'); ?>
 
 <?= Tag::stylesheetLink("css/standard.css?rev=1"); ?>
 <?= Tag::stylesheetLink("css/accordion.css?rev=1"); ?>
 
-<?= Tag::stylesheetLink("css/font-awesome.min.css"); ?>
-<?= Tag::stylesheetLink("plugins/fancybox-master/dist/jquery.fancybox.min.css"); ?>
+<?= Tag::stylesheetLink("css/font-awesome.min.css?ver=4.7.0"); ?>
+<?= Tag::stylesheetLink("plugins/fancybox-master/dist/jquery.fancybox.min.css?ver=3.2.1"); ?>
 
 <!-- Javascript -->
-<?= Tag::javascriptInclude('js/moment.min.js'); ?>
-<?= Tag::javascriptInclude('bootstrap3/js/bootstrap.min.js'); ?>
-<?= Tag::javascriptInclude('bootstrap3/js/bootstrap-datetimepicker.min.js'); ?>
-<?= Tag::javascriptInclude('plugins/fancybox-master/dist/jquery.fancybox.min.js'); ?>
+<?= Tag::javascriptInclude('js/moment.min.js?ver=2.19.2'); ?>
+<?= Tag::javascriptInclude('bootstrap3/js/bootstrap.min.js?ver=3.3.7'); ?>
+<?= Tag::javascriptInclude('bootstrap3/js/bootstrap-datetimepicker.min.js?ver=4.17.47'); ?>
+<?= Tag::javascriptInclude('plugins/fancybox-master/dist/jquery.fancybox.min.js?ver=3.2.1'); ?>
 
-<?= Tag::javascriptInclude('plugins/jquery-ui/jquery-ui.min.js'); ?>
+<?= Tag::javascriptInclude('plugins/jquery-ui/jquery-ui.min.js?ver=1.12.1'); ?>
 
 <?php
 

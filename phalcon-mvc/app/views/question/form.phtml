@@ -1,5 +1,9 @@
 <?php
 
+use OpenExam\Library\Security\Roles;
+use OpenExam\Models\Question;
+use Phalcon\Tag;
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -9,13 +13,6 @@
 // 
 // Author:  Ahsan Shahzad (MedfarmDoIT)
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
-
-
-use OpenExam\Library\Security\Roles;
-use OpenExam\Models\Question;
-use Phalcon\Tag;
-
 // 
 // Create empty question if rendered from question/create:
 // 
@@ -86,15 +83,18 @@ if ($question->status == 'removed') {
         margin-bottom: 5px;
     }
     .ans_type_selector_box {
-        margin: 10px;
+        margin: 5px 5px 5px 10px;
     }
     .ans_type_selector_box label {
         font-weight: normal;
     }
     .ans_type {
         display: none;
-        margin-left: 25px;
-        padding-bottom: 5px;
+        margin: 0 10px 0 25px;
+        padding-bottom: 10px;
+    }
+    .ans_type input {
+        max-width: 450px;
     }
     .add-new-sortable {
         padding-left: 15px;        
@@ -182,7 +182,7 @@ if ($question->status == 'removed') {
                                                 </label>
                                             </div>
                                             <div class="ans_type" style=" <?= ($qAnsType == 'textbox') ? 'display:block' : 'display:none' ?>">
-                                                <input type="text" style="width:350px" class="readable form-control"/>
+                                                <input type="text" class="readable form-control"/>
                                             </div>
                                         </div>
                                         <div class="ans_type_selector_box_wrap">
@@ -193,7 +193,7 @@ if ($question->status == 'removed') {
                                                 </label>
                                             </div>
                                             <div class="ans_type" style=" <?= ($qAnsType == 'textarea') ? 'display:block' : 'display:none' ?>">
-                                                <?= Tag::image(array("img/ckeditor.png", "width" => '40%')); ?>
+                                                <?= Tag::image(array("img/ckeditor.png", "style" => 'width: 50%; max-width')); ?>
                                                 <div style="margin-top: 5px; padding-left: 15px; border-left: 3px solid #dddddd">
                                                     <?php
                                                     if (isset($qParts[$qPartTitle]['ans_area']['word_count'])) {

@@ -1,5 +1,7 @@
 <?php
 
+use OpenExam\Library\Security\Roles;
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -9,9 +11,6 @@
 // 
 // Author:  Ahsan Shahzad (Medfarm DoIT)
 // 
-
-
-use OpenExam\Library\Security\Roles;
 
 /**
  * Define page sections and section operations along with exam state based permissions.
@@ -114,9 +113,9 @@ return array(
                 ),
                 'show-options' => array(
                         'download-result'   => array(
-                                'target'        => 'exam/{exam-id}/correction/download-result',
+                                'target'        => 'render-decoder',
                                 'show-on-flags' => array(
-                                        "decoded"
+                                        "decoded", "enquiry"
                                 )
                         ),
                         'view-scoreboard'   => array(
@@ -153,9 +152,9 @@ return array(
                                 )
                         ),
                         'download-result' => array(
-                                'target'        => 'exam/{exam-id}/correction/download-results',
+                                'target'        => 'render-decoder',
                                 'show-on-flags' => array(
-                                        "decoded"
+                                        "decoded", "enquiry"
                                 )
                         ),
                         'view-scoreboard' => array(
@@ -196,7 +195,7 @@ return array(
                 ),
                 'show-options' => array(
                         'download-result' => array(
-                                'target'        => 'result/{exam-id}/download',
+                                'target'        => 'render-student',
                                 'show-on-flags' => array(
                                         "decoded"
                                 )

@@ -1,5 +1,7 @@
 <?php
 
+use Phalcon\Tag;
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -10,10 +12,6 @@
 // Author:  Ahsan Shahzad (MedfarmDoIT)
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
-
-use Phalcon\Tag;
-
-// 
 // Add profiling check point:
 // 
 $this->profiler->add("view");
@@ -21,35 +19,35 @@ $this->profiler->add("view");
 ?>
 
 <!-- / bootstrap -->
-<?= Tag::stylesheetLink('bootstrap3/css/bootstrap.min.css'); ?>
+<?= Tag::stylesheetLink('bootstrap3/css/bootstrap.min.css?ver=3.3.7'); ?>
 
 <!-- / theme file -->
-<?= Tag::stylesheetLink(array('thin-layout/stylesheets/light-theme.css', "media" => "all", "id" => "color-settings-body-color")); ?>
-<?= Tag::stylesheetLink('thin-layout/stylesheets/text-zoom.css'); ?>
-<?= Tag::stylesheetLink("plugins/fancybox-master/dist/jquery.fancybox.min.css"); ?>
+<?= Tag::stylesheetLink(array('thin-layout/stylesheets/light-theme.css?rev=1', "media" => "all", "id" => "color-settings-body-color")); ?>
+<?= Tag::stylesheetLink('thin-layout/stylesheets/text-zoom.css?rev=1'); ?>
+<?= Tag::stylesheetLink("plugins/fancybox-master/dist/jquery.fancybox.min.css?ver=3.2.1"); ?>
 
 <!-- / jquery -->
-<?= Tag::javascriptInclude('js/jquery.min.js'); ?>	
+<?= Tag::javascriptInclude('js/jquery.min.js?ver=3.2.1'); ?>	
 
 <!-- / jquery migrate (for compatibility with new jquery) [required] -->
-<?= Tag::javascriptInclude('thin-layout/javascripts/jquery/jquery-migrate.min.js'); ?>
-<?= Tag::javascriptInclude('js/jquery.cookie.js'); ?>
+<?= Tag::javascriptInclude('thin-layout/javascripts/jquery/jquery-migrate.min.js?rev=1'); ?>
+<?= Tag::javascriptInclude('js/jquery.cookie.js?ver=0.99'); ?>
 
 <!-- / bootstrap  -->
-<?= Tag::javascriptInclude('bootstrap3/js/bootstrap.min.js'); ?>
+<?= Tag::javascriptInclude('bootstrap3/js/bootstrap.min.js?ver=3.3.7'); ?>
 
 <!-- / theme file  -->
-<?= Tag::javascriptInclude('thin-layout/javascripts/theme.js'); ?>  
-<?= Tag::javascriptInclude('thin-layout/javascripts/zoom.min.js'); ?>
+<?= Tag::javascriptInclude('thin-layout/javascripts/theme.js?rev=1'); ?>  
+<?= Tag::javascriptInclude('thin-layout/javascripts/zoom.min.js?rev=1'); ?>
 
 <!-- fancy box -->
-<?= Tag::javascriptInclude('plugins/fancybox-master/dist/jquery.fancybox.min.js'); ?>
+<?= Tag::javascriptInclude('plugins/fancybox-master/dist/jquery.fancybox.min.js?ver=3.2.1'); ?>
 
 <!-- Video.js - HTML 5 video with flowplayer drop-in -->
-<?= Tag::javascriptInclude('js/video.min.js'); ?>
-<?= Tag::stylesheetLink('css/video-js.min.css'); ?>
+<?= Tag::javascriptInclude('js/video.min.js?ver=5.11.9'); ?>
+<?= Tag::stylesheetLink('css/video-js.min.css?ver=5.11.9'); ?>
 
-<?= Tag::stylesheetLink("css/font-awesome.css"); ?>
+<?= Tag::stylesheetLink("css/font-awesome.min.css?ver=4.7.0"); ?>
 
 <?php
 $answerData = json_decode($answer->answer, true); // highlight-q
@@ -268,7 +266,7 @@ $allQs = $exam->getQuestions(array(
     tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
     });
 </script>
-<?= Phalcon\Tag::javascriptInclude('js/mathjax/MathJax.js'); ?>
+<?= Tag::javascriptInclude('js/mathjax/MathJax.js'); ?>
 
 <script type="text/javascript">
         $("document").ready(function () {

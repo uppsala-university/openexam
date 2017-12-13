@@ -1,5 +1,8 @@
 <?php
 
+use OpenExam\Library\Security\Roles;
+use Phalcon\Tag;
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -10,10 +13,6 @@
 // Author:  Ahsan Shahzad (Medfarm DoIT)
 // Author:  Anders Lövgren (QNET)
 // 
-
-
-use OpenExam\Library\Security\Roles;
-use Phalcon\Tag;
 
 $sections = include('sections.inc');
 
@@ -230,6 +229,9 @@ foreach ($roles as $role) {
     Dialog for checking exam status.
 -->
 <div id="exam-check-box" style="display:none" title="Exam status check" ></div>    
+
+<div id="render-student-result" style="display:none" title="Download exam result" ></div>    
+<div id="render-decoder-result" style="display:none" title="Download exam result" ></div>    
 
 <?= Tag::javascriptInclude('js/views/exam/index.js?rev=1') ?>
 

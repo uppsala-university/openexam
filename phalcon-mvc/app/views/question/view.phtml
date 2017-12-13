@@ -1,4 +1,7 @@
 <?php
+
+use Phalcon\Tag;
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -13,13 +16,13 @@
 ?>
 
 <!-- TODO: Load only if a question type is canvas -->
-<?= Phalcon\Tag::stylesheetLink("plugins/canvas/css/literallycanvas.css"); ?>
-<?= Phalcon\Tag::stylesheetLink("plugins/ckeditor/skins/notification.css"); ?>
-<?= Phalcon\Tag::javascriptInclude('plugins/canvas/js/react-with-addons.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('plugins/canvas/js/ie_customevent.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('plugins/canvas/js/literallycanvas.min.js'); ?>
+<?= Tag::stylesheetLink("plugins/canvas/css/literallycanvas.css?ver=0.4.14"); ?>
+<?= Tag::stylesheetLink("plugins/ckeditor/skins/notification.css?ver=4"); ?>
+<?= Tag::javascriptInclude('plugins/canvas/js/react-with-addons.js?ver=0.4.14'); ?>
+<?= Tag::javascriptInclude('plugins/canvas/js/ie_customevent.js?ver=0.4.14'); ?>
+<?= Tag::javascriptInclude('plugins/canvas/js/literallycanvas.min.js?ver=0.4.14'); ?>
 
-<?= Phalcon\Tag::javascriptInclude('js/views/question/view.js?rev=1'); ?>
+<?= Tag::javascriptInclude('js/views/question/view.js?rev=1'); ?>
 
 <style>
     .zoomWindow {
@@ -340,10 +343,10 @@
     </div>
 </div>
 
-<?= Phalcon\Tag::javascriptInclude('js/jquery.media.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('js/jquery.elevatezoom.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('plugins/ckeditor/ckeditor.js'); ?>
-<?= Phalcon\Tag::javascriptInclude('plugins/ckeditor/adapters/jquery.js'); ?>
+<?= Tag::javascriptInclude('js/jquery.media.js?ver=0.99'); ?>
+<?= Tag::javascriptInclude('js/jquery.elevatezoom.js?ver=3.0.8'); ?>
+<?= Tag::javascriptInclude('plugins/ckeditor/ckeditor.js?ver=4'); ?>
+<?= Tag::javascriptInclude('plugins/ckeditor/adapters/jquery.js?ver=4'); ?>
 
 <script language="javascript" type="text/javascript">
 <?php if (!$testMode && $viewMode == 'single'): ?>
