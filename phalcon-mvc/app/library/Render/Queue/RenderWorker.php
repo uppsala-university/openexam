@@ -118,8 +118,13 @@ class RenderWorker
          */
         private function render($job)
         {
+                if (!$this->check($job)) {
+                        $job->message = "Pre-condition failed (check details in worker log).";
+                        return;
+                }
+
                 $this->log(sprintf("Rendering job %d", $job->id));
-                
+
                 $job->stime = time();
                 $this->_service->save($job->file, array(array('page' => $job->url)));
                 $job->etime = time();
@@ -128,6 +133,31 @@ class RenderWorker
                 $job->status = Render::STATUS_FINISH;
         }
 
+        /**
+         * Check common problems.
+         * 
+         * @param Render $job The render model.
+         * @return boolean
+         */
+        private function check($job)
+        {
+                $dest = dirname($job->file);
+
+                if (!file_exists($dest)) {
+                        $this->log("The target directory $dest is missing");
+                        return false;
+                }
+                if (!is_writable($dest)) {
+                        $this->log("The target directory $dest is not writable");
+                        return false;
+                }
+
+                return true;
+        }
+
+        /**
+         * Go to sleep.
+         */
         private function sleep()
         {
                 $this->log("Sleeping: No queued jobs");

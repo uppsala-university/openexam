@@ -104,7 +104,7 @@ class RenderTarget extends Component
                                 );
                                 break;
                 }
-                
+
                 $this->usePath($render->path);
         }
 
@@ -130,10 +130,13 @@ class RenderTarget extends Component
         {
                 $file = sprintf("%s/%s", $this->config->application->cacheDir, $target);
                 $path = dirname($file);
-                
+
                 if (!file_exists($path)) {
                         if (!mkdir($path, 0755, true)) {
                                 throw new RenderException("Failed create target directory");
+                        }
+                        if (!is_writable($path)) {
+                                throw new RenderException("Target directory is not writable");
                         }
                 }
         }
