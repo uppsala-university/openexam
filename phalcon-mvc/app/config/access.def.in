@@ -114,7 +114,8 @@ return array(
                         'answer'      => '*',
                         'resource'    => 'read',
                         'file'        => '*',
-                        'corrector'   => 'read'
+                        'corrector'   => 'read',
+                        'result'      => 'read'
                 )
         ),
         // 
