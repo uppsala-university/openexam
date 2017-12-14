@@ -42,6 +42,11 @@ if ($exam->decoded ||
         $exam->show_grades = true;
         $exam->show_percent = true;
 }
+if ($this->user->acquire(array(Roles::CREATOR), $exam->id)) {
+        $exam->show_student_enquiry = true;
+} else {
+        $exam->show_student_enquiry = false;
+}
 
 if ($this->user->acquire(array(Roles::DECODER, Roles::CREATOR), $exam->id)) {
         $exam->show_download = true;
@@ -243,6 +248,11 @@ if (!$exam->show_save) {
     #table-wrapper th {
         background-color: #eaeaea;
     }
+    #table-wrapper tr.enquiry td.student,
+    #table-wrapper tr.enquiry td.student a {
+        background-color: yellow;
+        color: black;
+    }
     #table-wrapper td.student {
         border-bottom:1px #dedede solid; 
         border-right:5px solid #dddddd; 
@@ -398,7 +408,7 @@ if (!$exam->show_save) {
                             }
 
                             ?>
-                            <tr>
+                            <tr class="<?= $student->enquiry ? 'enquiry' : '' ?>" data-id="<?= $student->id ?>">
                                 <?php $totalStudentScore = 0; ?>
                                 <?php
                                 foreach ($questions as $question):
@@ -495,6 +505,13 @@ if (!$exam->show_save) {
                                                title="Download result in PDF-file format" 
                                                href="<?= $this->url->get('result/' . $exam->id . '/download/' . $student->id) ?>">
                                                 <i class="fa fa-file-pdf-o"></i>
+                                            </a>    
+                                    <?php endif; ?> 
+                                    <?php if ($exam->show_student_enquiry): ?>
+                                            <a class="icon toggle-enquiry-student prevent"
+                                               title="Toggle enquiry flag on this student" 
+                                               href="#">
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
                                             </a>    
                                     <?php endif; ?> 
                                     <a class="icon"
@@ -738,7 +755,7 @@ if ($exam->show_user) {
             $(window).resize(function () {
                 $("#table-wrapper-top-scroll > div").width($("#table-wrapper > table").width());
             });
-            
+
             $(window).resize();
 
             // 
@@ -794,6 +811,25 @@ if ($exam->show_user) {
                         showDialogWindow("#exam-decode-box", content.responseText);
                     }
                 });
+            });
+
+            $(document).on('click', '.toggle-enquiry-student', function () {
+                var student = $(this).closest('tr');
+                var enquiry = student.hasClass("enquiry") === false;
+
+                ajax(
+                        baseURL + 'ajax/core/creator/student/update',
+                        JSON.stringify({
+                            id: student.attr('data-id'),
+                            enquiry: enquiry ? 1 : false
+                        }),
+                        function () {
+                            if (enquiry) {
+                                student.addClass("enquiry");
+                            } else {
+                                student.removeClass("enquiry");
+                            }
+                        });
             });
 
             $(document).on('change', '.hide-completed', function () {

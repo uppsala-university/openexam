@@ -70,6 +70,10 @@ class Student extends Role
          */
         public $tag;
         /**
+         * Does this student needs an enquiry?
+         * @var bool 
+         */
+        /**
          * Override start time defined exam object for this student.
          * @var string 
          */
@@ -131,7 +135,7 @@ class Student extends Role
                                 'value' => null
                         )
                 )));
-                
+
                 // 
                 // Required for datetime validator:
                 // 
@@ -159,6 +163,7 @@ class Student extends Role
                         'user'      => 'user',
                         'code'      => 'code',
                         'tag'       => 'tag',
+                        'enquiry'   => 'enquiry',
                         'starttime' => 'starttime',
                         'endtime'   => 'endtime',
                         'finished'  => 'finished'
@@ -207,10 +212,37 @@ class Student extends Role
         }
 
         /**
+         * Called before model is created.
+         */
+        protected function beforeValidationOnCreate()
+        {
+                if (!isset($this->enquiry)) {
+                        $this->enquiry = false;
+                }
+        }
+
+        /**
+         * Called before model is saved.
+         */
+        protected function beforeSave()
+        {
+                $this->enquiry = $this->enquiry ? 'Y' : 'N';
+        }
+
+        /**
+         * Called after model is saved.
+         */
+        protected function afterSave()
+        {
+                $this->enquiry = $this->enquiry == 'Y';
+        }
+
+        /**
          * Called after the model was read.
          */
         protected function afterFetch()
         {
+                $this->enquiry = $this->enquiry == 'Y';
                 $this->persnr = $this->getAttribute(Principal::ATTR_PNR);
                 parent::afterFetch();
         }
