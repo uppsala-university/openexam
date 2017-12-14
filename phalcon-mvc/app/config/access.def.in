@@ -50,7 +50,7 @@ return array(
                         'contributor' => '*',
                         'decoder'     => '*',
                         'invigilator' => '*',
-                        'student'     => 'read',
+                        'student'     => 'modify',
                         'corrector'   => '*',
                         'access'      => '*',
                         'answer'      => 'read',
@@ -185,6 +185,18 @@ return array(
                         'library'     => array('contributor'),
                         'upload'      => array('contributor'),
                         'view'        => array('contributor', 'student')
+                ),
+                'render' => array(
+                        'decoder'     => array('creator', 'decoder', 'corrector'),
+                        'student'     => array('student'),
+                        'find'        => array('creator', 'decoder', 'student'),
+                        'add'         => array('creator', 'decoder', 'student'),
+                        'cancel'      => array('creator', 'decoder', 'student'),
+                        'status'      => array('creator', 'decoder', 'student'),
+                        'result'      => array('creator', 'decoder', 'student'),
+                        'delete'      => array('creator', 'decoder', 'student'),
+                        'refresh'     => array('creator', 'decoder', 'student'),
+                        'download'    => array('creator', 'decoder', 'student')
                 )
         )
 );
