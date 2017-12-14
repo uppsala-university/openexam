@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.34, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.38, for Linux (x86_64)
 --
--- Host: 127.0.0.1    Database: openexam2_audit
+-- Host: localhost    Database: openexam2prod_audit
 -- ------------------------------------------------------
--- Server version	5.6.34-log
+-- Server version	5.6.38-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -58,7 +58,7 @@ CREATE TABLE `admin` (
   KEY `user` (`user`),
   KEY `rid` (`rid`),
   KEY `res` (`res`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -315,6 +315,29 @@ CREATE TABLE `question` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `render`
+--
+
+DROP TABLE IF EXISTS `render`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `render` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
+  `type` char(6) DEFAULT NULL,
+  `user` varchar(60) DEFAULT NULL,
+  `time` datetime DEFAULT NULL,
+  `changes` mediumblob,
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `resource`
 --
 
@@ -426,7 +449,7 @@ CREATE TABLE `setting` (
   KEY `user` (`user`),
   KEY `rid` (`rid`),
   KEY `res` (`res`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -530,4 +553,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-12-13 19:43:21
+-- Dump completed on 2017-12-07 16:01:54

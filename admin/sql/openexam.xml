@@ -6,15 +6,15 @@
 		<field Field="exam_id" Type="int(11)" Null="NO" Key="MUL" Extra="" Comment="" />
 		<field Field="name" Type="varchar(40)" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="addr" Type="varchar(400)" Null="NO" Key="" Extra="" Comment="" />
-		<key Table="access" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="572" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="access" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="572" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="access" Engine="InnoDB" Version="10" Row_format="Compact" Rows="572" Avg_row_length="114" Data_length="65536" Max_data_length="0" Index_length="16384" Data_free="0" Auto_increment="1" Create_time="2017-11-30 11:16:54" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="access" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="413" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="access" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="413" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="access" Engine="InnoDB" Version="10" Row_format="Compact" Rows="413" Avg_row_length="158" Data_length="65536" Max_data_length="0" Index_length="16384" Data_free="0" Auto_increment="1" Create_time="2017-09-18 20:04:43" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="admins">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
 		<field Field="user" Type="varchar(60)" Null="NO" Key="" Extra="" Comment="" />
 		<key Table="admins" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="4" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="admins" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="4" Avg_row_length="28" Data_length="112" Max_data_length="281474976710655" Index_length="2048" Data_free="0" Auto_increment="1" Create_time="2017-11-30 11:16:54" Update_time="2017-11-30 11:16:54" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<options Name="admins" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="4" Avg_row_length="28" Data_length="148" Max_data_length="281474976710655" Index_length="2048" Data_free="36" Auto_increment="1" Create_time="2017-09-18 20:04:43" Update_time="2017-10-29 23:09:12" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="answers">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
@@ -23,10 +23,10 @@
 		<field Field="answered" Type="enum('Y','N')" Null="YES" Key="" Default="N" Extra="" Comment="" />
 		<field Field="answer" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="comment" Type="text" Null="YES" Key="" Extra="" Comment="" />
-		<key Table="answers" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="235293" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="answers" Non_unique="1" Key_name="question_id" Seq_in_index="1" Column_name="question_id" Collation="A" Cardinality="19607" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="answers" Non_unique="1" Key_name="student_id" Seq_in_index="1" Column_name="student_id" Collation="A" Cardinality="39215" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="answers" Engine="InnoDB" Version="10" Row_format="Compact" Rows="235293" Avg_row_length="6059" Data_length="1425735680" Max_data_length="0" Index_length="13664256" Data_free="4194304" Auto_increment="1" Create_time="2017-11-30 11:16:54" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="answers" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="140032" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="answers" Non_unique="1" Key_name="question_id" Seq_in_index="1" Column_name="question_id" Collation="A" Cardinality="8237" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="answers" Non_unique="1" Key_name="student_id" Seq_in_index="1" Column_name="student_id" Collation="A" Cardinality="35008" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="answers" Engine="InnoDB" Version="10" Row_format="Compact" Rows="140032" Avg_row_length="6025" Data_length="843726848" Max_data_length="0" Index_length="11567104" Data_free="4194304" Auto_increment="1" Create_time="2017-09-18 20:04:43" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="audit">
 		<field Field="id" Type="int(11)" Null="YES" Key="" Extra="" Comment="" />
@@ -35,7 +35,7 @@
 		<field Field="user" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="time" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="changes" Type="mediumblob" Null="YES" Key="" Extra="" Comment="" />
-		<options Name="audit" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2017-11-30 11:20:43" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<options Name="audit" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Create_time="2017-09-18 20:06:03" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="computers">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
@@ -46,33 +46,33 @@
 		<field Field="password" Type="varchar(32)" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="created" Type="datetime" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="updated" Type="timestamp" Null="NO" Key="" Default="CURRENT_TIMESTAMP" Extra="on update CURRENT_TIMESTAMP" Comment="" />
-		<key Table="computers" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="651" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="computers" Non_unique="1" Key_name="computers_ibfk_1" Seq_in_index="1" Column_name="room_id" Collation="A" Cardinality="46" Null="YES" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="computers" Engine="InnoDB" Version="10" Row_format="Compact" Rows="651" Avg_row_length="176" Data_length="114688" Max_data_length="0" Index_length="16384" Data_free="0" Auto_increment="1" Create_time="2017-11-30 11:20:43" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="computers" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="599" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="computers" Non_unique="1" Key_name="computers_ibfk_1" Seq_in_index="1" Column_name="room_id" Collation="A" Cardinality="42" Null="YES" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="computers" Engine="InnoDB" Version="10" Row_format="Compact" Rows="599" Avg_row_length="191" Data_length="114688" Max_data_length="0" Index_length="16384" Data_free="0" Auto_increment="1" Create_time="2017-09-18 20:06:03" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="contributors">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
 		<field Field="exam_id" Type="int(11)" Null="NO" Key="MUL" Extra="" Comment="" />
 		<field Field="user" Type="varchar(60)" Null="NO" Key="" Extra="" Comment="" />
-		<key Table="contributors" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="3484" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="contributors" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="3484" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="contributors" Engine="InnoDB" Version="10" Row_format="Compact" Rows="3484" Avg_row_length="61" Data_length="212992" Max_data_length="0" Index_length="98304" Data_free="0" Auto_increment="1" Create_time="2017-11-30 11:20:46" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="contributors" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="2956" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="contributors" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="2956" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="contributors" Engine="InnoDB" Version="10" Row_format="Compact" Rows="2956" Avg_row_length="60" Data_length="180224" Max_data_length="0" Index_length="81920" Data_free="0" Auto_increment="1" Create_time="2017-09-18 20:06:03" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="correctors">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
 		<field Field="question_id" Type="int(11)" Null="NO" Key="MUL" Extra="" Comment="" />
 		<field Field="user" Type="varchar(60)" Null="NO" Key="" Extra="" Comment="" />
-		<key Table="correctors" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="15581" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="correctors" Non_unique="1" Key_name="question_id" Seq_in_index="1" Column_name="question_id" Collation="A" Cardinality="15581" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="correctors" Engine="InnoDB" Version="10" Row_format="Compact" Rows="15581" Avg_row_length="101" Data_length="1589248" Max_data_length="0" Index_length="409600" Data_free="4194304" Auto_increment="1" Create_time="2017-11-30 11:20:50" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="correctors" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="12390" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="correctors" Non_unique="1" Key_name="question_id" Seq_in_index="1" Column_name="question_id" Collation="A" Cardinality="12390" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="correctors" Engine="InnoDB" Version="10" Row_format="Compact" Rows="12390" Avg_row_length="128" Data_length="1589248" Max_data_length="0" Index_length="344064" Data_free="4194304" Auto_increment="1" Create_time="2017-09-18 20:06:03" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="decoders">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
 		<field Field="exam_id" Type="int(11)" Null="NO" Key="MUL" Extra="" Comment="" />
 		<field Field="user" Type="varchar(60)" Null="NO" Key="" Extra="" Comment="" />
-		<key Table="decoders" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="2021" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="decoders" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="2021" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="decoders" Engine="InnoDB" Version="10" Row_format="Compact" Rows="2021" Avg_row_length="64" Data_length="131072" Max_data_length="0" Index_length="65536" Data_free="0" Auto_increment="1" Create_time="2017-11-30 11:20:56" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="decoders" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="1634" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="decoders" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="1634" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="decoders" Engine="InnoDB" Version="10" Row_format="Compact" Rows="1634" Avg_row_length="70" Data_length="114688" Max_data_length="0" Index_length="49152" Data_free="0" Auto_increment="1" Create_time="2017-09-18 20:06:03" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="exams">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
@@ -92,12 +92,12 @@
 		<field Field="orgdep" Type="varchar(100)" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="orggrp" Type="varchar(100)" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="grades" Type="varchar(200)" Null="NO" Key="" Extra="" Comment="" />
-		<field Field="course" Type="varchar(30)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="course" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="code" Type="varchar(20)" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="testcase" Type="enum('Y','N')" Null="NO" Key="" Default="N" Extra="" Comment="" />
 		<field Field="lockdown" Type="varchar(500)" Null="NO" Key="" Default="{&quot;enable&quot;:true}" Extra="" Comment="" />
-		<key Table="exams" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="1554" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="exams" Engine="InnoDB" Version="10" Row_format="Compact" Rows="1554" Avg_row_length="1022" Data_length="1589248" Max_data_length="0" Index_length="0" Data_free="0" Auto_increment="1" Create_time="2017-12-06 11:38:41" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="exams" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="1221" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="exams" Engine="InnoDB" Version="10" Row_format="Compact" Rows="1221" Avg_row_length="1301" Data_length="1589248" Max_data_length="0" Index_length="0" Data_free="0" Auto_increment="1" Create_time="2017-12-06 21:15:14" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="files">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
@@ -108,15 +108,15 @@
 		<field Field="subtype" Type="varchar(25)" Null="NO" Key="" Extra="" Comment="" />
 		<key Table="files" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="0" Null="" Index_type="BTREE" Comment="" Index_comment="" />
 		<key Table="files" Non_unique="1" Key_name="answer_id" Seq_in_index="1" Column_name="answer_id" Collation="A" Cardinality="0" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="files" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="16384" Data_free="0" Auto_increment="1" Create_time="2017-11-30 11:21:04" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<options Name="files" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="16384" Data_free="0" Auto_increment="1" Create_time="2017-09-18 20:06:04" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="invigilators">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
 		<field Field="exam_id" Type="int(11)" Null="NO" Key="MUL" Extra="" Comment="" />
 		<field Field="user" Type="varchar(60)" Null="NO" Key="" Extra="" Comment="" />
-		<key Table="invigilators" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="3219" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="invigilators" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="3219" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="invigilators" Engine="InnoDB" Version="10" Row_format="Compact" Rows="3219" Avg_row_length="61" Data_length="196608" Max_data_length="0" Index_length="114688" Data_free="0" Auto_increment="1" Create_time="2017-11-30 11:21:04" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="invigilators" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="2435" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="invigilators" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="2435" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="invigilators" Engine="InnoDB" Version="10" Row_format="Compact" Rows="2435" Avg_row_length="60" Data_length="147456" Max_data_length="0" Index_length="81920" Data_free="0" Auto_increment="1" Create_time="2017-09-18 20:06:04" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="locks">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
@@ -125,11 +125,11 @@
 		<field Field="exam_id" Type="int(11)" Null="NO" Key="MUL" Extra="" Comment="" />
 		<field Field="acquired" Type="timestamp" Null="NO" Key="" Default="CURRENT_TIMESTAMP" Extra="on update CURRENT_TIMESTAMP" Comment="" />
 		<field Field="status" Type="enum('pending','approved')" Null="NO" Key="" Default="approved" Extra="" Comment="" />
-		<key Table="locks" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="17968" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="locks" Non_unique="1" Key_name="locks_ibfk_1" Seq_in_index="1" Column_name="computer_id" Collation="A" Cardinality="1197" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="locks" Non_unique="1" Key_name="locks_ibfk_2" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="1283" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="locks" Non_unique="1" Key_name="student_id" Seq_in_index="1" Column_name="student_id" Collation="A" Cardinality="17968" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="locks" Engine="InnoDB" Version="10" Row_format="Compact" Rows="17968" Avg_row_length="88" Data_length="1589248" Max_data_length="0" Index_length="1327104" Data_free="4194304" Auto_increment="1" Create_time="2017-11-30 11:21:05" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="locks" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="13476" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="locks" Non_unique="1" Key_name="locks_ibfk_1" Seq_in_index="1" Column_name="computer_id" Collation="A" Cardinality="1123" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="locks" Non_unique="1" Key_name="locks_ibfk_2" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="1036" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="locks" Non_unique="1" Key_name="student_id" Seq_in_index="1" Column_name="student_id" Collation="A" Cardinality="13476" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="locks" Engine="InnoDB" Version="10" Row_format="Compact" Rows="13476" Avg_row_length="117" Data_length="1589248" Max_data_length="0" Index_length="1032192" Data_free="4194304" Auto_increment="1" Create_time="2017-09-18 20:06:04" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="performance">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
@@ -140,8 +140,8 @@
 		<field Field="addr" Type="varchar(60)" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="milestone" Type="enum('minute','hour','day','week','month','year')" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="data" Type="varchar(1024)" Null="NO" Key="" Extra="" Comment="" />
-		<key Table="performance" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="2644" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="performance" Engine="InnoDB" Version="10" Row_format="Compact" Rows="2644" Avg_row_length="601" Data_length="1589248" Max_data_length="0" Index_length="0" Data_free="4194304" Auto_increment="1" Create_time="2017-11-30 11:21:12" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="performance" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="2739" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="performance" Engine="InnoDB" Version="10" Row_format="Compact" Rows="2739" Avg_row_length="580" Data_length="1589248" Max_data_length="0" Index_length="0" Data_free="4194304" Auto_increment="1" Create_time="2017-09-18 20:06:05" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="profile">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
@@ -154,8 +154,8 @@
 		<field Field="addr" Type="varchar(46)" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="server" Type="varchar(60)" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="data" Type="varchar(1024)" Null="NO" Key="" Extra="" Comment="" />
-		<key Table="profile" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="127782" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="profile" Engine="InnoDB" Version="10" Row_format="Compact" Rows="127782" Avg_row_length="833" Data_length="106561536" Max_data_length="0" Index_length="0" Data_free="7340032" Auto_increment="1" Create_time="2017-11-30 11:21:19" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="profile" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="60478" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="profile" Engine="InnoDB" Version="10" Row_format="Compact" Rows="60478" Avg_row_length="824" Data_length="49889280" Max_data_length="0" Index_length="0" Data_free="7340032" Auto_increment="1" Create_time="2017-09-18 20:06:05" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="questions">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
@@ -171,10 +171,26 @@
 		<field Field="status" Type="enum('active','removed')" Null="NO" Key="" Default="active" Extra="" Comment="" />
 		<field Field="comment" Type="text" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="grades" Type="varchar(200)" Null="YES" Key="" Extra="" Comment="" />
-		<key Table="questions" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="8748" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="questions" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="2916" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="questions" Non_unique="1" Key_name="questions_ibfk_2" Seq_in_index="1" Column_name="topic_id" Collation="A" Cardinality="2916" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="questions" Engine="InnoDB" Version="10" Row_format="Compact" Rows="8748" Avg_row_length="7013" Data_length="61358080" Max_data_length="0" Index_length="622592" Data_free="5242880" Auto_increment="1" Create_time="2017-11-30 11:21:47" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="questions" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="9944" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="questions" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="2486" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="questions" Non_unique="1" Key_name="questions_ibfk_2" Seq_in_index="1" Column_name="topic_id" Collation="A" Cardinality="2486" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="questions" Engine="InnoDB" Version="10" Row_format="Compact" Rows="9944" Avg_row_length="5010" Data_length="49823744" Max_data_length="0" Index_length="524288" Data_free="4194304" Auto_increment="1" Create_time="2017-09-18 20:06:11" Collation="utf8_general_ci" Create_options="" Comment="" />
+	</table_structure>
+	<table_structure name="render">
+		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
+		<field Field="exam_id" Type="int(11)" Null="NO" Key="MUL" Extra="" Comment="" />
+		<field Field="queued" Type="timestamp" Null="NO" Key="" Default="CURRENT_TIMESTAMP" Extra="on update CURRENT_TIMESTAMP" Comment="" />
+		<field Field="finish" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="user" Type="varchar(60)" Null="NO" Key="" Extra="" Comment="" />
+		<field Field="url" Type="varchar(300)" Null="NO" Key="" Extra="" Comment="" />
+		<field Field="path" Type="varchar(120)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="wait" Type="int(11)" Null="NO" Key="" Default="0" Extra="" Comment="" />
+		<field Field="type" Type="enum('result','archive','export','extern')" Null="NO" Key="" Default="result" Extra="" Comment="" />
+		<field Field="status" Type="enum('missing','queued','render','finish','failed')" Null="NO" Key="" Default="missing" Extra="" Comment="" />
+		<field Field="message" Type="varchar(100)" Null="YES" Key="" Extra="" Comment="" />
+		<key Table="render" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="0" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="render" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="0" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="render" Engine="InnoDB" Version="10" Row_format="Compact" Rows="0" Avg_row_length="0" Data_length="16384" Max_data_length="0" Index_length="16384" Data_free="0" Auto_increment="1" Create_time="2017-12-07 23:50:18" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="resources">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
@@ -186,9 +202,9 @@
 		<field Field="subtype" Type="varchar(25)" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="user" Type="varchar(60)" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="shared" Type="enum('private','exam','group','global')" Null="YES" Key="" Default="exam" Extra="" Comment="" />
-		<key Table="resources" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="2794" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="resources" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="1397" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="resources" Engine="InnoDB" Version="10" Row_format="Compact" Rows="2794" Avg_row_length="175" Data_length="491520" Max_data_length="0" Index_length="81920" Data_free="0" Auto_increment="1" Create_time="2017-11-30 11:21:58" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="resources" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="2207" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="resources" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="1103" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="resources" Engine="InnoDB" Version="10" Row_format="Compact" Rows="2207" Avg_row_length="193" Data_length="425984" Max_data_length="0" Index_length="98304" Data_free="0" Auto_increment="1" Create_time="2017-09-18 20:06:17" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="results">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
@@ -198,18 +214,18 @@
 		<field Field="correction" Type="enum('waiting','partial','completed','finalized')" Null="NO" Key="" Default="waiting" Extra="" Comment="" />
 		<field Field="score" Type="varchar(1024)" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="comment" Type="text" Null="YES" Key="" Extra="" Comment="" />
-		<key Table="results" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="204432" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="results" Non_unique="1" Key_name="answer_id" Seq_in_index="1" Column_name="answer_id" Collation="A" Cardinality="204432" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="results" Non_unique="1" Key_name="corrector_id" Seq_in_index="1" Column_name="corrector_id" Collation="A" Cardinality="17036" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="results" Non_unique="1" Key_name="question_id" Seq_in_index="1" Column_name="question_id" Collation="A" Cardinality="15725" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="results" Engine="InnoDB" Version="10" Row_format="Compact" Rows="204432" Avg_row_length="167" Data_length="34144256" Max_data_length="0" Index_length="22593536" Data_free="6291456" Auto_increment="1" Create_time="2017-12-06 01:36:18" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="results" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="154923" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="results" Non_unique="1" Key_name="answer_id" Seq_in_index="1" Column_name="answer_id" Collation="A" Cardinality="154923" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="results" Non_unique="1" Key_name="corrector_id" Seq_in_index="1" Column_name="corrector_id" Collation="A" Cardinality="14083" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="results" Non_unique="1" Key_name="question_id" Seq_in_index="1" Column_name="question_id" Collation="A" Cardinality="11065" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="results" Engine="InnoDB" Version="10" Row_format="Compact" Rows="154923" Avg_row_length="179" Data_length="27836416" Max_data_length="0" Index_length="16302080" Data_free="6291456" Auto_increment="1" Create_time="2017-12-06 21:13:54" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="rooms">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
 		<field Field="name" Type="varchar(25)" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="description" Type="text" Null="YES" Key="" Extra="" Comment="" />
-		<key Table="rooms" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="605" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="rooms" Engine="InnoDB" Version="10" Row_format="Compact" Rows="605" Avg_row_length="135" Data_length="81920" Max_data_length="0" Index_length="0" Data_free="0" Auto_increment="1" Create_time="2017-11-30 11:22:18" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="rooms" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="22" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="rooms" Engine="InnoDB" Version="10" Row_format="Compact" Rows="22" Avg_row_length="744" Data_length="16384" Max_data_length="0" Index_length="0" Data_free="0" Auto_increment="1" Create_time="2017-09-18 20:06:25" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="sessions">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
@@ -217,16 +233,16 @@
 		<field Field="data" Type="text" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="created" Type="int(15) unsigned" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="updated" Type="int(15) unsigned" Null="YES" Key="" Extra="" Comment="" />
-		<key Table="sessions" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="4" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="sessions" Non_unique="1" Key_name="session_id" Seq_in_index="1" Column_name="session_id" Collation="A" Cardinality="4" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="sessions" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="4" Avg_row_length="235" Data_length="115780" Max_data_length="281474976710655" Index_length="32768" Data_free="114840" Auto_increment="1" Create_time="2017-11-30 11:22:19" Update_time="2017-12-06 17:34:54" Check_time="2017-11-30 11:22:19" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="sessions" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="33" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="sessions" Non_unique="1" Key_name="session_id" Seq_in_index="1" Column_name="session_id" Collation="A" Cardinality="33" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="sessions" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="33" Avg_row_length="246" Data_length="8128" Max_data_length="281474976710655" Index_length="5120" Data_free="0" Auto_increment="1" Create_time="2017-09-18 20:06:25" Update_time="2017-12-13 23:45:22" Check_time="2017-09-18 20:06:25" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="settings">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
 		<field Field="user" Type="varchar(60)" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="data" Type="text" Null="NO" Key="" Extra="" Comment="" />
 		<key Table="settings" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="28301" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="settings" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="28301" Avg_row_length="112" Data_length="3169712" Max_data_length="281474976710655" Index_length="292864" Data_free="0" Auto_increment="1" Create_time="2017-11-30 11:22:20" Update_time="2017-11-30 11:22:20" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<options Name="settings" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="28301" Avg_row_length="112" Data_length="3169768" Max_data_length="281474976710655" Index_length="292864" Data_free="56" Auto_increment="1" Create_time="2017-09-18 20:06:25" Update_time="2017-10-29 23:13:12" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="students">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
@@ -234,18 +250,19 @@
 		<field Field="user" Type="varchar(60)" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="code" Type="varchar(15)" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="tag" Type="varchar(30)" Null="YES" Key="" Extra="" Comment="" />
+		<field Field="enquiry" Type="enum('Y','N')" Null="NO" Key="" Default="N" Extra="" Comment="" />
 		<field Field="starttime" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="endtime" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="finished" Type="datetime" Null="YES" Key="" Extra="" Comment="" />
-		<key Table="students" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="32774" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="students" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="1927" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="students" Engine="InnoDB" Version="10" Row_format="Compact" Rows="32774" Avg_row_length="80" Data_length="2637824" Max_data_length="0" Index_length="1589248" Data_free="4194304" Auto_increment="1" Create_time="2017-11-30 11:22:20" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="students" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="26249" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="students" Non_unique="1" Key_name="exam_id" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="1312" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="students" Engine="InnoDB" Version="10" Row_format="Compact" Rows="26249" Avg_row_length="100" Data_length="2637824" Max_data_length="0" Index_length="393216" Data_free="0" Auto_increment="1" Create_time="2017-12-13 22:05:20" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="teachers">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
 		<field Field="user" Type="varchar(60)" Null="NO" Key="" Extra="" Comment="" />
-		<key Table="teachers" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="459" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="teachers" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="459" Avg_row_length="28" Data_length="12920" Max_data_length="281474976710655" Index_length="7168" Data_free="0" Auto_increment="1" Create_time="2017-11-30 11:22:26" Update_time="2017-11-30 19:59:09" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="teachers" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="396" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="teachers" Engine="MyISAM" Version="10" Row_format="Dynamic" Rows="396" Avg_row_length="28" Data_length="11184" Max_data_length="281474976710655" Index_length="6144" Data_free="36" Auto_increment="1" Create_time="2017-09-18 20:06:27" Update_time="2017-10-29 23:09:12" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="topics">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
@@ -256,9 +273,9 @@
 		<field Field="randomize" Type="int(11)" Null="NO" Key="" Default="0" Extra="" Comment="" />
 		<field Field="grades" Type="varchar(500)" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="depend" Type="varchar(500)" Null="YES" Key="" Extra="" Comment="" />
-		<key Table="topics" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="1851" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<key Table="topics" Non_unique="1" Key_name="topics_ibfk_1" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="1851" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="topics" Engine="InnoDB" Version="10" Row_format="Compact" Rows="1851" Avg_row_length="97" Data_length="180224" Max_data_length="0" Index_length="65536" Data_free="0" Auto_increment="1" Create_time="2017-11-30 11:22:26" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="topics" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="1553" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<key Table="topics" Non_unique="1" Key_name="topics_ibfk_1" Seq_in_index="1" Column_name="exam_id" Collation="A" Cardinality="1553" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="topics" Engine="InnoDB" Version="10" Row_format="Compact" Rows="1553" Avg_row_length="105" Data_length="163840" Max_data_length="0" Index_length="49152" Data_free="0" Auto_increment="1" Create_time="2017-09-18 20:06:27" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 	<table_structure name="users">
 		<field Field="id" Type="int(11)" Null="NO" Key="PRI" Extra="auto_increment" Comment="" />
@@ -280,8 +297,8 @@
 		<field Field="affiliation" Type="varchar(200)" Null="YES" Key="" Extra="" Comment="" />
 		<field Field="source" Type="varchar(10)" Null="NO" Key="" Extra="" Comment="" />
 		<field Field="created" Type="datetime" Null="NO" Key="" Default="CURRENT_TIMESTAMP" Extra="" Comment="" />
-		<key Table="users" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="114" Null="" Index_type="BTREE" Comment="" Index_comment="" />
-		<options Name="users" Engine="InnoDB" Version="10" Row_format="Compact" Rows="114" Avg_row_length="431" Data_length="49152" Max_data_length="0" Index_length="0" Data_free="0" Auto_increment="1" Create_time="2017-11-30 11:22:27" Collation="utf8_general_ci" Create_options="" Comment="" />
+		<key Table="users" Non_unique="0" Key_name="PRIMARY" Seq_in_index="1" Column_name="id" Collation="A" Cardinality="83" Null="" Index_type="BTREE" Comment="" Index_comment="" />
+		<options Name="users" Engine="InnoDB" Version="10" Row_format="Compact" Rows="83" Avg_row_length="592" Data_length="49152" Max_data_length="0" Index_length="0" Data_free="0" Auto_increment="1" Create_time="2017-09-18 20:06:28" Collation="utf8_general_ci" Create_options="" Comment="" />
 	</table_structure>
 </database>
 </mysqldump>

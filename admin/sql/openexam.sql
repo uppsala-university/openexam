@@ -184,7 +184,7 @@ CREATE TABLE `exams` (
   `orgdep` varchar(100) DEFAULT NULL,
   `orggrp` varchar(100) DEFAULT NULL,
   `grades` varchar(200) NOT NULL,
-  `course` varchar(30) DEFAULT NULL,
+  `course` varchar(20) DEFAULT NULL,
   `code` varchar(20) DEFAULT NULL,
   `testcase` enum('Y','N') NOT NULL DEFAULT 'N',
   `lockdown` varchar(500) NOT NULL DEFAULT '{"enable":true}',
@@ -325,6 +325,31 @@ CREATE TABLE `questions` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `render`
+--
+
+DROP TABLE IF EXISTS `render`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `render` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `exam_id` int(11) NOT NULL,
+  `queued` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `finish` datetime DEFAULT NULL,
+  `user` varchar(60) NOT NULL,
+  `url` varchar(300) NOT NULL,
+  `path` varchar(120) DEFAULT NULL,
+  `wait` int(11) NOT NULL DEFAULT '0',
+  `type` enum('result','archive','export','extern') NOT NULL DEFAULT 'result',
+  `status` enum('missing','queued','render','finish','failed') NOT NULL DEFAULT 'missing',
+  `message` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `exam_id` (`exam_id`),
+  CONSTRAINT `render_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `resources`
 --
 
@@ -433,6 +458,7 @@ CREATE TABLE `students` (
   `user` varchar(60) NOT NULL,
   `code` varchar(15) NOT NULL,
   `tag` varchar(30) DEFAULT NULL,
+  `enquiry` enum('Y','N') NOT NULL DEFAULT 'N',
   `starttime` datetime DEFAULT NULL,
   `endtime` datetime DEFAULT NULL,
   `finished` datetime DEFAULT NULL,
@@ -518,4 +544,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-12-06 19:10:17
+-- Dump completed on 2017-12-14  1:15:12
