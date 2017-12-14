@@ -351,7 +351,7 @@ class ResultController extends GuiController
                 // 
                 // The file path:
                 // 
-                $source = sprintf("%s/results/%d.xls", $this->config->application->cacheDir, $exam->id);
+                $source = sprintf("%s/result/%d.xls", $this->config->application->cacheDir, $exam->id);
                 $target = sprintf("\"%s.xls\"", $exam->name);
 
                 if (!$download) {
