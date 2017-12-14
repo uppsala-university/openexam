@@ -103,7 +103,7 @@ class RenderQueue extends Component
                 $source = new RenderSource($render, $student);
                 $source->setUrl();
 
-                $render->queued = strftime("%x %X");
+                $render->queued = strftime("%Y-%m-%d %T");
                 $render->status = Render::STATUS_QUEUED;
 
                 if (!isset($render->user)) {
