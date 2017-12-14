@@ -39,6 +39,8 @@ if ! [ -d $logdir ]; then
   exit 1
 fi
 
+cd $root;
+
 function start_render_worker()
 {
     echo "Starting OpenExam render queue worker:"
