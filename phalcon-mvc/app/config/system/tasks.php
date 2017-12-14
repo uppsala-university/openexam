@@ -39,6 +39,7 @@ if ($config->application->release) {
 // 
 //$config->dbread->params->adapter->cached = false;
 //$config->dbwrite->params->adapter->cached = false;
+
 // 
 // Add namespace for tasks:
 // 
@@ -50,13 +51,15 @@ $loader->registerNamespaces(
 $loader->register();
 
 // 
-// Inject a limited set of system services:
+// Use system services for task:
 // 
-$ds = include(CONFIG_SYS . "/services.php");
-$di = new Phalcon\DI\FactoryDefault\CLI();
-foreach (array('config', 'dbread', 'dbwrite', 'dbaudit', 'catalog', 'logger', 'cache', 'audit', 'profiler', 'tr', 'render') as $service) {
-        $di->set($service, $ds->get($service));
-}
+$di = include(CONFIG_SYS . "/services.php");
+
+// 
+// Replace some services specific for CLI:
+// 
+$dc = new Phalcon\DI\FactoryDefault\CLI();
+$di->set('router', $dc->get('router'));
 
 // 
 // Use custom dispatcher:
@@ -71,7 +74,7 @@ $di->set('dispatcher', function() use($di) {
 });
 
 // 
-// Use flash service specialized for console.
+// Use flash service specialized for console:
 // 
 $di->set('flash', function() {
         return new OpenExam\Library\Console\Flash();
@@ -89,10 +92,3 @@ if (extension_loaded('posix')) {
             get_current_user(), gethostname()
         ));
 }
-
-// 
-// Replace our special services in default dependency injector:
-// 
-$dd = Phalcon\Di::getDefault();
-$dd->set('user', $di->get('user'));
-$dd->set('flash', $di->get('flash'));
