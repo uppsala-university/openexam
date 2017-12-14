@@ -1,0 +1,404 @@
+<?php
+// 
+// The source code is copyrighted, with equal shared rights, between the
+// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
+// unless otherwise explicit stated elsewhere.
+// 
+// File:    student.phtml
+// Created: 2017-12-08 00:56:51
+// 
+// Author:  Anders Lövgren (QNET)
+// 
+
+?>
+
+<style>
+    #status {
+        color: lightslategray;
+        margin: 10px 0 10px;
+    }
+    .btn-warning a {
+        color: white;
+    }
+</style>
+
+<h2><?= $exam->name ?></h2>
+
+<div class="exam-results">
+    <div class="alert alert-info alert-dismissable">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        This dialog let you download your exam result in PDF-file format.
+        Generated files are kept online for a limited period of time, but can be re-created from here on-demand.
+    </div>
+
+    <div id="error" class="alert alert-danger" style="display: none">
+        <strong class="status">Status</strong>:
+        <span class="message">Error message.</span>
+    </div>
+
+    <div class="wizard-page" id="checking" style="display: none">
+        <div>
+            <i class="fa fa-refresh fa-spin fa-fw"></i>
+            Checking for ready to download file on server. 
+            Plase wait for this step to finish.
+        </div>
+        <div class="oe-dialog-buttons">
+            <hr>
+            <center>
+                <span style="min-width: 10em" class="btn btn-default close-dialog">
+                    <i class="fa fa-close" aria-hidden="true"></i>
+                    <span>Close</span>
+                </span>
+            </center>        
+        </div>
+    </div>
+
+    <div class="wizard-page" id="missing" style="display: none">
+        <div>
+            The PDF-file with you result for this exam is missing. 
+            Click on the generate button to create the file for download.
+        </div>
+        <div class="oe-dialog-buttons">
+            <hr>
+            <center>
+                <span style="min-width: 10em" class="btn btn-default close-dialog">
+                    <i class="fa fa-close" aria-hidden="true"></i>
+                    <span>Close</span>
+                </span>
+                <span style="min-width: 10em" class="btn btn-success" id="generate-result-file">
+                    <i class="fa fa-hourglass-o" aria-hidden="true"></i>
+                    <span>Generate</span>
+                </span>
+            </center>        
+        </div>
+    </div>
+
+    <div class="wizard-page" id="queued" style="display: none">
+        <div>
+            The result file generation has been submitted and is queued for rendering.
+            You can keep this dialog open and wait for the file to be rendered or come back later.
+        </div>
+        <div style="margin-top: 10px">
+            Your job is at position <span id="queue-position"></span> in the render queue.
+        </div>
+        <div class="oe-dialog-buttons">
+            <hr>
+            <center>
+                <span style="min-width: 10em" class="btn btn-default close-dialog">
+                    <i class="fa fa-close" aria-hidden="true"></i>
+                    <span>Close</span>
+                </span>
+                <span style="min-width: 10em" class="btn btn-warning" id="cancel-render-job">
+                    <i class="fa fa-ban" aria-hidden="true"></i>
+                    <span>Cancel</span>
+                </span>
+            </center>        
+        </div>
+    </div>
+
+    <div class="wizard-page" id="render" style="display: none">
+        <div>
+            The result file is currently being rendered.
+            You can keep this dialog open and wait for the file to be rendered or come back later.
+        </div>
+        <div class="oe-dialog-buttons">
+            <hr>
+            <center>
+                <span style="min-width: 10em" class="btn btn-default close-dialog">
+                    <i class="fa fa-close" aria-hidden="true"></i>
+                    <span>Close</span>
+                </span>
+            </center>        
+        </div>
+    </div>
+
+    <div class="wizard-page" id="finish" style="display: none">
+        <div>
+            The render job has finished and ready for download. 
+            Click on regenerate button to render the result again in case formatting or images is missing in the PDF.
+        </div>
+        <div class="oe-dialog-buttons">
+            <hr>
+            <center>
+                <span style="min-width: 10em" class="btn btn-default" id="regenerate-result-file">
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    <span>Regenerate</span>
+                </span>
+                <span style="min-width: 10em" class="btn btn-success" id="download-result-file">
+                    <i class="fa fa-download" aria-hidden="true"></i>
+                    <span>Download</span>
+                </span>
+                <a href="" id="download-result-link" style="display: none"></a>
+            </center>        
+        </div>
+    </div>
+
+    <div class="wizard-page" id="failed" style="display: none">
+        <div>
+            The render job has failed. You can chose to retry it in case it was a temporary failiure.
+            If the problem persist, please report it to <a href="mailto:<?= $contact['addr'] ?>"><?= $contact['name'] ?></a>.
+        </div>
+        <div class="oe-dialog-buttons">
+            <hr>
+            <center>
+                <span style="min-width: 10em" class="btn btn-default" id="retry-last-action">
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                    <span>Retry</span>
+                </span>
+                <span style="min-width: 10em" class="btn btn-warning">
+                    <i class="fa fa-bug" aria-hidden="true"></i>
+                    <a href="mailto:<?= $contact['addr'] ?>">Report</a>
+                </span>
+            </center>        
+        </div>
+    </div>
+
+    <div class="wizard-page" id="cancelled" style="display: none">
+        <div>
+            <i class="fa fa-check fa-lg" aria-hidden="true" style="color: green"></i>
+            Your render job has been cancelled.
+        </div>
+        <div class="oe-dialog-buttons">
+            <hr>
+            <center>
+                <span style="min-width: 10em" class="btn btn-default close-dialog">
+                    <i class="fa fa-close" aria-hidden="true"></i>
+                    <span>Close</span>
+                </span>
+            </center>        
+        </div>
+    </div>
+
+    <div id="status" style="display: none; text-align: center">
+        <br>
+        <span class="message">Status message.</span>
+    </div>
+
+</div>
+
+<script>
+        $(document).ready(function () {
+
+            // 
+            // Used variables:
+            // 
+            var jobid = 0;
+            var examId = <?= $exam->id ?>;
+            var timer = null;
+            var path = null;
+            var user = null;
+            var last = null;
+
+            // 
+            // Send AJAX request to render queue and show different wizard 
+            // depending on response status.
+            // 
+            var sendRequest = function (action, url, data) {
+                $.ajax({
+                    type: "POST",
+                    data: data,
+                    url: url,
+                    success: function (response) {
+                        var content = JSON.parse(response);
+                        showWizardPage(content.result);
+                    },
+                    error: function (response) {
+                        setErrorMessage(response.statusText, response.responseText);
+                        showWizardPage({status: 'failed'});
+                    }
+                });
+
+                setLastAction(action);  // For retry on failure
+            };
+
+            // 
+            // Call this function initial to check download status:
+            // 
+            var checkQueueStatus = function () {
+                showWizardPage("checking");
+                sendRequest('queue-status', baseURL + 'utility/render/find', {
+                    exam_id: examId,
+                    type: 'result'
+                });
+            };
+
+            // 
+            // Check status of render job:
+            // 
+            var checkJobStatus = function (jobid) {
+                sendRequest('job-status', baseURL + 'utility/render/status', {
+                    id: jobid,
+                    type: 'result'
+                });
+            };
+
+            // 
+            // Show wizard page:
+            // 
+            var showWizardPage = function (result) {
+                $(".exam-results .wizard-page").hide();
+                $(".exam-results #" + result.status).show();
+
+                if (result.status === 'queued' || result.status === 'render') {
+                    jobid = result.id;
+
+                    setQueuePosition(result.position);
+                    setStatusMessage("Waiting for render to complete. Last checked " + new Date());
+
+                    if (result.position > 0) {
+                        timer = setTimeout(function () {
+                            checkJobStatus(result.id);
+                        }, result.position * 5000); // Adaptive polling interval
+                    } else {
+                        timer = setTimeout(function () {
+                            checkJobStatus(result.id);
+                        }, 5000);
+                    }
+                }
+
+                if (result.status === 'finish') {
+                    jobid = result.id;
+                    path = result.path;
+                    user = result.user;
+                    setStatusMessage("Render finished on " + new Date());
+                }
+
+                if (result.status === 'cancelled' && result.result === false) {
+                    setStatusMessage("Failed find job for cancelation. Perhaps already completed?");
+                }
+            };
+
+            // 
+            // Set status message:
+            // 
+            var setStatusMessage = function (message) {
+                $(".exam-results #status .message").text(message);
+                $(".exam-results #status").show(200);
+            };
+
+            // 
+            // Set error message:
+            // 
+            var setErrorMessage = function (status, message) {
+                $(".exam-results #error .status").text(status);
+                $(".exam-results #error .message").text(message);
+                $(".exam-results #error").show(200);
+            };
+
+            // 
+            // Set queue postion in dialog:
+            // 
+            var setQueuePosition = function (pos) {
+                $(".exam-results #queue-position").text(pos);
+            };
+
+            // 
+            // Add result file generation to render queue:
+            // 
+            var actionGenerateResultFile = function () {
+                sendRequest('generate', baseURL + 'utility/render/add', {
+                    exam_id: examId,
+                    type: 'result'
+                });
+            };
+
+            // 
+            // Cancel render job:
+            // 
+            var actionCancelRenderJob = function (jobid) {
+                sendRequest('cancel', baseURL + 'utility/render/cancel', {
+                    id: jobid,
+                    type: 'result'
+                });
+                if (timer) {
+                    clearTimeout(timer);
+                    setStatusMessage("");
+                }
+            };
+
+            // 
+            // Download result file:
+            // 
+            var actionDownloadResultFile = function (jobid) {
+                var params = $.param({
+                    id: jobid,
+                    exam_id: examId,
+                    user: user,
+                    type: 'result'
+                });
+
+                $(".exam-results #download-result-link").attr("href", baseURL + 'utility/render/download?' + params);
+                $(".exam-results #download-result-link")[0].click();
+
+                setLastAction('download');
+            };
+
+            // 
+            // Remove rendered file and queue again:
+            // 
+            var actionRegenerateResultFile = function (jobid) {
+                sendRequest('regenerate', baseURL + 'utility/render/refresh', {
+                    exam_id: examId,
+                    type: 'result'
+                });
+            };
+
+            // 
+            // Set last action for retry on failure:
+            // 
+            var setLastAction = function (action) {
+                last = action;
+            };
+
+            // 
+            // Retry last action:
+            // 
+            var retryLastAction = function (action) {
+                switch (action) {
+                    case 'regenerate':
+                        actionRegenerateResultFile(jobid);
+                        break;
+                    case 'download':
+                        actionDownloadResultFile(jobid);
+                        break;
+                    case 'cancel':
+                        actionCancelRenderJob(jobid);
+                        break;
+                    case 'generate':
+                        actionGenerateResultFile();
+                        break;
+
+                }
+            };
+
+            $("#regenerate-result-file").click(function () {
+                actionRegenerateResultFile(jobid);
+            });
+
+            $("#download-result-file").click(function () {
+                actionDownloadResultFile(jobid);
+            });
+
+            $("#cancel-render-job").click(function () {
+                actionCancelRenderJob(jobid);
+            });
+
+            $("#generate-result-file").click(function () {
+                actionGenerateResultFile();
+            });
+
+            $("#retry-last-action").click(function () {
+                retryLastAction(last);
+            });
+
+            $(".exam-results .close-dialog").click(function () {
+                closeDialogWindow("#render-student-result");
+            });
+
+            checkQueueStatus();
+
+            if (oe_module_loaded("render-student")) {
+                return;
+            }
+        });
+</script>

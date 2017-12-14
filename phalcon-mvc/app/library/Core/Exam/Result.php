@@ -27,10 +27,10 @@ use ZipArchive;
 /**
  * Handles result generation and download.
  * 
- * The result is stored as PDF files in phalcon-mvc/cache/results. Directory 
+ * The result is stored as PDF files in phalcon-mvc/cache/result. Directory 
  * structure is like this:
  * 
- * results/
+ * result/
  *   +-- eid            // Exam ID
  *         +-- sid.pdf  // Student ID
  *         +-- sid.pdf  // Student ID
@@ -513,11 +513,11 @@ class Result extends Component
         private function getPath($eid = 0, $sid = 0)
         {
                 if ($eid == 0) {
-                        return sprintf("%s/results", $this->config->application->cacheDir);
+                        return sprintf("%s/result", $this->config->application->cacheDir);
                 } elseif ($sid == 0) {
-                        return sprintf("%s/results/%d", $this->config->application->cacheDir, $eid);
+                        return sprintf("%s/result/%d", $this->config->application->cacheDir, $eid);
                 } else {
-                        return sprintf("%s/results/%d/%d", $this->config->application->cacheDir, $eid, $sid);
+                        return sprintf("%s/result/%d/%d", $this->config->application->cacheDir, $eid, $sid);
                 }
         }
 

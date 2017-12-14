@@ -17,6 +17,10 @@ use OpenExam\Library\Render\Command\RenderImage as RenderImageCommand;
 use OpenExam\Library\Render\Command\RenderPdfDocument as RenderPdfDocumentCommand;
 use OpenExam\Library\Render\Extension\RenderImage as RenderImageExtension;
 use OpenExam\Library\Render\Extension\RenderPdfDocument as RenderPdfDocumentExtension;
+use OpenExam\Library\Render\Queue\RenderQueue;
+use OpenExam\Library\Render\Queue\RenderWorker;
+use OpenExam\Library\Render\Renderer;
+use OpenExam\Models\Render;
 
 /**
  * Render service task.
@@ -37,7 +41,9 @@ class RenderTask extends MainTask implements TaskInterface
                         'header'   => 'Render service for HTML -> PDF/Image',
                         'action'   => '--render',
                         'usage'    => array(
-                                '--pdf|--image --output=file --page=url'
+                                '--pdf|--image --output=file --page=url',
+                                '--worker [--output=file]',
+                                '--queue --page=url --exam=id [--poll]'
                         ),
                         'options'  => array(
                                 '--pdf'         => 'Render PDF document',
@@ -47,6 +53,10 @@ class RenderTask extends MainTask implements TaskInterface
                                 '--globals'     => 'Start input of global render options (can be used multiple times).',
                                 '--type=mime'   => 'Type of image (png, jpg, bmp or svg).',
                                 '--method=type' => 'Use render method (command, extension or service).',
+                                '--worker'      => 'Run render queue worker process',
+                                '--queue'       => 'Add render queue job',
+                                '--exam=id'     => 'Use exam (for --queue only)',
+                                '--poll'        => 'Poll for completion (for --queue only)',
                                 '--force'       => 'Force action even if already applied.',
                                 '--verbose'     => 'Be more verbose.',
                                 '--dry-run'     => 'Just print whats going to be done.'
@@ -73,7 +83,19 @@ class RenderTask extends MainTask implements TaskInterface
                                 array(
                                         'descr'   => 'Render Google using the system render service',
                                         'command' => '--pdf --page=http://www.google.se --output=google.pdf --globals --page-size a4 --grayscale'
-                                )
+                                ),
+                                array(
+                                        'descr'   => 'Start a render queue worker process',
+                                        'command' => '--worker --output=file.log'
+                                ),
+                                array(
+                                        'descr'   => 'Log worker events to stderr',
+                                        'command' => '--worker --output=php://stderr'
+                                ),
+                                array(
+                                        'descr'   => 'Add job to render queue',
+                                        'command' => '--queue --page=http://www.google.se'
+                                ),
                         )
                 );
         }
@@ -135,6 +157,92 @@ class RenderTask extends MainTask implements TaskInterface
         }
 
         /**
+         * Render worker process action.
+         * @param array $params
+         */
+        public function workerAction($params = array())
+        {
+                $this->setOptions($params, 'worker');
+
+                $service = $this->render->getRender(Renderer::FORMAT_PDF);
+                $logfile = $this->_options['output'];
+
+                $worker = new RenderWorker($service, $logfile);
+                $worker->process();
+        }
+
+        /**
+         * Render queue action.
+         * @param array $params
+         */
+        public function queueAction($params = array())
+        {
+                $this->setOptions($params, 'queue');
+
+                $page = $this->_options['page'][0]['page'];
+                $exam = $this->_options['exam'];
+
+                $this->user->setPrimaryRole('render');
+
+                $queue = new RenderQueue();
+                $jobid = $queue->addJob($exam, Render::TYPE_EXTERN, $page);
+
+                if ($this->_options['poll']) {
+                        pollJobResult($jobid);
+                }
+        }
+
+        /**
+         * Poll for render job to complete.
+         * @param int $jobid The job ID.
+         */
+        private function pollJobResult($jobid)
+        {
+                $done = false;
+
+                while (!$done) {
+                        if (!($status = $queue->getStatus($jobid))) {
+                                $this->flash->error("Failed get status of job $jobid");
+                                break;
+                        }
+
+                        if ($this->_options['verbose']) {
+                                $this->flash->notice(print_r($status->dump(), true));
+                        }
+
+                        switch ($status->status) {
+                                case Render::STATUS_FAILED:
+                                        $this->flash->notice("The job has failed");
+                                        $done = true;
+                                        break;
+                                case Render::STATUS_FINISH:
+                                        $this->flash->notice("The job has finished");
+                                        $done = true;
+                                        break;
+                                case Render::STATUS_MISSING:
+                                        $this->flash->notice("The job is missing");
+                                        $done = true;
+                                        break;
+                                case Render::STATUS_QUEUED:
+                                        $this->flash->notice("The job has been queued");
+                                        break;
+                                case Render::STATUS_RENDER:
+                                        $this->flash->notice("The job is rendering");
+                                        break;
+                                default:
+                                        $this->flash->warning(sprintf("Unhandled status %s of job $jobid", $status->status));
+                        }
+
+                        sleep(1);
+                        $this->flash->notice("Polling...");
+                }
+
+                if ($this->_options['verbose']) {
+                        $this->flash->success(print_r($status->dump(), true));
+                }
+        }
+
+        /**
          * Set options from task action parameters.
          * @param array $params The task action parameters.
          * @param string $action The calling action.
@@ -149,7 +257,7 @@ class RenderTask extends MainTask implements TaskInterface
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'force', 'dry-run', 'type', 'page', 'output', 'globals', 'png', 'jpg', 'jpeg', 'bmp', 'svg', 'method', 'extension', 'command', 'service');
+                $options = array('verbose', 'force', 'dry-run', 'type', 'page', 'output', 'globals', 'png', 'jpg', 'jpeg', 'bmp', 'svg', 'method', 'extension', 'command', 'service', 'worker', 'queue', 'exam', 'poll');
                 $current = $action;
 
                 // 

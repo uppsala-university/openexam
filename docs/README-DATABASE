@@ -225,7 +225,8 @@
 
         o) mutable:
             Same as request except that cached keys are cleaned up on update, insert or
-            delete on a table.
+            delete on a table. Notice that cleanup affects only the requesting process
+            itself.
 
         o) readonce:
             Cache entries are read once. The query result gets cached and is deleted
@@ -240,6 +241,9 @@
             This is the handler that gives optimal performance. All queries are simply
             cached and left to the cache backend to cleanup when the TTL for each cache
             entry expires.
+
+    Notice: If you are going to run long time tasks (i.e. render worker), then don't use 
+            mutable or request as the adapter mediator.
 
     The default mediator handler is mutable and gives a good mix between keeping cache
     in sync with database while giving sufficient performance for frequent access to the

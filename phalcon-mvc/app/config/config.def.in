@@ -217,7 +217,11 @@ return array(
                         'scores'  => false,
                         'summary' => true,
                         'code'    => false
-                )        
+                ),
+                /**
+                 * Should exam results be available readonly for any authenticated user?
+                 */
+                'public'  => true
         ),
         /**
          * Configuration for the render service.

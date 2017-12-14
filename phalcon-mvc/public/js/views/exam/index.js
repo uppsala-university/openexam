@@ -258,6 +258,34 @@ $(document).ready(function () {
     });
 
     // 
+    // Show render student result dialog:
+    // 
+    $(document).on('click', '.render-student', function () {
+        var examId = $(this).attr('data-id');
+        $.ajax({
+            type: "POST",
+            url: baseURL + 'utility/render/student/' + examId,
+            success: function (content) {
+                showDialogWindow("#render-student-result", content);
+            }
+        });
+    });
+
+    // 
+    // Show render decoder result dialog:
+    // 
+    $(document).on('click', '.render-decoder', function () {
+        var examId = $(this).attr('data-id');
+        $.ajax({
+            type: "POST",
+            url: baseURL + 'utility/render/decoder/' + examId,
+            success: function (content) {
+                showDialogWindow("#render-decoder-result", content);
+            }
+        });
+    });
+
+    // 
     // Show exam duplicate dialog:
     // 
     $(document).on('click', '.reuse-exam', function () {

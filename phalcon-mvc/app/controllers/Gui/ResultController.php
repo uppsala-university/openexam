@@ -52,6 +52,8 @@ class ResultController extends GuiController
          * 
          * @param int $eid The exam ID.
          * @param int $sid The student ID.
+         * 
+         * @deprecated since 2.1.2
          */
         public function generateAction($eid, $sid)
         {
@@ -101,6 +103,8 @@ class ResultController extends GuiController
          * 
          * @param int $eid The exam ID.
          * @param int $sid The student ID.
+         * 
+         * @deprecated since 2.1.2
          */
         public function downloadAction($eid, $sid = 0)
         {
@@ -228,7 +232,7 @@ class ResultController extends GuiController
                         // Fetch answers and result data against this question:
                         // 
                         $answers = $question->getAnswers(
-                            "question_id = " . $question->id
+                            "question_id = " . $question->id . " AND student_id = " . $student->id
                         );
 
                         foreach ($answers as $answer) {
@@ -304,6 +308,8 @@ class ResultController extends GuiController
 
         /**
          * Generate exam summary to show to teachers.
+         * 
+         * @deprecated since 2.1.2
          */
         public function summaryAction()
         {

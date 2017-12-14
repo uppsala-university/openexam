@@ -252,7 +252,7 @@ class Mediator extends Proxy
                 // 
                 // Collect joined tables in array:
                 // 
-                $tables = array('access', 'admins', 'audit', 'computers', 'contributors', 'correctors', 'decoders', 'exams', 'files', 'invigilators', 'locks', 'notify', 'performance', 'profile', 'questions', 'resources', 'results', 'rooms', 'sessions', 'settings', 'students', 'teachers', 'topics', 'users', 'answers');
+                $tables = array('answers', 'access', 'admins', 'audit', 'computers', 'contributors', 'correctors', 'decoders', 'exams', 'files', 'invigilators', 'locks', 'notify', 'performance', 'profile', 'questions', 'render', 'resources', 'results', 'rooms', 'sessions', 'settings', 'students', 'teachers', 'topics', 'users');
                 $cached = array();
 
                 foreach ($tables as $table) {
