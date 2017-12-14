@@ -115,7 +115,8 @@ return array(
                         'resource'    => 'read',
                         'file'        => '*',
                         'corrector'   => 'read',
-                        'result'      => 'read'
+                        'result'      => 'read',
+                        'student'     => 'read'
                 )
         ),
         // 
