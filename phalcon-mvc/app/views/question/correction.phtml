@@ -261,7 +261,8 @@ if (!$exam->show_save) {
         background-color:#ffffcc;
     }
     @media screen and (max-width: 40.5em) {
-        #table-wrapper {
+        #table-wrapper,
+        #table-wrapper-top-scroll {
             width: calc(100% - 100px);
             margin-left: 98px;
         }
@@ -275,7 +276,8 @@ if (!$exam->show_save) {
     }
 
     @media screen and (max-width: 25em) {
-        #table-wrapper {
+        #table-wrapper,
+        #table-wrapper-top-scroll {
             width: calc(100% - 60px);
             margin-left: 58px;
         }
@@ -733,7 +735,11 @@ if ($exam->show_user) {
                 $("#table-wrapper-top-scroll")
                         .scrollLeft($("#table-wrapper").scrollLeft());
             });
-            $("#table-wrapper-top-scroll > div").width($("#table-wrapper > table").width());
+            $(window).resize(function () {
+                $("#table-wrapper-top-scroll > div").width($("#table-wrapper > table").width());
+            });
+            
+            $(window).resize();
 
             // 
             // Attach fancybox on anchors:
