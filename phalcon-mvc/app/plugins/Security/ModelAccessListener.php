@@ -15,6 +15,7 @@ namespace OpenExam\Plugins\Security;
 
 use OpenExam\Library\Security\Exception;
 use OpenExam\Library\Security\Roles;
+use OpenExam\Models\Role;
 use OpenExam\Plugins\Security\Model\ObjectAccess;
 use Phalcon\Events\Event;
 use Phalcon\Events\EventsAwareInterface;
@@ -242,6 +243,13 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
                                 "Denied %s access on %s(id=%d) (unauthenticated user)", $action, $name, $model->id
                         ));
                         throw new Exception("Authentication required", Exception::AUTH);
+                }
+
+                // 
+                // Reading own role should always be permitted:
+                // 
+                if ($model instanceof Role && $model->user == $user->getPrincipalName()) {
+                        return true;
                 }
 
                 // 
