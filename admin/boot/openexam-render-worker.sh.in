@@ -1,0 +1,70 @@
+#!/bin/sh
+# 
+# Run render queue worker process.
+#
+# Author: Anders Lövgren
+# Date:   2017-12-14
+
+# This script directory:
+cwd="$(dirname $(realpath $0))"
+
+# The phalcon directory:
+root="$(realpath $cwd/../../phalcon-mvc)"
+
+# Web server user:
+user="apache"
+
+# Script to run:
+script="$root/script/openexam.php"
+
+# Destination directory for logfiles:
+logdir="/var/log/openexam"
+
+# Extra options:
+#options="--verbose --force --output=$logdir/render-worker-$$.log"
+
+# Number of processes:
+processes="1"
+
+if ! [ -e $script ]; then
+  echo "$0: missing script $script"
+  exit 1
+fi
+if ! [ -d $root ]; then
+  echo "$0: missing application directory $root"
+  exit 1
+fi
+if ! [ -d $logdir ]; then
+  echo "$0: missing log files directory $logdir"
+  exit 1
+fi
+
+function start_render_worker()
+{
+    echo "Starting OpenExam render queue worker:"
+    for p in $processes; do
+        echo "  `basename $script` --render --worker $options $*"
+        exec /usr/bin/sudo -u $user /usr/bin/php $script --render --worker $options $* &
+    done
+}
+
+function stop_render_worker()
+{
+    echo "Stopping OpenExam render queue worker"
+    pkill -xf "/usr/bin/sudo -u $user /usr/bin/php $script --render --worker.*"
+}
+
+case "$1" in
+    start)
+        start_render_worker
+        ;;
+    stop)
+        stop_render_worker
+        ;;
+    restart)
+        stop_render_worker
+        start_render_worker
+        ;;
+    *)
+        echo "usage: $0 start|stop"
+esac
