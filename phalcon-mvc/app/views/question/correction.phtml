@@ -1,5 +1,10 @@
 <?php
 
+use OpenExam\Library\Security\Roles;
+use OpenExam\Models\Exam;
+use OpenExam\Models\Student;
+use Phalcon\Tag;
+
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -10,12 +15,6 @@
 // Author:  Ahsan Shahzad (Medfarm DoIT)
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // 
-
-
-use OpenExam\Library\Security\Roles;
-use OpenExam\Models\Exam;
-use OpenExam\Models\Student;
-use Phalcon\Tag;
 
 $overallQuestScore = array();
 $totalStudentScore = 0;
@@ -128,12 +127,17 @@ if (!$exam->show_save) {
         );
 }
 
+// 
+// Disable for now:
+// 
+$exam->show_zipfile = false;
+
 ?>
 
-<?= Tag::stylesheetLink('css/opentip.css'); ?>
+<?= Tag::stylesheetLink('css/opentip.css?ver=2.4.6'); ?>
 
-<?= Tag::javascriptInclude('js/opentip-jquery.min.js'); ?>
-<?= Tag::javascriptInclude('js/opentip-style.js'); ?>
+<?= Tag::javascriptInclude('js/opentip-jquery.min.js?ver=2.4.6'); ?>
+<?= Tag::javascriptInclude('js/opentip-style.js?rev=1'); ?>
 
 <style>
     #scoreboard-wrapper {
@@ -145,9 +149,6 @@ if (!$exam->show_save) {
     .progress-label {
         font-weight: bold;
         text-shadow: 1px 1px 0 #fff;
-    }
-    .ui-dialog-titlebar-close {
-        display: none;
     }
     .sortme {
         cursor:pointer !important;
@@ -319,8 +320,8 @@ if (!$exam->show_save) {
                     </a> 
             <?php endif; ?>
 
-            <?php if ($exam->show_user): ?>
-                    <a href="#" id="download-results" class="prevent" title="Download zip-file containing all students result">
+            <?php if ($exam->show_zipfile): ?>
+                    <a href="<?= $zippath ?>" id="download-results" title="Download zip-file containing all students result">
                         <i class="fa fa-file-pdf-o" style="float:right;padding:3px"></i>
                     </a> 
             <?php endif; ?>
@@ -501,9 +502,10 @@ if (!$exam->show_save) {
                                 <?php endforeach; ?>
                                 <td class="student">
                                     <?php if ($exam->show_user): ?>
-                                            <a class="icon"
-                                               title="Download result in PDF-file format" 
-                                               href="<?= $this->url->get('result/' . $exam->id . '/download/' . $student->id) ?>">
+                                            <a class="icon render-student prevent"
+                                               title="Download student result in PDF-file format" 
+                                               href="#"
+                                               data-user="<?= $student->user ?>">
                                                 <i class="fa fa-file-pdf-o"></i>
                                             </a>    
                                     <?php endif; ?> 
@@ -701,6 +703,9 @@ if (!$exam->show_save) {
 
 <div id="exam-decode-box" title="Exam decode wizard" style="display: none"></div>
 
+<div id="render-student-result" style="display:none" title="Download exam result" ></div>    
+<div id="render-decoder-result" style="display:none" title="Download exam result" ></div>    
+
 <?php
 // 
 // Question is currently first in table. Calculate number of columns last in
@@ -798,6 +803,18 @@ if ($exam->show_user) {
                 var tmp = [];
                 tmp.push($(this).attr('ans-id'));
                 saveResults(tmp);
+            });
+
+            $(document).on('click', '.render-student', function () {
+                var user = $(this).attr('data-user');
+                $.ajax({
+                    type: "POST",
+                    data: {type: 'result', user: user},
+                    url: baseURL + 'utility/render/student/' + examId,
+                    success: function (content) {
+                        showDialogWindow("#render-student-result", content);
+                    }
+                });
             });
 
             $(document).on('click', '#decode-exam', function () {
@@ -1174,94 +1191,4 @@ if ($exam->show_user) {
             };
         });
 
-        $(function () {
-            var progressTimer,
-                    progressbar = $("#progressbar"),
-                    progressLabel = $(".progress-label"),
-                    dialogButtons = [{
-                            text: "Cancel Download",
-                            click: closeDownload
-                        }],
-                    dialog = $("#dialog").dialog({
-                autoOpen: false,
-                closeOnEscape: false,
-                resizable: false,
-                modal: true,
-                buttons: dialogButtons,
-                open: function () {
-                    progressTimer = setTimeout(progress, 0);
-                },
-                beforeClose: function () {
-                    downloadButton.button("option", {
-                        disabled: false
-                    });
-                    downloadButton.find('.download-msg').html('Download result of all students');
-                }
-            }),
-                    downloadButton = $("#download-results")
-                    .on("click", function () {
-                        // 
-                        // Send AJAX requests to generate results:
-                        // 
-                        $.each(stIds, function (i, stId) {
-
-                            $.ajax({
-                                type: "POST",
-                                url: baseURL + 'result/' + examId + '/generate/' + stId,
-                                data: {stId: stId}
-                            })
-                                    .done(function (resp) {
-                                        resp = jQuery.parseJSON(resp);
-                                        completedRequests[resp.stId] = 1;
-                                    });
-
-                        });
-                        $(this).button("option", {
-                            disabled: true
-                        });
-                        $(this).find('.download-msg').html('Generating result ...');
-                        dialog.dialog("open");
-                    });
-
-            progressbar.progressbar({
-                value: false,
-                change: function () {
-                    progressLabel.text("Current Progress: " + progressbar.progressbar("value") + "%");
-                },
-                complete: function () {
-                    closeDownload();
-                    location.href = baseURL + 'result/' + examId + '/download';
-                }
-            });
-
-            function progress() {
-
-                $('#ajax-loader').hide();
-
-                var val = (((objectLength(completedRequests) + 1) / objectLength(stIds)) * 100) || 0;
-                progressbar.progressbar("value", Math.round(val));
-
-                if (val <= 99) {
-                    progressTimer = setTimeout(progress, 50);
-                }
-            }
-
-            function closeDownload() {
-                clearTimeout(progressTimer);
-                dialog
-                        .dialog("option", "buttons", dialogButtons)
-                        .dialog("close");
-
-                progressbar.progressbar("value", false);
-
-                progressLabel
-                        .text("Starting download...");
-
-                downloadButton.focus();
-            }
-
-<?php if (stristr($_SERVER['REQUEST_URI'], 'download-result')): ?>
-                    $("#download-results").trigger('click');
-<?php endif; ?>
-        });
 </script>

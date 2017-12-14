@@ -165,6 +165,9 @@ class RenderController extends GuiController
                 if (!($eid = $this->filter->sanitize($eid, "int"))) {
                         throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
+                if (!($user = $this->request->get("user", "string"))) {
+                        $user = $this->user->getPrincipalName();
+                }
 
                 // 
                 // Check route access:
@@ -187,6 +190,7 @@ class RenderController extends GuiController
                 // 
                 $this->view->setVars(array(
                         'exam'    => $exam,
+                        'user'    => $user,
                         'contact' => $this->config->contact->toArray()
                 ));
         }
@@ -211,6 +215,9 @@ class RenderController extends GuiController
                 if (!($type = $this->request->get("type", "string"))) {
                         throw new Exception("Missing or invalid type", Error::PRECONDITION_FAILED);
                 }
+                if (!($user = $this->request->get("user", "string"))) {
+                        $user = $this->user->getPrincipalName();
+                }
 
                 // 
                 // Check route access:
@@ -218,22 +225,6 @@ class RenderController extends GuiController
                 $this->checkAccess(array(
                         'eid' => $eid
                 ));
-
-                // 
-                // Students can't pass user explicit:
-                // 
-                if ($this->request->has("user")) {
-                        if ($this->user->getPrimaryRole() == Roles::STUDENT) {
-                                throw new Exception("Students are not allowed to pass user explicit", Error::BAD_REQUEST);
-                        }
-                }
-
-                // 
-                // Render for caller unless user is passed:
-                // 
-                if (!($user = $this->dispatcher->getParam("user"))) {
-                        $user = $this->user->getPrincipalName();
-                }
 
                 // 
                 // Find job in queue:
@@ -272,6 +263,9 @@ class RenderController extends GuiController
                 if (!($type = $this->request->get("type", "string"))) {
                         throw new Exception("Missing or invalid type", Error::PRECONDITION_FAILED);
                 }
+                if (!($user = $this->request->get("user", "string"))) {
+                        $user = $this->user->getPrincipalName();
+                }
 
                 // 
                 // Check route access:
@@ -279,22 +273,6 @@ class RenderController extends GuiController
                 $this->checkAccess(array(
                         'eid' => $eid
                 ));
-
-                // 
-                // Students can't pass user explicit:
-                // 
-                if ($this->request->has("user")) {
-                        if ($this->user->getPrimaryRole() == Roles::STUDENT) {
-                                throw new Exception("Students are not allowed to pass user explicit", Error::BAD_REQUEST);
-                        }
-                }
-
-                // 
-                // Render for caller unless user is passed:
-                // 
-                if (!($user = $this->dispatcher->getParam("user"))) {
-                        $user = $this->user->getPrincipalName();
-                }
 
                 // 
                 // Assign all request parameters:
@@ -466,6 +444,9 @@ class RenderController extends GuiController
                 if (!($type = $this->request->get("type", "string"))) {
                         throw new Exception("Missing or invalid type", Error::PRECONDITION_FAILED);
                 }
+                if (!($user = $this->request->get("user", "string"))) {
+                        $user = $this->user->getPrincipalName();
+                }
 
                 // 
                 // Check route access:
@@ -473,22 +454,6 @@ class RenderController extends GuiController
                 $this->checkAccess(array(
                         'eid' => $eid
                 ));
-
-                // 
-                // Students can't pass user explicit:
-                // 
-                if ($this->request->has("user")) {
-                        if ($this->user->getPrimaryRole() == Roles::STUDENT) {
-                                throw new Exception("Students are not allowed to pass user explicit", Error::BAD_REQUEST);
-                        }
-                }
-
-                // 
-                // Render for caller unless user is passed:
-                // 
-                if (!($user = $this->dispatcher->getParam("user"))) {
-                        $user = $this->user->getPrincipalName();
-                }
 
                 // 
                 // Find job in queue:
@@ -531,20 +496,13 @@ class RenderController extends GuiController
                         throw new Exception("Missing or invalid type", Error::PRECONDITION_FAILED);
                 }
                 if (!($user = $this->request->get("user", "string"))) {
-                        throw new Exception("Missing or invalid user", Error::PRECONDITION_FAILED);
+                        $user = $this->user->getPrincipalName();
                 }
 
                 // 
                 // Check route access:
                 // 
                 $this->checkAccess(array());
-
-                // 
-                // Render for caller unless user is passed:
-                // 
-                if (!($user = $this->dispatcher->getParam("user"))) {
-                        $user = $this->user->getPrincipalName();
-                }
 
                 // 
                 // Find job in queue:
@@ -556,7 +514,7 @@ class RenderController extends GuiController
                 // The render job should have finished status:
                 // 
                 if ($model->status != Render::STATUS_FINISH) {
-                        throw new Exception("The rener job has not finished yet", Error::PRECONDITION_FAILED);
+                        throw new Exception("The render job has not finished yet", Error::PRECONDITION_FAILED);
                 }
 
                 // 

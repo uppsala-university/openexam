@@ -182,12 +182,14 @@
             // 
             // Used variables:
             // 
-            var jobid = 0;
-            var examId = <?= $exam->id ?>;
             var timer = null;
-            var path = null;
-            var user = null;
             var last = null;
+            var data = {
+                id: 0,
+                exam_id: <?= $exam->id ?>,
+                user: "<?= $user ?>",
+                type: 'result'
+            };
 
             // 
             // Send AJAX request to render queue and show different wizard 
@@ -200,6 +202,7 @@
                     url: url,
                     success: function (response) {
                         var content = JSON.parse(response);
+                        setResponseData(content.result);
                         showWizardPage(content.result);
                     },
                     error: function (response) {
@@ -217,8 +220,9 @@
             var checkQueueStatus = function () {
                 showWizardPage("checking");
                 sendRequest('queue-status', baseURL + 'utility/render/find', {
-                    exam_id: examId,
-                    type: 'result'
+                    exam_id: data.exam_id,
+                    type: data.type,
+                    user: data.user
                 });
             };
 
@@ -227,8 +231,9 @@
             // 
             var checkJobStatus = function (jobid) {
                 sendRequest('job-status', baseURL + 'utility/render/status', {
-                    id: jobid,
-                    type: 'result'
+                    id: data.id,
+                    type: data.type,
+                    user: data.user
                 });
             };
 
@@ -240,8 +245,6 @@
                 $(".exam-results #" + result.status).show();
 
                 if (result.status === 'queued' || result.status === 'render') {
-                    jobid = result.id;
-
                     setQueuePosition(result.position);
                     setStatusMessage("Waiting for render to complete. Last checked " + new Date());
 
@@ -257,9 +260,6 @@
                 }
 
                 if (result.status === 'finish') {
-                    jobid = result.id;
-                    path = result.path;
-                    user = result.user;
                     setStatusMessage("Render finished on " + new Date());
                 }
 
@@ -297,8 +297,9 @@
             // 
             var actionGenerateResultFile = function () {
                 sendRequest('generate', baseURL + 'utility/render/add', {
-                    exam_id: examId,
-                    type: 'result'
+                    exam_id: data.exam_id,
+                    type: data.type,
+                    user: data.user
                 });
             };
 
@@ -307,8 +308,9 @@
             // 
             var actionCancelRenderJob = function (jobid) {
                 sendRequest('cancel', baseURL + 'utility/render/cancel', {
-                    id: jobid,
-                    type: 'result'
+                    id: data.id,
+                    type: data.type,
+                    user: data.user
                 });
                 if (timer) {
                     clearTimeout(timer);
@@ -321,10 +323,10 @@
             // 
             var actionDownloadResultFile = function (jobid) {
                 var params = $.param({
-                    id: jobid,
-                    exam_id: examId,
-                    user: user,
-                    type: 'result'
+                    id: data.id,
+                    exam_id: data.exam_id,
+                    type: data.type,
+                    user: data.user
                 });
 
                 $(".exam-results #download-result-link").attr("href", baseURL + 'utility/render/download?' + params);
@@ -338,8 +340,9 @@
             // 
             var actionRegenerateResultFile = function (jobid) {
                 sendRequest('regenerate', baseURL + 'utility/render/refresh', {
-                    exam_id: examId,
-                    type: 'result'
+                    exam_id: data.exam_id,
+                    type: data.type,
+                    user: data.user
                 });
             };
 
@@ -350,19 +353,23 @@
                 last = action;
             };
 
+            var setResponseData = function (result) {
+                data = result;
+            };
+
             // 
             // Retry last action:
             // 
             var retryLastAction = function (action) {
                 switch (action) {
                     case 'regenerate':
-                        actionRegenerateResultFile(jobid);
+                        actionRegenerateResultFile(data.id);
                         break;
                     case 'download':
-                        actionDownloadResultFile(jobid);
+                        actionDownloadResultFile(data.id);
                         break;
                     case 'cancel':
-                        actionCancelRenderJob(jobid);
+                        actionCancelRenderJob(data.id);
                         break;
                     case 'generate':
                         actionGenerateResultFile();
@@ -372,15 +379,15 @@
             };
 
             $("#regenerate-result-file").click(function () {
-                actionRegenerateResultFile(jobid);
+                actionRegenerateResultFile(data.id);
             });
 
             $("#download-result-file").click(function () {
-                actionDownloadResultFile(jobid);
+                actionDownloadResultFile(data.id);
             });
 
             $("#cancel-render-job").click(function () {
-                actionCancelRenderJob(jobid);
+                actionCancelRenderJob(data.id);
             });
 
             $("#generate-result-file").click(function () {

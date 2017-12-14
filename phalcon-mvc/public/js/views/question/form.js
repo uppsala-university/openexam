@@ -117,22 +117,6 @@ $(document).ready(function () {
         }
     });
 
-    setTimeout(function () {
-        if (!qIsEditable) {
-            $("#question-form-dialog-wrap").dialog("option", "buttons",
-                    [
-                        {
-                            text: "Cancel",
-                            click: function () {
-                                closeToolTips();
-                                $(this).dialog('destroy');
-                            }
-                        }
-                    ]
-                    );
-        }
-    }, 500);
-
     // 
     // Removing the tab on click:
     // 
