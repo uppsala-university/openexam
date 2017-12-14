@@ -63,6 +63,7 @@ use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
  * @property Student[] $students The students assigned to this exam.
  * @property Topic[] $topics The topics associated with this exam.
  * @property Access[] $access The access definitions associated with this exam.
+ * @property Render[] $render The render jobs associated with this exam.
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
@@ -275,6 +276,10 @@ class Exam extends ModelBase
                 ));
                 $this->hasMany('id', 'OpenExam\Models\Access', 'exam_id', array(
                         'alias'    => 'access',
+                        'reusable' => true
+                ));
+                $this->hasMany('id', 'OpenExam\Models\Render', 'exam_id', array(
+                        'alias'    => 'render',
                         'reusable' => true
                 ));
 

@@ -19,6 +19,7 @@ use Phalcon\Mvc\Model\Validator\Inclusionin;
 /**
  * The render queue model.
  *
+ * @property Exam $exam The related exam.
  * @author Anders Lövgren (QNET)
  */
 class Render extends ModelBase
