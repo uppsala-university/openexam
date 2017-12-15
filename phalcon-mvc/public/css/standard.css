@@ -88,6 +88,7 @@ img {
     padding: 10px 0;
     text-align: center;
     height: 100px;
+    clear: both;
 }
 #oe-footer a {
     color: inherit;
