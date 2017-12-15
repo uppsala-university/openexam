@@ -696,11 +696,6 @@ $exam->show_zipfile = false;
 </div>
 
 <!-------------- Hidden Divs --------------->
-<div id="dialog" title="Generating exam result">
-    <div class="progress-label">Starting...</div>
-    <div id="progressbar"></div>
-</div>
-
 <div id="exam-decode-box" title="Exam decode wizard" style="display: none"></div>
 
 <div id="render-student-result" style="display:none" title="Download exam result" ></div>    
@@ -813,6 +808,23 @@ if ($exam->show_user) {
                     url: baseURL + 'utility/render/student/' + examId,
                     success: function (content) {
                         showDialogWindow("#render-student-result", content);
+                    },
+                    error: function (content) {
+                        showDialogWindow("#render-student-result", content.responseText);
+                    }
+                });
+            });
+
+            $(document).on('click', '.render-decoder', function () {
+                $.ajax({
+                    type: "POST",
+                    data: {type: 'result', user: user},
+                    url: baseURL + 'utility/render/decoder/' + examId,
+                    success: function (content) {
+                        showDialogWindow("#render-decoder-result", content);
+                    },
+                    error: function (content) {
+                        showDialogWindow("#render-decoder-result", content.responseText);
                     }
                 });
             });
