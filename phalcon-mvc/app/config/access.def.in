@@ -188,8 +188,8 @@ return array(
                         'view'        => array('contributor', 'student')
                 ),
                 'render' => array(
-                        'decoder'     => array('creator', 'decoder', 'corrector'),
-                        'student'     => array('student'),
+                        'decoder'     => array('decoder', 'creator', 'corrector'),
+                        'student'     => array('student', 'creator', 'corrector', 'decoder'),
                         'find'        => array('creator', 'decoder', 'student'),
                         'add'         => array('creator', 'decoder', 'student'),
                         'cancel'      => array('creator', 'decoder', 'student'),

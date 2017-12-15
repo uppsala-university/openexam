@@ -172,7 +172,7 @@ class RenderController extends GuiController
                 // 
                 // Check route access:
                 // 
-                if ($this->config->result->public) {
+                if ($this->config->result->public == false) {
                         $this->checkAccess(array(
                                 'eid' => $eid
                         ));
