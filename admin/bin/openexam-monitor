@@ -1,7 +1,5 @@
 #!/bin/bash
 #
-# Start/stop script for OpenExam. 
-# 
 # This script starts performance monitors and could be run at boot time. By default, 
 # all enabled performance collectors are started using settings from the system
 # configuration.
@@ -74,16 +72,16 @@ function stop_perf_monitor()
 }
 
 case "$1" in
-    start)
+    --start)
         start_perf_monitor
         ;;
-    stop)
+    --stop)
         stop_perf_monitor
         ;;
-    restart)
+    --restart)
         stop_perf_monitor
         start_perf_monitor
         ;;
     *)
-        echo "usage: $0 start|stop"
+        echo "usage: $0 --start|--stop|--restart"
 esac

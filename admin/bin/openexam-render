@@ -20,8 +20,14 @@ script="$root/script/openexam.php"
 # Destination directory for logfiles:
 logdir="/var/log/openexam"
 
+# Accept any options from command line:
+options="$*"
+
 # Extra options:
-#options="--verbose --force --output=$logdir/render-worker-$$.log"
+#options="$options --verbose --force --output=$logdir/render-worker-$$.log"
+
+# The command to run:
+command="/usr/bin/php $script --render --worker $options"
 
 # Number of processes:
 processes="1"
@@ -46,27 +52,31 @@ function start_render_worker()
     echo "Starting OpenExam render queue worker:"
     for p in $processes; do
         echo "  `basename $script` --render --worker $options $*"
-        exec /usr/bin/sudo -u $user /usr/bin/php $script --render --worker $options $* &
+        if [ $UID == 0 ]; then
+            exec /usr/bin/sudo -u $user $command &
+        else 
+            exec $command &
+        fi
     done
 }
 
 function stop_render_worker()
 {
     echo "Stopping OpenExam render queue worker"
-    pkill -xf "/usr/bin/sudo -u $user /usr/bin/php $script --render --worker.*"
+    pkill -xf ".*$script.*"
 }
 
 case "$1" in
-    start)
+    --start)
         start_render_worker
         ;;
-    stop)
+    --stop)
         stop_render_worker
         ;;
-    restart)
+    --restart)
         stop_render_worker
         start_render_worker
         ;;
     *)
-        echo "usage: $0 start|stop"
+        echo "usage: $0 --start|--stop|--restart"
 esac

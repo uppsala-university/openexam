@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# Start/stop script for OpenExam. 
+# 
+# This script starts performance monitors. Tweak path for openexam-monitor and change
+# settings in that file.
+# 
+# Author: Anders Lövgren
+# Date:   2016-06-12
+
+# The performance monitor script:
+script="/usr/local/bin/openexam-monitor"
+
+function start_perf_monitor()
+{
+    $script --start
+}
+
+function stop_perf_monitor()
+{
+    $script --stop
+}
+
+case "$1" in
+    start)
+        start_perf_monitor
+        ;;
+    stop)
+        stop_perf_monitor
+        ;;
+    restart)
+        stop_perf_monitor
+        start_perf_monitor
+        ;;
+    *)
+        echo "usage: $0 start|stop"
+esac
