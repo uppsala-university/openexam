@@ -100,7 +100,7 @@
     <div class="wizard-page" id="render" style="display: none">
         <div>
             The result file is currently being rendered.
-            You can keep this dialog open and wait for the file to be rendered or come back later when the file is ready for download.
+            You can keep this dialog open and wait for the rendering to complete or come back later when the file is ready for download.
         </div>
         <div class="oe-dialog-buttons">
             <hr>
@@ -220,6 +220,10 @@
             // 
             var checkQueueStatus = function () {
                 showWizardPage("checking");
+                if (timer) {
+                    clearTimeout(timer);
+                    setStatusMessage("");
+                }
                 sendRequest('queue-status', baseURL + 'utility/render/find', {
                     exam_id: data.exam_id,
                     type: data.type,
@@ -401,6 +405,7 @@
 
             $(".exam-results .close-dialog").click(function () {
                 closeDialogWindow("#render-student-result");
+                clearTimeout(timer);
             });
 
             checkQueueStatus();
