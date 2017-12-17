@@ -123,14 +123,20 @@ class RenderWorker
                         return;
                 }
 
-                $this->log(sprintf("Rendering job %d", $job->id));
+                try {
+                        $this->log(sprintf("Rendering job %d", $job->id));
 
-                $job->stime = time();
-                $this->_service->save($job->file, array(array('page' => $job->url)));
-                $job->etime = time();
+                        $job->stime = time();
+                        $this->_service->save($job->file, array(array('page' => $job->url)));
+                        $job->etime = time();
 
-                $job->message = sprintf("Render time %d seconds", $job->etime - $job->stime);
-                $job->status = Render::STATUS_FINISH;
+                        $job->message = sprintf("Render time %d seconds", $job->etime - $job->stime);
+                        $job->status = Render::STATUS_FINISH;
+                } catch (Exception $exception) {
+                        $this->log(sprintf("Failed job %d (%s)", $job->id, $exception->getMessage()));
+                        $job->message = $exception->getMessage();
+                        $job->status = Render::STATUS_FAILED;
+                }
         }
 
         /**
