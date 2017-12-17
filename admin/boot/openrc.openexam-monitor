@@ -22,7 +22,7 @@ start_pre() {
 start() {
         ebegin "Starting OpenExam Performance Monitor"
         start-stop-daemon --start --user ${command_user} \
-            --make-pidfile --pidfile $pidfile \
+            --make-pidfile --pidfile ${pidfile} \
             --exec ${command} -- ${command_args} >& /dev/null
         eend $?
 }
