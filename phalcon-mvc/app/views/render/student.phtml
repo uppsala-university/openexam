@@ -115,8 +115,13 @@
 
     <div class="wizard-page" id="finish" style="display: none">
         <div>
-            The render job has finished and ready for download. 
+            The render job has finished and ready for download.
             Click on regenerate button to render the result again in case formatting or images is missing in the PDF.
+        </div>
+        <div class="alert alert-success" style="display: none; margin-top: 10px">
+            Problem with download? Try click on the
+            <a href="" id="download-result-link">result file</a> 
+            link.
         </div>
         <div class="oe-dialog-buttons">
             <hr>
@@ -129,7 +134,6 @@
                     <i class="fa fa-download" aria-hidden="true"></i>
                     <span>Download</span>
                 </span>
-                <a href="" id="download-result-link" style="display: none"></a>
             </center>        
         </div>
     </div>
@@ -334,8 +338,13 @@
                     user: data.user
                 });
 
-                $(".exam-results #download-result-link").attr("href", baseURL + 'utility/render/download?' + params);
-                $(".exam-results #download-result-link")[0].click();
+                var target = document.getElementById('download-result-link');
+                var source = baseURL + 'utility/render/download?' + params;
+
+                target.setAttribute('href', source);
+                target.click();
+
+                $(".exam-results #download-result-link").parent().show(200);
 
                 setLastAction('download');
             };
