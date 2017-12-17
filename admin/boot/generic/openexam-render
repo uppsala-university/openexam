@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# Start/stop script for OpenExam. 
+# 
+# This script starts the render worker. Tweak path for openexam-render and change
+# settings in that file.
+# 
+# Author: Anders Lövgren
+# Date:   2017-12-15
+
+# The render worker script:
+script="/usr/local/bin/openexam-render"
+
+function start_render_worker()
+{
+    $script --start
+}
+
+function stop_render_worker()
+{
+    $script --stop
+}
+
+case "$1" in
+    start)
+        start_render_worker
+        ;;
+    stop)
+        stop_render_worker
+        ;;
+    restart)
+        stop_render_worker
+        start_render_worker
+        ;;
+    *)
+        echo "usage: $0 start|stop|restart"
+esac

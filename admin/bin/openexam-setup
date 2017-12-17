@@ -1,0 +1,68 @@
+#!/bin/sh
+# 
+# Setup utility and boot time script.
+#
+# Author: Anders Lövgren
+# Date:   2017-12-17
+
+# This script directory:
+cwd="$(dirname $(realpath $0))"
+
+# The phalcon directory:
+root="$(realpath $cwd/../../phalcon-mvc)"
+
+# Detect Linux/GNU system:
+if [ -e /etc/slackware-version ]; then
+    system="slackware_linux"
+elif [ -e /etc/gentoo-release ]; then
+    system="gentoo_linux"
+else 
+    system="generic_linux"
+fi
+
+function setup_local_bin()
+{
+    for f in openexam-monitor openexam-render; do 
+        rm -f /usr/local/bin/$f
+        ln -s $cwd/$f /usr/local/bin/$f
+    done
+}
+
+function setup_boot_slackware() 
+{
+    for f in openexam-monitor openexam-render; do 
+        cp -a $cwd/../boot/slackware/$f /etc/rc.d
+    done
+}
+
+function setup_boot_gentoo() 
+{
+    for f in openexam-monitor openexam-render; do 
+        cp -a $cwd/../boot/gentoo/$f /etc/init.d
+    done
+}
+
+function setup_boot_generic() 
+{
+    for f in openexam-monitor openexam-render; do 
+        cp -a $cwd/../boot/generic/$f /etc/init.d
+    done
+}
+
+function setup_boot_script()
+{
+        case "$system" in
+            slackware_linux)
+                setup_boot_slackware
+                ;;
+            gentoo_linux)
+                setup_boot_gentoo
+                ;;
+            generic_linux)
+                setup_boot_generic
+                ;;
+        esac
+}
+
+setup_local_bin
+setup_boot_script
