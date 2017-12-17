@@ -1,0 +1,34 @@
+#!/sbin/openrc-run
+# 
+# Copyright (C) 2017 The OpenExam project.
+# Distributed under the terms of the GNU General Public License, v2 or later
+
+description="openexam performance monitors"
+pidfile="/var/run/openexam/monitor.pid"
+
+command="/usr/local/bin/openexam-monitor"
+command_args="--start"
+command_user="daemon"
+
+depend() {
+        need apache2
+}
+
+start_pre() {
+        mkdir -p /var/run/openexam
+        cd /
+}
+
+start() {
+        ebegin "Starting OpenExam Performance Monitor"
+        start-stop-daemon --start --user ${command_user} \
+            --make-pidfile --pidfile $pidfile \
+            --exec ${command} -- ${command_args} >& /dev/null
+        eend $?
+}
+
+stop() {
+        ebegin "Starting OpenExam Performance Monitor"
+        ${command} --stop >& /dev/null
+        eend $?
+}
