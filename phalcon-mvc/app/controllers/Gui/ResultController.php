@@ -381,4 +381,45 @@ class ResultController extends GuiController
                 }
         }
 
+        /**
+         * Archive result render jobs.
+         * 
+         * Pass an list of render jobs (ID) to be archived and downloaded as 
+         * a ZIP-file. 
+         * 
+         * @param int $eid The exam ID.
+         * @throws Exception
+         * @throws ModelException
+         */
+        public function archiveAction($eid)
+        {
+                //
+                // Sanitize:
+                // 
+                if (!($eid = $this->filter->sanitize($eid, "int"))) {
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                }
+                if (!($rid = $this->request->get("rid", "array"))) {
+                        throw new Exception("Missing or invalid render ID's", Error::PRECONDITION_FAILED);
+                }
+
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
+
+                // 
+                // Get exam data:
+                // 
+                if (!($exam = Exam::findFirst($eid))) {
+                        throw new ModelException("Failed find exam model", Error::PRECONDITION_FAILED);
+                }
+                
+                // 
+                // TODO: create zip-file.
+                // 
+        }
+
 }

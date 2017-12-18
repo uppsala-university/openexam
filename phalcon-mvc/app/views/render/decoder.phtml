@@ -1,5 +1,4 @@
 <?php
-
 // 
 // The source code is copyrighted, with equal shared rights, between the
 // authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
@@ -13,4 +12,299 @@
 
 ?>
 
-<h1>DECODER</h1>
+<style>
+    .download-box {
+        margin-bottom: 10px;
+    }
+    .download-filter {
+        float: right;
+        display: flex;
+        max-width: 350px;
+    }
+    .download-list {
+        clear: both;
+    }
+    .status-details {
+        margin-top: 10px;
+    }
+    .completed-status {
+        font-weight: 700;
+        margin-top: 10px;        
+    }
+    @media screen and (max-width: 360px) {
+        #download-visible {
+            margin-bottom: 10px;
+        }
+        .download-filter {
+            float: left;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+    }
+</style>
+
+<h2>Download result</h2>
+
+<div class="alert alert-info alert-dismissable">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+    Select students to download. 
+    Only those students visible in the list below will be part of the download archive.
+</div>
+
+<div class="download-box">
+    <button class="btn btn-success" id="download-visible" style="min-width: 8em">
+        <i class="fa fa-download" aria-hidden="true"></i>
+        Download
+    </button>
+    <button class="btn btn-default" id="download-select"  style="min-width: 8em">
+        <i class="fa fa-asterisk" aria-hidden="true"></i>
+        Select
+    </button>
+    <div class="download-filter">
+        <input class="form-control" type="text" placeholder="Quick search" value="" id="filter-students"> 
+        <span class="toolbtn toolbtn-orange-outline search-exam" style="display: inline-block; margin-left: 5px; padding-top: 4px">
+            <i class="fa fa-search fa-2x"></i>
+        </span> 
+    </div>
+    <div class="completed-status">
+        <span id="render-completed"><?= 0 ?></span> / <span id="render-total"><?= count($students) ?></span> ready for download
+    </div>
+</div>
+
+<div id="queue-details" style="display: none">
+    <ul class="list-group download-list">
+        <?php foreach ($students as $student) : ?>
+                <li class="list-group-item" data-id="0" data-status="missing" data-user="<?= $student->user ?>">
+                    <h4>
+                        <i class="fa fa-question-circle-o status-icon status-icon-missing" aria-hidden="true" style="display: none"></i>
+                        <i class="fa fa-clock-o status-icon status-icon-queued" aria-hidden="true" style="display: none"></i>
+                        <i class="fa fa-spinner fa-pulse fa-fw status-icon status-icon-render" aria-hidden="true" style="display: none"></i>
+                        <i class="fa fa-check-square-o status-icon status-icon-finish" aria-hidden="true" style="color: green; display: none"></i>
+                        <i class="fa fa-exclamation-circle status-icon status-icon-failed" aria-hidden="true" style="color: red; display: none"></i>
+                        <span class="student-name"><?= $student->display ?></span>
+                    </h4>
+                    <div class="alert alert-info status-details" style="display: none">
+                        <div><strong class="render-message"></strong></div>
+                        <div>Render status: <span class="render-status"></span></div>
+                        <div>Queued: <span class="render-queued"></span></div>
+                        <div>Finish: <span class="render-finish"></span></div>
+                        <div>Position: <span class="queue-position"></span></div>
+                    </div>
+                    <button href="#" class="btn btn-default student-remove">Remove</button>
+                    <button href="#" class="btn btn-default student-status">Status</button>
+                    <button href="#" class="btn btn-primary student-download">Download</button>
+                </li>
+        <?php endforeach; ?>
+    </ul>
+</div>
+
+<script>
+        $(document).ready(function () {
+
+            var examId = <?= $exam->id ?>;
+            var results = JSON.parse('<?= json_encode($results); ?>');
+            var completed = 0;
+
+            var downloadVisible = function () {
+                var selected = [];
+
+                $('.list-group-item:visible').each(function (index, item) {
+                    selected.push($(item).attr('data-id'));
+                });
+            };
+
+            // 
+            // Show dialog for downloading this student.
+            // 
+            var downloadStudent = function (source) {
+                var user = source.attr('data-user');
+
+                $.ajax({
+                    type: "POST",
+                    data: {type: 'result', user: user},
+                    url: baseURL + 'utility/render/student/' + examId,
+                    success: function (content) {
+                        showDialogWindow("#render-student-result", content);
+                    },
+                    error: function (content) {
+                        showDialogWindow("#render-student-result", content.responseText);
+                    }
+                });
+            };
+
+            // 
+            // Remove student from archive list.
+            // 
+            var removeStudent = function (source) {
+                source.hide(300, function () {
+                    source.remove();
+                });
+            };
+
+            // 
+            // Filter list of students.
+            // 
+            var filterStudents = function (text) {
+                $(".download-list > li").each(function (index, elem) {
+                    var item = $(elem);
+                    if (item.attr('data-user').indexOf(text) >= 0) {
+                        item.show();
+                        return true;
+                    }
+                    if (item.find(".student-name").text().indexOf(text) >= 0) {
+                        item.show();
+                        return true;
+                    }
+
+                    item.hide();
+                });
+            };
+
+            // 
+            // Reset filtered students.
+            // 
+            var showAllStudents = function () {
+                $(".download-list > li").show();
+            };
+
+            // 
+            // Update status of render job.
+            // 
+            var updateJobStatus = function (result) {
+                var target = $('.list-group-item[data-user="' + result.user + '"]');
+
+                target.attr('data-id', result.id);
+                target.attr('data-status', result.status);
+
+                target.find('.status-icon').hide();
+                target.find('.status-icon-' + result.status).show();
+
+                target.find('.render-status').text(result.status);
+                target.find('.render-message').text(result.message);
+                target.find('.render-queued').text(result.queued);
+                target.find('.render-finish').text(result.finish);
+
+                target.find('.queue-position').text(result.position);
+
+                if (result.position === undefined) {
+                    result.position = 1;
+                }
+
+                if (result.status === 'finish' || result.status === 'failed') {
+                    setCompletedStatus(++completed);
+                    return;
+                }
+                if (result.status === 'queued') {
+                    var timer = setTimeout(function () {
+                        statRenderJob(result.id);
+                    }, result.position * 30000);
+                }
+                if (result.status === 'render') {
+                    var timer = setTimeout(function () {
+                        statRenderJob(result.id);
+                    }, 5000);
+                }
+            };
+
+            // 
+            // Add render job.
+            // 
+            var addRenderJob = function (user) {
+                var target = $('.list-group-item[data-user="' + user + '"]');
+
+                $.ajax({
+                    type: "POST",
+                    data: {type: 'result', user: user, exam_id: examId},
+                    url: baseURL + 'utility/render/add',
+                    success: function (response) {
+                        var content = JSON.parse(response);
+                        target.attr('data-id', content.result.id);
+                        updateJobStatus(content.result);
+                    },
+                    error: function (content) {
+                        target.find('render-message').text(content.responseText);
+                    }
+                });
+            };
+
+            // 
+            // Query render job status.
+            // 
+            var statRenderJob = function (jobid) {
+                $.ajax({
+                    type: "POST",
+                    data: {id: jobid},
+                    url: baseURL + 'utility/render/status',
+                    success: function (response) {
+                        updateJobStatus(JSON.parse(response).result);
+                    },
+                    error: function (content) {
+                        var target = $('.list-group-item[data-id="' + jobid + '"]');
+                        target.find('render-message').text(content.responseText);
+                    }
+                });
+            };
+
+            // 
+            // Set completed jobs status.
+            // 
+            var setCompletedStatus = function (number) {
+                $('#render-completed').text(number);
+            };
+
+            // 
+            // Call this function initial to update render job status. For each
+            // student with non-completed render jobs, either create new render 
+            // job or start watching existing job.
+            // 
+            var renderStudentResults = function () {
+                for (var i = 0; i < results.length; ++i) {
+                    updateJobStatus(results[i]);
+                }
+
+                $('.list-group-item[data-status="missing"]').each(function (index, elem) {
+                    addRenderJob($(elem).attr('data-user'));
+                });
+                $('.list-group-item[data-status="queued"]').each(function (index, elem) {
+                    statRenderJob(Number($(elem).attr('data-id')));
+                });
+                $('.list-group-item[data-status="render"]').each(function (index, elem) {
+                    statRenderJob(Number($(elem).attr('data-id')));
+                });
+            };
+
+            renderStudentResults(); // Render current results
+
+            if (oe_module_loaded("render-decoder")) {
+                return;
+            }
+
+            $(document).on('click', '#download-visible', function () {
+                downloadVisible();
+            });
+
+            $(document).on('keyup', '#filter-students', function () {
+                if ($(this).val().length > 0) {
+                    filterStudents($(this).val());
+                } else {
+                    showAllStudents();
+                }
+            });
+
+            $(document).on('click', '.student-remove', function () {
+                removeStudent($(this).closest('.list-group-item'));
+            });
+
+            $(document).on('click', '.student-download', function () {
+                downloadStudent($(this).closest('.list-group-item'));
+            });
+
+            $(document).on('click', '.student-status', function () {
+                $(this).siblings('.status-details').toggle();
+            });
+
+            $(document).on('click', '#download-select', function () {
+                $("#queue-details").toggle();
+            });
+        });
+</script>

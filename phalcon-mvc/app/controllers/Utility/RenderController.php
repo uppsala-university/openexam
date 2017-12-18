@@ -145,11 +145,23 @@ class RenderController extends GuiController
                 }
 
                 // 
+                // Get students and rendered results:
+                // 
+                if (!($students = $exam->students)) {
+                        throw new Exception("Failed fetch student models", Error::PRECONDITION_FAILED);
+                }
+                if (!($results = $exam->getRender("type = 'result'"))) {
+                        throw new Exception("Failed fetch rendered student results", Error::PRECONDITION_FAILED);
+                }
+                
+                // 
                 // Set data for view:
                 // 
                 $this->view->setVars(array(
-                        'exam'    => $exam,
-                        'contact' => $this->config->contact->toArray()
+                        'exam'     => $exam,
+                        'students' => $students,
+                        'results'  => $results->toArray(),
+                        'contact'  => $this->config->contact->toArray()
                 ));
         }
 

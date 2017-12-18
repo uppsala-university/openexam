@@ -77,12 +77,13 @@ class Result extends Component
                         throw new ModelException("Failed find target exam.", Error::PRECONDITION_FAILED);
                 }
 
-                if ($this->user->getPrimaryRole() == Roles::STUDENT) {
+                if ($this->user->getPrimaryRole() == Roles::STUDENT &&
+                    $this->user->acquire(array(Roles::DECODER, Roles::CREATOR)) == false) {
                         if ($this->_exam->decoded == false) {
                                 throw new ModelException("Result can't be downloaded before exam has been decoded.", Error::LOCKED);
                         }
                 }
-                
+
                 if ($this->user->getPrimaryRole() == Roles::DECODER ||
                     $this->user->getPrimaryRole() == Roles::CREATOR) {
                         if ($this->_exam->decoded == false &&

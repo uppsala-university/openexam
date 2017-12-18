@@ -127,10 +127,11 @@ if (!$exam->show_save) {
         );
 }
 
-// 
-// Disable for now:
-// 
-$exam->show_zipfile = false;
+if ($exam->decoded || $exam->enquiry) {
+        $exam->show_zipfile = true;
+} else {
+        $exam->show_zipfile = false;
+}
 
 ?>
 
@@ -321,7 +322,7 @@ $exam->show_zipfile = false;
             <?php endif; ?>
 
             <?php if ($exam->show_zipfile): ?>
-                    <a href="<?= $zippath ?>" id="download-results" title="Download zip-file containing all students result">
+                    <a href="#" id="render-results" title="Open dialog for downloading all or selected students as zip-file">
                         <i class="fa fa-file-pdf-o" style="float:right;padding:3px"></i>
                     </a> 
             <?php endif; ?>
@@ -815,10 +816,10 @@ if ($exam->show_user) {
                 });
             });
 
-            $(document).on('click', '.render-decoder', function () {
+            $(document).on('click', '#render-results', function () {
                 $.ajax({
                     type: "POST",
-                    data: {type: 'result', user: user},
+                    data: {type: 'result'},
                     url: baseURL + 'utility/render/decoder/' + examId,
                     success: function (content) {
                         showDialogWindow("#render-decoder-result", content);
