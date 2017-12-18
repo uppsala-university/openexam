@@ -16,9 +16,12 @@ namespace OpenExam\Controllers\Gui;
 use Exception;
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
-use OpenExam\Library\Core\Exam\Result as ResultHandler;
+use OpenExam\Library\Core\Exam\Result\Compress;
+use OpenExam\Library\Core\Exam\Result\Download;
+use OpenExam\Library\Core\Exam\Result\Queued as ResultHandler;
 use OpenExam\Library\Model\Exception as ModelException;
 use OpenExam\Models\Exam;
+use OpenExam\Models\Render;
 use OpenExam\Models\Student;
 use Phalcon\Mvc\View;
 
@@ -44,106 +47,6 @@ class ResultController extends GuiController
                         $this->url->setBaseUri(
                             sprintf("%s://%s/%s/", $this->request->getScheme(), $this->request->getServerName(), trim($this->config->application->baseUri, '/'))
                         );
-                }
-        }
-
-        /**
-         * Generate and save student result in PDF format.
-         * 
-         * @param int $eid The exam ID.
-         * @param int $sid The student ID.
-         * 
-         * @deprecated since 2.1.2
-         */
-        public function generateAction($eid, $sid)
-        {
-                //
-                // Sanitize:
-                // 
-                if (!($eid = $this->filter->sanitize($eid, "int"))) {
-                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
-                }
-                if (!($sid = $this->filter->sanitize($sid, "int"))) {
-                        throw new Exception("Missing or invalid student ID", Error::PRECONDITION_FAILED);
-                }
-
-                // 
-                // Check route access:
-                // 
-                $this->checkAccess(array(
-                        'eid' => $eid
-                ));
-
-                // 
-                // The actual PDF-generation handler:
-                // 
-                $result = new ResultHandler($eid);
-
-                // 
-                // Authorize access.
-                // 
-                if (!$result->canAccess($sid)) {
-                        throw new ModelException("You are not allowed to access student result.", Error::FORBIDDEN);
-                }
-
-                // 
-                // Create the result file.
-                // 
-                $result->createFile($sid);
-
-                // 
-                // Send JSON content:
-                // 
-                $this->response->setJsonContent(array("stId" => $sid));
-                $this->response->send();
-        }
-
-        /**
-         * Download individual PDF-file or ZIP-archive containing all.
-         * 
-         * @param int $eid The exam ID.
-         * @param int $sid The student ID.
-         * 
-         * @deprecated since 2.1.2
-         */
-        public function downloadAction($eid, $sid = 0)
-        {
-                //
-                // Sanitize:
-                // 
-                if (!($eid = $this->filter->sanitize($eid, "int"))) {
-                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
-                }
-                if (!($sid = $this->filter->sanitize($sid, "int"))) {
-                        throw new Exception("Missing or invalid student ID", Error::PRECONDITION_FAILED);
-                }
-
-                // 
-                // Check route access:
-                // 
-                $this->checkAccess(array(
-                        'eid' => $eid
-                ));
-
-                // 
-                // The actual PDF-generation handler:
-                // 
-                $result = new ResultHandler($eid);
-
-                // 
-                // Authorize access.
-                // 
-                if (!$result->canAccess($sid)) {
-                        throw new ModelException("You are not allowed to access student result.", Error::FORBIDDEN);
-                }
-
-                // 
-                // Download result:
-                // 
-                if (isset($sid)) {
-                        $result->downloadFile($sid);
-                } else {
-                        $result->downloadArchive();
                 }
         }
 
@@ -307,19 +210,6 @@ class ResultController extends GuiController
         }
 
         /**
-         * Generate exam summary to show to teachers.
-         * 
-         * @deprecated since 2.1.2
-         */
-        public function summaryAction()
-        {
-                // 
-                // Check route access:
-                // 
-                $this->checkAccess();
-        }
-
-        /**
          * Downloads scoreboard as faked (HTML) Excel Spreadsheet. 
          * 
          * @param int $eid The exam ID.
@@ -385,7 +275,7 @@ class ResultController extends GuiController
          * Archive result render jobs.
          * 
          * Pass an list of render jobs (ID) to be archived and downloaded as 
-         * a ZIP-file. 
+         * a ZIP-file. The list should be named render.
          * 
          * @param int $eid The exam ID.
          * @throws Exception
@@ -393,14 +283,19 @@ class ResultController extends GuiController
          */
         public function archiveAction($eid)
         {
+                $this->view->disable();
+
                 //
                 // Sanitize:
                 // 
                 if (!($eid = $this->filter->sanitize($eid, "int"))) {
                         throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
                 }
-                if (!($rid = $this->request->get("rid", "array"))) {
+                if (!($rid = $this->request->get("render"))) {
                         throw new Exception("Missing or invalid render ID's", Error::PRECONDITION_FAILED);
+                }
+                if (!is_array($rid)) {
+                        throw new Exception("Expected array of render ID's", Error::PRECONDITION_FAILED);
                 }
 
                 // 
@@ -416,10 +311,35 @@ class ResultController extends GuiController
                 if (!($exam = Exam::findFirst($eid))) {
                         throw new ModelException("Failed find exam model", Error::PRECONDITION_FAILED);
                 }
-                
+
                 // 
-                // TODO: create zip-file.
+                // Get all render models:
                 // 
+                if (!($renders = Render::find(array(
+                            'conditions' => sprintf("id IN (%s)", implode(",", $rid)
+                        ))))) {
+                        throw new Exception("Failed lookup render models");
+                }
+
+                // 
+                // Create custom archive:
+                // 
+                $compress = new Compress();
+                $compress->setName(sprintf("%s-%d", $exam->name, time()));
+                $compress->setPath(sprintf("result/%d-%d.zip", $exam->id, array_sum($rid)));
+
+                // 
+                // Add all render jobs to archive:
+                // 
+                foreach ($renders as $render) {
+                        $compress->addFile($render->path, $render->user);
+                }
+
+                // 
+                // Use downloader for sending archive (might block):
+                // 
+                $download = new Download();
+                $download->sendArchive($compress);
         }
 
 }

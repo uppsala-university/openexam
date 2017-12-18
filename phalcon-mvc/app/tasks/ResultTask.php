@@ -13,7 +13,7 @@
 
 namespace OpenExam\Console\Tasks;
 
-use OpenExam\Library\Core\Exam\Result as ResultHandler;
+use OpenExam\Library\Core\Exam\Result\Queued as ResultHandler;
 use OpenExam\Models\Exam;
 use Phalcon\Mvc\Model\Resultset\Simple as SimpleResultSet;
 
@@ -47,7 +47,7 @@ class ResultTask extends MainTask implements TaskInterface
 
         public function initialize()
         {
-                $this->_destdir = sprintf("%s/results", $this->config->application->cacheDir);
+                $this->_destdir = sprintf("%s/result", $this->config->application->cacheDir);
         }
 
         public function helpAction()
@@ -177,18 +177,15 @@ class ResultTask extends MainTask implements TaskInterface
                 $result = new ResultHandler($exam);
                 $result->setForced($this->_options['force']);
 
-                if ($result->exist() && !$result->getForced()) {
-                        if ($this->_options['verbose']) {
-                                $this->flash->notice(sprintf("++ Skipping exam %d (result directory exists)", $exam->id));
-                        }
-                        return;
-                }
-
                 if ($this->_options['verbose']) {
                         $this->flash->notice(sprintf("++ Processing exam %d", $exam->id));
                 }
 
                 foreach ($exam->students as $student) {
+                        if ($result->hasFile($student) && !$result->getForced()) {
+                                $this->flash->notice(sprintf("   Skipped generate result for student %d (%s)", $student->id, $student->code));
+                                continue;
+                        }
                         if ($this->_options['verbose']) {
                                 $this->flash->notice(sprintf("   Generating result for student %d (%s)", $student->id, $student->code));
                         }

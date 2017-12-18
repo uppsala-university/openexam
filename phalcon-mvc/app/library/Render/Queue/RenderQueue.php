@@ -36,9 +36,6 @@ class RenderQueue extends Component
          */
         public function __construct()
         {
-                if (!$this->user->hasPrimaryRole()) {
-                        throw new RenderException("Using render queue without primary role is prohibited");
-                }
                 if (!isset($this->config->result->public)) {
                         $this->config->result->public = false;
                 }
@@ -87,7 +84,7 @@ class RenderQueue extends Component
          * render model) to caller. Caller can use the job ID to poll for job status 
          * and fetch the result once finished.
          * 
-         * The actual data to pass depens on render type. For result the extra parameter 
+         * The actual data to pass depends on render type. For result the extra parameter 
          * student must be passed. For extern type only the URL property is required. 
          * Use one of the TYPE_XXX constants. If user is not set, then it will default 
          * to caller.

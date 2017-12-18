@@ -47,7 +47,7 @@
 
 <div class="alert alert-info alert-dismissable">
     <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
-    Select students to download. 
+    Select student results for download. 
     Only those students visible in the list below will be part of the download archive.
 </div>
 
@@ -71,6 +71,11 @@
     </div>
 </div>
 
+<div class="alert alert-danger alert-dismissable" style="display: none">
+    <a class='close' data-dismiss='alert' href='#'>&times;</a>
+    <span class="download-error"></span>
+</div>
+
 <div id="queue-details" style="display: none">
     <ul class="list-group download-list">
         <?php foreach ($students as $student) : ?>
@@ -90,9 +95,9 @@
                         <div>Finish: <span class="render-finish"></span></div>
                         <div>Position: <span class="queue-position"></span></div>
                     </div>
-                    <button href="#" class="btn btn-default student-remove">Remove</button>
-                    <button href="#" class="btn btn-default student-status">Status</button>
-                    <button href="#" class="btn btn-primary student-download">Download</button>
+                    <button href="#" class="btn btn-default student-remove" style="min-width: 6em">Remove</button>
+                    <button href="#" class="btn btn-default student-status" style="min-width: 6em">Status</button>
+                    <button href="#" class="btn btn-primary student-download" style="min-width: 6em">Download</button>
                 </li>
         <?php endforeach; ?>
     </ul>
@@ -105,11 +110,32 @@
             var results = JSON.parse('<?= json_encode($results); ?>');
             var completed = 0;
 
+            // 
+            // Archive (as ZIP-file) all selected result and download. Each 
+            // result is identified by it's ID-number.
+            // 
             var downloadVisible = function () {
                 var selected = [];
 
-                $('.list-group-item:visible').each(function (index, item) {
+                // 
+                // Need to select on style because visible won't work if parent
+                // element is hidden.
+                // 
+                $('.list-group-item:not([style*="display: none"]').each(function (index, item) {
                     selected.push($(item).attr('data-id'));
+                });
+
+                $.ajax({
+                    type: "POST",
+                    data: {render: selected},
+                    url: baseURL + 'result/archive/' + examId,
+                    success: function (response) {
+                        console.log(response);
+                    },
+                    error: function (content) {
+                        $('.download-error').text(content.responseText);
+                        $('.download-error').parent().show(200);
+                    }
                 });
             };
 
