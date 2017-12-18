@@ -163,9 +163,9 @@ return array(
                         'correction'  => array('creator', 'decoder', 'corrector', 'invigilator')
                 ),
                 'result' => array(
+                        'archive'     => array('corrector', 'decoder', 'creator'),
+                        'download'    => array('corrector', 'decoder', 'creator'),
                         'view'        => array('decoder', 'student'),
-                        'generate'    => array('decoder'),
-                        'download'    => array('corrector', 'decoder', 'student'),
                         'export'      => array('corrector', 'decoder')
                 ),
                 'import' => array(

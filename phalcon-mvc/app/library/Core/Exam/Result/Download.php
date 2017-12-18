@@ -70,10 +70,10 @@ class Download extends Component
          */
         public function sendArchive($compress)
         {
-                $source = sprintf("%s.zip", $compress->getPath());
-                $target = sprintf("%s.zip", $compress->getName());
+                $source = sprintf("%s", $compress->getPath());
+                $target = sprintf("%s", $compress->getName());
 
-                if (!file_exists($compress->getPath())) {
+                if (!$compress->exist()) {
                         $compress->create();
                 }
 

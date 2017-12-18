@@ -27,6 +27,14 @@ use Phalcon\Mvc\View;
 
 /**
  * Controller for performing result related operations.
+ * 
+ * This controller was historical used for downloading results as student. All
+ * rendering is now handled by the render queue, and download of results as 
+ * student has moved to the utility\render controller that is also enforcing
+ * access control durin exams.
+ * 
+ * The only student related action left is view used to generate the HTML 
+ * for rendering results as student.
  *
  * @author Ahsan Shahzad (MedfarmDoIT)
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
@@ -322,11 +330,17 @@ class ResultController extends GuiController
                 }
 
                 // 
+                // The download parameters:
+                // 
+                $name = sprintf("%s - %s - %d", $exam->name, $exam->starttime, array_sum($rid));
+                $path = sprintf("result/%d-%d.zip", $exam->id, md5($name));
+
+                // 
                 // Create custom archive:
                 // 
                 $compress = new Compress();
-                $compress->setName(sprintf("%s-%d", $exam->name, time()));
-                $compress->setPath(sprintf("result/%d-%d.zip", $exam->id, array_sum($rid)));
+                $compress->setName($name);
+                $compress->setPath($path);
 
                 // 
                 // Add all render jobs to archive:
@@ -334,6 +348,62 @@ class ResultController extends GuiController
                 foreach ($renders as $render) {
                         $compress->addFile($render->path, $render->user);
                 }
+
+                // 
+                // Create the archive file:
+                // 
+                if (!$compress->exist()) {
+                        $compress->create();
+                }
+
+                // 
+                // Return download URL:
+                // 
+                $this->response->setContent("exam=$eid&name=$name&path=$path");
+                $this->response->send();
+        }
+
+        /**
+         * Action for downloading exam archive.
+         * 
+         * Call archive action to create and exam archive. The parameters returned 
+         * from that action can be used for downloading the archive from this 
+         * action.
+         * 
+         * @param int $eid The exam ID.
+         * @param string $name The archive name.
+         * @throws Exception
+         */
+        public function downloadAction()
+        {
+                $this->view->disable();
+
+                //
+                // Sanitize:
+                // 
+                if (!($eid = $this->request->get('exam', "string"))) {
+                        throw new Exception("Missing or invalid exam ID", Error::PRECONDITION_FAILED);
+                }
+                if (!($name = $this->request->get('name', "string"))) {
+                        throw new Exception("Missing or invalid name parameter", Error::PRECONDITION_FAILED);
+                }
+                if (!($path = $this->request->get('path', "string"))) {
+                        throw new Exception("Missing or invalid path parameter", Error::PRECONDITION_FAILED);
+                }
+
+                // 
+                // Check route access:
+                // 
+                $this->checkAccess(array(
+                        'eid' => $eid
+                ));
+
+                // 
+                // Re-construct compress archive:
+                // 
+                $compress = new Compress();
+                $compress->setName($name);
+                $compress->setPath($path);
 
                 // 
                 // Use downloader for sending archive (might block):

@@ -32,13 +32,17 @@
         margin-top: 10px;        
     }
     @media screen and (max-width: 360px) {
-        #download-visible {
+        #download-visible,
+        #download-select {
             margin-bottom: 10px;
         }
         .download-filter {
             float: left;
             margin-bottom: 10px;
             width: 100%;
+        }
+        .student-download {
+            margin-top: 5px;
         }
     }
 </style>
@@ -95,9 +99,9 @@
                         <div>Finish: <span class="render-finish"></span></div>
                         <div>Position: <span class="queue-position"></span></div>
                     </div>
-                    <button href="#" class="btn btn-default student-remove" style="min-width: 6em">Remove</button>
-                    <button href="#" class="btn btn-default student-status" style="min-width: 6em">Status</button>
-                    <button href="#" class="btn btn-primary student-download" style="min-width: 6em">Download</button>
+                    <button href="#" class="btn btn-default student-remove" style="min-width: 7em">Remove</button>
+                    <button href="#" class="btn btn-default student-status" style="min-width: 7em">Status</button>
+                    <button href="#" class="btn btn-primary student-download" style="min-width: 7em">Download</button>
                 </li>
         <?php endforeach; ?>
     </ul>
@@ -130,7 +134,7 @@
                     data: {render: selected},
                     url: baseURL + 'result/archive/' + examId,
                     success: function (response) {
-                        console.log(response);
+                        window.location = baseURL + 'result/download?' + response;
                     },
                     error: function (content) {
                         $('.download-error').text(content.responseText);
