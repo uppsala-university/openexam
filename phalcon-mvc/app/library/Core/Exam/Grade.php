@@ -67,6 +67,16 @@ class Grade
          * @var int 
          */
         private $_mode;
+        /**
+         * The lowest grade.
+         * @var string 
+         */
+        private $_lowest;
+        /**
+         * The highest grade.
+         * @var string 
+         */
+        private $_highest;
 
         /**
          * Constructor.
@@ -81,6 +91,7 @@ class Grade
                 $this->setMaximum();
                 $this->setGrades();
                 $this->setScores();
+                $this->setHighLow();
         }
 
         /**
@@ -143,7 +154,7 @@ class Grade
          */
         public function getGrade($score, $normalize = true)
         {
-                $highest = key($this->_grades);
+                $highest = $this->_highest;
 
                 if ($normalize) {
                         $score = $this->getNormalized($score);
@@ -177,7 +188,7 @@ class Grade
          */
         public function isLowest($grade)
         {
-                return key($this->_grades) == $grade;
+                return $this->_lowest == $grade;
         }
 
         /**
@@ -359,6 +370,18 @@ class Grade
                                         throw new RuntimeException(sprintf("Unexpected score suffix %s in exam grades", $match[2]));
                         }
                 }
+        }
+
+        /**
+         * Set highest and lowest grade.
+         */
+        private function setHighLow()
+        {
+                reset($this->_grades);
+                $this->_lowest = key($this->_grades);
+
+                end($this->_grades);
+                $this->_highest = key($this->_grades);
         }
 
 }
