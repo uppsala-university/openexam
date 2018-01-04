@@ -82,6 +82,10 @@
 
             bash$> svn co svn://svn.bmc.uu.se/cbe/openexam-online/trunk ${appdir}/openexam-online
 
+      o) From GIT:
+
+            bash$> svn clone git@github.com:openexam/openexam-online.git ${appdir}/openexam-online
+
       Create a symbolic link to the applications public directory under the web root:
 
             bash$> ln -s ${appdir}/openexam-online/phalcon-mvc/public ${webdir}/openexam

@@ -1,9 +1,23 @@
 <?php
 
-// 
-// The source code is copyrighted, with equal shared rights, between the
-// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
-// unless otherwise explicit stated elsewhere.
+/*
+ * Copyright (C) 2017-2018 The OpenExam Project
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 // 
 // File:    RenderWorker.php
 // Created: 2017-12-07 01:04:39
@@ -37,13 +51,22 @@ use OpenExam\Models\Render;
  * 
  * The default is to sleep for a fixed number of seconds (30 unless defined) 
  * after consuming all queued render jobs. To infinite block running process 
- * waiting for a signal, pass the BLOCK_INFINITE constant as sleep value.
- *
+ * waiting for a signal, pass the BLOCK_INFINITE constant as sleep value. Don't 
+ * use LOG_XXX when started as a daemon process.
+ * 
  * @author Anders Lövgren (QNET)
  */
 class RenderWorker
 {
 
+        /**
+         * Log to standard output.
+         */
+        const LOG_STDOUT = "php://stdout";
+        /**
+         * Log to standard error.
+         */
+        const LOG_STDERR = "php://stderr";
         /**
          * The default poll interval.
          */
@@ -84,6 +107,33 @@ class RenderWorker
                 $this->_logfile = $logfile;
 
                 $this->_sleep = $sleep;
+        }
+
+        /**
+         * Set log file.
+         * @param string $path The logfile path.
+         */
+        public function setLogfile($path)
+        {
+                $this->_logfile = $path;
+        }
+
+        /**
+         * Set poll interval.
+         * @param int $sleep The sleep interval.
+         */
+        public function setInterval($sleep)
+        {
+                $this->_sleep = $sleep;
+        }
+
+        /**
+         * Write PID to file.
+         * @param string $path The PID file destination.
+         */
+        public function writePid($path)
+        {
+                file_put_contents($path, getmypid());
         }
 
         /**

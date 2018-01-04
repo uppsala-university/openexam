@@ -24,7 +24,7 @@ logdir="/var/log/openexam"
 options="$*"
 
 # Extra options:
-#options="$options --verbose --force --output=$logdir/render-worker-$$.log"
+#options="$options --verbose --force"
 
 # The command to run:
 command="/usr/bin/php $script --render --worker $options"
@@ -51,7 +51,7 @@ function start_render_worker()
 {
     echo "Starting OpenExam render queue worker:"
     for p in $processes; do
-        echo "  `basename $script` --render --worker $options $*"
+        echo "  `basename $script` --render --worker --output=$logdir/render-worker-$$.log $options $*"
         if [ $UID == 0 ]; then
             exec /usr/bin/sudo -u $user $command &
         else 

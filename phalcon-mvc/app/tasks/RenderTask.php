@@ -1,9 +1,23 @@
 <?php
 
-// 
-// The source code is copyrighted, with equal shared rights, between the
-// authors (see the file AUTHORS) and the OpenExam project, Uppsala University 
-// unless otherwise explicit stated elsewhere.
+/*
+ * Copyright (C) 2014-2018 The OpenExam Project
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 // 
 // File:    RenderTask.php
 // Created: 2014-10-28 03:07:09
@@ -42,24 +56,26 @@ class RenderTask extends MainTask implements TaskInterface
                         'action'   => '--render',
                         'usage'    => array(
                                 '--pdf|--image --output=file --page=url',
-                                '--worker [--output=file]',
+                                '--worker [--output=file] [--pidfile=path] [--sleep=sec]',
                                 '--queue --page=url --exam=id [--poll]'
                         ),
                         'options'  => array(
-                                '--pdf'         => 'Render PDF document',
-                                '--image'       => 'Render image file',
-                                '--output=file' => 'Save output to file.',
-                                '--page=url'    => 'Render local file or URL (can be used multiple times if --type=pdf).',
-                                '--globals'     => 'Start input of global render options (can be used multiple times).',
-                                '--type=mime'   => 'Type of image (png, jpg, bmp or svg).',
-                                '--method=type' => 'Use render method (command, extension or service).',
-                                '--worker'      => 'Run render queue worker process',
-                                '--queue'       => 'Add render queue job',
-                                '--exam=id'     => 'Use exam (for --queue only)',
-                                '--poll'        => 'Poll for completion (for --queue only)',
-                                '--force'       => 'Force action even if already applied.',
-                                '--verbose'     => 'Be more verbose.',
-                                '--dry-run'     => 'Just print whats going to be done.'
+                                '--pdf'          => 'Render PDF document',
+                                '--image'        => 'Render image file',
+                                '--output=file'  => 'Save output to file.',
+                                '--page=url'     => 'Render local file or URL (can be used multiple times if --type=pdf).',
+                                '--globals'      => 'Start input of global render options (can be used multiple times).',
+                                '--type=mime'    => 'Type of image (png, jpg, bmp or svg).',
+                                '--method=type'  => 'Use render method (command, extension or service).',
+                                '--worker'       => 'Run render queue worker process.',
+                                '--pidfile=path' => 'Write PID to path (for --worker only).',
+                                '--sleep=sec'    => 'Sleep interval between polling.',
+                                '--queue'        => 'Add render queue job.',
+                                '--exam=id'      => 'Use exam (for --queue only).',
+                                '--poll'         => 'Poll for completion (for --queue only).',
+                                '--force'        => 'Force action even if already applied.',
+                                '--verbose'      => 'Be more verbose.',
+                                '--dry-run'      => 'Just print whats going to be done.'
                         ),
                         'aliases'  => array(
                                 '--png'       => 'Same as --type=png',
@@ -168,6 +184,8 @@ class RenderTask extends MainTask implements TaskInterface
                 $logfile = $this->_options['output'];
 
                 $worker = new RenderWorker($service, $logfile);
+                $worker->setInterval($this->_options['sleep']);
+                $worker->writePid($this->_options['pidfile']);
                 $worker->process();
         }
 
@@ -233,7 +251,7 @@ class RenderTask extends MainTask implements TaskInterface
                                         $this->flash->warning(sprintf("Unhandled status %s of job $jobid", $status->status));
                         }
 
-                        sleep(1);
+                        sleep($this->_options['sleep']);
                         $this->flash->notice("Polling...");
                 }
 
@@ -252,12 +270,12 @@ class RenderTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->_options = array('verbose' => false, 'force' => false, 'dry-run' => false, 'page' => array(), 'globals' => array(), 'command' => true);
+                $this->_options = array('verbose' => false, 'force' => false, 'dry-run' => false, 'page' => array(), 'globals' => array(), 'command' => true, 'sleep' => 1, 'pidfile' => '/var/run/openexam-render-worker.pid');
 
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'force', 'dry-run', 'type', 'page', 'output', 'globals', 'png', 'jpg', 'jpeg', 'bmp', 'svg', 'method', 'extension', 'command', 'service', 'worker', 'queue', 'exam', 'poll');
+                $options = array('verbose', 'force', 'dry-run', 'type', 'page', 'output', 'globals', 'png', 'jpg', 'jpeg', 'bmp', 'svg', 'method', 'extension', 'command', 'service', 'worker', 'queue', 'exam', 'poll', 'sleep', 'pidfile');
                 $current = $action;
 
                 // 

@@ -1,5 +1,23 @@
 <?php
 
+/*
+ * Copyright (C) 2016-2018 The OpenExam Project
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 namespace OpenExam\Library\Model\Audit;
 
 use OpenExam\Models\Exam;
@@ -98,7 +116,7 @@ class HistoryTest extends TestCase
                 if ($this->_object->hasRevisions() == false) {
                         self::markTestSkipped('Audit is not enabled');
                 }
-                
+
                 $actual = $this->_object->getIndex();
                 self::assertTrue(is_int($actual));
                 self::assertTrue($actual != 0);
@@ -113,7 +131,7 @@ class HistoryTest extends TestCase
                 if ($this->_object->hasRevisions() == false) {
                         self::markTestSkipped('Audit is not enabled');
                 }
-                
+
                 $expect = 3;
                 $actual = $this->_object->getSize();
                 self::assertEquals($expect, $actual);
@@ -128,7 +146,7 @@ class HistoryTest extends TestCase
                 if ($this->_object->hasRevisions() == false) {
                         self::markTestSkipped('Audit is not enabled');
                 }
-                
+
                 $actual = $this->_object->getRevision();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
@@ -143,7 +161,7 @@ class HistoryTest extends TestCase
                 if ($this->_object->hasRevisions() == false) {
                         self::markTestSkipped('Audit is not enabled');
                 }
-                
+
                 $actual = $this->_object->getChanges();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
@@ -158,7 +176,7 @@ class HistoryTest extends TestCase
                 if ($this->_object->hasRevisions() == false) {
                         self::markTestSkipped('Audit is not enabled');
                 }
-                
+
                 $revisions = $this->_object->getRevisions();
 
                 foreach ($revisions as $expect => $revision) {
@@ -180,7 +198,7 @@ class HistoryTest extends TestCase
                 if ($this->_object->hasRevisions() == false) {
                         self::markTestSkipped('Audit is not enabled');
                 }
-                
+
                 $expect = true;
                 $actual = $this->_object->hasRevisions();
                 self::assertEquals($expect, $actual);
@@ -195,7 +213,7 @@ class HistoryTest extends TestCase
                 if ($this->_object->hasRevisions() == false) {
                         self::markTestSkipped('Audit is not enabled');
                 }
-                
+
                 $actual = $this->_object->getRevisions();
                 self::assertNotNull($actual);
                 self::assertTrue(is_array($actual));
@@ -211,7 +229,7 @@ class HistoryTest extends TestCase
                 if ($this->_object->hasRevisions() == false) {
                         self::markTestSkipped('Audit is not enabled');
                 }
-                
+
                 $expect = "user4@example.com";
                 $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
@@ -246,7 +264,7 @@ class HistoryTest extends TestCase
                 if ($this->_object->hasRevisions() == false) {
                         self::markTestSkipped('Audit is not enabled');
                 }
-                
+
                 $expect = "user4@example.com";
                 $actual = $this->_object->getModel()->user;
                 self::assertEquals($expect, $actual);
@@ -276,7 +294,7 @@ class HistoryTest extends TestCase
                 if ($this->_object->hasRevisions() == false) {
                         self::markTestSkipped('Audit is not enabled');
                 }
-                
+
                 $revisions = $this->_object->getRevisions();
 
                 // 
@@ -330,7 +348,7 @@ class HistoryTest extends TestCase
                 if ($this->_object->hasRevisions() == false) {
                         self::markTestSkipped('Audit is not enabled');
                 }
-                
+
                 $expect = 3;
                 $actual = $this->_object->getSize();
                 self::assertEquals($expect, $actual);

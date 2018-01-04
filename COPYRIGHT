@@ -1,7 +1,40 @@
-The source code is copyrighted, with equal shared rights, between the authors (see 
-the file AUTHORS) and the OpenExam project, Uppsala University unless otherwise explicit 
-stated elsewhere. 
+The source code is released under GNU General Public License, version 2 (GPL2):
 
-The term "source code" referes to all PHP files (*.php, *.inc) and Javascript (*.js).
 
-// Anders Lövgren, 2010-02-18
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+
+The complete license agreement can be found in the LICENSE file or downloaded from GNU project 
+page. The term "source code" referes to all PHP files (*.php, *.inc) and Javascript (*.js).
+
+
+// Anders Lövgren, 2018-01-04
+
+
+==========================================================================================
+
+Starting 2010-02-18 an proprietary license originated from the computing department at BMC (UU) 
+was used giving equal rights to all source code between the authors and Uppsala University:
+
+    The source code is copyrighted, with equal shared rights, between the authors (see 
+    the file AUTHORS) and the OpenExam project, Uppsala University unless otherwise explicit 
+    stated elsewhere. 
+
+This license has completely replaced with GPL 2 since version 2.2.0 of openexam-online. All
+derived work (from 2.2.0 onwards) has to comply with the GPL 2 license. It's not allowed to 
+borrow files and back-port into previous (an proprietary) release
+
+==========================================================================================
+

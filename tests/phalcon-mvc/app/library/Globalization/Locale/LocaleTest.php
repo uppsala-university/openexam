@@ -1,5 +1,23 @@
 <?php
 
+/*
+ * Copyright (C) 2014-2018 The OpenExam Project
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 namespace OpenExam\Library\Globalization\Locale;
 
 use OpenExam\Tests\Phalcon\TestCase;
@@ -290,18 +308,18 @@ class LocaleTest extends TestCase
                 $actual = $this->_object->getRegion('en_US');
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
-                
+
                 $expect = "GB";
                 $actual = $this->_object->getRegion('en_GB');
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
-                
+
                 $expect = "SE";
                 $actual = $this->_object->getRegion('sv_SE.UTF-8');
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
         }
-        
+
         /**
          * @covers OpenExam\Library\Globalization\Locale\Locale::getLanguage
          * @group globalization
@@ -312,15 +330,16 @@ class LocaleTest extends TestCase
                 $actual = $this->_object->getLanguage('en_US');
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
-                
+
                 $expect = "en";
                 $actual = $this->_object->getLanguage('en_GB');
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
-                
+
                 $expect = "sv";
                 $actual = $this->_object->getLanguage('sv_SE.UTF-8');
                 self::assertNotNull($actual);
                 self::assertEquals($expect, $actual);
         }
+
 }

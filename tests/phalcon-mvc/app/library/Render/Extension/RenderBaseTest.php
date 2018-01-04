@@ -1,5 +1,23 @@
 <?php
 
+/*
+ * Copyright (C) 2014-2018 The OpenExam Project
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 namespace OpenExam\Library\Render\Extension;
 
 use OpenExam\Tests\Phalcon\TestCase;
@@ -148,12 +166,12 @@ class RenderBaseTest extends TestCase
                         $stime = microtime(true);
                         self::assertTrue($this->_object->render('image', $globals));
                         $etime = microtime(true);
-                        
+
                         self::assertTrue(file_exists($globals['out']));
                         self::assertTrue(filesize($globals['out']) != 0);
 
                         self::info("%s: %.04f sec", basename($globals['out']), $etime - $stime);
-                        
+
                         self::assertEquals(self::$_output[$type]['mime'], finfo_file($finfo, $globals['out'], FILEINFO_MIME_TYPE));
                         self::assertEquals(self::$_output[$type]['type'], finfo_file($finfo, $globals['out'], FILEINFO_RAW));
 
@@ -182,12 +200,12 @@ class RenderBaseTest extends TestCase
                         $stime = microtime(true);
                         self::assertTrue($this->_object->render('pdf', $globals, $objects));
                         $etime = microtime(true);
-                        
+
                         self::assertTrue(file_exists($globals['out']));
                         self::assertTrue(filesize($globals['out']) != 0);
 
                         self::info("%s: %.04f sec", basename($globals['out']), $etime - $stime);
-                        
+
                         self::assertEquals(self::$_output[$type]['mime'], finfo_file($finfo, $globals['out'], FILEINFO_MIME_TYPE));
                         self::assertEquals(self::$_output[$type]['type'], finfo_file($finfo, $globals['out'], FILEINFO_RAW));
 
