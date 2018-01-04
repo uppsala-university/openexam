@@ -53,5 +53,19 @@ remote GIT repository:
     bash$> git push origin --all
     bash$> git push origin --tags
 
+** Push SVN tag to GIT:
+
+New tags in SVN is not automatic tagged in the GIT repository by a rebase. These needs to be 
+manual tagged and pushed remote:
+
+    bash$> git tag release-2.2.0
+    bash$> git push --tag 
+
+** Links:
+
+https://github.com/nirvdrum/svn2git
+https://gist.github.com/philipptempel/4140230
+https://gist.github.com/stefanfoulis/909746
+
 
 // Anders Lövgren, 2018-01-04
