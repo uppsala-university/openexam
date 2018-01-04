@@ -5,19 +5,19 @@ Phalcon devtools.
   
    Backup and clean current model, then create new:
 
-        bash$> cd ${appdir}/openexam-php/phalcon-mvc/script
+        bash$> cd ${appdir}/openexam-online/phalcon-mvc/script
         bash$> php openexam --model --create --clean --backup 
 
    See help for more information:
 
-        bash$> cd ${appdir}/openexam-php/phalcon-mvc/script
+        bash$> cd ${appdir}/openexam-online/phalcon-mvc/script
         bash$> php openexam --model --help 
 
 ** Using Phalcon devtools:
 
    Running the all-models script will take care of adding relations between models:
 
-        bash$> cd ${appdir}/openexam-php/phalcon-mvc
+        bash$> cd ${appdir}/openexam-online/phalcon-mvc
         bash$> phalcon all-models --relations --fk --validations --force \
                                   --namespace='OpenExam\Models' \
                                   --extends='ModelBase' \

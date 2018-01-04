@@ -3,15 +3,15 @@ that should be installed automatic by Composer.
 
 The database can be migrated by running a task script:
 
-    bash$> cd ${appdir}/openexam-php/phalcon-mvc/script
+    bash$> cd ${appdir}/openexam-online/phalcon-mvc/script
     bash$> php database.php --migrate
         -- or --
     bash$> php database.php --migrate --version=x.y.z
 
 When altering the database schema, dump a new migration. The migrations tasks will 
-end up in ${appdir}/openexam-php/phalcon-mvc/schemas/migrations:
+end up in ${appdir}/openexam-online/phalcon-mvc/schemas/migrations:
 
-    bash$> cd ${appdir}/openexam-php/phalcon-mvc/script
+    bash$> cd ${appdir}/openexam-online/phalcon-mvc/script
     bash$> php database.php --generate
 
 The version should be 'major.minor.revision'. Phalcon MVC database migrations should 
@@ -22,7 +22,7 @@ a new migration.
 
 A fresh install of the database can be done by running:
 
-    bash$> cd ${appdir}/openexam-php/phalcon-mvc/script
+    bash$> cd ${appdir}/openexam-online/phalcon-mvc/script
     bash$> php database.php --install
 
 

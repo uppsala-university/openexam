@@ -477,7 +477,7 @@ class ResultApp
                         printf("  Use 'php %s -v -h' to display some examples.\n", $this->prog);
                 }
                 printf("\n");
-                printf("This script is part of the openexam-php project:\n");
+                printf("This script is part of the openexam-online project:\n");
                 printf("  http://it.bmc.uu.se/andlov/proj/openexam/\n");
         }
 

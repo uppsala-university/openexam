@@ -22,19 +22,19 @@
    o) Using SQL-script:
 
         mysql> USE openexam
-        mysql> SOURCE ${appdir}/openexam-php/phalcon-mvc/schemas/database/openexam.sql;
+        mysql> SOURCE ${appdir}/openexam-online/phalcon-mvc/schemas/database/openexam.sql;
 
    o) Using Phalcon Developer Tools:
 
       The phalcon/devtools is a suggested package that is not installed by default. Use Composer
       to install it if missing:
 
-        bash$> cd ${appdir}/openexam-php
+        bash$> cd ${appdir}/openexam-online
         bash$> composer install phalcon/devtools
 
       Use phalcon/devtools for database migration:
 
-        bash$> cd ${appdir}/openexam-php/phalcon-mvc
+        bash$> cd ${appdir}/openexam-online/phalcon-mvc
         bash$> ../vendor/bin/phalcon.php migration run --migrations=schemas/migrations
 
 ** UPGRADE:

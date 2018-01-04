@@ -6,32 +6,32 @@
 
    o) From source code:
 
-        bash$> tar xfvzp openexam-php.tar.gz -C ${appdir}
+        bash$> tar xfvzp openexam-online.tar.gz -C ${appdir}
 
    o) From SVN:
 
-        bash$> cd ${appdir}/openexam-php
+        bash$> cd ${appdir}/openexam-online
         bash$> svn up
 
 ** COMPOSER:
 
    Use Composer to update dependencies:
 
-        bash$> cd ${appdir}/openexam-php
+        bash$> cd ${appdir}/openexam-online
         bash$> composer update --no-dev
 
 ** CONFIGURATION:
 
    Manual merge any configuration changes:
 
-        bash$> cd ${appdir}/openexam-php/phalcon-mvc/app/config
+        bash$> cd ${appdir}/openexam-online/phalcon-mvc/app/config
         bash$> for f in *.in; do diff -Naur ${f%%.in} $f; done
 
 ** DATABASE:
 
    Use the Phalcon Developer Tools (phalcon/devtools) for upgrading the database schema:
 
-        bash$> cd ${appdir}/openexam-php/phalcon-mvc
+        bash$> cd ${appdir}/openexam-online/phalcon-mvc
         bash$> ../vendor/bin/phalcon.php migration run --migrations=schemas/migrations
 
 

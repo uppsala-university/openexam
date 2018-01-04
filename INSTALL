@@ -76,26 +76,26 @@
 
       o) From source code:
 
-            bash$> tar xfvzp openexam-php.tar.gz -C ${appdir}
+            bash$> tar xfvzp openexam-online.tar.gz -C ${appdir}
 
       o) From SVN:
 
-            bash$> svn co svn://svn.bmc.uu.se/cbe/openexam-php/trunk ${appdir}/openexam-php
+            bash$> svn co svn://svn.bmc.uu.se/cbe/openexam-online/trunk ${appdir}/openexam-online
 
       Create a symbolic link to the applications public directory under the web root:
 
-            bash$> ln -s ${appdir}/openexam-php/phalcon-mvc/public ${webdir}/openexam
+            bash$> ln -s ${appdir}/openexam-online/phalcon-mvc/public ${webdir}/openexam
 
       Install application dependencies (creates the vendor directory):
 
-            bash$> cd ${appdir}/openexam-php
+            bash$> cd ${appdir}/openexam-online
             bash$> composer install --no-dev
 
    4. Configure OpenExam:
 
       Make config protected versions from the template configuration files (*.def.in):
 	       
-            bash$> cd ${appdir}/openexam-php/phalcon-mvc/app/config
+            bash$> cd ${appdir}/openexam-online/phalcon-mvc/app/config
             bash$> for f in *.in; do cp -i $f ${f%%.in}; done
 
       Edit the configuration files (*.def) using your favorite editor.
@@ -106,7 +106,7 @@
       UPDATE and DELETE privileges. If using phalcon.php (phalcon/devtools), then the connection
       must be granted CREATE, ALTER and DROP table privileges.
 
-      Insert the connection parameter in ${appdir}/openexam-php/phalcon-mvc/app/config/config.def. 
+      Insert the connection parameter in ${appdir}/openexam-online/phalcon-mvc/app/config/config.def. 
       
       Repeat the database creation procedure on any SQL-server that is going to be used for load 
       balancing. For a simple setup without load balancing, the same same SQL-server (typical 
@@ -121,7 +121,7 @@
             mysql> GRANT SELECT,INSERT,UPDATE,DELETE ON openexam.* TO openexam@localhost IDENTIFIED BY 'password';
             mysql> FLUSH PRIVILEGES;
             mysql> USE openexam;
-            mysql> SOURCE ${appdir}/openexam-php/phalcon-mvc/schemas/database/openexam.sql
+            mysql> SOURCE ${appdir}/openexam-online/phalcon-mvc/schemas/database/openexam.sql
             mysql> INSERT INTO admins(user) VALUES('username');   # Add system administrator
             mysql> EXIT
 
@@ -130,7 +130,7 @@
          This procedure is recommended for RDBS other than MySQL (e.g. PostgreSQL). Use the
          RDBS tools to create an empty database. Continue by creating the tables:
 
-            bash$> cd ${appdir}/openexam-php/phalcon-mvc
+            bash$> cd ${appdir}/openexam-online/phalcon-mvc
             bash$> ../vendor/bin/phalcon.php migration run --migrations=schemas/migrations
 
    6. Language support:
@@ -138,7 +138,7 @@
       To get laguage support (translation) working, you have to compile the *.po files for your 
       platform. This is done by running make in the package root directory:
 
-            bash$> cd ${appdir}/openexam-php
+            bash$> cd ${appdir}/openexam-online
             bash$> make
 
       This should compile all *.po to *.mo that can be read by PHP's GNU gettext extension. If 
@@ -149,7 +149,7 @@
       The user defined setting files (*.def) should not be readable by world, only by trusted 
       users and the account the web server is running under (see admin/setperm.sh):
 
-            bash$> cd ${appdir}/openexam-php/phalcon-mvc/app/config
+            bash$> cd ${appdir}/openexam-online/phalcon-mvc/app/config
             bash$> chmod 600 *.def
             bash$> setfacl -m u:apache:r *.def
 

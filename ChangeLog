@@ -5378,7 +5378,7 @@ The contact information must also be UTF-8 encoded.
 ------------------------------------------------------------------------
 r1068 | andlov | 2010-12-14 06:41:21 +0100 (Tue, 14 Dec 2010) | 1 line
 
-Prepared for release 1.5.4 of openexam-php
+Prepared for release 1.5.4 of openexam-online
 ------------------------------------------------------------------------
 r1067 | andlov | 2010-12-14 06:38:58 +0100 (Tue, 14 Dec 2010) | 1 line
 
@@ -5794,7 +5794,7 @@ Require exam creator to have to contribute role to manage or preview questions (
 ------------------------------------------------------------------------
 r963 | andlov | 2010-08-25 19:45:37 +0200 (Wed, 25 Aug 2010) | 1 line
 
-About to making release 1.5.3 of openexam-php.
+About to making release 1.5.3 of openexam-online.
 ------------------------------------------------------------------------
 r962 | andlov | 2010-08-25 19:42:20 +0200 (Wed, 25 Aug 2010) | 1 line
 
@@ -6334,7 +6334,7 @@ The examination participents name should be UTF8 decoded (fixes problem with swe
 ------------------------------------------------------------------------
 r826 | andlov | 2010-05-19 17:08:01 +0200 (Wed, 19 May 2010) | 1 line
 
-About to make release 1.5.1 of openexam-php.
+About to make release 1.5.1 of openexam-online.
 ------------------------------------------------------------------------
 r825 | andlov | 2010-05-19 17:01:07 +0200 (Wed, 19 May 2010) | 1 line
 
@@ -6426,7 +6426,7 @@ Fixed a typo error in the swedish translation.
 ------------------------------------------------------------------------
 r802 | andlov | 2010-05-17 21:40:33 +0200 (Mon, 17 May 2010) | 1 line
 
-About to make release 1.5 of openexam-php.
+About to make release 1.5 of openexam-online.
 ------------------------------------------------------------------------
 r801 | andlov | 2010-05-17 21:38:40 +0200 (Mon, 17 May 2010) | 1 line
 
@@ -6530,7 +6530,7 @@ Auto updated translation files.
 ------------------------------------------------------------------------
 r775 | andlov | 2010-05-12 00:52:50 +0200 (Wed, 12 May 2010) | 1 line
 
-Prepared for next release (1.4) of openexam-php.
+Prepared for next release (1.4) of openexam-online.
 ------------------------------------------------------------------------
 r774 | andlov | 2010-05-11 20:34:35 +0200 (Tue, 11 May 2010) | 1 line
 
@@ -6818,7 +6818,7 @@ Auto updated translation files.
 ------------------------------------------------------------------------
 r700 | andlov | 2010-04-30 12:06:16 +0200 (Fri, 30 Apr 2010) | 1 line
 
-About to make release 1.1 of openexam-php.
+About to make release 1.1 of openexam-online.
 ------------------------------------------------------------------------
 r699 | andlov | 2010-04-30 12:04:48 +0200 (Fri, 30 Apr 2010) | 1 line
 
@@ -6850,7 +6850,7 @@ Translated additions in the teacher section.
 ------------------------------------------------------------------------
 r691 | andlov | 2010-04-29 15:38:40 +0200 (Thu, 29 Apr 2010) | 1 line
 
-About to make release 1.0 of openexam-php.
+About to make release 1.0 of openexam-online.
 ------------------------------------------------------------------------
 r690 | andlov | 2010-04-29 15:30:21 +0200 (Thu, 29 Apr 2010) | 1 line
 
@@ -7895,7 +7895,7 @@ The contact information must also be UTF-8 encoded.
 ------------------------------------------------------------------------
 r418 | andlov | 2010-12-14 06:41:21 +0100 (Tue, 14 Dec 2010) | 1 line
 
-Prepared for release 1.5.4 of openexam-php
+Prepared for release 1.5.4 of openexam-online
 ------------------------------------------------------------------------
 r417 | andlov | 2010-12-14 06:38:58 +0100 (Tue, 14 Dec 2010) | 1 line
 
@@ -8311,7 +8311,7 @@ Require exam creator to have to contribute role to manage or preview questions (
 ------------------------------------------------------------------------
 r313 | andlov | 2010-08-25 19:45:37 +0200 (Wed, 25 Aug 2010) | 1 line
 
-About to making release 1.5.3 of openexam-php.
+About to making release 1.5.3 of openexam-online.
 ------------------------------------------------------------------------
 r312 | andlov | 2010-08-25 19:42:20 +0200 (Wed, 25 Aug 2010) | 1 line
 
@@ -8851,7 +8851,7 @@ The examination participents name should be UTF8 decoded (fixes problem with swe
 ------------------------------------------------------------------------
 r176 | andlov | 2010-05-19 17:08:01 +0200 (Wed, 19 May 2010) | 1 line
 
-About to make release 1.5.1 of openexam-php.
+About to make release 1.5.1 of openexam-online.
 ------------------------------------------------------------------------
 r175 | andlov | 2010-05-19 17:01:07 +0200 (Wed, 19 May 2010) | 1 line
 
@@ -8943,7 +8943,7 @@ Fixed a typo error in the swedish translation.
 ------------------------------------------------------------------------
 r152 | andlov | 2010-05-17 21:40:33 +0200 (Mon, 17 May 2010) | 1 line
 
-About to make release 1.5 of openexam-php.
+About to make release 1.5 of openexam-online.
 ------------------------------------------------------------------------
 r151 | andlov | 2010-05-17 21:38:40 +0200 (Mon, 17 May 2010) | 1 line
 
@@ -9047,7 +9047,7 @@ Auto updated translation files.
 ------------------------------------------------------------------------
 r125 | andlov | 2010-05-12 00:52:50 +0200 (Wed, 12 May 2010) | 1 line
 
-Prepared for next release (1.4) of openexam-php.
+Prepared for next release (1.4) of openexam-online.
 ------------------------------------------------------------------------
 r124 | andlov | 2010-05-11 20:34:35 +0200 (Tue, 11 May 2010) | 1 line
 
@@ -9335,7 +9335,7 @@ Auto updated translation files.
 ------------------------------------------------------------------------
 r50 | andlov | 2010-04-30 12:06:16 +0200 (Fri, 30 Apr 2010) | 1 line
 
-About to make release 1.1 of openexam-php.
+About to make release 1.1 of openexam-online.
 ------------------------------------------------------------------------
 r49 | andlov | 2010-04-30 12:04:48 +0200 (Fri, 30 Apr 2010) | 1 line
 
@@ -9367,7 +9367,7 @@ Translated additions in the teacher section.
 ------------------------------------------------------------------------
 r41 | andlov | 2010-04-29 15:38:40 +0200 (Thu, 29 Apr 2010) | 1 line
 
-About to make release 1.0 of openexam-php.
+About to make release 1.0 of openexam-online.
 ------------------------------------------------------------------------
 r40 | andlov | 2010-04-29 15:30:21 +0200 (Thu, 29 Apr 2010) | 1 line
 

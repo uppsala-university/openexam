@@ -129,7 +129,7 @@ $config = new Config(
                         'msginit'  => '--no-wrap --input=@template@ --output=@output@ --locale=@locale@ --no-translator'
                 ),
                 'package' => array(
-                        'name'    => 'openexam-php',
+                        'name'    => 'openexam-online',
                         'version' => '2.0',
                         'copying' => 'The authors, the Computing Department at BMC and the OpenExam project (Uppsala University)',
                         'address' => 'support@bmc.uu.se'

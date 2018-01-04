@@ -1,11 +1,11 @@
-# English translations for openexam-php package.
+# English translations for openexam-online package.
 # Copyright (C) 2014 The authors, the Computing Department at BMC and the OpenExam project (Uppsala University)
-# This file is distributed under the same license as the openexam-php package.
+# This file is distributed under the same license as the openexam-online package.
 # Automatically generated, 2014.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: openexam-php 2.0\n"
+"Project-Id-Version: openexam-online 2.0\n"
 "Report-Msgid-Bugs-To: support@bmc.uu.se\n"
 "POT-Creation-Date: 2014-11-04 01:19+0100\n"
 "PO-Revision-Date: 2014-11-03 23:22+0100\n"
