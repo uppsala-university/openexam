@@ -1,0 +1,57 @@
+
+    *** Syncronize SVN <-> GIT ***
+
+
+Notes for importing SVN repository to GIT. Use either SVN or GIT as primary repository with the 
+other as secondary (read-only) repository. Don't use both!
+
+These notes assumes that SVN is used as the primary repository and changes are pushed regular 
+onto the remote GIT repository.
+
+** Preparation:
+
+Make sure that GIT has SVN support:
+
+    bash$> git svn --help
+
+** Import SVN to local GIT repository:
+
+Use svn2git from https://github.com/nirvdrum/svn2git for importing SVN repository with trunk, tags 
+and branches. Create local GIT repository with import from SVN:
+
+    bash$> mkdir openexam-online
+    bash$> cd openexam-online
+    bash$> /usr/local/bin/svn2git --authors ../openexam-online-authors.txt \
+                    -m svn+ssh://svnuser@svn.bmc.uu.se/cbe/openexam-online
+
+** Cleanup in tags and branches:
+
+Check branches and tags:
+
+    bash$> git branch
+    bash$> git tag
+
+Remove revisions from tags and branches:
+
+    bash$> git tag | grep '@' | while read c; do git tag -d "$c"; done
+    bash$> git branch | grep '@' | while read c; do git branch -d "$c"; done
+
+** Import to GITHub:
+
+Create an empty repository in GITHub and push local to remote GIT:
+
+    bash$> git remote add origin git@github.com:openexam/openexam-online.git
+    bash$> git push origin --all
+    bash$> git push origin --tags
+
+** Sync SVN to GIT:
+
+This step updates the local GIT repository with commits from SVN and pushes them onto the
+remote GIT repository:
+
+    bash$> git svn rebase
+    bash$> git push origin --all
+    bash$> git push origin --tags
+
+
+// Anders Lövgren, 2018-01-04
