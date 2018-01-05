@@ -16,14 +16,17 @@
    answers to these questions, but the teacher (the one correcting the exam)
    has the opportunity to override the score.
 
-** MULTIMEDIA (VIDEO AND AUDIO):
+** MULTIMEDIA (IMAGE, VIDEO AND AUDIO):
 
-   Multimedia is supported by adding an URL to the question. The system will
-   make an HTTP HEAD request to determine the content type of the media.
-   
-   Different content types can be handled by different media players (actually 
-   classes that generates the HTML to embed the media on the HTML page). The
-   default media handling can be customized inside conf/config.inc.
+   Multimedia is supported by uploading files as question resources. The system
+   will automatic determine the MIME-type and generate apropriate HTML tags to
+   visualize the resource file.
+
+** RESOURCE FILES (I.E EXCEL OR PDF):
+
+   Resource files an be uploaded the same way as multimedia. System will take
+   care of embedding the resource file to make it visible for students during
+   the exam.
 
 ** ACCESS ROLES:
 
@@ -34,6 +37,15 @@
    
    This is controlled by the examination creator by granting and revoking
    roles on the examination. The different kind of roles are contributor,
-   examinator and decoder.
+   examinator and decoder. 
+
+   Questions are assigned one or more correctors that are responsible for
+   answer correction. By default the contributor becomes the question corrector,
+   but the exam creator can edit correctors list.
+
+** STUDENT RESULTS:
+
+   Students can fetch their own results once correction is finished. The exam
+   creator can flag an exam or student as enquiry for investigation.
    
 // Anders Lövgren, 2010-05-18
