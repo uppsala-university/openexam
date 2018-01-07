@@ -4,3 +4,11 @@ phalcon-mvc/logs/cache.log
 phalcon-mvc/logs/debug.log
 phalcon-mvc/logs/phpunit.log
 phalcon-mvc/logs/system.log
+composer.lock
+phalcon-mvc/app/config/access.def
+phalcon-mvc/app/config/apache.conf
+phalcon-mvc/app/config/auth.def
+phalcon-mvc/app/config/catalog.def
+phalcon-mvc/app/config/config.def
+phalcon-mvc/app/config/location.def
+vendor/
