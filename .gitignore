@@ -1,0 +1,6 @@
+phalcon-mvc/logs/access.log
+phalcon-mvc/logs/auth.log
+phalcon-mvc/logs/cache.log
+phalcon-mvc/logs/debug.log
+phalcon-mvc/logs/phpunit.log
+phalcon-mvc/logs/system.log
