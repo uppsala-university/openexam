@@ -4,3 +4,4 @@ composer.lock
 phalcon-mvc/app/config/*.def
 phalcon-mvc/app/config/*.conf
 vendor/
+phalcon-mvc/public/js/polyfill/*
