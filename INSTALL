@@ -125,7 +125,7 @@
             mysql> GRANT SELECT,INSERT,UPDATE,DELETE ON openexam.* TO openexam@localhost IDENTIFIED BY 'password';
             mysql> FLUSH PRIVILEGES;
             mysql> USE openexam;
-            mysql> SOURCE ${appdir}/openexam-online/phalcon-mvc/schemas/database/openexam.sql
+            mysql> SOURCE ${appdir}/openexam-online/admin/sql/openexam.sql
             mysql> INSERT INTO admins(user) VALUES('username');   # Add system administrator
             mysql> EXIT
 
