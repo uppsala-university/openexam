@@ -1,4 +1,5 @@
 phalcon-mvc/logs/*
+phalcon-mvc/cache/*
 composer.lock
 phalcon-mvc/app/config/*.def
 phalcon-mvc/app/config/*.conf
