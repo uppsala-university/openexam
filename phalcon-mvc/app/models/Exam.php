@@ -46,7 +46,8 @@ use Phalcon\DI as PhalconDI;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
 use Phalcon\Mvc\Model\Query\Builder;
-use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Regex as RegexValidator;
 
 /**
  * The exam model.
@@ -409,33 +410,37 @@ class Exam extends ModelBase
          * Validates business rules.
          * @return boolean
          */
-        protected function validation()
+        public function validation()
         {
-                $this->validate(new RegexValidator(
+                $validator = new Validation();
+
+                $validator->add(
+                    "creator", new RegexValidator(
                     array(
-                        "field"   => "creator",
                         "message" => "The username '$this->creator' is not matching expected format",
                         "pattern" => Pattern::get(Pattern::MATCH_USER)
                     )
                 ));
-                $this->validate(new SequenceValidator(
+                $validator->add(
                     array(
-                        "field"   => array("starttime", "endtime"),
+                        "starttime", "endtime"
+                    ), new SequenceValidator(
+                    array(
                         "message" => "Start time can't come after end time",
                         "type"    => "datetime"
                     )
                 ));
-                $this->validate(new DateTimeValidator(
+                $validator->add(
                     array(
-                        "field"   => array("starttime", "endtime"),
+                        "starttime", "endtime"
+                    ), new DateTimeValidator(
+                    array(
                         "message" => "The datetime value can't be in the past",
                         "current" => $this->getSnapshotData()
                     )
                 ));
 
-                if ($this->validationHasFailed() == true) {
-                        return false;
-                }
+                return $this->validate($validator);
         }
 
         /**

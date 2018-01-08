@@ -28,7 +28,8 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
-use Phalcon\Mvc\Model\Validator\Inclusionin;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\InclusionIn;
 
 /**
  * The render queue model.
@@ -182,24 +183,24 @@ class Render extends ModelBase
          * Validates business rules.
          * @return boolean
          */
-        protected function validation()
+        public function validation()
         {
-                $this->validate(new Inclusionin(
+                $validator = new Validation();
+
+                $validator->add(
+                    'status', new InclusionIn(
                     array(
-                        'field'  => 'status',
                         'domain' => array(self::STATUS_FAILED, self::STATUS_FINISH, self::STATUS_MISSING, self::STATUS_QUEUED, self::STATUS_RENDER)
                     )
                 ));
-                $this->validate(new Inclusionin(
+                $validator->add(
+                    'type', new InclusionIn(
                     array(
-                        'field'  => 'type',
                         'domain' => array(self::TYPE_ARCHIVE, self::TYPE_EXPORT, self::TYPE_EXTERN, self::TYPE_RESULT)
                     )
                 ));
 
-                if ($this->validationHasFailed() == true) {
-                        return false;
-                }
+                return $this->validate($validator);
         }
 
 }

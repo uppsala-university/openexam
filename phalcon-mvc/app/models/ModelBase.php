@@ -48,7 +48,7 @@ use const MODEL_ALWAYS_USE_MASTER_CONNECTION;
 class ModelBase extends Model
 {
 
-        public function initialize()
+        protected function initialize()
         {
                 if (defined('MODEL_ALWAYS_USE_MASTER_CONNECTION') && MODEL_ALWAYS_USE_MASTER_CONNECTION) {
                         $this->setReadConnectionService('dbwrite');

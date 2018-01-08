@@ -32,7 +32,8 @@ use OpenExam\Library\Model\Behavior\Generate\Unique;
 use OpenExam\Library\Model\Behavior\Generate\UUID;
 use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * Question topic.
@@ -162,23 +163,30 @@ class Topic extends ModelBase
                         return true;
                 }
 
+                $validator = new Validation();
+
                 if ($this->id == 0) {
-                        $this->validate(new Uniqueness(
+                        $validator->add(
                             array(
-                                "field"   => array("name", "exam_id"),
+                                "name", "exam_id"
+                            ), new Uniqueness(
+                            array(
                                 "message" => "This topic name has already been added on exam"
                             )
                         ));
                 }
                 if ($this->id == 0) {
-                        $this->validate(new Uniqueness(
+                        $validator->add(
                             array(
-                                'field'   => array("slot", "exam_id"),
+                                "slot", "exam_id"
+                            ), new Uniqueness(
+                            array(
                                 'message' => "This topic slot has already been added on exam"
                             )
                         ));
                 }
-                return $this->validationHasFailed() != true;
+
+                return $this->validate($validator);
         }
 
         /**

@@ -41,8 +41,9 @@ use OpenExam\Library\Security\Roles;
 use Phalcon\DI as PhalconDI;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Query\Builder;
-use Phalcon\Mvc\Model\Validator\Inclusionin;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\InclusionIn;
+use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * The question model.
@@ -273,34 +274,37 @@ class Question extends ModelBase
          * Validates business rules.
          * @return boolean
          */
-        protected function validation()
+        public function validation()
         {
-                $this->validate(new Inclusionin(
+                $validator = new Validation();
+
+                $validator->add(
+                    'status', new InclusionIn(
                     array(
-                        'field'  => 'status',
                         'domain' => array(self::STATUS_ACTIVE, self::STATUS_REMOVED)
                     )
                 ));
                 if ($this->id == 0) {
-                        $this->validate(new Uniqueness(
+                        $validator->add(
                             array(
-                                "field"   => array("name", "exam_id"),
+                                "name", "exam_id"
+                            ), new Uniqueness(
+                            array(
                                 "message" => "This question name has already been added on exam"
                             )
                         ));
                 }
                 if ($this->id == 0) {
-                        $this->validate(new Uniqueness(
+                        $validator->add(array(
+                                "slot", "exam_id"
+                            ), new Uniqueness(
                             array(
-                                'field'   => array("slot", "exam_id"),
                                 'message' => "This question slot has already been added on exam"
                             )
                         ));
                 }
 
-                if ($this->validationHasFailed() == true) {
-                        return false;
-                }
+                return $this->validate($validator);
         }
 
         /**

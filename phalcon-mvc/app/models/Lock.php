@@ -31,8 +31,9 @@ use OpenExam\Library\Model\Guard\Computer as ComputerModelGuard;
 use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
 use OpenExam\Library\Model\Guard\Student as StudentModelGuard;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
-use Phalcon\Mvc\Model\Validator\Inclusionin;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\InclusionIn;
+use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * The lock model.
@@ -150,24 +151,26 @@ class Lock extends ModelBase
          * Validates business rules.
          * @return boolean
          */
-        protected function validation()
+        public function validation()
         {
-                $this->validate(new Inclusionin(
+                $validator = new Validation();
+
+                $validator->add(
+                    'status', new InclusionIn(
                     array(
-                        'field'  => 'status',
                         'domain' => array(self::STATUS_PENDING, self::STATUS_APPROVED)
                     )
                 ));
-                $this->validate(new Uniqueness(
+                $validator->add(
                     array(
-                        'field'   => array('student_id', 'computer_id', 'exam_id', 'status'),
+                        'student_id', 'computer_id', 'exam_id', 'status'
+                    ), new Uniqueness(
+                    array(
                         'message' => "The exam lock already exist"
                     )
                 ));
 
-                if ($this->validationHasFailed() == true) {
-                        return false;
-                }
+                return $this->validate($validator);
         }
 
         /**

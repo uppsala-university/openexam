@@ -32,8 +32,9 @@ use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Answer as AnswerModelGuard;
 use OpenExam\Library\Model\Guard\Corrector as CorrectorModelGuard;
 use OpenExam\Library\Model\Validation\InvalidFormat;
-use Phalcon\Mvc\Model\Validator\Inclusionin;
 use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\InclusionIn;
 
 /**
  * The result model.
@@ -173,30 +174,35 @@ class Result extends ModelBase
          * Validates business rules.
          * @return boolean
          */
-        protected function validation()
+        public function validation()
         {
-                $this->validate(new Inclusionin(
+                $validator = new Validation();
+
+                $validator->add(
+                    'correction', new InclusionIn(
                     array(
-                        'field'  => 'correction',
-                        'domain' => array(self::CORRECTION_WAITING, self::CORRECTION_PARTIAL, self::CORRECTION_COMPLETED, self::CORRECTION_FINALIZED)
+                        'domain' => array(
+                                self::CORRECTION_WAITING,
+                                self::CORRECTION_PARTIAL,
+                                self::CORRECTION_COMPLETED,
+                                self::CORRECTION_FINALIZED
+                        )
                     )
                 ));
-                $this->validate(new InvalidFormat(
+                $validator->add(
+                    'score', new InvalidFormat(
                     array(
-                        'field' => 'score',
                         'input' => '{}'
                     )
                 ));
-                $this->validate(new Uniqueness(
+                $validator->add(
+                    'answer_id', new Uniqueness(
                     array(
-                        'field'   => 'answer_id',
                         'message' => "The answer $this->answer_id has already an result."
                     )
                 ));
 
-                if ($this->validationHasFailed() == true) {
-                        return false;
-                }
+                return $this->validate($validator);
         }
 
         /**

@@ -29,7 +29,8 @@ namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * The access definition model.
@@ -140,24 +141,24 @@ class Access extends ModelBase
          * Validates business rules.
          * @return boolean
          */
-        protected function validation()
+        public function validation()
         {
-                $this->validate(new Uniqueness(
+                $validator = new Validation();
+
+                $validator->add(
+                    array('exam_id', 'addr'), new Uniqueness(
                     array(
-                        'field'   => array('exam_id', 'addr'),
                         'message' => "The address $this->addr is already in use on this exam."
                     )
                 ));
-                $this->validate(new Uniqueness(
+                $validator->add(
+                    array('exam_id', 'name'), new Uniqueness(
                     array(
-                        'field'   => array('exam_id', 'name'),
                         'message' => "The name $this->name is already in use on this exam."
                     )
                 ));
 
-                if ($this->validationHasFailed() == true) {
-                        return false;
-                }
+                return $this->validate($validator);
         }
 
 }

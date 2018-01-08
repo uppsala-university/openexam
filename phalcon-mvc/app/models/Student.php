@@ -35,8 +35,9 @@ use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
 use OpenExam\Library\Model\Validation\DateTime as DateTimeValidator;
 use OpenExam\Library\Model\Validation\Sequence as SequenceValidator;
-use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Regex as RegexValidator;
+use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * The student model.
@@ -194,35 +195,43 @@ class Student extends Role
                         return true;
                 }
 
-                $this->validate(new Uniqueness(
+                $validator = new Validation();
+
+                $validator->add(
                     array(
-                        "field"   => array("code", "exam_id"),
+                        "code", "exam_id"
+                    ), new Uniqueness(
+                    array(
                         "message" => "The code '$this->code' is already in use on this exam"
                     )
                 ));
-                $this->validate(new RegexValidator(
+                $validator->add(
+                    "code", new RegexValidator(
                     array(
-                        "field"   => "code",
                         "message" => "The anonymous code '$this->code' is not matching expected format",
                         "pattern" => Pattern::get(Pattern::MATCH_CODE)
                     )
                 ));
-                $this->validate(new SequenceValidator(
+                $validator->add(
                     array(
-                        "field"   => array("starttime", "endtime"),
+                        "starttime", "endtime"
+                    ), new SequenceValidator(
+                    array(
                         "message" => "Start time can't come after end time",
                         "type"    => "datetime"
                     )
                 ));
-                $this->validate(new DateTimeValidator(
+                $validator->add(
                     array(
-                        "field"   => array("starttime", "endtime"),
+                        "starttime", "endtime"
+                    ), new DateTimeValidator(
+                    array(
                         "message" => "The datetime value can't be in the past",
                         "current" => $this->getSnapshotData()
                     )
                 ));
 
-                return $this->validationHasFailed() != true;
+                return $this->validate($validator);
         }
 
         /**

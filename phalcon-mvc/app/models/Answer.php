@@ -30,7 +30,8 @@ namespace OpenExam\Models;
 use OpenExam\Library\Model\Behavior\Transform\FilterText;
 use OpenExam\Library\Model\Guard\Question as QuestionModelGuard;
 use OpenExam\Library\Model\Guard\Student as StudentModelGuard;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * The answer model.
@@ -144,18 +145,18 @@ class Answer extends ModelBase
          * Validates business rules.
          * @return boolean
          */
-        protected function validation()
+        public function validation()
         {
-                $this->validate(new Uniqueness(
+                $validator = new Validation();
+
+                $validator->add(
+                    array('question_id', 'student_id'), new Uniqueness(
                     array(
-                        'field'   => array('question_id', 'student_id'),
                         'message' => "Student answer has already been inserted"
                     )
                 ));
 
-                if ($this->validationHasFailed() == true) {
-                        return false;
-                }
+                return $this->validate($validator);
         }
 
         /**

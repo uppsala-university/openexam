@@ -28,7 +28,8 @@
 namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Guard\Session as SessionModelGuard;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * The session model.
@@ -99,18 +100,18 @@ class Session extends ModelBase
          * Validates business rules.
          * @return boolean
          */
-        protected function validation()
+        public function validation()
         {
-                $this->validate(new Uniqueness(
+                $validator = new Validation();
+                
+                $validator->add(
+                    'session_id', new Uniqueness(
                     array(
-                        'field'   => 'session_id',
                         'message' => "The session $this->session_id exists already"
                     )
                 ));
 
-                if ($this->validationHasFailed() == true) {
-                        return false;
-                }
+                return $this->validate($validator);
         }
 
 }

@@ -28,7 +28,8 @@
 namespace OpenExam\Models;
 
 use Phalcon\Mvc\Model\Behavior\Timestampable;
-use Phalcon\Mvc\Model\Validator\Inclusionin;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\InclusionIn;
 
 /**
  * The performance model.
@@ -203,11 +204,13 @@ class Performance extends ModelBase
          * Validates business rules.
          * @return boolean
          */
-        protected function validation()
+        public function validation()
         {
+                $validator = new Validation();
+
                 if (isset($this->mode)) {
-                        $this->validate(new Inclusionin(array(
-                                'field'  => 'mode',
+                        $validator->add(
+                            'mode', new InclusionIn(array(
                                 'domain' => array(
                                         self::MODE_APACHE,
                                         self::MODE_DISK,
@@ -224,8 +227,8 @@ class Performance extends ModelBase
                         )));
                 }
                 if (isset($this->milestone)) {
-                        $this->validate(new Inclusionin(array(
-                                'field'  => 'milestone',
+                        $validator->add(
+                            'milestone', new InclusionIn(array(
                                 'domain' => array(
                                         self::MILESTONE_MINUTE,
                                         self::MILESTONE_HOUR,
@@ -236,9 +239,8 @@ class Performance extends ModelBase
                                 )
                         )));
                 }
-                if ($this->validationHasFailed() == true) {
-                        return false;
-                }
+
+                return $this->validate($validator);
         }
 
         protected function beforeSave()
