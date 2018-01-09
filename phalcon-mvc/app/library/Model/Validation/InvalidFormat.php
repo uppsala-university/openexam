@@ -27,7 +27,7 @@
 
 namespace OpenExam\Library\Model\Validation;
 
-use Phalcon\Mvc\EntityInterface;
+use Phalcon\Validation;
 use Phalcon\Validation\Validator;
 use Phalcon\Validation\ValidatorInterface;
 
@@ -45,12 +45,17 @@ class InvalidFormat extends Validator implements ValidatorInterface
         /**
          * Executes the validation
          *
-         * @param EntityInterface $record
-         * @param string $attribute
+         * @param Validation $validator
+         * @param string     $attribute
          * @return boolean
          */
-        public function validate(EntityInterface $record)
+        public function validate(Validation $validator, $attribute)
         {
+                // 
+                // Get bound model:
+                // 
+                $record = $validator->getEntity();
+
                 // 
                 // Get field to validate and invalid input:
                 // 
