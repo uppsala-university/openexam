@@ -28,8 +28,8 @@
 namespace OpenExam\Library\Model\Validation;
 
 use Phalcon\Mvc\EntityInterface;
-use Phalcon\Mvc\Model\Validator;
-use Phalcon\Mvc\Model\ValidatorInterface;
+use Phalcon\Validation\Validator;
+use Phalcon\Validation\ValidatorInterface;
 
 /**
  * Validate datetime.
@@ -54,7 +54,7 @@ class DateTime extends Validator implements ValidatorInterface
                 // 
                 // Get field to validate:
                 // 
-                if ($this->isSetOption("field")) {
+                if ($this->hasOption("field")) {
                         $fields = $this->getOption("field");
                 } else {
                         $fields = array("starttime", "endtime");
@@ -63,7 +63,7 @@ class DateTime extends Validator implements ValidatorInterface
                 // 
                 // Get current values:
                 // 
-                if ($this->isSetOption("current")) {
+                if ($this->hasOption("current")) {
                         $current = $this->getOption("current");
                 } else {
                         $current = array();
@@ -72,7 +72,7 @@ class DateTime extends Validator implements ValidatorInterface
                 // 
                 // Get grace period in seconds:
                 // 
-                if ($this->isSetOption("grace")) {
+                if ($this->hasOption("grace")) {
                         $grace = $this->getOption("grace");
                 } else {
                         $grace = 60;

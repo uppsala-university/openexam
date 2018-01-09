@@ -32,9 +32,9 @@ use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Answer as AnswerModelGuard;
 use OpenExam\Library\Model\Guard\Corrector as CorrectorModelGuard;
 use OpenExam\Library\Model\Validation\InvalidFormat;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
 use Phalcon\Validation;
 use Phalcon\Validation\Validator\InclusionIn;
+use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * The result model.

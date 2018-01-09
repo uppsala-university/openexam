@@ -28,8 +28,8 @@
 namespace OpenExam\Library\Model\Validation;
 
 use Phalcon\Mvc\EntityInterface;
-use Phalcon\Mvc\Model\Validator;
-use Phalcon\Mvc\Model\ValidatorInterface;
+use Phalcon\Validation\Validator;
+use Phalcon\Validation\ValidatorInterface;
 
 /**
  * Sequence validation.
