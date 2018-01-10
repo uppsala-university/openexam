@@ -28,6 +28,7 @@
 namespace OpenExam\Library\Model\Validation;
 
 use Phalcon\Validation;
+use Phalcon\Validation\Message;
 use Phalcon\Validation\Validator;
 use Phalcon\Validation\ValidatorInterface;
 
@@ -65,13 +66,12 @@ class Sequence extends Validator implements ValidatorInterface
                 // Support passing sequence that can be used as a fence:
                 // 
                 $sequence = $this->getOption("sequence", array());
-                $property = $this->getOption("field");
 
                 // 
                 // Iterate thru all properties:
                 // 
                 if ($type == "datetime") {
-                        foreach ($property as $index => $prop) {
+                        foreach ($sequence as $index => $prop) {
                                 if (($value = strtotime($record->$prop))) {
                                         $sequence[$index] = $value;
                                 }
@@ -85,7 +85,8 @@ class Sequence extends Validator implements ValidatorInterface
                         if (!isset($sequence[$i])) {
                                 continue;
                         } elseif ($sequence[$i] < $prev) {
-                                $this->appendMessage($this->getOption("message"));
+                                $message = $this->getOption("message");
+                                $validator->appendMessage(new Message($message, $attribute));
                                 return false;
                         } else {
                                 $prev = $sequence[$i];

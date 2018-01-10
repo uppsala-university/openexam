@@ -422,12 +422,11 @@ class Exam extends ModelBase
                     )
                 ));
                 $validator->add(
+                    "timestamp", new SequenceValidator(
                     array(
-                        "starttime", "endtime"
-                    ), new SequenceValidator(
-                    array(
-                        "message" => "Start time can't come after end time",
-                        "type"    => "datetime"
+                        "sequence" => array("starttime", "endtime"),
+                        "message"  => "Start time can't come after end time",
+                        "type"     => "datetime"
                     )
                 ));
                 $validator->add(
