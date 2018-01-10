@@ -260,8 +260,7 @@
                     type: "POST",
                     data: {type: 'result', user: user, exam_id: examId},
                     url: baseURL + 'utility/render/add',
-                    success: function (response) {
-                        var content = JSON.parse(response);
+                    success: function (content) {
                         target.attr('data-id', content.result.id);
                         updateJobStatus(content.result);
                     },
@@ -279,8 +278,8 @@
                     type: "POST",
                     data: {id: jobid},
                     url: baseURL + 'utility/render/status',
-                    success: function (response) {
-                        updateJobStatus(JSON.parse(response).result);
+                    success: function (content) {
+                        updateJobStatus(content.result);
                     },
                     error: function (content) {
                         var target = $('.list-group-item[data-id="' + jobid + '"]');

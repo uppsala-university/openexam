@@ -101,8 +101,8 @@
                 $.ajax({
                     type: "GET",
                     url: url,
-                    success: function (resp) {
-                        callback(JSON.parse(resp));
+                    success: function (content) {
+                        callback(content);
                     }
                 });
             }

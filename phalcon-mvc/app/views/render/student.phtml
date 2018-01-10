@@ -219,8 +219,7 @@
                     type: "POST",
                     data: data,
                     url: url,
-                    success: function (response) {
-                        var content = JSON.parse(response);
+                    success: function (content) {
                         setResponseData(content.result);
                         showWizardPage(content.result);
                     },

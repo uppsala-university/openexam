@@ -401,8 +401,8 @@ var counters = (function () {
         $.ajax({
             type: "GET",
             url: url,
-            success: function (resp) {
-                callback(JSON.parse(resp));
+            success: function (response) {
+                callback(response);
             }
         });
     }

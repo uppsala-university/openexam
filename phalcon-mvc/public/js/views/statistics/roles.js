@@ -170,7 +170,7 @@ $(document).ready(function () {
                 url: getUrl('summary'),
                 success: function (content) {
                     division = null;
-                    showSummary(JSON.parse(content));
+                    showSummary(content);
                 }
             });
         }
@@ -184,7 +184,7 @@ $(document).ready(function () {
                 url: getUrl('summary', name),
                 success: function (content) {
                     division = name;
-                    showSummary(JSON.parse(content));
+                    showSummary(content);
                 }
             });
         }
@@ -197,7 +197,7 @@ $(document).ready(function () {
                 type: "GET",
                 url: getUrl('role', role),
                 success: function (content) {
-                    showUserList(JSON.parse(content));
+                    showUserList(content);
                 }
             });
         }
@@ -210,7 +210,7 @@ $(document).ready(function () {
                 type: "GET",
                 url: getUrl('exams'),
                 success: function (content) {
-                    showExamList(JSON.parse(content));
+                    showExamList(content);
                 }
             });
         }
@@ -224,7 +224,7 @@ $(document).ready(function () {
                     type: "GET",
                     url: getUrl('users'),
                     success: function (content) {
-                        showUserList(JSON.parse(content));
+                        showUserList(content);
                     }
                 });
             } else {
@@ -232,7 +232,7 @@ $(document).ready(function () {
                     type: "GET",
                     url: getUrl(type),
                     success: function (content) {
-                        showUserList(JSON.parse(content));
+                        showUserList(content);
                     }
                 });
             }
