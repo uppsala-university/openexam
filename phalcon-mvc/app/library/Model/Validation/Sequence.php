@@ -74,6 +74,8 @@ class Sequence extends Validator implements ValidatorInterface
                         foreach ($sequence as $index => $prop) {
                                 if (($value = strtotime($record->$prop))) {
                                         $sequence[$index] = $value;
+                                } else {
+                                        $sequence[$index] = 0;
                                 }
                         }
                 }
