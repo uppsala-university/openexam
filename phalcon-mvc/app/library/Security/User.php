@@ -261,7 +261,7 @@ class User extends Component
          * @return array|boolean
          * @see Roles::acquire()
          */
-        public function acquire($roles, $id = 0, $bind = null)
+        public function acquire($roles, $id = 0, $bind = 'native')
         {
                 $acquired = array();
 

@@ -35,7 +35,6 @@ use OpenExam\Models\Exam;
 use OpenExam\Models\Invigilator;
 use OpenExam\Models\Student;
 use OpenExam\Models\Teacher;
-use OpenExam\Models\Question;
 use Phalcon\Mvc\User\Component;
 use ReflectionClass;
 
@@ -444,9 +443,10 @@ class Roles extends Component
          * @param string $bind The model to bind ID against.
          * @return bool
          */
-        private function hasCorrector($id = 0, $bind = null)
+        private function hasCorrector($id = 0, $bind = 'native')
         {
                 // 
+                // Keep primary role. Will be reset on method return.
                 // 
                 $role = $this->user->getPrimaryRole();
 
@@ -457,7 +457,7 @@ class Roles extends Component
                 // 
 
                 try {
-                        if (!isset($bind)) {
+                        if ($bind == 'native') {
                                 if ($id != 0) {
                                         return Corrector::count(array(
                                                     "user = :user: AND question_id = :id:",
@@ -466,7 +466,7 @@ class Roles extends Component
                                                             "id"   => $id
                                                     )
                                             )) > 0;
-                                } elseif (!isset($bind)) {
+                                } else {
                                         return Corrector::count(array(
                                                     "user = :user:",
                                                     "bind" => array(
