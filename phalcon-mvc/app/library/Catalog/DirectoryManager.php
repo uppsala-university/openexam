@@ -324,15 +324,6 @@ class DirectoryManager extends Component implements DirectoryService
                 return $this->_filter;
         }
 
-//        /**
-//         * Get array of default attributes for user principal searches.
-//         * @return array
-//         */
-//        public function getDefaultAttributes()
-//        {
-//                return self::$DEFAULT_RESULT_ATTR_LIST;
-//        }
-
         /**
          * Get groups for user.
          * @param string $principal The user principal name.
@@ -415,7 +406,7 @@ class DirectoryManager extends Component implements DirectoryService
                 $search = new DirectorySearch($this);
                 $result = $search->getAttribute($attribute, $principal);
 
-                $this->_cache->setAttribute($attribute, $principal, serialize($result));
+                $this->_cache->setAttribute($attribute, $principal, $result);
                 return $result;
         }
 

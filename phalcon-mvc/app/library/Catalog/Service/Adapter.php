@@ -151,14 +151,10 @@ abstract class Adapter extends Component implements DirectoryService
                 }
 
                 // 
-                // Ensure that strings are serialized!
+                // Set cache data and return. Let cache frontend take care of 
+                // serialization as needed.
                 // 
-                if (is_string($result)) {
-                        $this->cache->save($key, serialize($result), $this->_lifetime);
-                } else {
-                        $this->cache->save($key, $result, $this->_lifetime);
-                }
-
+                $this->cache->save($key, $result, $this->_lifetime);
                 return $result;
         }
 
