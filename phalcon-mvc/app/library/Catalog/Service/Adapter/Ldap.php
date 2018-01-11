@@ -401,7 +401,7 @@ class Ldap extends AttributeService
                 if ($this->_lifetime) {
                         $cachekey = sprintf("catalog-%s-attribute-%s-%s", $this->_name, $attribute, md5($principal));
                         if ($this->cache->exists($cachekey, $this->_lifetime)) {
-                                return $this->cache->get($cachekey, $this->_lifetime)[0];
+                                return $this->cache->get($cachekey, $this->_lifetime);
                         }
                 }
 
