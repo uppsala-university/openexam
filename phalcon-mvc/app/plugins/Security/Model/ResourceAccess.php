@@ -190,8 +190,14 @@ class ResourceAccess extends ObjectAccess
                                             return true;
                                     }
                             } elseif ($action == self::CREATE) {
-                                    if ($user->roles->acquire($role, $model->exam_id)) {
-                                            return true;
+                                    if ($role == Roles::CORRECTOR) {
+                                            if ($user->roles->acquire($role, $model->exam_id, 'exam')) {
+                                                    return true;
+                                            }
+                                    } else {
+                                            if ($user->roles->acquire($role, $model->exam_id)) {
+                                                    return true;
+                                            }
                                     }
                             }
 
