@@ -72,10 +72,13 @@ class Sequence extends Validator implements ValidatorInterface
                 // 
                 if ($type == "datetime") {
                         foreach ($sequence as $index => $prop) {
-                                if (($value = strtotime($record->$prop))) {
+                                if (is_null($record->$prop)) {
+                                        $sequence[$index] = null;
+                                } elseif (($value = strtotime($record->$prop))) {
                                         $sequence[$index] = $value;
                                 } else {
-                                        $sequence[$index] = 0;
+                                        $validator->appendMessage(new Message("Failed parse datetime value for $prop", $attribute));
+                                        return false;
                                 }
                         }
                 }
