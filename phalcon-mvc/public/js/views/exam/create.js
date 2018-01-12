@@ -423,10 +423,14 @@ $(document).ready(function () {
 
         if (start !== '') {
             data["starttime"] = start;
+        } else {
+            data["starttime"] = null;
         }
 
         if (end !== '') {
             data["endtime"] = end;
+        } else {
+            data["endtime"] = null;
         }
 
         ajax(
@@ -528,7 +532,7 @@ $(document).ready(function () {
                 if (!qid) {
                     qid = qId;
                 }
-                
+
                 // 
                 // Closing the dialog should prompt user if question should be deleted
                 // if action was create. At this point, the question has already been 
@@ -649,12 +653,12 @@ $(document).ready(function () {
             // 
             var ansType = $(qPart).find('input[class=ans_type_selector]:checked');
             var ansOpts = $(ansType).closest('.ans_type_selector_box_wrap').find('.ans_type');
-            
+
             // 
             // Set answer type:
             // 
             qJson[qPartTitle]["ans_area"]["type"] = $(ansType).val();
-            
+
             // 
             // Populate answer area related data in JSON object:
             // 
