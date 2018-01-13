@@ -145,7 +145,7 @@ class Question extends ModelBase
          */
         public $grades;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
@@ -310,7 +310,7 @@ class Question extends ModelBase
         /**
          * Called before model is created.
          */
-        protected function beforeValidationOnCreate()
+        public function beforeValidationOnCreate()
         {
                 if (!isset($this->status)) {
                         $this->status = self::STATUS_ACTIVE;
@@ -330,7 +330,7 @@ class Question extends ModelBase
         /**
          * Called before model is persisted.
          */
-        protected function beforeValidation()
+        public function beforeValidation()
         {
                 if (isset($this->score)) {
                         $this->score = str_replace(",", ".", $this->score);

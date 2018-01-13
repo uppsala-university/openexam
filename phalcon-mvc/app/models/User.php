@@ -191,24 +191,24 @@ class User extends ModelBase
                 );
         }
 
-        protected function beforeValidationOnCreate()
+        public function beforeValidationOnCreate()
         {
                 list($this->uid, $this->domain) = explode('@', $this->principal);
         }
 
-        protected function beforeSave()
+        public function beforeSave()
         {
                 $this->affiliation = serialize($this->affiliation);
                 $this->assurance = serialize($this->assurance);
         }
 
-        protected function afterSave()
+        public function afterSave()
         {
                 $this->affiliation = unserialize($this->affiliation);
                 $this->assurance = unserialize($this->assurance);
         }
 
-        protected function afterFetch()
+        public function afterFetch()
         {
                 $this->affiliation = unserialize($this->affiliation);
                 $this->assurance = unserialize($this->assurance);

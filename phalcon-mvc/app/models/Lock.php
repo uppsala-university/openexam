@@ -95,7 +95,7 @@ class Lock extends ModelBase
          */
         public $status;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
@@ -176,7 +176,7 @@ class Lock extends ModelBase
         /**
          * Called before model is created.
          */
-        protected function beforeValidationOnCreate()
+        public function beforeValidationOnCreate()
         {
                 if (!isset($this->status)) {
                         $this->status = self::STATUS_APPROVED;

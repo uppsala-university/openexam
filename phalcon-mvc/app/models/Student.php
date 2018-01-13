@@ -109,7 +109,7 @@ class Student extends Role
          */
         public $persnr;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
@@ -236,7 +236,7 @@ class Student extends Role
         /**
          * Called before model is created.
          */
-        protected function beforeValidationOnCreate()
+        public function beforeValidationOnCreate()
         {
                 if (!isset($this->enquiry)) {
                         $this->enquiry = false;
@@ -246,7 +246,7 @@ class Student extends Role
         /**
          * Called before model is saved.
          */
-        protected function beforeSave()
+        public function beforeSave()
         {
                 $this->enquiry = $this->enquiry ? 'Y' : 'N';
         }
@@ -254,7 +254,7 @@ class Student extends Role
         /**
          * Called after model is saved.
          */
-        protected function afterSave()
+        public function afterSave()
         {
                 $this->enquiry = $this->enquiry == 'Y';
         }
@@ -262,7 +262,7 @@ class Student extends Role
         /**
          * Called after the model was read.
          */
-        protected function afterFetch()
+        public function afterFetch()
         {
                 $this->enquiry = $this->enquiry == 'Y';
                 $this->persnr = $this->getAttribute(Principal::ATTR_PNR);

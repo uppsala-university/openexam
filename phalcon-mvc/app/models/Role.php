@@ -70,7 +70,7 @@ class Role extends ModelBase
          */
         public $display;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
@@ -135,7 +135,7 @@ class Role extends ModelBase
         /**
          * Called after the model was read.
          */
-        protected function afterFetch()
+        public function afterFetch()
         {
                 $this->setAttributes();
                 parent::afterFetch();
@@ -144,7 +144,7 @@ class Role extends ModelBase
         /**
          * Called after the model was created.
          */
-        protected function afterCreate()
+        public function afterCreate()
         {
                 $this->setAttributes();
         }
@@ -152,7 +152,7 @@ class Role extends ModelBase
         /**
          * Called after the model was deleted.
          */
-        protected function afterDelete()
+        public function afterDelete()
         {
                 $key = sprintf("roles-%s", $this->user);
 
@@ -166,7 +166,7 @@ class Role extends ModelBase
         /**
          * Called before validation of the model object.
          */
-        protected function beforeValidation()
+        public function beforeValidation()
         {
                 $this->setUserDomain();
                 $this->setUserNormalized();

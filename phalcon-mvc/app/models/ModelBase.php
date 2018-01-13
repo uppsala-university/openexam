@@ -48,7 +48,7 @@ use const MODEL_ALWAYS_USE_MASTER_CONNECTION;
 class ModelBase extends Model
 {
 
-        protected function initialize()
+        public function initialize()
         {
                 if (defined('MODEL_ALWAYS_USE_MASTER_CONNECTION') && MODEL_ALWAYS_USE_MASTER_CONNECTION) {
                         $this->setReadConnectionService('dbwrite');
@@ -194,7 +194,7 @@ class ModelBase extends Model
          * Let our custom event manager handle model access control by fire
          * an after fetch event on this model.
          */
-        protected function afterFetch()
+        public function afterFetch()
         {
                 $modelsManager = $this->getModelsManager();
                 $eventsManager = $modelsManager->getEventsManager();
@@ -253,7 +253,7 @@ class ModelBase extends Model
         /**
          * Called after model was deleted.
          */
-        protected function afterDelete()
+        public function afterDelete()
         {
                 $this->invalidate();
         }
@@ -268,7 +268,7 @@ class ModelBase extends Model
          * If this model has all required attributes, then except for overhead
          * of validating this is a noop with minimal performance hit.
          */
-        protected function beforeValidationOnUpdate()
+        public function beforeValidationOnUpdate()
         {
                 // 
                 // Get required fields:

@@ -92,7 +92,7 @@ class Access extends ModelBase
          */
         public $addr;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 

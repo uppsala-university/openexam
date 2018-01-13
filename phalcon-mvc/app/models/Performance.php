@@ -152,7 +152,7 @@ class Performance extends ModelBase
          */
         public $data;
 
-        protected function initialize()
+        public function initialize()
         {
                 if ($this->getDI()->has('audit')) {
                         $audit = $this->getDI()->get('audit');
@@ -243,12 +243,12 @@ class Performance extends ModelBase
                 return $this->validate($validator);
         }
 
-        protected function beforeSave()
+        public function beforeSave()
         {
                 $this->data = serialize($this->data);
         }
 
-        protected function afterSave()
+        public function afterSave()
         {
                 $this->data = unserialize($this->data);
         }

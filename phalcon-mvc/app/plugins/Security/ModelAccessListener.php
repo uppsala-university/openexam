@@ -167,7 +167,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          * @param Event $event
          * @param Model $model
          */
-        protected function beforeCreate($event, $model)
+        public function beforeCreate($event, $model)
         {
                 return $this->checkAccess($event, $model, ObjectAccess::CREATE);
         }
@@ -177,7 +177,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          * @param Event $event
          * @param Model $model
          */
-        protected function beforeUpdate($event, $model)
+        public function beforeUpdate($event, $model)
         {
                 return $this->checkAccess($event, $model, ObjectAccess::UPDATE);
         }
@@ -187,7 +187,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          * @param Event $event
          * @param Model $model
          */
-        protected function beforeDelete($event, $model)
+        public function beforeDelete($event, $model)
         {
                 return $this->checkAccess($event, $model, ObjectAccess::DELETE);
         }
@@ -197,7 +197,7 @@ class ModelAccessListener extends Plugin implements EventsAwareInterface
          * @param Event $event
          * @param Model $model
          */
-        protected function afterFetch($event, $model)
+        public function afterFetch($event, $model)
         {
                 return $this->checkAccess($event, $model, ObjectAccess::READ);
         }

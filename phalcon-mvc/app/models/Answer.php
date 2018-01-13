@@ -83,7 +83,7 @@ class Answer extends ModelBase
          */
         public $comment;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
@@ -158,11 +158,11 @@ class Answer extends ModelBase
 
                 return $this->validate($validator);
         }
-
+        
         /**
          * Called before model is created.
          */
-        protected function beforeValidationOnCreate()
+        public function beforeValidationOnCreate()
         {
                 if (!isset($this->answered)) {
                         $this->answered = false;
@@ -172,7 +172,7 @@ class Answer extends ModelBase
         /**
          * Called before model is saved.
          */
-        protected function beforeSave()
+        public function beforeSave()
         {
                 $this->answered = $this->answered ? 'Y' : 'N';
         }
@@ -180,7 +180,7 @@ class Answer extends ModelBase
         /**
          * Called after model is saved.
          */
-        protected function afterSave()
+        public function afterSave()
         {
                 $this->answered = $this->answered == 'Y';
         }
@@ -188,7 +188,7 @@ class Answer extends ModelBase
         /**
          * Called after the model was read.
          */
-        protected function afterFetch()
+        public function afterFetch()
         {
                 $this->answered = $this->answered == 'Y';
                 parent::afterFetch();

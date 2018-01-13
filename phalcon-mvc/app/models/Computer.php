@@ -91,7 +91,7 @@ class Computer extends ModelBase
          */
         public $updated;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 

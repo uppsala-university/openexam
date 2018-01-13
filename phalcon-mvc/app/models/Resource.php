@@ -117,7 +117,7 @@ class Resource extends ModelBase
          */
         public $shared;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
@@ -207,7 +207,7 @@ class Resource extends ModelBase
         /**
          * Called before model is created.
          */
-        protected function beforeValidationOnCreate()
+        public function beforeValidationOnCreate()
         {
                 if (!isset($this->shared)) {
                         $this->shared = self::SHARED_EXAM;

@@ -107,7 +107,7 @@ class Topic extends ModelBase
          */
         public $depend;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
@@ -192,7 +192,7 @@ class Topic extends ModelBase
         /**
          * Called before model is created.
          */
-        protected function beforeValidationOnCreate()
+        public function beforeValidationOnCreate()
         {
                 if (!isset($this->randomize)) {
                         $this->randomize = 0;

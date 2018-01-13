@@ -100,7 +100,7 @@ class Profile extends ModelBase
          */
         public $data;
 
-        protected function initialize()
+        public function initialize()
         {
                 if ($this->getDI()->has('audit')) {
                         $audit = $this->getDI()->get('audit');
@@ -146,19 +146,19 @@ class Profile extends ModelBase
         /**
          * Called before model is persisted.
          */
-        protected function beforeValidation()
+        public function beforeValidation()
         {
                 if (isset($this->time)) {
                         $this->time = str_replace(",", ".", $this->time);
                 }
         }
 
-        protected function beforeSave()
+        public function beforeSave()
         {
                 $this->data = serialize($this->data);
         }
 
-        protected function afterSave()
+        public function afterSave()
         {
                 $this->data = unserialize($this->data);
         }

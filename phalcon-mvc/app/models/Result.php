@@ -101,7 +101,7 @@ class Result extends ModelBase
          */
         public $comment;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
@@ -208,7 +208,7 @@ class Result extends ModelBase
         /**
          * Called before model is created.
          */
-        protected function beforeValidationOnCreate()
+        public function beforeValidationOnCreate()
         {
                 if (!isset($this->correction)) {
                         $this->correction = self::CORRECTION_WAITING;

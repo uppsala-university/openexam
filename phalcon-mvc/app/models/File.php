@@ -78,7 +78,7 @@ class File extends ModelBase
          */
         public $subtype;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 

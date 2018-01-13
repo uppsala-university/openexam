@@ -138,7 +138,7 @@ class Render extends ModelBase
          */
         public $message;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
