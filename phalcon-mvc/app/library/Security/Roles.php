@@ -475,17 +475,21 @@ class Roles extends Component
                                             )) > 0;
                                 }
                         } elseif ($bind == 'exam') {
+                                // 
+                                // This snippet relies on find() method adding joins for
+                                // corrector when primary role is set:
+                                // 
                                 $role = $this->user->setPrimaryRole(self::CORRECTOR);
 
                                 if ($id != 0) {
-                                        return Exam::count(array(
+                                        return count(Exam::find(array(
                                                     "id = :id:",
                                                     "bind" => array(
                                                             "id" => $id
                                                     )
-                                            )) > 0;
+                                            ))) > 0;
                                 } else {
-                                        return Exam::count() > 0;
+                                        return count(Exam::find()) > 0;
                                 }
                         }
                 } finally {
