@@ -483,10 +483,10 @@ class Roles extends Component
 
                                 if ($id != 0) {
                                         return count(Exam::find(array(
-                                                    "id = :id:",
-                                                    "bind" => array(
-                                                            "id" => $id
-                                                    )
+                                                        "id = :id:",
+                                                        "bind" => array(
+                                                                "id" => $id
+                                                        )
                                             ))) > 0;
                                 } else {
                                         return count(Exam::find()) > 0;

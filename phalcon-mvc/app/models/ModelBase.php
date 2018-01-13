@@ -339,7 +339,7 @@ class ModelBase extends Model
          * @param ModelInterface[] $related
          * @return bool 
          */
-        protected function _preSaveRelatedRecords($connection, $related)
+        protected function _preSaveRelatedRecords(AdapterInterface $connection, $related)
         {
                 // 
                 // Get database adapter if using cache mediator:
