@@ -132,9 +132,23 @@ $di->set('url', function() use ($config) {
         return $url;
 }, true);
 
+/**
+ * The view render service.
+ */
 $di->set('view', function() use ($config) {
+        $eventsManager = new Phalcon\Events\Manager();
+        $eventsManager->attach(
+            'view', function (Phalcon\Events\Event $event, $view) {
+                if ($event->getType() == 'beforeRender') {
+                        $view->getDi()->get('user')->setPrimaryRole(null);
+                }
+        }
+        );
+
         $view = new Phalcon\Mvc\View();
+        $view->setEventsManager($eventsManager);
         $view->setViewsDir($config->application->viewsDir);
+
         return $view;
 }, true);
 
