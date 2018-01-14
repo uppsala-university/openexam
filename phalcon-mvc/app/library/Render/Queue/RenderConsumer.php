@@ -75,7 +75,7 @@ class RenderConsumer extends Component
          */
         public function setResult($job)
         {
-                if ($job->status != Render::STATUS_FINISH ||
+                if ($job->status != Render::STATUS_FINISH &&
                     $job->status != Render::STATUS_FAILED) {
                         $job->status = Render::STATUS_FINISH;
                 }
