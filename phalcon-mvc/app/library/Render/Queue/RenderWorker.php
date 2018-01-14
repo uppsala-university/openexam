@@ -27,6 +27,8 @@
 
 namespace OpenExam\Library\Render\Queue;
 
+use ErrorException;
+use Exception;
 use OpenExam\Library\Render\Renderer;
 use OpenExam\Models\Render;
 
@@ -144,6 +146,8 @@ class RenderWorker
                 declare(ticks = 1);
 
                 $this->setupSignalHandler();
+                $this->setupErrorHandler();
+
                 $this->log("Starting");
 
                 while (!$this->_done) {
@@ -274,7 +278,7 @@ class RenderWorker
                 // Install signal handler for SIGTERM:
                 // 
                 if (pcntl_signal(SIGTERM, function ($signal) {
-                            $this->log("Got terminate signal $signal. Setting loop exit flag.");
+                            $this->log("Got terminate signal $signal. Setting exit flag for loop.");
                             $this->_done = true;
                     })) {
                         $this->log("Installed signal handler (SIGTERM)");
@@ -299,6 +303,17 @@ class RenderWorker
                 if (!pcntl_signal_dispatch()) {
                         $this->log("Failed call pcntl_signal_dispatch()");
                 }
+        }
+
+        /**
+         * Setup error handler.
+         */
+        private function setupErrorHandler()
+        {
+                set_error_handler(function($code, $message, $file, $line) {
+                        $this->log(sprintf("Trapped %s (%d) on %s:%d", $message, $code, $file, $line));
+                        throw new ErrorException($message, 500, $code, $file, $line);
+                });
         }
 
 }
