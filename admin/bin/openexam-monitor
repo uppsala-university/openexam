@@ -13,17 +13,11 @@
 # Author: Anders Lövgren
 # Date:   2016-06-12
 
-# This script directory:
-cwd="$(dirname $(realpath $0))"
-
-# The phalcon directory:
-root="$(realpath $cwd/../../phalcon-mvc)"
-
-# Script to run:
-script="$root/script/openexam.php"
-
 # Standard user for running counters:
 user="daemon"
+
+# Script to run:
+script="$(which openexam >& /dev/null)"
 
 # The mapping between collector and process user:
 declare -A users=([system]=$user [server]=$user [apache]=root [mysql]=$user [net]=$user [fs]=$user [part]=$user [disk]=$user)
@@ -31,43 +25,41 @@ declare -A users=([system]=$user [server]=$user [apache]=root [mysql]=$user [net
 # Extra options:
 #options="--verbose --force"
 
-if ! [ -e $script ]; then
-  echo "$0: missing script $script"
-  exit 1
+# Use script in current directory:
+if [ -z "$script" ]; then
+  script="$(dirname $(realpath $0))/openexam"
 fi
-if ! [ -d $root ]; then
-  echo "$0: missing application directory $root"
+
+# Sanity check:
+if ! [ -e "$script" ]; then
+  echo "$0: missing openexam script to run, please check or define the path"
   exit 1
-fi
+fi 
 
 function run_perf_monitors()
 {
-    /usr/bin/php $script --performance --collect --server --uid=$user --rate=10
-    /usr/bin/php $script --performance --collect --apache --uid=root  --rate=15  --user=apache
-    /usr/bin/php $script --performance --collect --mysql  --uid=$user --rate=10 
-    /usr/bin/php $script --performance --collect --net    --uid=$user --rate=5   --name=eth0:br0
-    /usr/bin/php $script --performance --collect --fs     --uid=$user --rate=60  --path=/var/data:/home --type=ext4:btrfs:xfs
-    /usr/bin/php $script --performance --collect --disk   --uid=$user --rate=300 --disk=sda
-    /usr/bin/php $script --performance --collect --part   --uid=$user --rate=300 --part=/dev/sda1:/dev/md0
+    $script --performance --collect --server --uid=$user --rate=10
+    $script --performance --collect --apache --uid=root  --rate=15  --user=apache
+    $script --performance --collect --mysql  --uid=$user --rate=10 
+    $script --performance --collect --net    --uid=$user --rate=5   --name=eth0:br0
+    $script --performance --collect --fs     --uid=$user --rate=60  --path=/var/data:/home --type=ext4:btrfs:xfs
+    $script --performance --collect --disk   --uid=$user --rate=300 --disk=sda
+    $script --performance --collect --part   --uid=$user --rate=300 --part=/dev/sda1:/dev/md0
 }
 
 function start_perf_monitor()
 {
-    echo -n "Starting OpenExam performance collectors:"
-    counters=$(/usr/bin/php $script --performance --list)
+    counters=$($script --performance --list)
     for c in $counters; do 
-        echo -n " $c"
-        /usr/bin/php $script --performance --collect --$c --uid=${users[$c]} $options &
+        $script --performance --collect --$c --uid=${users[$c]} $options &
     done
-    echo
 }
 
 function stop_perf_monitor()
 {
-    echo "Stopping OpenExam performance collectors"
-    counters=$(/usr/bin/php $script --performance --list)
+    counters=$($script --performance --list)
     for c in $counters; do 
-        pkill -xf "/usr/bin/php $script --performance --collect --$c.*"
+        pkill -xf ".*$script --performance --collect --$c.*"
     done
 }
 

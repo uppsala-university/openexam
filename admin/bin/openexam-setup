@@ -22,7 +22,7 @@ fi
 
 function setup_local_bin()
 {
-    for f in openexam-monitor openexam-render; do 
+    for f in openexam-monitor openexam-render openexam; do 
         rm -f /usr/local/bin/$f
         ln -s $cwd/$f /usr/local/bin/$f
     done
