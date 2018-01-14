@@ -167,7 +167,7 @@ class RenderController extends GuiController
                 if (!($results = $exam->getRender("type = 'result'"))) {
                         throw new Exception("Failed fetch rendered student results", Error::PRECONDITION_FAILED);
                 }
-                
+
                 // 
                 // Set data for view:
                 // 
@@ -584,8 +584,9 @@ class RenderController extends GuiController
                 // Send JSON response:
                 // 
                 $this->response->setJsonContent(array(
-                        'action' => $action,
-                        'result' => $result
+                        'action'   => $action,
+                        'result'   => $result,
+                        'position' => $result->position
                 ));
                 $this->response->send();
         }
