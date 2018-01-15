@@ -28,6 +28,7 @@
 namespace OpenExam\Library\Core;
 
 use OpenExam\Library\Core\Cache\Backend\Xcache as XcacheSubstitute;
+use Phalcon\Cache\Backend\Apcu as ApcuCacheBackend;
 use Phalcon\Cache\Backend\Apc as ApcCacheBackend;
 use Phalcon\Cache\Backend\File as FileCacheBackend;
 use Phalcon\Cache\Backend\Memcache as MemcacheBackend;
@@ -123,6 +124,11 @@ class Cache extends Multiple
                                             $frontend['fast'], $options['xcache']
                                         );
                                 }
+                        }
+                        if ($config->cache->enable->apcu && extension_loaded('apcu')) {
+                                $backends[] = new ApcuCacheBackend(
+                                    $frontend['fast'], $options['apcu']
+                                );
                         }
                         if ($config->cache->enable->apc && extension_loaded('apc')) {
                                 $backends[] = new ApcCacheBackend(
