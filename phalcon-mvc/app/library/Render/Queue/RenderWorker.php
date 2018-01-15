@@ -151,19 +151,46 @@ class RenderWorker
                 $this->log("Starting");
 
                 while (!$this->_done) {
-                        $consumer = new RenderConsumer();
-
-                        if ($consumer->hasNext()) {
-                                $job = $consumer->getNext();
-                                $this->render($job);
-                                $consumer->setResult($job);
-                        } else {
-                                unset($consumer);
-                                $this->sleep();
-                        }
+                        $this->fetch();
                 }
 
                 $this->log("Finished");
+        }
+
+        /**
+         * Fetch single job.
+         */
+        private function fetch()
+        {
+                try {
+                        if (!$this->consume()) {
+                                $this->sleep();
+                        }
+                } catch (Exception $exception) {
+                        $this->log(sprintf("Failed fetch job (%s)", $exception->getMessage()));
+                }
+        }
+
+        /**
+         * Consume next job.
+         * 
+         * Return true if job was rendered or false if render queue is empty.
+         * @return boolean
+         */
+        private function consume()
+        {
+                $consumer = new RenderConsumer();
+
+                if (!$consumer->hasNext()) {
+                        unset($consumer);
+                        return false;
+                }
+
+                $job = $consumer->getNext();
+                $this->render($job);
+                $consumer->setResult($job);
+
+                return true;
         }
 
         /**
@@ -187,7 +214,7 @@ class RenderWorker
                         $job->message = sprintf("Render time %d seconds", $job->etime - $job->stime);
                         $job->status = Render::STATUS_FINISH;
                 } catch (Exception $exception) {
-                        $this->log(sprintf("Failed job %d (%s)", $job->id, $exception->getMessage()));
+                        $this->log(sprintf("Failed render job %d (%s)", $job->id, $exception->getMessage()));
                         $job->message = $exception->getMessage();
                         $job->status = Render::STATUS_FAILED;
                 }
@@ -201,7 +228,12 @@ class RenderWorker
          */
         private function check($job)
         {
-                $dest = dirname($job->file);
+                if (!isset($job->file)) {
+                        $this->log(sprintf("Missing file property in job %d", $job->id));
+                        return false;
+                } else {
+                        $dest = dirname($job->file);
+                }
 
                 if (!file_exists($dest)) {
                         $this->log("The target directory $dest is missing");
