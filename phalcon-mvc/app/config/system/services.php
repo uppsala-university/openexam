@@ -190,6 +190,7 @@ $di->set('dbaudit', function() use ($config, $di) {
         return $factory->getAdapter();
 }, true);
 $di->set('dbcache', function() use($config) {
+        $backends = array();
         $frontend = new Phalcon\Cache\Frontend\Data(array(
                 'lifetime' => $config->dbcache->lifetime
         ));
@@ -197,24 +198,29 @@ $di->set('dbcache', function() use($config) {
         if ($config->dbcache->upper) {
                 $options = $config->dbcache->upper->options->toArray();
                 $options['prefix'] = $config->application->instance . '-' . $options['prefix'] . '-';
-                $upper = OpenExam\Library\Database\Cache\Backend::create($config->dbcache->upper->backend, $frontend, $options);
+                $backends[] = OpenExam\Library\Database\Cache\Backend::create($config->dbcache->upper->backend, $frontend, $options);
         }
 
         if ($config->dbcache->lower) {
                 $options = $config->dbcache->lower->options->toArray();
                 $options['prefix'] = $config->application->instance . '-' . $options['prefix'] . '-';
-                $lower = OpenExam\Library\Database\Cache\Backend::create($config->dbcache->lower->backend, $frontend, $options);
+                $backends[] = OpenExam\Library\Database\Cache\Backend::create($config->dbcache->lower->backend, $frontend, $options);
         }
 
-        if (isset($upper) && isset($lower)) {
-                $distributed = new OpenExam\Library\Database\Cache\Strategy\Distributed($frontend);
-                $distributed->setUpperBackend($upper);
-                $distributed->setLowerBackend($lower);
-                return $distributed;
-        } elseif (isset($upper)) {
-                return $upper;
-        } elseif (isset($lower)) {
-                return $lower;
+        if (count($backends) == 0) {
+                throw new OpenExam\Library\Database\Exception("The backend is undefined in dbcache service");
+        }
+
+        if (count($backends) == 2) {
+                $backends[2] = new OpenExam\Library\Database\Cache\Strategy\Distributed($frontend);
+                $backends[2]->setUpperBackend($backends[0]);
+                $backends[2]->setLowerBackend($backends[1]);
+        }
+
+        if (count($backends) == 1) {
+                return $backends[0];
+        } else {
+                return $backends[2];
         }
 }, true);
 
