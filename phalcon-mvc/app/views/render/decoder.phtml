@@ -139,7 +139,7 @@
                 // Need to select on style because visible won't work if parent
                 // element is hidden.
                 // 
-                $('.list-group-item:not([style*="display: none"]').each(function (index, item) {
+                $('.list-group-item[data-status="finish"]:not([style*="display: none"]').each(function (index, item) {
                     selected.push($(item).attr('data-id'));
                 });
 
