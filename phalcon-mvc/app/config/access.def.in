@@ -164,7 +164,7 @@ return array(
                         'settings'    => array('creator'),
                         'security'    => array('creator', 'invigilator'),
                         'check'       => array('creator', 'invigilator'),
-                        'lock'        => array('creator', 'invigilator'),
+                        'lock'        => array('invigilator', 'creator'),
                         'archive'     => array('creator'),
                         'start'       => array('student'),
                         'details'     => array('@'),
