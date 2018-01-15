@@ -261,6 +261,9 @@
                     data: {type: 'result', user: user, exam_id: examId},
                     url: baseURL + 'utility/render/add',
                     success: function (content) {
+                        if (content.position !== undefined) {
+                            content.result.position = content.position;
+                        }
                         target.attr('data-id', content.result.id);
                         updateJobStatus(content.result);
                     },
@@ -279,6 +282,9 @@
                     data: {id: jobid},
                     url: baseURL + 'utility/render/status',
                     success: function (content) {
+                        if (content.position !== undefined) {
+                            content.result.position = content.position;
+                        }
                         updateJobStatus(content.result);
                     },
                     error: function (content) {
