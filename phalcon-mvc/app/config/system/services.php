@@ -426,4 +426,14 @@ $di->set('polyfill', function() {
         return new OpenExam\Library\Gui\Browser\Polyfill();
 }, true);
 
+/**
+ * Secure hash service.
+ */
+$di->set('security', function() {
+        $security = new Phalcon\Security();
+        $security->setDefaultHash(Phalcon\Security::CRYPT_MD5);
+        $security->setWorkFactor(13);
+        return $security;
+}, true);
+
 return $di;
