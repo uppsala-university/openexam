@@ -156,8 +156,14 @@
 
       This should compile all *.po to *.mo that can be read by PHP's GNU gettext extension. If 
       the gettext extension is missing, then application defaults to english text.
+
+   7. Javascript plugins:
+
+      Install required javascript plugins by running:
+
+        o) cd ${appdir}/openexam-online/phalcon-mvc/public/plugins && ./mathjax.sh
 	    
-   7. Finishing:
+   8. Finishing:
 
       The user defined setting files (*.def) should not be readable by world, only by trusted 
       users and the account the web server is running under (see admin/setperm.sh):

@@ -48,20 +48,20 @@ use Phalcon\Tag;
 
     <body>
         <script type="text/x-mathjax-config">
-            var mathjax_typeset_finished = false;
+                var mathjax_typeset_finished = false;
 
-            MathJax.Hub.Config({
-            extensions: ["tex2jax.js"],
-            jax: ["input/TeX", "output/HTML-CSS"],
-            tex2jax: {inlineMath: [["$", "$"], ["\\(", "\\)"]]}
-            });
+                MathJax.Hub.Config({
+                        extensions: ["tex2jax.js"],
+                        jax: ["input/TeX", "output/HTML-CSS"],
+                        tex2jax: {inlineMath: [["$", "$"], ["\\(", "\\)"]]}
+                });
 
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-            MathJax.Hub.Queue(function () {
-            mathjax_typeset_finished = true;
-            });
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                MathJax.Hub.Queue(function () {
+                        mathjax_typeset_finished = true;
+                });
         </script>
-        <?= Tag::javascriptInclude('js/mathjax/MathJax.js'); ?>
+        <?= Tag::javascriptInclude('plugins/mathjax/MathJax.js'); ?>
 
         <!-- Main page -->
         <div class="page page-first" style='min-height: 1017px; border-bottom:none' >
