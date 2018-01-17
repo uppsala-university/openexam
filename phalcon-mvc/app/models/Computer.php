@@ -30,7 +30,8 @@ namespace OpenExam\Models;
 use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Room as RoomModelGuard;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * The computer model.
@@ -90,7 +91,7 @@ class Computer extends ModelBase
          */
         public $updated;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
@@ -165,18 +166,18 @@ class Computer extends ModelBase
          * Validates business rules.
          * @return boolean
          */
-        protected function validation()
+        public function validation()
         {
-                $this->validate(new Uniqueness(
+                $validator = new Validation();
+
+                $validator->add(
+                    'hostname', new Uniqueness(
                     array(
-                        'field'   => 'hostname',
                         'message' => "The hostname already exists"
                     )
                 ));
 
-                if ($this->validationHasFailed() == true) {
-                        return false;
-                }
+                return $this->validate($validator);
         }
 
 }

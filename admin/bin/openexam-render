@@ -5,65 +5,44 @@
 # Author: Anders Lövgren
 # Date:   2017-12-14
 
-# This script directory:
-cwd="$(dirname $(realpath $0))"
-
-# The phalcon directory:
-root="$(realpath $cwd/../../phalcon-mvc)"
-
 # Web server user:
 user="apache"
-
-# Script to run:
-script="$root/script/openexam.php"
 
 # Destination directory for logfiles:
 logdir="/var/log/openexam"
 
-# Accept any options from command line:
-options="$*"
+# Script to run:
+script="$(which openexam >& /dev/null)"
+
+# Standard options:
+options="--render --worker --output=$logdir/render-worker-$$.log"
 
 # Extra options:
 #options="$options --verbose --force"
 
-# The command to run:
-command="/usr/bin/php $script --render --worker $options"
-
-# Number of processes:
-processes="1"
-
-if ! [ -e $script ]; then
-  echo "$0: missing script $script"
-  exit 1
-fi
-if ! [ -d $root ]; then
-  echo "$0: missing application directory $root"
-  exit 1
-fi
-if ! [ -d $logdir ]; then
-  echo "$0: missing log files directory $logdir"
-  exit 1
+# Use script in current directory:
+if [ -z "$script" ]; then
+    script="$(dirname $(realpath $0))/openexam"
 fi
 
-cd $root;
+# Sanity check:
+if ! [ -d "$logdir" ]; then
+    echo "$0: missing log files directory $logdir"
+    exit 1
+fi
+if ! [ -e "$script" ]; then
+    echo "$0: missing openexam script to run, please check or define the path"
+    exit 1
+fi
 
 function start_render_worker()
 {
-    echo "Starting OpenExam render queue worker:"
-    for p in $processes; do
-        echo "  `basename $script` --render --worker --output=$logdir/render-worker-$$.log $options $*"
-        if [ $UID == 0 ]; then
-            exec /usr/bin/sudo -u $user $command &
-        else 
-            exec $command &
-        fi
-    done
+    exec /usr/bin/sudo -u $user $script $options $* &
 }
 
 function stop_render_worker()
 {
-    echo "Stopping OpenExam render queue worker"
-    pkill -xf ".*$script.*"
+    /usr/bin/sudo pkill -xf ".*$script --render --worker.*"
 }
 
 case "$1" in

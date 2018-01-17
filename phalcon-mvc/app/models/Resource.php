@@ -31,7 +31,8 @@ use OpenExam\Library\Model\Behavior\Generate\Ownership;
 use OpenExam\Library\Model\Behavior\Transform\Remove;
 use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
-use Phalcon\Mvc\Model\Validator\Inclusionin;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\InclusionIn;
 
 /**
  * The resource model.
@@ -116,7 +117,7 @@ class Resource extends ModelBase
          */
         public $shared;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
@@ -144,7 +145,7 @@ class Resource extends ModelBase
                         )
                     )
                 ));
-                
+
                 $this->addBehavior(new Trim(array(
                         'beforeValidationOnCreate' => array(
                                 'field' => array('name', 'descr', 'path', 'type', 'subtype', 'user'),
@@ -189,23 +190,24 @@ class Resource extends ModelBase
          * Validates business rules.
          * @return boolean
          */
-        protected function validation()
+        public function validation()
         {
-                $this->validate(new Inclusionin(
+                $validator = new Validation();
+
+                $validator->add(
+                    'shared', new InclusionIn(
                     array(
-                        'field'  => 'shared',
                         'domain' => array(self::NOT_SHARED, self::SHARED_EXAM, self::SHARED_GLOBAL, self::SHARED_GROUP)
                     )
                 ));
-                if ($this->validationHasFailed() == true) {
-                        return false;
-                }
+
+                return $this->validate($validator);
         }
 
         /**
          * Called before model is created.
          */
-        protected function beforeValidationOnCreate()
+        public function beforeValidationOnCreate()
         {
                 if (!isset($this->shared)) {
                         $this->shared = self::SHARED_EXAM;

@@ -28,6 +28,7 @@
 namespace OpenExam\Library\Core;
 
 use OpenExam\Library\Core\Cache\Backend\Xcache as XcacheSubstitute;
+use Phalcon\Cache\Backend\Apcu as ApcuCacheBackend;
 use Phalcon\Cache\Backend\Apc as ApcCacheBackend;
 use Phalcon\Cache\Backend\File as FileCacheBackend;
 use Phalcon\Cache\Backend\Memcache as MemcacheBackend;
@@ -39,7 +40,6 @@ use Phalcon\Cache\Frontend\Data as DataFrontend;
 use Phalcon\Cache\Multiple;
 use Phalcon\Config;
 use Phalcon\Version as PhalconVersion;
-use RuntimeException;
 
 /**
  * Cache service configurator.
@@ -111,15 +111,24 @@ class Cache extends Multiple
                                 );
                         }
                         if ($config->cache->enable->xcache && extension_loaded('xcache')) {
+                                // 
+                                // Use replacement class if framework version < 3.x as it 
+                                // was broken causing memory exhaustion in 2.0.x
+                                // 
                                 if (PhalconVersion::getPart(PhalconVersion::VERSION_MAJOR) >= 3) {
                                         $backends[] = new XcacheBackend(
                                             $frontend['fast'], $options['xcache']
                                         );
                                 } else {
-                                        $backends[] = new XcacheSubstitute(// Use replacement class if framework version < 3.x
+                                        $backends[] = new XcacheSubstitute(
                                             $frontend['fast'], $options['xcache']
                                         );
                                 }
+                        }
+                        if ($config->cache->enable->apcu && extension_loaded('apcu')) {
+                                $backends[] = new ApcuCacheBackend(
+                                    $frontend['fast'], $options['apcu']
+                                );
                         }
                         if ($config->cache->enable->apc && extension_loaded('apc')) {
                                 $backends[] = new ApcCacheBackend(
@@ -139,7 +148,7 @@ class Cache extends Multiple
 
                         if (!file_exists($options['file']['cacheDir'])) {
                                 if (!mkdir($options['file']['cacheDir'], 0750, true)) {
-                                        throw new RuntimeException(sprintf("Failed create cache directory %s", $options['file']['cacheDir']));
+                                        throw new CacheException(sprintf("Failed create cache directory %s", $options['file']['cacheDir']));
                                 }
                         }
 
@@ -160,32 +169,6 @@ class Cache extends Multiple
         }
 
         /**
-         * Get cache content
-         *
-         * @param string $keyName The cache key.
-         * @param int $lifetime The cache entry lifetime.
-         * @return mixed|null
-         */
-        public function get($keyName, $lifetime = null)
-        {
-                return self::decode(parent::get($keyName, $lifetime));
-        }
-
-        /**
-         * Store cache content.
-         *
-         * @param  string $keyName The cache key.
-         * @param  string $content The data to cache.
-         * @param  int    $lifetime The cache entry lifetime.
-         * @param  bool   $stopBuffer Stop backend on save.
-         * @throws CacheException
-         */
-        public function save($keyName = null, $content = null, $lifetime = null, $stopBuffer = null)
-        {
-                parent::save($keyName, self::encode($content), $lifetime, $stopBuffer);
-        }
-
-        /**
          * Get fastest backend.
          * @return BackendInterface The cache backend.
          */
@@ -201,36 +184,6 @@ class Cache extends Multiple
         public function getBackends()
         {
                 return $this->_backends;
-        }
-
-        /**
-         * Decode cache data.
-         * @param mixed $data The data to decode.
-         * @return mixed
-         */
-        private static function decode($data)
-        {
-                if (!is_string($data)) {
-                        return $data;
-                } elseif (($result = unserialize($data)) !== false) {
-                        return $result;
-                } else {
-                        return $data;
-                }
-        }
-
-        /**
-         * Encode cache data.
-         * @param mixed $data The data to encode.
-         * @return string
-         */
-        private static function encode($data)
-        {
-                if (is_string($data)) {
-                        return $data;
-                } else {
-                        return serialize($data);
-                }
         }
 
 }

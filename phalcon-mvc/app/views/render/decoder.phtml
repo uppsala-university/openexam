@@ -139,7 +139,7 @@
                 // Need to select on style because visible won't work if parent
                 // element is hidden.
                 // 
-                $('.list-group-item:not([style*="display: none"]').each(function (index, item) {
+                $('.list-group-item[data-status="finish"]:not([style*="display: none"]').each(function (index, item) {
                     selected.push($(item).attr('data-id'));
                 });
 
@@ -260,8 +260,10 @@
                     type: "POST",
                     data: {type: 'result', user: user, exam_id: examId},
                     url: baseURL + 'utility/render/add',
-                    success: function (response) {
-                        var content = JSON.parse(response);
+                    success: function (content) {
+                        if (content.position !== undefined) {
+                            content.result.position = content.position;
+                        }
                         target.attr('data-id', content.result.id);
                         updateJobStatus(content.result);
                     },
@@ -279,8 +281,11 @@
                     type: "POST",
                     data: {id: jobid},
                     url: baseURL + 'utility/render/status',
-                    success: function (response) {
-                        updateJobStatus(JSON.parse(response).result);
+                    success: function (content) {
+                        if (content.position !== undefined) {
+                            content.result.position = content.position;
+                        }
+                        updateJobStatus(content.result);
                     },
                     error: function (content) {
                         var target = $('.list-group-item[data-id="' + jobid + '"]');

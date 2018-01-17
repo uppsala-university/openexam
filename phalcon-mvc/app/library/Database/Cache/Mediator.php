@@ -41,7 +41,6 @@ use OpenExam\Library\Database\Exception as DatabaseException;
 use Phalcon\Cache\BackendInterface;
 use Phalcon\Db as PhalconDb;
 use Phalcon\Db\ResultInterface;
-use Phalcon\Kernel as PhalconKernel;
 
 /**
  * Mediator for cached database adapters.
@@ -232,9 +231,16 @@ class Mediator extends Proxy
                 // Compute cache key:
                 // 
                 if (is_array($bindParams)) {
-                        $keyName = PhalconKernel::preComputeHashKey($sqlStatement . '//' . join('|', $bindParams));
+                        $keyName = md5($sqlStatement . '//' . join('|', $bindParams));
                 } else {
-                        $keyName = PhalconKernel::preComputeHashKey($sqlStatement);
+                        $keyName = md5($sqlStatement);
+                }
+
+                // 
+                // Check that cache key is defined:
+                // 
+                if (!isset($keyName)) {
+                        throw new DatabaseException("Failed compute cache key");
                 }
 
                 // 

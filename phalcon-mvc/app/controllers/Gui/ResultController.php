@@ -320,6 +320,9 @@ class ResultController extends GuiController
                 if (!is_array($rid)) {
                         throw new Exception("Expected array of render ID's", Error::PRECONDITION_FAILED);
                 }
+                if (count($rid) == 0) {
+                        throw new Exception("The list of render ID is empty", Error::PRECONDITION_FAILED);
+                }
 
                 // 
                 // Check route access:
@@ -334,6 +337,11 @@ class ResultController extends GuiController
                 if (!($exam = Exam::findFirst($eid))) {
                         throw new ModelException("Failed find exam model", Error::PRECONDITION_FAILED);
                 }
+
+                // 
+                // Prepare list of ID's:
+                // 
+                $rid = array_unique(array_filter($rid));
 
                 // 
                 // Get all render models:

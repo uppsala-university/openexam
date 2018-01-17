@@ -130,9 +130,8 @@ $(document).ready(function () {
         $.ajax({
             type: "GET",
             url: baseURL + 'utility/statistics/organization',
-            success: function (resp) {
+            success: function (content) {
                 var context = $("#organization-pie-chart");
-                var content = JSON.parse(resp);
 
                 orgChart.setData(content);
                 orgChart.render(context);

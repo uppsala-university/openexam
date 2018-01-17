@@ -55,7 +55,7 @@ class Room extends ModelBase
          */
         public $description;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 

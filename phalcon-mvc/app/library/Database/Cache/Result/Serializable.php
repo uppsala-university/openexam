@@ -36,6 +36,7 @@ namespace OpenExam\Library\Database\Cache\Result;
 
 use PDOStatement;
 use Phalcon\Db\Result\Pdo as PdoResultSet;
+use Phalcon\Db\ResultInterface;
 
 /**
  * Serializable result set.
@@ -49,7 +50,7 @@ use Phalcon\Db\Result\Pdo as PdoResultSet;
  * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Serializable
+class Serializable implements ResultInterface
 {
 
         /**

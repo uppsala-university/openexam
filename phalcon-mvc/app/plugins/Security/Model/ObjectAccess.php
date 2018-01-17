@@ -143,7 +143,7 @@ abstract class ObjectAccess extends Plugin
          * @param Model $model
          * @param User $user The peer object.
          */
-        protected function beforeDelete($event, $model, $user)
+        public function beforeDelete($event, $model, $user)
         {
                 if ($this->logger->debug) {
                         $this->logger->debug->log(sprintf(
@@ -159,7 +159,7 @@ abstract class ObjectAccess extends Plugin
          * @param Model $model
          * @param User $user The peer object.
          */
-        protected function beforeCreate($event, $model, $user)
+        public function beforeCreate($event, $model, $user)
         {
                 if ($this->logger->debug) {
                         $this->logger->debug->log(sprintf(
@@ -175,7 +175,7 @@ abstract class ObjectAccess extends Plugin
          * @param Model $model
          * @param User $user The peer object.
          */
-        protected function beforeUpdate($event, $model, $user)
+        public function beforeUpdate($event, $model, $user)
         {
                 if ($this->logger->debug) {
                         $this->logger->debug->log(sprintf(
@@ -191,7 +191,7 @@ abstract class ObjectAccess extends Plugin
          * @param Model $model
          * @param User $user The peer object.
          */
-        protected function afterFetch($event, $model, $user)
+        public function afterFetch($event, $model, $user)
         {
                 if ($this->logger->debug) {
                         $this->logger->debug->log(sprintf(

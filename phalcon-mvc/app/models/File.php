@@ -30,7 +30,6 @@ namespace OpenExam\Models;
 use OpenExam\Library\Model\Behavior\Transform\Remove;
 use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Answer as AnswerModelGuard;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
 
 /**
  * The file model.
@@ -79,7 +78,7 @@ class File extends ModelBase
          */
         public $subtype;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
@@ -95,7 +94,7 @@ class File extends ModelBase
                         )
                     )
                 ));
-                
+
                 $this->addBehavior(new Trim(array(
                         'beforeValidationOnCreate' => array(
                                 'field' => array('name', 'path', 'type', 'subtype'),
@@ -137,24 +136,28 @@ class File extends ModelBase
          * Validates business rules.
          * @return boolean
          */
-        protected function validation()
+        public function validation()
         {
-                $this->validate(new Uniqueness(
+                $validator = new Validation();
+
+                $validator->add(
                     array(
-                        'field'   => array('answer_id', 'name'),
+                        'answer_id', 'name'
+                    ), new Uniqueness(
+                    array(
                         'message' => "This answer already has an file named $this->name"
                     )
                 ));
-                $this->validate(new Uniqueness(
+                $validator->add(
                     array(
-                        'field'   => array('answer_id', 'path'),
+                        'answer_id', 'path'
+                    ), new Uniqueness(
+                    array(
                         'message' => "This answer already has an file at this location"
                     )
                 ));
 
-                if ($this->validationHasFailed() == true) {
-                        return false;
-                }
+                return $this->validate($validator);
         }
 
 }

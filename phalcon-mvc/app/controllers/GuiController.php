@@ -299,7 +299,7 @@ class GuiController extends ControllerBase
                 // Check exam access:
                 // 
                 if (($id = $this->dispatcher->getParam('eid'))) {
-                        if (($roles = $this->user->acquire($permit, $id))) {
+                        if (($roles = $this->user->acquire($permit, $id, 'exam'))) {
                                 if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
                                         $this->logger->access->debug(sprintf("Permitted exam level access on %s -> %s (id: %d, roles: %s)", $controller, $action, $id, implode(",", $roles)));
                                 }

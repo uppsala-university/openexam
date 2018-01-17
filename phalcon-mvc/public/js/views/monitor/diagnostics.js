@@ -215,8 +215,8 @@ var diagnostics = (function () {
         $.ajax({
             type: "GET",
             url: baseURL + '/utility/monitor/health?details=' + _details,
-            success: function (resp) {
-                display(JSON.parse(resp));
+            success: function (response) {
+                display(response);
             },
             error: function (err) {
                 $("#ajax-loader").hide();

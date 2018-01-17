@@ -40,7 +40,7 @@ CKEDITOR.editorConfig = function (config) {
 
     // Always load these plugins:
     config.extraPlugins = 'confighelper,wordcount,notification,maximize';
-    
+
     // Display notifications for 2 sec:
     config.notification_duration = 2000;
 
@@ -67,6 +67,5 @@ CKEDITOR.editorConfig = function (config) {
 
     config.entities = false;
 
-    config.mathJaxLib = baseURL + '/js/mathjax/MathJax.js?config=TeX-AMS_HTML';
-
+    config.mathJaxLib = baseURL + '/plugins/mathjax/MathJax.js?config=TeX-AMS_HTML';
 };

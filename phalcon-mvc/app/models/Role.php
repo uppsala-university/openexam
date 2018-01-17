@@ -32,8 +32,9 @@ use OpenExam\Library\Catalog\Principal;
 use OpenExam\Library\Core\Pattern;
 use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Models\ModelBase;
-use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Regex as RegexValidator;
+use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * Base class for all role models.
@@ -69,7 +70,7 @@ class Role extends ModelBase
          */
         public $display;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
@@ -91,44 +92,50 @@ class Role extends ModelBase
                         return true;
                 }
 
+                $validator = new Validation();
+
                 if (property_exists($this, 'exam_id')) {
-                        $this->validate(new Uniqueness(
+                        $validator->add(
                             array(
-                                "field"   => array("user", "exam_id"),
+                                "user", "exam_id"
+                            ), new Uniqueness(
+                            array(
                                 "message" => "This role has already been granted for $this->user"
                             )
                         ));
                 } elseif (property_exists($this, 'question_id')) {
-                        $this->validate(new Uniqueness(
+                        $validator->add(
                             array(
-                                "field"   => array("user", "question_id"),
+                                "user", "question_id"
+                            ), new Uniqueness(
+                            array(
                                 "message" => "This role has already been granted for $this->user"
                             )
                         ));
                 } else {
-                        $this->validate(new Uniqueness(
+                        $validator->add(
+                            "user", new Uniqueness(
                             array(
-                                "field"   => "user",
                                 "message" => "This role has already been granted for $this->user"
                             )
                         ));
                 }
 
-                $this->validate(new RegexValidator(
+                $validator->add(
+                    "user", new RegexValidator(
                     array(
-                        "field"   => "user",
                         "message" => "The username '$this->user' is not matching expected format",
                         "pattern" => Pattern::get(Pattern::MATCH_USER)
                     )
                 ));
 
-                return $this->validationHasFailed() != true;
+                return $this->validate($validator);
         }
 
         /**
          * Called after the model was read.
          */
-        protected function afterFetch()
+        public function afterFetch()
         {
                 $this->setAttributes();
                 parent::afterFetch();
@@ -137,7 +144,7 @@ class Role extends ModelBase
         /**
          * Called after the model was created.
          */
-        protected function afterCreate()
+        public function afterCreate()
         {
                 $this->setAttributes();
         }
@@ -145,7 +152,7 @@ class Role extends ModelBase
         /**
          * Called after the model was deleted.
          */
-        protected function afterDelete()
+        public function afterDelete()
         {
                 $key = sprintf("roles-%s", $this->user);
 
@@ -159,7 +166,7 @@ class Role extends ModelBase
         /**
          * Called before validation of the model object.
          */
-        protected function beforeValidation()
+        public function beforeValidation()
         {
                 $this->setUserDomain();
                 $this->setUserNormalized();

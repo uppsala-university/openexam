@@ -24,7 +24,7 @@ start_pre() {
 
 start() {
         ebegin "Starting OpenExam Render Worker"
-        start-stop-daemon --start --user ${command_user} \
+        start-stop-daemon --start \
             --make-pidfile --pidfile ${pidfile} \
             --exec ${command} -- ${command_args} >& /dev/null
         eend $?

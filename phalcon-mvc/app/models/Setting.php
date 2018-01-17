@@ -72,7 +72,7 @@ class Setting extends ModelBase
          */
         public $data = array();
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
@@ -110,17 +110,17 @@ class Setting extends ModelBase
                 );
         }
 
-        protected function beforeSave()
+        public function beforeSave()
         {
                 $this->data = serialize($this->data);
         }
 
-        protected function afterSave()
+        public function afterSave()
         {
                 $this->data = unserialize($this->data);
         }
 
-        protected function afterFetch()
+        public function afterFetch()
         {
                 $this->data = unserialize($this->data);
         }

@@ -319,11 +319,10 @@ $(document).ready(function () {
                         data: data,
                         url: baseURL + 'exam/replicate/' + examId,
                         success: function (response) {
-                            var resp = jQuery.parseJSON(response);
-                            if (resp.status === 'success') {
-                                location.href = baseURL + 'exam/update/' + resp.exam_id + '/creator';
+                            if (response.status === 'success') {
+                                location.href = baseURL + 'exam/update/' + response.exam_id + '/creator';
                             } else {
-                                alert(resp.message);
+                                alert(response.message);
                             }
                         },
                         error: function (xhr) {

@@ -46,7 +46,8 @@ use Phalcon\DI as PhalconDI;
 use Phalcon\Mvc\Model;
 use Phalcon\Mvc\Model\Behavior\Timestampable;
 use Phalcon\Mvc\Model\Query\Builder;
-use Phalcon\Mvc\Model\Validator\Regex as RegexValidator;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Regex as RegexValidator;
 
 /**
  * The exam model.
@@ -249,7 +250,7 @@ class Exam extends ModelBase
          */
         private $_check;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
@@ -409,39 +410,42 @@ class Exam extends ModelBase
          * Validates business rules.
          * @return boolean
          */
-        protected function validation()
+        public function validation()
         {
-                $this->validate(new RegexValidator(
+                $validator = new Validation();
+
+                $validator->add(
+                    "creator", new RegexValidator(
                     array(
-                        "field"   => "creator",
                         "message" => "The username '$this->creator' is not matching expected format",
                         "pattern" => Pattern::get(Pattern::MATCH_USER)
                     )
                 ));
-                $this->validate(new SequenceValidator(
+                $validator->add(
+                    "timestamp", new SequenceValidator(
                     array(
-                        "field"   => array("starttime", "endtime"),
-                        "message" => "Start time can't come after end time",
-                        "type"    => "datetime"
+                        "sequence" => array("starttime", "endtime"),
+                        "message"  => "Start time can't come after end time",
+                        "type"     => "datetime"
                     )
                 ));
-                $this->validate(new DateTimeValidator(
+                $validator->add(
                     array(
-                        "field"   => array("starttime", "endtime"),
+                        "starttime", "endtime"
+                    ), new DateTimeValidator(
+                    array(
                         "message" => "The datetime value can't be in the past",
                         "current" => $this->getSnapshotData()
                     )
                 ));
 
-                if ($this->validationHasFailed() == true) {
-                        return false;
-                }
+                return $this->validate($validator);
         }
 
         /**
          * Called before model is created.
          */
-        protected function beforeValidationOnCreate()
+        public function beforeValidationOnCreate()
         {
                 if (!isset($this->details)) {
                         $this->details = $this->getDI()->getConfig()->result->details;
@@ -469,7 +473,7 @@ class Exam extends ModelBase
         /**
          * Called before model is saved.
          */
-        protected function beforeSave()
+        public function beforeSave()
         {
                 $this->enquiry = $this->enquiry ? 'Y' : 'N';
                 $this->decoded = $this->decoded ? 'Y' : 'N';
@@ -483,7 +487,7 @@ class Exam extends ModelBase
         /**
          * Called after model is saved.
          */
-        protected function afterSave()
+        public function afterSave()
         {
                 $this->enquiry = $this->enquiry == 'Y';
                 $this->decoded = $this->decoded == 'Y';
@@ -495,7 +499,7 @@ class Exam extends ModelBase
         /**
          * Called after the model was read.
          */
-        protected function afterFetch()
+        public function afterFetch()
         {
                 if ($this->name == '@@replace@@') {
                         $this->name = null;
@@ -522,7 +526,7 @@ class Exam extends ModelBase
         /**
          * Called after the model was deleted.
          */
-        protected function afterDelete()
+        public function afterDelete()
         {
                 $cachekey = sprintf("roles-%s", $this->creator);
 

@@ -27,9 +27,10 @@
 
 namespace OpenExam\Library\Model\Validation;
 
-use Phalcon\Mvc\EntityInterface;
-use Phalcon\Mvc\Model\Validator;
-use Phalcon\Mvc\Model\ValidatorInterface;
+use Phalcon\Validation;
+use Phalcon\Validation\Message;
+use Phalcon\Validation\Validator;
+use Phalcon\Validation\ValidatorInterface;
 
 /**
  * Input data validation.
@@ -45,23 +46,27 @@ class InvalidFormat extends Validator implements ValidatorInterface
         /**
          * Executes the validation
          *
-         * @param EntityInterface $record
-         * @param string $attribute
+         * @param Validation $validator
+         * @param string     $attribute
          * @return boolean
          */
-        public function validate(EntityInterface $record)
+        public function validate(Validation $validator, $attribute)
         {
                 // 
-                // Get field to validate and invalid input:
+                // Get bound model:
                 // 
-                $field = $this->getOption("field");
+                $record = $validator->getEntity();
+
+                // 
+                // Get invalid input data:
+                // 
                 $input = $this->getOption("input", array("{}", ""));
 
                 // 
                 // Get message (if any):
                 // 
                 if (!($message = $this->getOption("message", false))) {
-                        $message = sprintf("Invalid input %s for %s", $record->$field, $field);
+                        $message = sprintf("Invalid input %s for %s", $record->$attribute, $attribute);
                 }
 
                 // 
@@ -74,8 +79,8 @@ class InvalidFormat extends Validator implements ValidatorInterface
                 // 
                 // Check that input data isn't invalid:
                 // 
-                if (in_array($record->$field, $input)) {
-                        $this->appendMessage($message);
+                if (in_array($record->$attribute, $input)) {
+                        $validator->appendMessage(new Message($message, $attribute));
                         return false;
                 }
 

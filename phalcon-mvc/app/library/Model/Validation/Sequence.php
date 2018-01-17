@@ -27,9 +27,10 @@
 
 namespace OpenExam\Library\Model\Validation;
 
-use Phalcon\Mvc\EntityInterface;
-use Phalcon\Mvc\Model\Validator;
-use Phalcon\Mvc\Model\ValidatorInterface;
+use Phalcon\Validation;
+use Phalcon\Validation\Message;
+use Phalcon\Validation\Validator;
+use Phalcon\Validation\ValidatorInterface;
 
 /**
  * Sequence validation.
@@ -45,12 +46,17 @@ class Sequence extends Validator implements ValidatorInterface
         /**
          * Executes the validation
          *
-         * @param EntityInterface $record
-         * @param string $attribute
+         * @param Validation $validator
+         * @param string     $attribute
          * @return boolean
          */
-        public function validate(EntityInterface $record)
+        public function validate(Validation $validator, $attribute)
         {
+                // 
+                // Get bound model:
+                // 
+                $record = $validator->getEntity();
+
                 // 
                 // Validate datetime by default:
                 // 
@@ -60,15 +66,19 @@ class Sequence extends Validator implements ValidatorInterface
                 // Support passing sequence that can be used as a fence:
                 // 
                 $sequence = $this->getOption("sequence", array());
-                $property = $this->getOption("field");
 
                 // 
                 // Iterate thru all properties:
                 // 
                 if ($type == "datetime") {
-                        foreach ($property as $index => $prop) {
-                                if (($value = strtotime($record->$prop))) {
+                        foreach ($sequence as $index => $prop) {
+                                if (is_null($record->$prop)) {
+                                        $sequence[$index] = null;
+                                } elseif (($value = strtotime($record->$prop))) {
                                         $sequence[$index] = $value;
+                                } else {
+                                        $validator->appendMessage(new Message("Failed parse datetime value for $prop", $attribute));
+                                        return false;
                                 }
                         }
                 }
@@ -80,7 +90,8 @@ class Sequence extends Validator implements ValidatorInterface
                         if (!isset($sequence[$i])) {
                                 continue;
                         } elseif ($sequence[$i] < $prev) {
-                                $this->appendMessage($this->getOption("message"));
+                                $message = $this->getOption("message");
+                                $validator->appendMessage(new Message($message, $attribute));
                                 return false;
                         } else {
                                 $prev = $sequence[$i];

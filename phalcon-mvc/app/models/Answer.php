@@ -30,7 +30,8 @@ namespace OpenExam\Models;
 use OpenExam\Library\Model\Behavior\Transform\FilterText;
 use OpenExam\Library\Model\Guard\Question as QuestionModelGuard;
 use OpenExam\Library\Model\Guard\Student as StudentModelGuard;
-use Phalcon\Mvc\Model\Validator\Uniqueness;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * The answer model.
@@ -82,7 +83,7 @@ class Answer extends ModelBase
          */
         public $comment;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
@@ -144,24 +145,24 @@ class Answer extends ModelBase
          * Validates business rules.
          * @return boolean
          */
-        protected function validation()
+        public function validation()
         {
-                $this->validate(new Uniqueness(
+                $validator = new Validation();
+
+                $validator->add(
+                    array('question_id', 'student_id'), new Uniqueness(
                     array(
-                        'field'   => array('question_id', 'student_id'),
                         'message' => "Student answer has already been inserted"
                     )
                 ));
 
-                if ($this->validationHasFailed() == true) {
-                        return false;
-                }
+                return $this->validate($validator);
         }
-
+        
         /**
          * Called before model is created.
          */
-        protected function beforeValidationOnCreate()
+        public function beforeValidationOnCreate()
         {
                 if (!isset($this->answered)) {
                         $this->answered = false;
@@ -171,7 +172,7 @@ class Answer extends ModelBase
         /**
          * Called before model is saved.
          */
-        protected function beforeSave()
+        public function beforeSave()
         {
                 $this->answered = $this->answered ? 'Y' : 'N';
         }
@@ -179,7 +180,7 @@ class Answer extends ModelBase
         /**
          * Called after model is saved.
          */
-        protected function afterSave()
+        public function afterSave()
         {
                 $this->answered = $this->answered == 'Y';
         }
@@ -187,7 +188,7 @@ class Answer extends ModelBase
         /**
          * Called after the model was read.
          */
-        protected function afterFetch()
+        public function afterFetch()
         {
                 $this->answered = $this->answered == 'Y';
                 parent::afterFetch();

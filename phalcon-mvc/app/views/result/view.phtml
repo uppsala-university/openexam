@@ -47,13 +47,13 @@ use Phalcon\Tag;
     </style>
     <body>
         <script type="text/x-mathjax-config">
-            MathJax.Hub.Config({
-            extensions: ["tex2jax.js"],
-            jax: ["input/TeX","output/HTML-CSS"],
-            tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
-            });
+                MathJax.Hub.Config({
+                        extensions: ["tex2jax.js"],
+                        jax: ["input/TeX","output/HTML-CSS"],
+                        tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+                });
         </script>
-        <?= Tag::javascriptInclude('js/mathjax/MathJax.js'); ?>
+        <?= Tag::javascriptInclude('plugins/mathjax/MathJax.js'); ?>
 
         <?php $allStudents = $exam->getStudents(); ?>
         <?php foreach ($data['students'] as $student): ?>

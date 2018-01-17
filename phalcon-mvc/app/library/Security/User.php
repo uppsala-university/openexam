@@ -250,23 +250,28 @@ class User extends Component
          * $roles = $this->user->roles->getRoles($id);
          * </code>
          * 
+         * Use the bind parameter to connect id with non-native model for that
+         * role. For example, the corrector role is native allocated against the
+         * question model. Pass bind == 'exam' to check corrector role agains
+         * the exam instead.
+         * 
          * @param array $roles The requested roles.
          * @param int $id The object ID.
-         * @param mixed $default The default value if no role was acquired.
-         * @return array
+         * @param string $bind The model to bind id against.
+         * @return array|boolean
          * @see Roles::acquire()
          */
-        public function acquire($roles, $id = 0, $default = false)
+        public function acquire($roles, $id = 0, $bind = 'native')
         {
                 $acquired = array();
 
                 foreach ($roles as $role) {
-                        if ($this->roles->acquire($role, $id)) {
+                        if ($this->roles->acquire($role, $id, $bind)) {
                                 $acquired[] = $role;
                         }
                 }
 
-                return count($acquired) != 0 ? $acquired : $default;
+                return count($acquired) != 0 ? $acquired : false;
         }
 
         /**

@@ -25,9 +25,12 @@ derived from this code base should chose their own unique project name to avoid 
 The system requirements are more or less LAMP (Linux, Apache, MySQL and PHP). Most other RDBMS 
 supported by PDO should work direct or after implementing the database adapter interface.
 
-For production its recommended to use some cache method (Redis/Xcache) and setting up the system
+For production its recommended to use some cache method (Redis/APCu) and setting up the system
 to run behind a load-balancer (IPVS/Keepalive) using fastCGI (PHP-FPM). See INSTALL and docs in 
 the source code for more information.
+
+The current release of openexam-online requires Phalcon MVC 3.x installed under either PHP 5.6
+or 7.x.
 
 ## Features
 

@@ -24,31 +24,18 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "bmc/uup-auth": ">=2.3.10",
+        "bmc/uup-auth": ">=2.3.17",
         "bmc/uup-mail": ">=1.0.4",
-        "phalcon/devtools": "^2.0",
-        "phalcon/incubator": "^2.0",
+        "phalcon/incubator": "^3.2",
         "phpoffice/phpexcel": "~1.8"
     },
     "require-dev": {
+        "phalcon/devtools": "^3.2",
         "phpunit/phpunit": "3.7.*"
     },
     "suggest": {
         "bartlett/php-compatinfo": "For static code compatibility checks.",
         "jpgraph/jpgraph": "For statistical pages or dynamic generated GUI components, e.g. buttons.",
         "piotrooo/wsdl-creator": "Create WSDL document based on PHP classes using annotations and reflection mechanism."
-    },
-    "autoload": {
-        "psr-4": {
-            "OpenExam\\Composer\\": "admin/composer"
-        }
-    },
-    "scripts": {
-        "post-package-install": [
-            "OpenExam\\Composer\\Installer::postPackageInstall"
-        ],
-        "post-package-update": [
-            "OpenExam\\Composer\\Installer::postPackageUpdate"
-        ]
     }
 }

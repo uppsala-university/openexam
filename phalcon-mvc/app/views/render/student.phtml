@@ -219,8 +219,10 @@
                     type: "POST",
                     data: data,
                     url: url,
-                    success: function (response) {
-                        var content = JSON.parse(response);
+                    success: function (content) {
+                        if (content.position !== undefined) {
+                            content.result.position = content.position;
+                        }
                         setResponseData(content.result);
                         showWizardPage(content.result);
                     },
@@ -402,7 +404,9 @@
                     case 'generate':
                         actionGenerateResultFile();
                         break;
-
+                    default:
+                        actionRegenerateResultFile(data.id);
+                        break;
                 }
             };
 

@@ -27,9 +27,10 @@
 
 namespace OpenExam\Library\Model\Validation;
 
-use Phalcon\Mvc\EntityInterface;
-use Phalcon\Mvc\Model\Validator;
-use Phalcon\Mvc\Model\ValidatorInterface;
+use Phalcon\Validation;
+use Phalcon\Validation\Message;
+use Phalcon\Validation\Validator;
+use Phalcon\Validation\ValidatorInterface;
 
 /**
  * Validate datetime.
@@ -45,78 +46,63 @@ class DateTime extends Validator implements ValidatorInterface
         /**
          * Executes the validation
          *
-         * @param EntityInterface $record
-         * @param string $attribute
+         * @param Validation $validator
+         * @param string     $attribute
          * @return boolean
          */
-        public function validate(EntityInterface $record)
+        public function validate(Validation $validator, $attribute)
         {
                 // 
-                // Get field to validate:
+                // Get bound model:
                 // 
-                if ($this->isSetOption("field")) {
-                        $fields = $this->getOption("field");
-                } else {
-                        $fields = array("starttime", "endtime");
-                }
+                $record = $validator->getEntity();
 
                 // 
                 // Get current values:
                 // 
-                if ($this->isSetOption("current")) {
+                if ($this->hasOption("current")) {
                         $current = $this->getOption("current");
                 } else {
                         $current = array();
                 }
-                
+
                 // 
                 // Get grace period in seconds:
                 // 
-                if ($this->isSetOption("grace")) {
+                if ($this->hasOption("grace")) {
                         $grace = $this->getOption("grace");
                 } else {
                         $grace = 60;
                 }
 
                 // 
-                // Support using string as field name:
-                // 
-                if (is_string($fields)) {
-                        $fields = array($fields);
-                }
-
-                // 
                 // Set defaults for current:
                 // 
-                foreach ($fields as $field) {
-                        if (!isset($current[$field])) {
-                                $current[$field] = false;
-                        }
+                if (!isset($current[$attribute])) {
+                        $current[$attribute] = false;
                 }
 
                 // 
                 // Check that datetime is null or in future:
                 // 
-                foreach ($fields as $field) {
-                        if (empty($record->$field)) {
-                                continue;
-                        }
-                        if ($current[$field] == $record->$field) {
-                                continue;
-                        }                        
-                        if (strtotime($current[$field]) == strtotime($record->$field)) {
-                                continue;
-                        }
-                        if (!($time = strtotime($record->$field))) {
-                                $message = sprintf("Failed parse %s to timestamp", $record->$field);
-                                $this->appendMessage($message);
-                                return false;
-                        }
-                        if ($time + $grace < time()) {
-                                $message = sprintf("The datetime string '%s' for %s has a value in the past", $record->$field, $field);
-                                $this->appendMessage($message);
-                                return false;
-                        }
+                if (empty($record->$attribute)) {
+                        return true;
+                }
+                if ($current[$attribute] == $record->$attribute) {
+                        return true;
+                }
+                if (strtotime($current[$attribute]) == strtotime($record->$attribute)) {
+                        return true;
+                }
+                if (!($time = strtotime($record->$attribute))) {
+                        $message = sprintf("Failed parse %s to timestamp", $record->$attribute);
+                        $validator->appendMessage(new Message($message, $attribute));
+                        return false;
+                }
+                if ($time + $grace < time()) {
+                        $message = sprintf("The datetime string '%s' for %s has a value in the past", $record->$attribute, $attribute);
+                        $validator->appendMessage(new Message($message, $attribute));
+                        return false;
                 }
 
                 // 

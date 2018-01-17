@@ -184,8 +184,12 @@ class RenderTask extends MainTask implements TaskInterface
                 $logfile = $this->_options['output'];
 
                 $worker = new RenderWorker($service, $logfile);
-                $worker->setInterval($this->_options['sleep']);
-                $worker->writePid($this->_options['pidfile']);
+                if ($this->_options['sleep']) {
+                        $worker->setInterval($this->_options['sleep']);
+                }
+                if ($this->_options['pidfile']) {
+                        $worker->writePid($this->_options['pidfile']);
+                }
                 $worker->process();
         }
 
@@ -270,7 +274,7 @@ class RenderTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->_options = array('verbose' => false, 'force' => false, 'dry-run' => false, 'page' => array(), 'globals' => array(), 'command' => true, 'sleep' => 1, 'pidfile' => '/var/run/openexam-render-worker.pid');
+                $this->_options = array('verbose' => false, 'force' => false, 'dry-run' => false, 'page' => array(), 'globals' => array(), 'command' => true, 'sleep' => 5);
 
                 // 
                 // Supported options.

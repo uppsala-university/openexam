@@ -61,7 +61,7 @@ class Contributor extends Role
          */
         public $user;
 
-        protected function initialize()
+        public function initialize()
         {
                 parent::initialize();
 
@@ -97,7 +97,7 @@ class Contributor extends Role
         /**
          * Called after model is created.
          */
-        protected function afterCreate()
+        public function afterCreate()
         {
                 parent::afterCreate();
                 $this->exam->getStaff()->addRole($this);
@@ -106,7 +106,7 @@ class Contributor extends Role
         /**
          * Called after model is deleted.
          */
-        protected function afterDelete()
+        public function afterDelete()
         {
                 parent::afterDelete();
                 $this->exam->getStaff()->removeRole($this);

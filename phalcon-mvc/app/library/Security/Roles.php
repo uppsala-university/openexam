@@ -35,7 +35,6 @@ use OpenExam\Models\Exam;
 use OpenExam\Models\Invigilator;
 use OpenExam\Models\Student;
 use OpenExam\Models\Teacher;
-use OpenExam\Models\Question;
 use Phalcon\Mvc\User\Component;
 use ReflectionClass;
 
@@ -199,31 +198,30 @@ class Roles extends Component
 
         /**
          * Add role to collection.
+         * 
          * @param string $role The role to add.
          * @param int $id The object ID.
+         * @param string $bind The model to bind ID against.
          */
-        public function addRole($role, $id = 0)
+        public function addRole($role, $id = 0, $bind = 'native')
         {
-                if ($id == 0) {
-                        $this->_roles[0][$role] = true;
-                        $this->_dirty = true;
-                } else {
-                        $this->_roles[0][$role] = true;
-                        $this->_roles[$id][$role] = true;
-                        $this->_dirty = true;
-                }
+                $this->_roles[$bind][0][$role] = true;
+                $this->_roles[$bind][$id][$role] = true;
+                $this->_dirty = true;
         }
 
         /**
          * Remove role from collection.
+         * 
          * @param string $role The role to remove.
          * @param int $id The object ID.
+         * @param string $bind The model to bind ID against.
          */
-        public function removeRole($role, $id = 0)
+        public function removeRole($role, $id = 0, $bind = 'native')
         {
-                if (isset($this->_roles[$id])) {
-                        if (array_key_exists($role, $this->_roles[$id])) {
-                                unset($this->_roles[$id][$role]);
+                if (isset($this->_roles[$bind][$id])) {
+                        if (array_key_exists($role, $this->_roles[$bind][$id])) {
+                                unset($this->_roles[$bind][$id][$role]);
                                 $this->_dirty = true;
                         }
                 }
@@ -231,14 +229,16 @@ class Roles extends Component
 
         /**
          * Check if role exists.
+         * 
          * @param string $role The role to check.
          * @param int $id The object ID.
+         * @param string $bind The model to bind ID against.
          * @return bool
          */
-        public function hasRole($role, $id = 0)
+        public function hasRole($role, $id = 0, $bind = 'native')
         {
-                if (isset($this->_roles[$id])) {
-                        return array_key_exists($role, $this->_roles[$id]);
+                if (isset($this->_roles[$bind][$id])) {
+                        return array_key_exists($role, $this->_roles[$bind][$id]);
                 } else {
                         return false;
                 }
@@ -246,13 +246,15 @@ class Roles extends Component
 
         /**
          * Get system wide or object specific roles.
+         * 
          * @param int $id The object ID.
+         * @param string $bind The model to bind ID against.
          * @return array
          */
-        public function getRoles($id = 0)
+        public function getRoles($id = 0, $bind = 'native')
         {
-                if (isset($this->_roles[$id])) {
-                        return array_keys($this->_roles[$id]);
+                if (isset($this->_roles[$bind][$id])) {
+                        return array_keys($this->_roles[$bind][$id]);
                 } else {
                         return array();
                 }
@@ -277,187 +279,367 @@ class Roles extends Component
         }
 
         /**
-         * Try to acquire role. Returns true if successful. The object ID is
-         * is optional. 
+         * Check if caller is admin.
+         * @return bool
+         */
+        private function hasAdmin()
+        {
+                return Admin::count(array(
+                            "user = :user:",
+                            "bind" => array(
+                                    "user" => $this->user->getPrincipalName()
+                            )
+                    )) > 0;
+        }
+
+        /**
+         * Check if caller is teacher.
+         * @return bool
+         */
+        private function hasTeacher()
+        {
+                return Teacher::count(array(
+                            "user = :user:",
+                            "bind" => array(
+                                    "user" => $this->user->getPrincipalName()
+                            )
+                    )) > 0;
+        }
+
+        /**
+         * Check if caller is contributor.
          * 
-         * If the object ID is missing, then the role is acquired system wide. 
-         * If supplied, then requested role is acquired on that specific object. 
+         * @param int $id The object ID.
+         * @return bool
+         */
+        private function hasContributor($id = 0)
+        {
+                if ($id != 0) {
+                        return Contributor::count(array(
+                                    "user = :user: AND exam_id = :id:",
+                                    "bind" => array(
+                                            "user" => $this->user->getPrincipalName(),
+                                            "id"   => $id
+                                    )
+                            )) > 0;
+                } else {
+                        return Contributor::count(array(
+                                    "user = :user:",
+                                    "bind" => array(
+                                            "user" => $this->user->getPrincipalName()
+                                    )
+                            )) > 0;
+                }
+        }
+
+        /**
+         * Check if caller is decoder.
+         * 
+         * @param int $id The object ID.
+         * @return bool
+         */
+        private function hasDecoder($id = 0)
+        {
+                if ($id != 0) {
+                        return Decoder::count(array(
+                                    "user = :user: AND exam_id = :id:",
+                                    "bind" => array(
+                                            "user" => $this->user->getPrincipalName(),
+                                            "id"   => $id
+                                    )
+                            )) > 0;
+                } else {
+                        return Decoder::count(array(
+                                    "user = :user:",
+                                    "bind" => array(
+                                            "user" => $this->user->getPrincipalName()
+                                    )
+                            )) > 0;
+                }
+        }
+
+        /**
+         * Check if caller is invigilator.
+         * 
+         * @param int $id The object ID.
+         * @return bool
+         */
+        private function hasInvigilator($id = 0)
+        {
+                if ($id != 0) {
+                        return Invigilator::count(array(
+                                    "user = :user: AND exam_id = :id:",
+                                    "bind" => array(
+                                            "user" => $this->user->getPrincipalName(),
+                                            "id"   => $id
+                                    )
+                            )) > 0;
+                } else {
+                        return Invigilator::count(array(
+                                    "user = :user:",
+                                    "bind" => array(
+                                            "user" => $this->user->getPrincipalName()
+                                    )
+                            )) > 0;
+                }
+        }
+
+        /**
+         * Check if caller is student.
+         * 
+         * @param int $id The object ID.
+         * @return bool
+         */
+        private function hasStudent($id = 0)
+        {
+                if ($id != 0) {
+                        return Student::count(array(
+                                    "user = :user: AND exam_id = :id:",
+                                    "bind" => array(
+                                            "user" => $this->user->getPrincipalName(),
+                                            "id"   => $id
+                                    )
+                            )) > 0;
+                } else {
+                        return Student::count(array(
+                                    "user = :user:",
+                                    "bind" => array(
+                                            "user" => $this->user->getPrincipalName()
+                                    )
+                            )) > 0;
+                }
+        }
+
+        /**
+         * Check if caller is exam creator.
+         * 
+         * @param int $id The object ID.
+         * @return bool
+         */
+        private function hasCreator($id = 0)
+        {
+                if ($id != 0) {
+                        return Exam::count(array(
+                                    "creator = :user: AND id = :id:",
+                                    "bind" => array(
+                                            "user" => $this->user->getPrincipalName(),
+                                            "id"   => $id
+                                    )
+                            )) > 0;
+                } else {
+                        return Exam::count(array(
+                                    "creator = :user:",
+                                    "bind" => array(
+                                            "user" => $this->user->getPrincipalName()
+                                    )
+                            )) > 0;
+                }
+        }
+
+        /**
+         * Check if caller is corrector.
+         * 
+         * @param int $id The object ID.
+         * @param string $bind The model to bind ID against.
+         * @return bool
+         */
+        private function hasCorrector($id = 0, $bind = 'native')
+        {
+                // 
+                // Keep primary role. Will be reset on method return.
+                // 
+                $role = $this->user->getPrimaryRole();
+
+                // 
+                // The corrector role is bound to a question, but if the bind
+                // parameter is passed then the role can be checked againt non-native
+                // model. Currently bind is limited to exam.
+                // 
+
+                try {
+                        if ($bind == 'native') {
+                                if ($id != 0) {
+                                        return Corrector::count(array(
+                                                    "user = :user: AND question_id = :id:",
+                                                    "bind" => array(
+                                                            "user" => $this->user->getPrincipalName(),
+                                                            "id"   => $id
+                                                    )
+                                            )) > 0;
+                                } else {
+                                        return Corrector::count(array(
+                                                    "user = :user:",
+                                                    "bind" => array(
+                                                            "user" => $this->user->getPrincipalName()
+                                                    )
+                                            )) > 0;
+                                }
+                        } elseif ($bind == 'exam') {
+                                // 
+                                // This snippet relies on find() method adding joins for
+                                // corrector when primary role is set:
+                                // 
+                                $role = $this->user->setPrimaryRole(self::CORRECTOR);
+
+                                if ($id != 0) {
+                                        return count(Exam::find(array(
+                                                        "id = :id:",
+                                                        "bind" => array(
+                                                                "id" => $id
+                                                        )
+                                            ))) > 0;
+                                } else {
+                                        return count(Exam::find()) > 0;
+                                }
+                        }
+                } finally {
+                        $this->user->setPrimaryRole($role);
+                }
+        }
+
+        /**
+         * Try to acquire role. 
+         * 
+         * Returns true if requested role was successful acquired, otherwise
+         * false. 
+         * 
+         * The role is acquired system wide if object ID is missing. Otherwise
+         * requested role is acquired on that object. The corrector role is
+         * native bound to questions, pass exam as bind parameter to acquire 
+         * that role on exam instead.
+         * 
+         * <code>
+         * // Caller is decoder on at least one exam:
+         * $roles->acquire(Roles::DECODER);
+         * 
+         * // Caller is decoder on exam 29883:
+         * $roles->acquire(Roles::DECODER, 29883);
+         * 
+         * // Caller is corrector:
+         * $roles->acquire(Roles::CORRECTOR);
+         * 
+         * // Caller is corrector of question 56635:
+         * $roles->acquire(Roles::CORRECTOR, 56635);
+         * 
+         * // Caller is corrector on exam 29883:
+         * $roles->acquire(Roles::CORRECTOR, 29883, 'exam');
+         * </code>
          * 
          * @param string $role The role name.
          * @param int $id The object ID.
+         * @param string $bind The model to bind ID against.
+         * 
+         * @return bool
          */
-        public function acquire($role, $id = 0)
+        public function acquire($role, $id = 0, $bind = 'native')
         {
-                if ($this->hasRole($role, $id)) {
+                if ($this->hasRole($role, $id, $bind)) {
                         return true;
                 }
 
                 // 
                 // Get principal name from user service:
                 // 
-                if ($this->getDI()->has('user')) {
-                        $user = $this->getDI()->get('user');
-                        if ($user->getPrincipalName() == null) {
-                                return false;
-                        }
+                if ($this->user->getPrincipalName() == null) {
+                        return false;
                 }
 
                 // 
                 // Temporarily disable access control:
                 // 
-                $rold = $user->setPrimaryRole(Roles::TRUSTED);
+                $rold = $this->user->setPrimaryRole(Roles::TRUSTED);
 
-                if ($role == self::ADMIN) {
-                        $parameters = array(
-                                "user = :user:",
-                                "bind" => array("user" => $user->getPrincipalName())
-                        );
-                        if (Admin::count($parameters)) {
-                                $this->addRole($role);
-                                $user->setPrimaryRole($rold);
-                                return true;
-                        }
-                } elseif ($role == self::TEACHER) {
-                        $parameters = array(
-                                "user = :user:",
-                                "bind" => array("user" => $user->getPrincipalName())
-                        );
-                        if (Teacher::count($parameters)) {
-                                $this->addRole($role);
-                                $user->setPrimaryRole($rold);
-                                return true;
-                        }
-                } elseif ($role == self::CONTRIBUTOR) {
-                        if ($id != 0) {
-                                $parameters = array(
-                                        "user = :user: AND exam_id = :id:",
-                                        "bind" => array("user" => $user->getPrincipalName(), "id" => $id)
-                                );
-                        } else {
-                                $parameters = array(
-                                        "user = :user:",
-                                        "bind" => array("user" => $user->getPrincipalName())
-                                );
-                        }
-                        if (Contributor::count($parameters) > 0) {
-                                $this->addRole($role, $id);
-                                $user->setPrimaryRole($rold);
-                                return true;
-                        }
-                } elseif ($role == self::DECODER) {
-                        if ($id != 0) {
-                                $parameters = array(
-                                        "user = :user: AND exam_id = :id:",
-                                        "bind" => array("user" => $user->getPrincipalName(), "id" => $id)
-                                );
-                        } else {
-                                $parameters = array(
-                                        "user = :user:",
-                                        "bind" => array("user" => $user->getPrincipalName())
-                                );
-                        }
-                        if (Decoder::count($parameters) > 0) {
-                                $this->addRole($role, $id);
-                                $user->setPrimaryRole($rold);
-                                return true;
-                        }
-                } elseif ($role == self::INVIGILATOR) {
-                        if ($id != 0) {
-                                $parameters = array(
-                                        "user = :user: AND exam_id = :id:",
-                                        "bind" => array("user" => $user->getPrincipalName(), "id" => $id)
-                                );
-                        } else {
-                                $parameters = array(
-                                        "user = :user:",
-                                        "bind" => array("user" => $user->getPrincipalName())
-                                );
-                        }
-                        if (Invigilator::count($parameters) > 0) {
-                                $this->addRole($role, $id);
-                                $user->setPrimaryRole($rold);
-                                return true;
-                        }
-                } elseif ($role == self::STUDENT) {
-                        if ($id != 0) {
-                                $parameters = array(
-                                        "user = :user: AND exam_id = :id:",
-                                        "bind" => array("user" => $user->getPrincipalName(), "id" => $id)
-                                );
-                        } else {
-                                $parameters = array(
-                                        "user = :user:",
-                                        "bind" => array("user" => $user->getPrincipalName())
-                                );
-                        }
-                        if (Student::count($parameters) > 0) {
-                                $this->addRole($role, $id);
-                                $user->setPrimaryRole($rold);
-                                return true;
-                        }
-                } elseif ($role == self::CREATOR) {
-                        if ($id != 0) {
-                                $parameters = array(
-                                        "creator = :user: AND id = :id:",
-                                        "bind" => array("user" => $user->getPrincipalName(), "id" => $id)
-                                );
-                        } else {
-                                $parameters = array(
-                                        "creator = :user:",
-                                        "bind" => array("user" => $user->getPrincipalName())
-                                );
-                        }
-                        if (Exam::count($parameters) > 0) {
-                                $this->addRole($role, $id);
-                                $user->setPrimaryRole($rold);
-                                return true;
-                        }
-                } elseif ($role == self::CORRECTOR) {
-                        // 
-                        // Check if corrector on question followed by exam:
-                        // 
-                        if ($id != 0) {
-                                $parameters = array(
-                                        "user = :user: AND question_id = :id:",
-                                        "bind" => array("user" => $user->getPrincipalName(), "id" => $id)
-                                );
-                        } else {
-                                $parameters = array(
-                                        "user = :user:",
-                                        "bind" => array("user" => $user->getPrincipalName())
-                                );
-                        }
-                        if (($corrector = Corrector::find($parameters)->getFirst())) {
-                                if ($id != 0) {
+                // 
+                // Try to acquire requested role:
+                // 
+                try {
+                        switch ($role) {
+                                case self::ADMIN:
+                                        if ($this->hasAdmin()) {
+                                                $this->addRole($role);
+                                                return true;
+                                        } else {
+                                                return false;
+                                        }
+                                case self::TEACHER:
+                                        if ($this->hasTeacher()) {
+                                                $this->addRole($role);
+                                                return true;
+                                        } else {
+                                                return false;
+                                        }
+                                case self::CONTRIBUTOR:
+                                        if ($this->hasContributor($id)) {
+                                                $this->addRole($role, $id);
+                                                return true;
+                                        } else {
+                                                return false;
+                                        }
+                                case self::DECODER:
+                                        if ($this->hasDecoder($id)) {
+                                                $this->addRole($role, $id);
+                                                return true;
+                                        } else {
+                                                return false;
+                                        }
+                                case self::INVIGILATOR:
+                                        if ($this->hasInvigilator($id)) {
+                                                $this->addRole($role, $id);
+                                                return true;
+                                        } else {
+                                                return false;
+                                        }
+                                case self::STUDENT:
+                                        if ($this->hasStudent($id)) {
+                                                $this->addRole($role, $id);
+                                                return true;
+                                        } else {
+                                                return false;
+                                        }
+                                case self::CREATOR:
+                                        if ($this->hasCreator($id)) {
+                                                $this->addRole($role, $id);
+                                                return true;
+                                        } else {
+                                                return false;
+                                        }
+                                case self::CORRECTOR:
+                                        if ($this->hasCorrector($id, $bind)) {
+                                                $this->addRole($role, $id, $bind);
+                                                return true;
+                                        } else {
+                                                return false;
+                                        }
+                                default:
                                         // 
-                                        // Add corrector role on related exam:
+                                        // Check for custom roles. These are global by nature.
                                         // 
-                                        $this->addRole($role, $corrector->question->exam->id);
-                                }
-                                $this->addRole($role, $id);
-                                $user->setPrimaryRole($rold);
-                                return true;
-                        } elseif ($this->isCorrector($id)) {
-                                $this->addRole($role, $id);
-                                $user->setPrimaryRole($rold);
-                                return true;
+                                        if (self::isCustom($role)) {
+                                                $this->addRole($role);
+                                                return true;
+                                        }
                         }
+                } finally {
+                        $this->user->setPrimaryRole($rold);
                 }
 
                 // 
-                // Check for custom roles. These are global by nature.
+                // Failed acquire requested role:
                 // 
-                if (self::isCustom($role)) {
-                        $this->addRole($role);
-                        $user->setPrimaryRole($rold);
-                        return true;
-                }
-
-                // 
-                // Role was not acquired.
-                // 
-                $user->setPrimaryRole($rold);
                 return false;
+        }
+
+        /**
+         * Check if role is acquired.
+         * 
+         * @param string $role The role name.
+         * @param int $id The optional object ID.
+         * @param string $bind The model to bind ID against.
+         * @return bool
+         */
+        private function isAcquired($role, $id = 0, $bind = 'native')
+        {
+                return isset($this->_roles[$bind][$id][$role]);
         }
 
         /**
@@ -466,7 +648,67 @@ class Roles extends Component
          */
         public function isAdmin()
         {
-                return isset($this->_roles[0][self::ADMIN]);
+                return $this->isAcquired(self::ADMIN);
+        }
+
+        /**
+         * Check if the teacher role has been acquired.
+         * @return bool
+         */
+        public function isTeacher()
+        {
+                return $this->isAcquired(self::TEACHER);
+        }
+
+        /**
+         * Check if the contributor role has been acquired.
+         * @param int $id The object ID.
+         * @return bool
+         */
+        public function isContributor($id = 0)
+        {
+                return $this->isAcquired(self::CONTRIBUTOR, $id);
+        }
+
+        /**
+         * Check if the corrector role has been acquired.
+         * @param int $id The object ID.
+         * @param string $bind The model to bind ID against.
+         * @return bool
+         */
+        public function isCorrector($id = 0, $bind = null)
+        {
+                return $this->isAcquired(self::CORRECTOR, $id, $bind);
+        }
+
+        /**
+         * Check if the creator role has been acquired.
+         * @param int $id The object ID.
+         * @return bool
+         */
+        public function isCreator($id = 0)
+        {
+                return $this->isAcquired(self::CREATOR, $id);
+        }
+
+        /**
+         * Check if the decoder role has been acquired.
+         * @param int $id The object ID.
+         * @return bool
+         */
+        public function isDecoder($id = 0)
+        {
+                return $this->isAcquired(self::DECODER, $id);
+        }
+
+        /**
+         * Check if the invigilator role has been acquired.
+         * @param int $id The object ID.
+         * @return bool
+         */
+        public function isInvigilator($id = 0)
+        {
+                return $this->isAcquired(self::INVIGILATOR, $id);
         }
 
         /**
@@ -476,7 +718,7 @@ class Roles extends Component
          */
         public function isStudent($id = 0)
         {
-                return isset($this->_roles[$id][self::STUDENT]);
+                return $this->isAcquired(self::STUDENT, $id);
         }
 
         /**
@@ -486,13 +728,13 @@ class Roles extends Component
          */
         public function isStaff($id = 0)
         {
-                if (!isset($this->_roles[$id])) {
+                if (!isset($this->_roles['native'][$id])) {
                         return false;
                 }
-                if (count($this->_roles[$id]) == 0) {
+                if (count($this->_roles['native'][$id]) == 0) {
                         return false;
                 }
-                $roles = array_keys($this->_roles[$id]);
+                $roles = array_keys($this->_roles['native'][$id]);
                 $staff = array(
                         self::TEACHER,
                         self::CONTRIBUTOR,
@@ -528,28 +770,6 @@ class Roles extends Component
                     $role == self::ADMIN ||
                     $role == self::TRUSTED ||
                     $role == self::SYSTEM;
-        }
-
-        /**
-         * Check if caller is corrector on exam.
-         * @param int $id The exam ID.
-         * @return boolean
-         */
-        public function isCorrector($id)
-        {
-                try {
-                        $role = $this->user->setPrimaryRole(self::CORRECTOR);
-
-                        if (isset($this->_roles[$id][self::CORRECTOR])) {
-                                return true;
-                        } elseif ($id != 0) {
-                                return Exam::findFirstById($id);
-                        } else {
-                                return Exam::findFirst();
-                        }
-                } finally {
-                        $this->user->setPrimaryRole($role);
-                }
         }
 
 }

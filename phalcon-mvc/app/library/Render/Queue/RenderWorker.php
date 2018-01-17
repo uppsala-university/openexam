@@ -27,6 +27,8 @@
 
 namespace OpenExam\Library\Render\Queue;
 
+use ErrorException;
+use Exception;
 use OpenExam\Library\Render\Renderer;
 use OpenExam\Models\Render;
 
@@ -144,22 +146,51 @@ class RenderWorker
                 declare(ticks = 1);
 
                 $this->setupSignalHandler();
+                $this->setupErrorHandler();
+
                 $this->log("Starting");
 
                 while (!$this->_done) {
-                        $consumer = new RenderConsumer();
-
-                        if ($consumer->hasNext()) {
-                                $job = $consumer->getNext();
-                                $this->render($job);
-                                $consumer->setResult($job);
-                        } else {
-                                unset($consumer);
-                                $this->sleep();
-                        }
+                        $this->fetch();
                 }
 
                 $this->log("Finished");
+        }
+
+        /**
+         * Fetch single job.
+         */
+        private function fetch()
+        {
+                try {
+                        if (!$this->consume()) {
+                                $this->sleep();
+                        }
+                } catch (Exception $exception) {
+                        $this->log(sprintf("Failed fetch job (%s)", $exception->getMessage()));
+                }
+        }
+
+        /**
+         * Consume next job.
+         * 
+         * Return true if job was rendered or false if render queue is empty.
+         * @return boolean
+         */
+        private function consume()
+        {
+                $consumer = new RenderConsumer();
+
+                if (!$consumer->hasNext()) {
+                        unset($consumer);
+                        return false;
+                }
+
+                $job = $consumer->getNext();
+                $this->render($job);
+                $consumer->setResult($job);
+
+                return true;
         }
 
         /**
@@ -183,7 +214,7 @@ class RenderWorker
                         $job->message = sprintf("Render time %d seconds", $job->etime - $job->stime);
                         $job->status = Render::STATUS_FINISH;
                 } catch (Exception $exception) {
-                        $this->log(sprintf("Failed job %d (%s)", $job->id, $exception->getMessage()));
+                        $this->log(sprintf("Failed render job %d (%s)", $job->id, $exception->getMessage()));
                         $job->message = $exception->getMessage();
                         $job->status = Render::STATUS_FAILED;
                 }
@@ -197,7 +228,12 @@ class RenderWorker
          */
         private function check($job)
         {
-                $dest = dirname($job->file);
+                if (!isset($job->file)) {
+                        $this->log(sprintf("Missing file property in job %d", $job->id));
+                        return false;
+                } else {
+                        $dest = dirname($job->file);
+                }
 
                 if (!file_exists($dest)) {
                         $this->log("The target directory $dest is missing");
@@ -274,7 +310,7 @@ class RenderWorker
                 // Install signal handler for SIGTERM:
                 // 
                 if (pcntl_signal(SIGTERM, function ($signal) {
-                            $this->log("Got terminate signal $signal. Setting loop exit flag.");
+                            $this->log("Got terminate signal $signal. Setting exit flag for loop.");
                             $this->_done = true;
                     })) {
                         $this->log("Installed signal handler (SIGTERM)");
@@ -299,6 +335,17 @@ class RenderWorker
                 if (!pcntl_signal_dispatch()) {
                         $this->log("Failed call pcntl_signal_dispatch()");
                 }
+        }
+
+        /**
+         * Setup error handler.
+         */
+        private function setupErrorHandler()
+        {
+                set_error_handler(function($code, $message, $file, $line) {
+                        $this->log(sprintf("Trapped %s (%d) on %s:%d", $message, $code, $file, $line));
+                        throw new ErrorException($message, 500, $code, $file, $line);
+                });
         }
 
 }
