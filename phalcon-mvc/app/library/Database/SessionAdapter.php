@@ -94,11 +94,11 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                 if (!isset($options['cleanup'])) {
                         $options['cleanup'] = true;
                 }
-
+                
                 session_set_save_handler(
                     array($this, 'open'), array($this, 'close'), array($this, 'read'), array($this, 'write'), array($this, 'destroy'), array($this, 'gc')
                 );
-
+                
                 parent::__construct($options);
         }
 
@@ -265,7 +265,7 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                 if (!parent::isStarted()) {
                         return true;
                 }
-
+                
                 // 
                 // Get session ID from parent if null:
                 // 
@@ -284,10 +284,6 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                 // 
                 unset($this->_session[$sessionId]);
 
-                // 
-                // Old session is obsolete. Use new session ID:
-                // 
-                session_regenerate_id();
                 return $result;
         }
 
