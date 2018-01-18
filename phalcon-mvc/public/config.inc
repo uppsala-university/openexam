@@ -65,6 +65,12 @@ function getConfig($options)
                     )
                 );
         }
+        if ($options['method'] == "apcu") {
+                $backend = new Phalcon\Cache\Backend\Apcu($frontend, array(
+                        "prefix" => "site-config-"
+                    )
+                );
+        }
 
         // 
         // Return direct if backend is unset:
