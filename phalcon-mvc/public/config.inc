@@ -33,11 +33,18 @@ class ConfigCache
 
         private $_method;
         private $_cached;
+        private $_cfgkey;
 
         public function __construct($options)
         {
                 $this->_method = $options['method'];
                 $this->_cached = $options['cached'];
+                $this->_cfgkey = basename(dirname(dirname(__DIR__)));
+        }
+
+        public function __destruct()
+        {
+                unset($this->_backend);
         }
 
         public function useCache()
@@ -45,11 +52,42 @@ class ConfigCache
                 return $this->_cached == 1;
         }
 
+        public function getConfig()
+        {
+                return include(CONFIG_PHP);
+        }
+
+        public function setConfig($config)
+        {
+                $this->_backend->save($this->_cfgkey, $config);
+        }
+
+        public function getCached()
+        {
+                return $this->_backend->get($this->_cfgkey);
+        }
+
         public function getFrontend()
         {
                 return new Phalcon\Cache\Frontend\Data(array(
                         "lifetime" => 3600
                     )
+                );
+        }
+
+        public function hasBackend()
+        {
+                if (isset($this->_backend)) {
+                        return $this->_backend != false;
+                } else {
+                        return $this->setBackend() != false;
+                }
+        }
+
+        public function setBackend()
+        {
+                return $this->_backend = $this->getBackend(
+                    $this->getFrontend()
                 );
         }
 
@@ -77,59 +115,24 @@ class ConfigCache
                 return false;
         }
 
-        public function getConfig()
-        {
-                // 
-                // Read config direct:
-                // 
-                if (!$this->useCache()) {
-                        return include(CONFIG_PHP);
-                }
-
-                // 
-                // Create cache fontend:
-                // 
-                $frontend = $this->getFrontend();
-
-                // 
-                // Create cache backend:
-                // 
-                $backend = $this->getBackend($frontend);
-
-                // 
-                // Return direct if backend is unset:
-                // 
-                if (!isset($backend)) {
-                        return include(CONFIG_PHP);
-                }
-
-                // 
-                // An instance unique cache key:
-                // 
-                $cachekey = basename(dirname(dirname(__DIR__)));
-
-                // 
-                // Fetch config from cache:
-                // 
-                if (!($config = $backend->get($cachekey))) {
-                        $config = include(CONFIG_PHP);
-                        $backend->save($cachekey, $config);
-                }
-
-                // 
-                // Cleanup & return config:
-                // 
-                unset($cachekey);
-                unset($frontend);
-                unset($backend);
-
-                return $config;
-        }
-
 }
 
 $cache = new ConfigCache(array(
         'cached' => getenv("OPENEXAM_CACHE_CONFIG"),
         'method' => getenv("OPENEXAM_CACHE_METHOD")
     ));
-return $cache->getConfig();
+
+if (!$cache->useCache()) {
+        return $cache->getConfig();
+}
+if (!$cache->hasBackend()) {
+        return $cache->getConfig();
+}
+
+if (($config = $cache->getCached())) {
+        return $config;
+} else {
+        $config = $cache->getConfig();
+        $cache->setConfig($config);
+        return $config;
+}
