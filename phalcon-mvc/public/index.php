@@ -56,76 +56,11 @@ define('CONFIG_PHP', CONFIG_SYS . '/config.php');
 // 
 // Get application config from cache if existing.
 // 
-function getConfig($options)
-{
-        // 
-        // Read config direct:
-        // 
-        if ($options['cached'] != 1) {
-                return include(CONFIG_PHP);
-        }
+$config = require_once('config.inc');
 
-        // 
-        // An instance unique cache key:
-        // 
-        $cachekey = basename(dirname(dirname(__DIR__)));
-
-        // 
-        // Create cache fontend:
-        // 
-        $frontend = new Phalcon\Cache\Frontend\Data(array(
-                "lifetime" => 3600
-            )
-        );
-
-        // 
-        // Create cache backend:
-        // 
-        if ($options['method'] == "xcache") {
-                $backend = new Phalcon\Cache\Backend\Xcache($frontend, array(
-                        "prefix" => "site-config-"
-                    )
-                );
-        }
-        if ($options['method'] == "apc") {
-                $backend = new Phalcon\Cache\Backend\Apc($frontend, array(
-                        "prefix" => "site-config-"
-                    )
-                );
-        }
-
-        // 
-        // Return direct if backend is unset:
-        // 
-        if (!isset($backend)) {
-                return include(CONFIG_PHP);
-        }
-
-        // 
-        // Fetch config from cache:
-        // 
-        if (!($config = $backend->get($cachekey))) {
-                $config = include(CONFIG_PHP);
-                $backend->save($cachekey, $config);
-        }
-
-        // 
-        // Cleanup & return config:
-        // 
-        unset($cachekey);
-        unset($frontend);
-        unset($backend);
-
-        return $config;
-}
-
-$config = getConfig(
-    array(
-            'cached' => getenv("OPENEXAM_CACHE_CONFIG"),
-            'method' => getenv("OPENEXAM_CACHE_METHOD")
-    )
-);
-
+// 
+// Config error settings different for development/production:
+// 
 if ($config->application->release) {
         error_reporting(E_ALL ^ E_NOTICE & ~E_DEPRECATED ^ E_STRICT);
         ini_set('display_errors', 0);
