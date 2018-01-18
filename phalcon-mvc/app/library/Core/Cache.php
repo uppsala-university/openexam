@@ -147,6 +147,9 @@ class Cache extends Multiple
                         }
 
                         if (!file_exists($options['file']['cacheDir'])) {
+                                if (!is_writable($options['file']['cacheDir'])) {
+                                        throw new CacheException(sprintf("The file cache directory %s is not writable", $options['file']['cacheDir']));
+                                }
                                 if (!mkdir($options['file']['cacheDir'], 0750, true)) {
                                         throw new CacheException(sprintf("Failed create cache directory %s", $options['file']['cacheDir']));
                                 }
