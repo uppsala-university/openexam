@@ -53,6 +53,10 @@ class RenderPdfDocumentTest extends TestCase
          */
         protected function setUp()
         {
+                if (!extension_loaded('phpwkhtmltox')) {
+                        self::markTestSkipped("The phpwkhtmltox extension is not loaded");
+                }
+                
                 $this->_object = new RenderPdfDocument;
                 $this->cwd = getcwd();
                 chdir(__DIR__);
