@@ -54,6 +54,7 @@ $config = include(CONFIG_PHP);
 // 
 $config->cache->enable->xcache = false;
 $config->cache->enable->apc = false;
+$config->cache->enable->apcu = false;
 $config->cache->enable->memcache = false;
 $config->cache->enable->file = false;
 
