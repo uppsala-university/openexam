@@ -94,11 +94,11 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                 if (!isset($options['cleanup'])) {
                         $options['cleanup'] = true;
                 }
-                
+
                 session_set_save_handler(
                     array($this, 'open'), array($this, 'close'), array($this, 'read'), array($this, 'write'), array($this, 'destroy'), array($this, 'gc')
                 );
-                
+
                 parent::__construct($options);
         }
 
@@ -193,10 +193,10 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
         public function write($sessionId, $data)
         {
                 // 
-                // Refuse to write empty data:
+                // Ignore writing empty data:
                 // 
                 if (empty($data)) {
-                        return false;
+                        return true;
                 }
 
                 // 
@@ -238,7 +238,6 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                 if (($session->save() == false)) {
                         $this->cleanup($sessionId);
                 } else {
-                        // throw new ModelException("TEST");
                         return true;
                 }
 
@@ -265,7 +264,7 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                 if (!parent::isStarted()) {
                         return true;
                 }
-                
+
                 // 
                 // Get session ID from parent if null:
                 // 
