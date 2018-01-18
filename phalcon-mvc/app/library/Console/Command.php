@@ -319,8 +319,8 @@ class Command
                 // 
                 // Return true if successful.
                 // 
-                if ($this->_status != 0) {
-                        return false;
+                if ($this->_status == 0) {
+                        return true;
                 } elseif (isset($this->_error)) {
                         return false;
                 } else {
