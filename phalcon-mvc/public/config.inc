@@ -1,6 +1,6 @@
 <?php
 
-/* 
+/*
  * Copyright (C) 2018 The OpenExam Project
  *
  * This program is free software; you can redistribute it and/or
@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* 
+/*
  * Created: 2018-01-18 02:30:42
  * File:    config.inc
  * 
@@ -28,78 +28,108 @@
 // 
 // Get application config from cache if existing.
 // 
-function getConfig($options)
+class ConfigCache
 {
-        // 
-        // Read config direct:
-        // 
-        if ($options['cached'] != 1) {
-                return include(CONFIG_PHP);
+
+        private $_method;
+        private $_cached;
+
+        public function __construct($options)
+        {
+                $this->_method = $options['method'];
+                $this->_cached = $options['cached'];
         }
 
-        // 
-        // An instance unique cache key:
-        // 
-        $cachekey = basename(dirname(dirname(__DIR__)));
-
-        // 
-        // Create cache fontend:
-        // 
-        $frontend = new Phalcon\Cache\Frontend\Data(array(
-                "lifetime" => 3600
-            )
-        );
-
-        // 
-        // Create cache backend:
-        // 
-        if ($options['method'] == "xcache") {
-                $backend = new Phalcon\Cache\Backend\Xcache($frontend, array(
-                        "prefix" => "site-config-"
-                    )
-                );
+        public function useCache()
+        {
+                return $this->_cached == 1;
         }
-        if ($options['method'] == "apc") {
-                $backend = new Phalcon\Cache\Backend\Apc($frontend, array(
-                        "prefix" => "site-config-"
-                    )
-                );
-        }
-        if ($options['method'] == "apcu") {
-                $backend = new Phalcon\Cache\Backend\Apcu($frontend, array(
-                        "prefix" => "site-config-"
+
+        public function getFrontend()
+        {
+                return new Phalcon\Cache\Frontend\Data(array(
+                        "lifetime" => 3600
                     )
                 );
         }
 
-        // 
-        // Return direct if backend is unset:
-        // 
-        if (!isset($backend)) {
-                return include(CONFIG_PHP);
+        public function getBackend($frontend)
+        {
+                if ($this->_method == "xcache") {
+                        return new Phalcon\Cache\Backend\Xcache($frontend, array(
+                                "prefix" => "site-config-"
+                            )
+                        );
+                }
+                if ($this->_method == "apc") {
+                        return new Phalcon\Cache\Backend\Apc($frontend, array(
+                                "prefix" => "site-config-"
+                            )
+                        );
+                }
+                if ($this->_method == "apcu") {
+                        return new Phalcon\Cache\Backend\Apcu($frontend, array(
+                                "prefix" => "site-config-"
+                            )
+                        );
+                }
+
+                return false;
         }
 
-        // 
-        // Fetch config from cache:
-        // 
-        if (!($config = $backend->get($cachekey))) {
-                $config = include(CONFIG_PHP);
-                $backend->save($cachekey, $config);
+        public function getConfig()
+        {
+                // 
+                // Read config direct:
+                // 
+                if (!$this->useCache()) {
+                        return include(CONFIG_PHP);
+                }
+
+                // 
+                // Create cache fontend:
+                // 
+                $frontend = $this->getFrontend();
+
+                // 
+                // Create cache backend:
+                // 
+                $backend = $this->getBackend($frontend);
+
+                // 
+                // Return direct if backend is unset:
+                // 
+                if (!isset($backend)) {
+                        return include(CONFIG_PHP);
+                }
+
+                // 
+                // An instance unique cache key:
+                // 
+                $cachekey = basename(dirname(dirname(__DIR__)));
+
+                // 
+                // Fetch config from cache:
+                // 
+                if (!($config = $backend->get($cachekey))) {
+                        $config = include(CONFIG_PHP);
+                        $backend->save($cachekey, $config);
+                }
+
+                // 
+                // Cleanup & return config:
+                // 
+                unset($cachekey);
+                unset($frontend);
+                unset($backend);
+
+                return $config;
         }
 
-        // 
-        // Cleanup & return config:
-        // 
-        unset($cachekey);
-        unset($frontend);
-        unset($backend);
-
-        return $config;
 }
 
-return getConfig(
-    array(
-            'cached' => getenv("OPENEXAM_CACHE_CONFIG"),
-            'method' => getenv("OPENEXAM_CACHE_METHOD")
-    )
-);
+$cache = new ConfigCache(array(
+        'cached' => getenv("OPENEXAM_CACHE_CONFIG"),
+        'method' => getenv("OPENEXAM_CACHE_METHOD")
+    ));
+return $cache->getConfig();
