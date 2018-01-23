@@ -67,7 +67,7 @@ $di->set('modelsMetadata', function() use($config) {
                 $config->application->release = false;
         }
         if (!isset($config->metadata->type)) {
-                foreach (array('xcache', 'apc') as $extension) {
+                foreach (array('xcache', 'apcu', 'apc') as $extension) {
                         if (extension_loaded($extension)) {
                                 $config->metadata->type = $extension;
                                 break;
@@ -83,6 +83,10 @@ $di->set('modelsMetadata', function() use($config) {
                 return new Phalcon\Mvc\Model\Metadata\Memory();
         } elseif ($config->metadata->type == 'xcache') {
                 return new Phalcon\Mvc\Model\Metadata\Xcache(
+                    $config->metadata->toArray()
+                );
+        } elseif ($config->metadata->type == 'apcu') {
+                return new Phalcon\Mvc\Model\MetaData\Apcu(
                     $config->metadata->toArray()
                 );
         } elseif ($config->metadata->type == 'apc') {

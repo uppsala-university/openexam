@@ -345,8 +345,8 @@ return array(
                  */
                 'enable'   => array(
                         'xcache'   => true,
-                        'apc'      => true,
                         'apcu'     => true,
+                        'apc'      => true,
                         'memcache' => true,
                         'file'     => true
                 )

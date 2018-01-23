@@ -299,6 +299,7 @@ $config = new Config(
                 'enable'   => array(
                         'memory'   => false,
                         'xcache'   => true,
+                        'apcu'     => true,
                         'apc'      => true,
                         'memcache' => true,
                         'file'     => false
@@ -324,6 +325,9 @@ $config = new Config(
                                 'prefix' => ''
                         ),
                         'apc'      => array(
+                                'prefix' => ''
+                        ),
+                        'apcu'     => array(
                                 'prefix' => ''
                         ),
                         'memcache' => array(
