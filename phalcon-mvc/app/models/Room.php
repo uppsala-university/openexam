@@ -29,6 +29,8 @@ namespace OpenExam\Models;
 
 use OpenExam\Library\Model\Behavior\Transform\FilterText;
 use OpenExam\Library\Model\Behavior\Transform\Trim;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * The room model.
@@ -109,6 +111,24 @@ class Room extends ModelBase
                         'name'        => 'name',
                         'description' => 'description'
                 );
+        }
+
+        /**
+         * Validates business rules.
+         * @return boolean
+         */
+        public function validation()
+        {
+                $validator = new Validation();
+
+                $validator->add(
+                    'name', new Uniqueness(
+                    array(
+                        'message' => "The name already exists"
+                    )
+                ));
+
+                return $this->validate($validator);
         }
 
 }
