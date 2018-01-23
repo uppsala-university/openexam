@@ -270,10 +270,10 @@ class Audit extends ModelBehavior
                         return false;
                 }
 
-                $changed = $model->getChangedFields();
+                $changed = $model->getUpdatedFields();
 
                 $data = $this->build($model, ObjectAccess::UPDATE);
-                $prev = $model->getSnapshotData();
+                $prev = $model->getOldSnapshotData();
 
                 if (count($changed) > 0) {
                         foreach ($changed as $field) {
