@@ -51,8 +51,10 @@ if ($config->application->release) {
 // 
 // Disable database caching:
 // 
-//$config->dbread->params->adapter->cached = false;
-//$config->dbwrite->params->adapter->cached = false;
+$config->dbread->params->adapter->cached = false;
+$config->dbread->config->persistent = false;
+$config->dbwrite->params->adapter->cached = false;
+$config->dbwrite->config->persistent = false;
 
 // 
 // Add namespace for tasks:
