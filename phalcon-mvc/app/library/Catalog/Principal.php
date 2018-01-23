@@ -210,4 +210,39 @@ class Principal
                 }
         }
 
+        /**
+         * Assign user principal attributes.
+         * 
+         * <code>
+         * // 
+         * // Set uid, sn and gn if not yet set.
+         * // 
+         * $principal->assign(array(
+         *      'principal' => 'olle@example.com',
+         *      'name'      => 'Olle Svensson'
+         * ));
+         * </code>
+         * 
+         * @param array $attrs The principal attributes.
+         */
+        public function assign($attrs)
+        {
+                foreach ($attrs as $attr => $val) {
+                        if (property_exists($this, $attr)) {
+                                $this->$attr = $val;
+                        }
+                }
+
+                if (isset($this->principal) && !isset($this->uid)) {
+                        $parts = explode("@", $this->principal);
+                        $this->uid = $parts[0];
+                }
+
+                if (isset($this->name) && !isset($this->gn) && !isset($this->sn)) {
+                        $parts = explode(" ", $this->name);
+                        $this->gn = $parts[0];
+                        $this->sn = $parts[1];
+                }
+        }
+
 }

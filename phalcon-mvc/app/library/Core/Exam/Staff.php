@@ -295,6 +295,13 @@ class Staff extends Component
                         Principal::ATTR_MAIL
                 ));
 
+                if (!isset($principal)) {
+                        $principal = new Principal();
+                        $principal->assign(array(
+                                'principal' => $this->_exam->creator
+                        ));
+                }
+
                 $this->setRole(Roles::CREATOR, $principal, $this->_exam->creator);
         }
 
