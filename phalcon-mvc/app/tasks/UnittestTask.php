@@ -257,6 +257,7 @@ class UnittestTask extends MainTask implements TaskInterface
                                 'result'      => array(
                                         'answer_id'    => 0,
                                         'corrector_id' => 0,
+                                        'question_id'  => 0,
                                         'score'        => 1.5
                                 ),
                                 'file'        => array(
@@ -298,7 +299,7 @@ class UnittestTask extends MainTask implements TaskInterface
                                         }
                                 }
                                 $class = sprintf("OpenExam\Models\%s", ucfirst($m));
-                                $model = new $class();
+                                $model = self::fetch($class, $a);
                                 $model->setDI($this->getDI());
                                 if (!$model->save($a)) {
                                         $this->flash->error(sprintf("Failed save model for %s", $model->getSource()));
@@ -338,6 +339,37 @@ class UnittestTask extends MainTask implements TaskInterface
                 } elseif ($options['verbose']) {
                         $this->flash->success("Wrote sample data to " . $this->_sample);
                 }
+        }
+
+        /**
+         * Fetch existing class or create new model.
+         * 
+         * @param string $class The model class.
+         * @param array $data The properties.
+         */
+        private static function fetch($class, $data)
+        {
+                $conditions = array();
+
+                foreach ($data as $key => $val) {
+                        if (strpos($key, '_') != false && $val == 0) {
+                                continue;
+                        } elseif (is_string($val)) {
+                                $conditions[] = sprintf("%s = '%s'", $key, $val);
+                        } elseif (is_float($val)) {
+                                $conditions[] = sprintf("%s = %f", $key, $val);
+                        } else {
+                                $conditions[] = sprintf("%s = %d", $key, $val);
+                        }
+                }
+
+                if (count($conditions) == 0) {
+                        $model = new $class();
+                } elseif (!($model = $class::findFirst(implode(" AND ", $conditions)))) {
+                        $model = new $class();
+                }
+
+                return $model;
         }
 
 }
