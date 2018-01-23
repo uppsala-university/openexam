@@ -77,6 +77,26 @@ class RenderWorker
          * The block infinite sleep value.
          */
         const BLOCK_INFINITE = -1;
+        /**
+         * Don't log anything.
+         */
+        const LEVEL_NONE = 0;
+        /**
+         * The notice log level.
+         */
+        const LEVEL_NOTICE = 1;
+        /**
+         * The error condition log level.
+         */
+        const LEVEL_ERROR = 1;
+        /**
+         * The info log level.
+         */
+        const LEVEL_INFO = 2;
+        /**
+         * The debug log level.
+         */
+        const LEVEL_DEBUG = 3;
 
         /**
          * The render service.
@@ -98,6 +118,11 @@ class RenderWorker
          * @var bool 
          */
         private $_done = false;
+        /**
+         * The log level.
+         * @var int 
+         */
+        private $_level = self::LEVEL_INFO;
 
         /**
          * Constructor.
@@ -109,6 +134,15 @@ class RenderWorker
                 $this->_logfile = $logfile;
 
                 $this->_sleep = $sleep;
+        }
+
+        /**
+         * Set log level.
+         * @param int $level The log level.
+         */
+        public function setLogLevel($level)
+        {
+                $this->_level = $level;
         }
 
         /**
@@ -148,13 +182,13 @@ class RenderWorker
                 $this->setupSignalHandler();
                 $this->setupErrorHandler();
 
-                $this->log("Starting");
+                $this->log(self::LEVEL_INFO, "Starting");
 
                 while (!$this->_done) {
                         $this->fetch();
                 }
 
-                $this->log("Finished");
+                $this->log(self::LEVEL_INFO, "Finished");
         }
 
         /**
@@ -167,7 +201,7 @@ class RenderWorker
                                 $this->sleep();
                         }
                 } catch (Exception $exception) {
-                        $this->log(sprintf("Failed fetch job (%s)", $exception->getMessage()));
+                        $this->log(self::LEVEL_ERROR, sprintf("Failed fetch job (%s)", $exception->getMessage()));
                 }
         }
 
@@ -205,7 +239,7 @@ class RenderWorker
                 }
 
                 try {
-                        $this->log(sprintf("Rendering job %d", $job->id));
+                        $this->log(self::LEVEL_INFO, sprintf("Rendering job %d", $job->id));
 
                         $job->stime = time();
                         $this->_service->save($job->file, array(array('page' => $job->url)));
@@ -214,7 +248,7 @@ class RenderWorker
                         $job->message = sprintf("Render time %d seconds", $job->etime - $job->stime);
                         $job->status = Render::STATUS_FINISH;
                 } catch (Exception $exception) {
-                        $this->log(sprintf("Failed render job %d (%s)", $job->id, $exception->getMessage()));
+                        $this->log(self::LEVEL_ERROR, sprintf("Failed render job %d (%s)", $job->id, $exception->getMessage()));
                         $job->message = $exception->getMessage();
                         $job->status = Render::STATUS_FAILED;
                 }
@@ -229,18 +263,18 @@ class RenderWorker
         private function check($job)
         {
                 if (!isset($job->file)) {
-                        $this->log(sprintf("Missing file property in job %d", $job->id));
+                        $this->log(self::LEVEL_NOTICE, sprintf("Missing file property in job %d", $job->id));
                         return false;
                 } else {
                         $dest = dirname($job->file);
                 }
 
                 if (!file_exists($dest)) {
-                        $this->log("The target directory $dest is missing");
+                        $this->log(self::LEVEL_NOTICE, "The target directory $dest is missing");
                         return false;
                 }
                 if (!is_writable($dest)) {
-                        $this->log("The target directory $dest is not writable");
+                        $this->log(self::LEVEL_NOTICE, "The target directory $dest is not writable");
                         return false;
                 }
 
@@ -252,7 +286,7 @@ class RenderWorker
          */
         private function sleep()
         {
-                $this->log("Sleeping: No queued jobs");
+                $this->log(self::LEVEL_DEBUG, "Sleeping: No queued jobs");
 
                 if ($this->_sleep == self::BLOCK_INFINITE) {
                         pcntl_sigwaitinfo(array(SIGTERM, SIGHUP));
@@ -260,16 +294,21 @@ class RenderWorker
                         sleep($this->_sleep);
                 }
 
-                $this->log("Wakeup: Polling for queued jobs...");
+                $this->log(self::LEVEL_DEBUG, "Wakeup: Polling for queued jobs...");
         }
 
         /**
          * Write log message.
+         * 
+         * @param int $level The log level.
          * @param string $message The log message.
          */
-        private function log($message)
+        private function log($level, $message)
         {
                 if (empty($this->_logfile)) {
+                        return;
+                }
+                if ($level > $this->_level) {
                         return;
                 }
 
@@ -302,7 +341,7 @@ class RenderWorker
                         if ($this->_sleep == self::BLOCK_INFINITE) {
                                 $this->_sleep = self::BLOCK_INTERVAL;
                         }
-                        $this->log("The pcntl extension is missing. No signal handler installed.");
+                        $this->log(self::LEVEL_INFO, "The pcntl extension is missing. No signal handler installed.");
                         return;
                 }
 
@@ -310,30 +349,30 @@ class RenderWorker
                 // Install signal handler for SIGTERM:
                 // 
                 if (pcntl_signal(SIGTERM, function ($signal) {
-                            $this->log("Got terminate signal $signal. Setting exit flag for loop.");
+                            $this->log(self::LEVEL_DEBUG, "Got terminate signal $signal. Setting exit flag for loop.");
                             $this->_done = true;
                     })) {
-                        $this->log("Installed signal handler (SIGTERM)");
+                        $this->log(self::LEVEL_DEBUG, "Installed signal handler (SIGTERM)");
                 } else {
-                        $this->log("Failed call pcntl_signal(...)");
+                        $this->log(self::LEVEL_ERROR, "Failed call pcntl_signal(...)");
                 }
 
                 // 
                 // Install signal handler for SIGHUP:
                 // 
                 if (pcntl_signal(SIGHUP, function ($signal) {
-                            $this->log("Got wakeup signal $signal.");
+                            $this->log(self::LEVEL_DEBUG, "Got wakeup signal $signal.");
                     })) {
-                        $this->log("Installed signal handler (SIGHUP)");
+                        $this->log(self::LEVEL_DEBUG, "Installed signal handler (SIGHUP)");
                 } else {
-                        $this->log("Failed call pcntl_signal(...)");
+                        $this->log(self::LEVEL_ERROR, "Failed call pcntl_signal(...)");
                 }
 
                 // 
                 // Process pending signals:
                 // 
                 if (!pcntl_signal_dispatch()) {
-                        $this->log("Failed call pcntl_signal_dispatch()");
+                        $this->log(self::LEVEL_ERROR, "Failed call pcntl_signal_dispatch()");
                 }
         }
 
@@ -343,7 +382,7 @@ class RenderWorker
         private function setupErrorHandler()
         {
                 set_error_handler(function($code, $message, $file, $line) {
-                        $this->log(sprintf("Trapped %s (%d) on %s:%d", $message, $code, $file, $line));
+                        $this->log(self::LEVEL_ERROR, sprintf("Trapped %s (%d) on %s:%d", $message, $code, $file, $line));
                         throw new ErrorException($message, 500, $code, $file, $line);
                 });
         }

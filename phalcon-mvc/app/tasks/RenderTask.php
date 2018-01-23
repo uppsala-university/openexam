@@ -56,7 +56,7 @@ class RenderTask extends MainTask implements TaskInterface
                         'action'   => '--render',
                         'usage'    => array(
                                 '--pdf|--image --output=file --page=url',
-                                '--worker [--output=file] [--pidfile=path] [--sleep=sec]',
+                                '--worker [--output=file] [--pidfile=path] [--sleep=sec] [--level=num]',
                                 '--queue --page=url --exam=id [--poll]'
                         ),
                         'options'  => array(
@@ -70,6 +70,7 @@ class RenderTask extends MainTask implements TaskInterface
                                 '--worker'       => 'Run render queue worker process.',
                                 '--pidfile=path' => 'Write PID to path (for --worker only).',
                                 '--sleep=sec'    => 'Sleep interval between polling.',
+                                '--level=num'    => 'Set log level (0 => none, 1 => info, 2 => notice, 3 => debug)',
                                 '--queue'        => 'Add render queue job.',
                                 '--exam=id'      => 'Use exam (for --queue only).',
                                 '--poll'         => 'Poll for completion (for --queue only).',
@@ -85,7 +86,11 @@ class RenderTask extends MainTask implements TaskInterface
                                 '--svg'       => 'Same as --type=svg',
                                 '--command'   => 'Same as --method=command',
                                 '--extension' => 'Same as --method=extension',
-                                '--service'   => 'Same as --method=service'
+                                '--service'   => 'Same as --method=service',
+                                '--quiet'     => 'Same as --level=0',
+                                '--notice'    => 'Same as --level=1',
+                                '--info'      => 'Same as --level=2',
+                                '--debug'     => 'Same as --level=3',
                         ),
                         'examples' => array(
                                 array(
@@ -105,8 +110,8 @@ class RenderTask extends MainTask implements TaskInterface
                                         'command' => '--worker --output=file.log'
                                 ),
                                 array(
-                                        'descr'   => 'Log worker events to stderr',
-                                        'command' => '--worker --output=php://stderr'
+                                        'descr'   => 'Log notice level worker events to stderr',
+                                        'command' => '--worker --output=php://stderr --notice'
                                 ),
                                 array(
                                         'descr'   => 'Add job to render queue',
@@ -186,6 +191,9 @@ class RenderTask extends MainTask implements TaskInterface
                 $worker = new RenderWorker($service, $logfile);
                 if ($this->_options['sleep']) {
                         $worker->setInterval($this->_options['sleep']);
+                }
+                if ($this->_options['level']) {
+                        $worker->setLogLevel($this->_options['level']);
                 }
                 if ($this->_options['pidfile']) {
                         $worker->writePid($this->_options['pidfile']);
@@ -274,12 +282,27 @@ class RenderTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->_options = array('verbose' => false, 'force' => false, 'dry-run' => false, 'page' => array(), 'globals' => array(), 'command' => true, 'sleep' => 5);
+                $this->_options = array(
+                        'verbose' => false,
+                        'force'   => false,
+                        'dry-run' => false,
+                        'page'    => array(),
+                        'globals' => array(),
+                        'command' => true,
+                        'level'   => 2,
+                        'sleep'   => 5
+                );
 
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'force', 'dry-run', 'type', 'page', 'output', 'globals', 'png', 'jpg', 'jpeg', 'bmp', 'svg', 'method', 'extension', 'command', 'service', 'worker', 'queue', 'exam', 'poll', 'sleep', 'pidfile');
+                $options = array(
+                        'verbose', 'force', 'dry-run', 'type', 'page', 'output',
+                        'globals', 'png', 'jpg', 'jpeg', 'bmp', 'svg',
+                        'method', 'extension', 'command', 'service', 'worker',
+                        'queue', 'exam', 'poll', 'sleep', 'level', 'pidfile',
+                        'none', 'notice', 'info', 'debug'
+                );
                 $current = $action;
 
                 // 
@@ -327,6 +350,19 @@ class RenderTask extends MainTask implements TaskInterface
                 if ($this->_options['service']) {
                         $this->_options['command'] = false;
                         $this->_options['extension'] = false;
+                }
+
+                if ($this->_options['none']) {
+                        $this->_options['level'] = 0;
+                }
+                if ($this->_options['notice']) {
+                        $this->_options['level'] = 1;
+                }
+                if ($this->_options['info']) {
+                        $this->_options['level'] = 2;
+                }
+                if ($this->_options['debug']) {
+                        $this->_options['level'] = 3;
                 }
         }
 
