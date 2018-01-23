@@ -30,6 +30,8 @@ namespace OpenExam\Models;
 use OpenExam\Library\Model\Behavior\Transform\Remove;
 use OpenExam\Library\Model\Behavior\Transform\Trim;
 use OpenExam\Library\Model\Guard\Answer as AnswerModelGuard;
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * The file model.
