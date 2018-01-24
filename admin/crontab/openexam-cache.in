@@ -1,0 +1,47 @@
+#!/bin/sh
+# 
+# Fill web application cache with required data. The task should be run as web server
+# to have correct permission set on generated files.
+#
+# Author: Anders Lövgren
+# Date:   2018-01-24
+
+# This script directory:
+cwd="$(dirname $(realpath $0))"
+
+# The phalcon directory:
+root="$(realpath $cwd/../../phalcon-mvc)"
+
+# Lock file for cron job:
+lock="$root/cache/cache.lock"
+
+# Web server user:
+user="apache"
+
+# Script to run:
+script="$root/script/openexam.php"
+
+# Extra options:
+#options="--verbose --force"
+
+if ! [ -e $script ]; then
+  echo "$0: missing script $script"
+  exit 1
+fi
+if ! [ -d $root ]; then
+  echo "$0: missing application directory $root"
+  exit 1
+fi
+if [ -e $lock ]; then
+  echo "$0: lock file exist (previous job not finished?)"
+  exit 1
+fi
+
+# Create lock file:
+touch $lock
+
+# Fill web application cache for next 3 days:
+/usr/bin/sudo -u $user /usr/bin/php $script --cache --fill --days=3 $*
+
+# Cleanup lock file:
+rm -f $lock
