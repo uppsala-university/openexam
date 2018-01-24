@@ -27,6 +27,8 @@
 
 namespace OpenExam\Console\Tasks;
 
+use OpenExam\Models\Exam;
+
 /**
  * Cache maintenance task.
  * 
@@ -58,12 +60,15 @@ class CacheTask extends MainTask implements TaskInterface
                         'usage'    => array(
                                 '--clean [--key=name]',
                                 '--query [--key=name]',
+                                '--fill [--days=num]',
                                 '--info'
                         ),
                         'options'  => array(
                                 '--clean'    => 'Cleanup cache.',
                                 '--query'    => 'Query cache entries.',
                                 '--info'     => 'Show cache information.',
+                                '--fill'     => 'Fill cache with exam data',
+                                '--days=num' => 'Fill cache for num days',
                                 '--key=name' => 'Match cache key name (e.g. acl, ldap or roles).',
                                 '--count'    => 'Count matching keys',
                                 '--verbose'  => 'Be more verbose.'
@@ -80,6 +85,10 @@ class CacheTask extends MainTask implements TaskInterface
                                 array(
                                         'descr'   => 'Query cache roles',
                                         'command' => '--query --key=roles'
+                                ),
+                                array(
+                                        'descr'   => 'Fill cache with 5 days of exam data',
+                                        'command' => '--fill --days=5'
                                 )
                         )
                 );
@@ -178,6 +187,70 @@ class CacheTask extends MainTask implements TaskInterface
         }
 
         /**
+         * Fill cache with exam data.
+         * @param array $params Task action parameters.
+         */
+        public function fillAction($params = array())
+        {
+                $this->setOptions($params, 'fill');
+
+                $this->_options['curr'] = strftime(
+                    "%Y-%m-%d %H:%M:%S", time()
+                );
+                $this->_options['time'] = strftime(
+                    "%Y-%m-%d %H:%M:%S", time() + 24 * 3600 * intval($this->_options['days'])
+                );
+
+                if (!($exams = Exam::find(array(
+                            'conditions' => 'endtime BETWEEN :curr: AND :time:',
+                            'bind'       => array(
+                                    'curr' => $this->_options['curr'],
+                                    'time' => $this->_options['time']
+                            )
+                    )))) {
+                        throw new Exception("Failed fetch upcoming exams");
+                }
+
+                foreach ($exams as $exam) {
+                        $this->fillCache($exam);
+                }
+        }
+
+        /**
+         * Fill cache data for exam.
+         * @param Exam $exam The exam model.
+         */
+        private function fillCache($exam)
+        {
+                if ($this->_options['verbose']) {
+                        $this->flash->success(sprintf("Filling application cache for exam %d", $exam->id));
+                }
+                if (!extension_loaded('curl')) {
+                        throw new Exception("The curl extension is not loaded");
+                }
+
+                try {
+                        // 
+                        // Can't fill web cache from CLI:
+                        // 
+                        $host = "http://127.0.0.1";
+                        $path = $this->url->get(sprintf("/utility/cache/fill/%d", $exam->id));
+
+                        if (!($curl = curl_init(sprintf("%s%s", $host, $path)))) {
+                                throw new Exception("Failed initialize cURL");
+                        }
+
+                        if (!(curl_exec($curl))) {
+                                throw new Exception(curl_error($curl));
+                        }
+                } finally {
+                        if (isset($curl)) {
+                                curl_close($curl);
+                        }
+                }
+        }
+
+        /**
          * Set options from task action parameters.
          * @param array $params The task action parameters.
          * @param string $action The calling action.
@@ -187,12 +260,12 @@ class CacheTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->_options = array('verbose' => false);
+                $this->_options = array('verbose' => false, 'days' => 3);
 
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'clean', 'query', 'info', 'prefix', 'key', 'count');
+                $options = array('verbose', 'clean', 'query', 'info', 'fill', 'days', 'prefix', 'key', 'count');
                 $current = $action;
 
                 // 
