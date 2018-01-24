@@ -23,7 +23,7 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=5.6.0",
         "bmc/uup-auth": ">=2.3.17",
         "bmc/uup-mail": ">=1.0.4",
         "phalcon/incubator": "^3.2",
