@@ -63,12 +63,14 @@ $(document).ready(function () {
     // Remove first row if first column contains 'user' or personal number:
     // 
     var row = $("#table-import-students > tbody > tr:first");
-    switch (row.find("td:first").text()) {
-        case 'user':
-        case 'persnr':
-        case 'pnr':
-            row.remove();
-            break;
-    }
+    $("#table-import-students > tbody > tr:first > td").each(function (column, td) {
+        switch ($(td).text()) {
+            case 'user':
+            case 'persnr':
+            case 'pnr':
+                row.remove();
+                break;
+        }
+    });
 
 });
