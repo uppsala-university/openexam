@@ -27,6 +27,7 @@
 
 namespace OpenExam\Library\Database\Cache;
 
+use OpenExam\Library\Core\Cache\Backend\Xcache as XcacheBackend;
 use OpenExam\Library\Database\Exception;
 use Phalcon\Cache\Backend\Aerospike as AerospikeBackend;
 use Phalcon\Cache\Backend\Apc as ApcBackend;
