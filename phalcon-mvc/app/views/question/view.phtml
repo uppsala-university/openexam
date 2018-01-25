@@ -155,7 +155,7 @@ use Phalcon\Tag;
                                         <fieldset>
                                             <div class="q-part-ans-area col-sm-7 col-sm-offset-1" <?= !count($qPartData['resources']) ? 'style="width:100%"' : '' ?>>
                                                 <div class="q-part-text" style="padding-bottom:10px">
-                                                    <label><?= $qPartData['q_text'] ?></label>
+                                                    <div><?= $qPartData['q_text'] ?></div>
                                                 </div>
 
                                                 <?php if ($viewMode == 'all'): ?>
@@ -221,10 +221,10 @@ use Phalcon\Tag;
                                                                         <?php $i = 0; ?>
                                                                         <?php foreach ($qPartData['ans_area']['data'] as $qPartOpt => $ans): ?>
                                                                                 <div class="checkbox">
-                                                                                    <label>
+                                                                                    <div>
                                                                                         <input <?= $type == 'radio' ? 'name="' . $qObj->slot . '-' . $qPart . '"' : '' ?> type="<?= $type ?>" value="<?= htmlspecialchars($qPartOpt) ?>" class="changeable" <?= isset($answerData[$qPart]['ans']) && in_array($qPartOpt, $answerData[$qPart]['ans']) ? 'checked="checked"' : '' ?>>
                                                                                         <?= $qPartOpt ?>
-                                                                                    </label>
+                                                                                    </div>
                                                                                 </div>
                                                                                 <?php $i++; ?>
                                                                         <?php endforeach; ?>
@@ -277,10 +277,10 @@ use Phalcon\Tag;
                                 <div class="row q-actions">
                                     <?php if ($viewMode == 'single'): ?>
                                             <div style="padding-bottom:25px">
-                                                <label style="font-weight:normal">
+                                                <div style="font-weight:normal">
                                                     <input type="checkbox" id="highlight_q" value="1" class="changeable" <?= $answerData['highlight-q'] == 'yes' ? 'checked' : '' ?> <?= $testMode ? 'disabled' : '' ?>>
                                                     <span style="font-size:14px">I would like to review my answer for this question later on, so mark it.</span>
-                                                </label>
+                                                </div>
                                             </div>
                                             <?php if ($prevQuestId && $prevQuestId != $qObj->id): ?>
                                                     <a class="sync-answer" href="#" hlink="<?= $this->url->get('exam/' . $exam->id . '/question/' . ($prevQuestId)) ?>">
