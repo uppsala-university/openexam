@@ -154,7 +154,7 @@ class Role extends ModelBase
          */
         public function afterDelete()
         {
-                $key = sprintf("roles-%s", $this->user);
+                $key = sprintf("roles-acquired-%s", $this->user);
 
                 if (($cache = $this->getDI()->getCache()) != false) {
                         if ($cache->exists($key)) {
