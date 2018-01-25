@@ -85,10 +85,11 @@ return array(
                         ));
                         $service->setAttributeMap(array(
                                 'person' => array(
-                                        Principal::ATTR_PN    => 'userPrincipalName',
-                                        Principal::ATTR_UID   => 'sAMAccountName',
-                                        Principal::ATTR_NAME  => 'displayName',
-                                        Principal::ATTR_AFFIL => 'memberOf'
+                                        Principal::ATTR_PN      => 'userPrincipalName',
+                                        Principal::ATTR_UID     => 'sAMAccountName',
+                                        Principal::ATTR_NAME    => 'displayName',
+                                        Principal::ATTR_AFFIL   => 'memberOf',
+                                        Principal::ATTR_EXPIRES => 'accountExpires'
                                 )
                         ));
                         // 

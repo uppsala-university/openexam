@@ -73,6 +73,10 @@ class Principal
          */
         const ATTR_PNR = 'pnr';
         /**
+         * The expires date attribute.
+         */
+        const ATTR_EXPIRES = 'expires';
+        /**
          * All attributes.
          */
         const ATTR_ALL = '*';
@@ -126,6 +130,11 @@ class Principal
          * @var string 
          */
         public $pnr;
+        /**
+         * The expires date.
+         * @var string 
+         */
+        public $expires;
         /**
          * Email addresses.
          * @var array 
