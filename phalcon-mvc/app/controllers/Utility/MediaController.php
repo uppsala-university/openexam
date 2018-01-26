@@ -192,7 +192,7 @@ class MediaController extends GuiController
                 // Check route access:
                 // 
                 $this->checkAccess();
-                
+
                 // 
                 // Find media type of this file to set file upload directory:
                 // 
@@ -251,12 +251,12 @@ class MediaController extends GuiController
                 // Check route access:
                 // 
                 $this->checkAccess();
-                
+
                 // 
                 // Prevent disclose of system files:
                 // 
-                if (strpos($file, '/') != false ||
-                    strpos($type, '/') != false) {
+                if (strpos($file, '/') !== false ||
+                    strpos($type, '/') !== false) {
                         throw new Exception('Invalid character in filename', Error::NOT_ACCEPTABLE);
                 }
 
