@@ -130,10 +130,13 @@ class SessionAdapter extends AdapterBase implements AdapterInterface
                 }
 
                 // 
-                // Create an empty session model:
+                // Create an unpersisted session model:
                 // 
-                $session = new SessionModel();
-                $session->session_id = $sessionId;
+                $session = new SessionModel(array(
+                        'session_id' => $sessionId,
+                        'data'       => ''
+                    )
+                );
 
                 // 
                 // Keep object reference for subsequent use:
