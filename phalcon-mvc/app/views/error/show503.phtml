@@ -39,8 +39,14 @@
 </p>
 
 <div class="info">
-    <p>The web server is currently unable to handle the HTTP request due to a temporary overloading or maintenance of the server.</p>
-    <p>You can click on the <u>retry button</u> below to send the request again. Click on the <u>report button</u> to send an email to the system manager.</p>
+    <p>
+        The web server is currently unable to handle the HTTP request due to a temporary overloading or maintenance of the server.
+    </p>
+    <p>
+        You can click on the <u>retry button</u> below to send the request again. 
+        Click on the <u>report button</u> to send an email to the system manager.
+        In case of <u>emergency</u>, please call <?= $contact['phone'] ?> immediately.            
+    </p>
     <button class="btn btn-primary" value="retry"  onclick="document.location.href = ''">Retry</button>
     <button class="btn btn-warning" value="report" onclick="return report_exception()">Report</button>
     <span id="notice" style="display: block"></span>

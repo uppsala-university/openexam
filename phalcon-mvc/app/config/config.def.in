@@ -276,8 +276,9 @@ return array(
          * Contact information.
          */
         'contact'     => array(
-                'name' => 'System Manager',
-                'addr' => 'openexam@example.com'
+                'name'  => 'System Manager',
+                'addr'  => 'openexam@example.com',
+                'phone' => '+46 123 4567'
         ),
         /**
          * Locale settings.
