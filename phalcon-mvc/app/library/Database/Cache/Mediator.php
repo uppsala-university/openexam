@@ -40,6 +40,7 @@ use OpenExam\Library\Database\Cache\Result\Serializable as SerializableResultSet
 use OpenExam\Library\Database\Exception as DatabaseException;
 use Phalcon\Cache\BackendInterface;
 use Phalcon\Db as PhalconDb;
+use Phalcon\Db\AdapterInterface;
 use Phalcon\Db\ResultInterface;
 
 /**
@@ -53,9 +54,13 @@ use Phalcon\Db\ResultInterface;
  * adapter. In that case the number of database connections are keept to a
  * minimum.
  * 
+ * This class must be declared to implement the database adapter interface as
+ * it gets passed as a parameter to some model methods whos method signature
+ * requires this.
+ * 
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Mediator extends Proxy
+class Mediator extends Proxy implements AdapterInterface
 {
 
         /**
