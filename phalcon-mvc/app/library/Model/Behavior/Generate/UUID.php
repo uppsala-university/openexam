@@ -29,6 +29,7 @@ namespace OpenExam\Library\Model\Behavior\Generate;
 
 use OpenExam\Library\Model\Behavior\ModelBehavior;
 use Phalcon\Mvc\ModelInterface;
+use Phalcon\Security\Random;
 
 /**
  * Universally unique identifier (UUID) generator.
@@ -49,23 +50,17 @@ class UUID extends ModelBehavior
                         $this->trustedContextCall(function($caller) use($model, $options) {
 
                                 $name = $options['field'];
+                                $rand = new Random();
 
                                 if ($options['force']) {
-                                        $model->$name = self::generate();
+                                        $model->$name = $rand->uuid();
                                 } elseif (!isset($model->$name)) {
-                                        $model->$name = self::generate();
+                                        $model->$name = $rand->uuid();
                                 }
 
                                 return true;
                         }, $model->getDI());
                 }
-        }
-
-        private static function generate()
-        {
-                $hash = md5(uniqid("", true));
-                $uuid = sprintf("%s-%s-%s-%s-%s", substr($hash, 0, 8), substr($hash, 9, 4), substr($hash, 13, 4), substr($hash, 18, 4), substr($hash, 21));
-                return $uuid;
         }
 
 }
