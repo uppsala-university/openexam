@@ -10,6 +10,7 @@ cwd="$(dirname $(realpath $0))"
 
 # The phalcon directory:
 root="$(realpath $cwd/../../phalcon-mvc)"
+proj="$(dirname $root)"
 
 # Script to run:
 script="$root/script/openexam.php"
@@ -27,4 +28,4 @@ if [ $UID == 0 ]; then
     echo "$0: running this script as root is discourage (might corrupt file permissions)"
 fi
 
-cd $root && exec /usr/bin/php $script $*
+cd $proj && exec php $script $*
