@@ -78,8 +78,8 @@ class Database implements Backend
                 }
 
                 return User::count(array(
-                            'condition' => 'principal = :principal:',
-                            'bind'      => array(
+                            'conditions' => 'principal = :principal:',
+                            'bind'       => array(
                                     'principal' => $principal
                             )
                     )) > 0;
@@ -111,8 +111,8 @@ class Database implements Backend
                 }
 
                 if (($user = User::find(array(
-                            'condition' => 'principal = :principal:',
-                            'bind'      => array(
+                            'conditions' => 'principal = :principal:',
+                            'bind'       => array(
                                     'principal' => $principal
                             )
                     ))) != null) {
