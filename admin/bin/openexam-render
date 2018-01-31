@@ -15,7 +15,7 @@ logdir="/var/log/openexam"
 script="$(which openexam >& /dev/null)"
 
 # Standard options:
-options="--render --worker --output=$logdir/render-worker-$$.log"
+options="--render --worker --output=$logdir/render-worker.log"
 
 # Extra options:
 #options="$options --verbose --force"
