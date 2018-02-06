@@ -952,6 +952,15 @@ class SimulateTask extends MainTask implements TaskInterface
                 curl_setopt($this->curl, CURLOPT_LOW_SPEED_TIME, 60);
 
                 // 
+                // Strip private data members:
+                // 
+                foreach (array_keys($params['data']) as $key) {
+                        if ($key[0] == '_') {
+                                unset($params['data'][$key]);
+                        }
+                }
+
+                // 
                 // Set AJAX request options:
                 // 
                 curl_setopt($this->curl, CURLOPT_URL, sprintf("%s/%s/%s", $this->_options['url'], $params['role'], $params['path']));
