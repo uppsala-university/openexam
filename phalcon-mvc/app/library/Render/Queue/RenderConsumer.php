@@ -27,6 +27,7 @@
 
 namespace OpenExam\Library\Render\Queue;
 
+use OpenExam\Library\Render\Exception;
 use OpenExam\Models\Render;
 use Phalcon\Mvc\User\Component;
 
@@ -61,9 +62,14 @@ class RenderConsumer extends Component
         public function getNext()
         {
                 if (($job = Render::findFirst("status = 'queued'"))) {
+                        $job->setReadConnectionService($job->getWriteConnectionService());
+                        
                         $job->status = Render::STATUS_RENDER;
                         $job->file = sprintf("%s/%s", $this->config->application->cacheDir, $job->path);
-                        $job->save();
+
+                        if (!$job->save()) {
+                                throw new Exception($job->getMessages()[0]);
+                        }
 
                         return $job;
                 }
