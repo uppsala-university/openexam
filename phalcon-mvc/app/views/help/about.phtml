@@ -1,0 +1,103 @@
+<?php
+/*
+ * Copyright (C) 2018 The OpenExam Project
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+/*
+ * Created: 2018-01-28 00:07:45
+ * File:    about.phtml
+ * 
+ * Author:  Anders Lövgren (QNET)
+ */
+
+?>
+
+<div class="tabs">
+    <ul>
+        <li><a href="#tabs-0">General</a></li>
+        <li><a href="#tabs-1">Authors</a></li>
+        <li><a href="#tabs-2">License</a></li>
+        <li><a href="#tabs-3">Project</a></li>
+    </ul>
+
+    <div id="tabs-0">
+        <p><?= $composer->description ?></p>
+        <p>OpenExam Online v<?= $composer->version ?></p>
+    </div>
+
+    <div id="tabs-1">
+        <?php foreach ($composer->authors as $author): ?>
+                <p>
+                    <button class="btn btn-success" href="mailto:<?= $author->email ?>"><?= $author->name ?></button> - <?= $author->company ?> (<?= $author->role ?>) 
+                </p>
+        <?php endforeach; ?>
+    </div>
+
+    <div id="tabs-2">
+        <p>Released under <?= $composer->license ?> license.</p>
+        <button class="btn btn-default" id="project-license-btn">Details</button>
+    </div>
+
+    <div id="tabs-3">
+        <p>
+            More information is available on the <a href="<?= $composer->homepage ?>">project homepage</a>.
+            Source code can be downloaded from <a href="<?= $composer->projpage ?>">GitHub</a>.
+        </p>
+        <p>
+            <a href="<?= $composer->homepage ?>"><?= $composer->homepage ?></a><br>
+            <a href="<?= $composer->projpage ?>"><?= $composer->projpage ?></a>
+        </p>
+    </div>
+</div>
+
+<div class="oe-dialog-buttons">
+    <hr>
+    <center>
+        <span style="min-width: 10em" class="btn btn-success" id="about-close">
+            <i class="fa fa-close"></i>
+            <span>Close</span>
+        </span>
+    </center>		
+</div>   
+
+<script>
+        // 
+        // Select first tab:
+        // 
+        $(".tabs").tabs({
+            active: 0
+        });
+
+        // 
+        // Load project license file into new dialog:
+        // 
+        $(document).on('click', '#project-license-btn', function () {
+            $.ajax({
+                type: "POST",
+                url: baseURL + 'help/license',
+                success: function (content) {
+                    showDialogWindow("#project-license", content);
+                },
+                error: function (error) {
+                    showDialogWindow("#project-license", error.responseText);
+                }
+            });
+        });
+
+</script>
+
+<div id="project-license" style="display: none" title="Project license"></div>

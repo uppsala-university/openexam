@@ -246,7 +246,7 @@ if ($theme == 'high-contrast') {
                                             <?= Tag::linkTo(array('help/manual', 'Show All...', 'target' => '_blank', 'title' => 'Open page with manuals in other languages and formats in new window.')) ?>
                                         </li>
                                         <li>
-                                            <?= Tag::linkTo('about', 'About') ?>
+                                            <a href="#" id="help-about">About</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -301,3 +301,6 @@ if ($theme == 'high-contrast') {
         <div class="sidfot vcard" style="width: auto;"> &copy; 2010-<?= date('Y') ?> <a class="url fn org" href="http://www.uu.se/">Uppsala University</a> <a class="url fn org" href="http://www.bmc.uu.se/">BMC</a> </div>
     </div>
 </div>
+
+<!-- The about dialog -->
+<div id="help-about-dialog" style="display: none" title="About OpenExam Online"></div>

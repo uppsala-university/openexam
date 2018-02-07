@@ -1,7 +1,6 @@
 <?php
-
 /*
- * Copyright (C) 2014-2018 The OpenExam Project
+ * Copyright (C) 2018 The OpenExam Project
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,36 +17,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
-// File:    IndexController.php
-// Created: 2014-08-26 09:18:12
-// 
-// Author:  Ahsan Shahzad (MedfarmDoIT)
-// Author:  Anders Lövgren (QNET)
-// 
-
-namespace OpenExam\Controllers\Gui;
-
-use OpenExam\Controllers\GuiController;
-use Phalcon\Mvc\View;
-
-/**
- * The index controller.
- *
- * @author Ahsan Shahzad (MedfarmDoIT)
+/*
+ * Created: 2018-02-07 18:06:48
+ * File:    license.phtml
+ * 
+ * Author:  Anders Lövgren (QNET)
  */
-class IndexController extends GuiController
-{
 
-        public function initialize()
-        {
-                parent::initialize();
-        }
+?>
 
-        public function indexAction()
-        {
-                $this->checkAccess();
-                $this->view->disableLevel(View::LEVEL_BEFORE_TEMPLATE);
-        }
-
-}
+<pre style="max-height: 300px">
+    <?= $content ?>
+</pre>

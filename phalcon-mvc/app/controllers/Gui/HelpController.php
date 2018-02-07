@@ -102,6 +102,28 @@ class HelpController extends GuiController
         }
 
         /**
+         * Display about box.
+         */
+        public function aboutAction()
+        {
+                $filename = sprintf("%s/composer.json", PROJ_DIR);
+                $composer = json_decode(file_get_contents($filename));
+
+                $this->view->setVar('composer', $composer);
+        }
+
+        /**
+         * Display license box.
+         */
+        public function licenseAction()
+        {
+                $filename = sprintf("%s/LICENSE", PROJ_DIR);
+                $content = file_get_contents($filename);
+                
+                $this->view->setVar('content', $content);
+        }
+
+        /**
          * Handle manual request.
          * 
          * Deliver manual content or (if manual content is missing), provide

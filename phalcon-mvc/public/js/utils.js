@@ -384,8 +384,6 @@ $(document).ready(function () {
     // Handle high contrast theme toggle on/off:
     // 
     $(document).on('click', '#theme-high-contrast', function () {
-        console.log($(this));
-
         if ($(this).parent().hasClass("active")) {
             setHighContrast(false);
             $(this).parent().removeClass("active");
@@ -395,6 +393,26 @@ $(document).ready(function () {
         }
 
         return false;
+    });
+
+    // 
+    // Handle show about dialog:
+    // 
+    $(document).on('click', '#help-about', function () {
+        $.ajax({
+            type: "POST",
+            url: baseURL + 'help/about',
+            success: function (content) {
+                showDialogWindow("#help-about-dialog", content);
+            },
+            error: function (error) {
+                showDialogWindow("#help-about-dialog", error.responseText);
+            }
+        });
+    });
+
+    $(document).on('click', '#about-close', function () {
+        closeDialogWindow('#help-about-dialog');
     });
 
     // 
