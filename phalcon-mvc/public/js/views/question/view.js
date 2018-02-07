@@ -372,11 +372,11 @@ $(function () {
         // 
         // Check if already attached:
         // 
-//        for (var i in CKEDITOR.instances) {
-//            if (CKEDITOR.instances[i].name === element.id) {
-//                return false;
-//            }
-//        }
+        for (var i in CKEDITOR.instances) {
+            if (CKEDITOR.instances[i].name === element.id) {
+                return false;
+            }
+        }
 
         var limit = element.getAttribute('word-count-limit');
         if (limit === "") {
