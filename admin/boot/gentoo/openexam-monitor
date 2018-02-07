@@ -28,7 +28,7 @@ start() {
 }
 
 stop() {
-        ebegin "Starting OpenExam Performance Monitor"
+        ebegin "Stopping OpenExam Performance Monitor"
         ${command} --stop >& /dev/null
         eend $?
 }

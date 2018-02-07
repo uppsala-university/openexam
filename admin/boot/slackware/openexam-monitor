@@ -13,6 +13,7 @@ script="/usr/local/bin/openexam-monitor"
 
 function start_perf_monitor()
 {
+    echo "Starting openexam-monitor"
     $script --start
 }
 

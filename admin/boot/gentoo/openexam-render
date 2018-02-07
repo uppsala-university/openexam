@@ -31,7 +31,7 @@ start() {
 }
 
 stop() {
-        ebegin "Starting OpenExam Render Worker"
+        ebegin "Stopping OpenExam Render Worker"
         ${command} --stop >& /dev/null
         eend $?
 }

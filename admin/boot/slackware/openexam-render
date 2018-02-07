@@ -13,6 +13,7 @@ script="/usr/local/bin/openexam-render"
 
 function start_render_worker()
 {
+    echo "Starting openexam-render"
     $script --start
 }
 
