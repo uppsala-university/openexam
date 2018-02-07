@@ -31,6 +31,7 @@ use ErrorException;
 use Exception;
 use OpenExam\Library\Render\Renderer;
 use OpenExam\Models\Render;
+use Phalcon\Mvc\User\Component;
 
 /**
  * The render worker.
@@ -58,7 +59,7 @@ use OpenExam\Models\Render;
  * 
  * @author Anders Lövgren (QNET)
  */
-class RenderWorker
+class RenderWorker extends Component
 {
 
         /**
@@ -189,7 +190,9 @@ class RenderWorker
                 $this->log(self::LEVEL_INFO, "Starting");
 
                 while (!$this->_done) {
-                        $this->fetch();
+                        if (!$this->fetch()) {
+                                $this->reconnect();
+                        }
                 }
 
                 $this->log(self::LEVEL_INFO, "Finished");
@@ -206,14 +209,16 @@ class RenderWorker
                         }
                 } catch (Exception $exception) {
                         $this->log(self::LEVEL_ERROR, sprintf("Failed fetch job (%s)", $exception->getMessage()));
+                        $this->block();
+                        $failed = true;
                 }
+
+                return !isset($failed);
         }
 
         /**
          * Consume next job.
-         * 
-         * Return true if job was rendered or false if render queue is empty.
-         * @return boolean
+         * @return boolean 
          */
         private function consume()
         {
@@ -224,7 +229,11 @@ class RenderWorker
                         return false;
                 }
 
-                $job = $consumer->getNext();
+                if (!($job = $consumer->getNext())) {
+                        unset($consumer);
+                        return false;
+                }
+
                 $this->render($job);
                 $consumer->setResult($job);
 
@@ -286,19 +295,42 @@ class RenderWorker
         }
 
         /**
+         * Reconnect to database.
+         */
+        private function reconnect()
+        {
+                try {
+                        $this->log(self::LEVEL_DEBUG, "Database: connecting to database...");
+                        $this->dbread->connect();
+                        $this->dbwrite->connect();
+                        $this->dbaudit->connect();
+                        $this->log(self::LEVEL_DEBUG, "Database: successful connected to database");
+                } catch (Exception $exception) {
+                        $this->log(self::LEVEL_ERROR, sprintf("Failed reconnect to database (%s)", $exception->getMessage()));
+                }
+        }
+
+        /**
          * Go to sleep.
          */
         private function sleep()
         {
                 $this->log(self::LEVEL_DEBUG, "Sleeping: No queued jobs");
+                $this->block($this->_sleep);
+                $this->log(self::LEVEL_DEBUG, "Wakeup: Polling for queued jobs...");
+        }
 
-                if ($this->_sleep == self::BLOCK_INFINITE) {
+        /**
+         * Block execution for interval seconds.
+         * @param int $interval Sleep number of seconds.
+         */
+        private function block($interval = self::BLOCK_INTERVAL)
+        {
+                if ($interval == self::BLOCK_INFINITE) {
                         pcntl_sigwaitinfo(array(SIGTERM, SIGHUP));
                 } else {
-                        sleep($this->_sleep);
+                        sleep($interval);
                 }
-
-                $this->log(self::LEVEL_DEBUG, "Wakeup: Polling for queued jobs...");
         }
 
         /**

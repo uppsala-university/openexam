@@ -48,7 +48,7 @@ class RenderConsumer extends Component
          */
         public function hasNext()
         {
-                if (($count = Render::count("status = 'queued'"))) {
+                if ((Render::count("status = 'queued' OR queued > finish") > 0)) {
                         return true;
                 } else {
                         return false;
@@ -61,18 +61,18 @@ class RenderConsumer extends Component
          */
         public function getNext()
         {
-                if (($job = Render::findFirst("status = 'queued'"))) {
-                        $job->setReadConnectionService($job->getWriteConnectionService());
-                        
-                        $job->status = Render::STATUS_RENDER;
-                        $job->file = sprintf("%s/%s", $this->config->application->cacheDir, $job->path);
-
-                        if (!$job->save()) {
-                                throw new Exception($job->getMessages()[0]);
-                        }
-
-                        return $job;
+                if (!($job = Render::findFirst("status = 'queued' OR queued > finish"))) {
+                        return false;
                 }
+                
+                $job->status = Render::STATUS_RENDER;
+                $job->file = sprintf("%s/%s", $this->config->application->cacheDir, $job->path);
+
+                if (!$job->save()) {
+                        throw new Exception($job->getMessages()[0]);
+                }
+
+                return $job;
         }
 
         /**
@@ -87,7 +87,10 @@ class RenderConsumer extends Component
                 }
 
                 $job->finish = strftime("%Y-%m-%d %T");
-                $job->save();
+
+                if (!$job->save()) {
+                        throw new Exception($job->getMessages()[0]);
+                }
         }
 
 }
