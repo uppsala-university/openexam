@@ -144,15 +144,7 @@ class Cache extends Multiple
                                 $backends[] = new FileCacheBackend(
                                     $frontend['slow'], $options['file']
                                 );
-                        }
-
-                        if (!file_exists($options['file']['cacheDir'])) {
-                                if (!is_writable($options['file']['cacheDir'])) {
-                                        throw new CacheException(sprintf("The file cache directory %s is not writable", $options['file']['cacheDir']));
-                                }
-                                if (!mkdir($options['file']['cacheDir'], 0750, true)) {
-                                        throw new CacheException(sprintf("Failed create cache directory %s", $options['file']['cacheDir']));
-                                }
+                                $this->checkCacheDir($options['file']['cacheDir']);
                         }
 
                         if (count($backends) != 0) {
@@ -187,6 +179,26 @@ class Cache extends Multiple
         public function getBackends()
         {
                 return $this->_backends;
+        }
+
+        /**
+         * Check that cache directory is usable.
+         * 
+         * @param string $path The cache directory path.
+         * @return boolean
+         * @throws CacheException
+         */
+        private function checkCacheDir($path)
+        {
+                if (file_exists($path)) {
+                        return true;
+                }
+                if (!is_writable($path)) {
+                        throw new CacheException(sprintf("The file cache directory %s is not writable", $path));
+                }
+                if (!mkdir($path, 0750, true)) {
+                        throw new CacheException(sprintf("Failed create cache directory %s", $path));
+                }
         }
 
 }
