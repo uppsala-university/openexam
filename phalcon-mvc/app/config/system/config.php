@@ -235,7 +235,7 @@ $config = new Config(
                 // 
                 // Security token, an absolute file path or string:
                 // 
-                'token'     => BASE_DIR . '/cache/render.sec',
+                'token'     => 'render.sec',
                 // 
                 // Download content before rendering:
                 // 
@@ -337,7 +337,7 @@ $config = new Config(
                         ),
                         'file'     => array(
                                 'prefix'   => '',
-                                'cacheDir' => BASE_DIR . '/cache/app/'
+                                'cacheDir' => 'app/'
                         )
                 )
         ),
@@ -366,6 +366,16 @@ $config = new Config(
 $config->merge(new Config(
     include(CONFIG_DIR . '/config.def')
 ));
+
+/**
+ * Set absolute path to cache directory:
+ */
+if ($config->cache->backend->file->cacheDir[0] != '/') {
+        $config->cache->backend->file->cacheDir = $config->application->cacheDir . 'app/';
+}
+if ($config->render->token[0] != '/') {
+        $config->render->token = $config->application->cacheDir . $config->render->token;
+}
 
 /**
  * Merge user defined settings with system settings:
