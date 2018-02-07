@@ -289,7 +289,7 @@ class RenderTask extends MainTask implements TaskInterface
                         'page'    => array(),
                         'globals' => array(),
                         'command' => true,
-                        'level'   => 2,
+                        'level'   => 3,
                         'sleep'   => 5
                 );
 
@@ -355,14 +355,17 @@ class RenderTask extends MainTask implements TaskInterface
                 if ($this->_options['none']) {
                         $this->_options['level'] = 0;
                 }
-                if ($this->_options['notice']) {
+                if ($this->_options['error']) {
                         $this->_options['level'] = 1;
                 }
-                if ($this->_options['info']) {
+                if ($this->_options['notice']) {
                         $this->_options['level'] = 2;
                 }
-                if ($this->_options['debug']) {
+                if ($this->_options['info']) {
                         $this->_options['level'] = 3;
+                }
+                if ($this->_options['debug']) {
+                        $this->_options['level'] = 4;
                 }
         }
 

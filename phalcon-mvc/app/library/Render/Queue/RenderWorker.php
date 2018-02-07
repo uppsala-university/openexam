@@ -82,21 +82,25 @@ class RenderWorker
          */
         const LEVEL_NONE = 0;
         /**
-         * The notice log level.
-         */
-        const LEVEL_NOTICE = 1;
-        /**
          * The error condition log level.
          */
         const LEVEL_ERROR = 1;
         /**
+         * The notice log level.
+         */
+        const LEVEL_NOTICE = 2;
+        /**
          * The info log level.
          */
-        const LEVEL_INFO = 2;
+        const LEVEL_INFO = 3;
+        /**
+         * The successful log level.
+         */
+        const LEVEL_SUCCESS = 4;
         /**
          * The debug log level.
          */
-        const LEVEL_DEBUG = 3;
+        const LEVEL_DEBUG = 5;
 
         /**
          * The render service.
@@ -312,7 +316,7 @@ class RenderWorker
                         return;
                 }
 
-                if (!file_put_contents($this->_logfile, self::format($message), FILE_APPEND)) {
+                if (!file_put_contents($this->_logfile, self::format($level, $message), FILE_APPEND)) {
                         trigger_error("Failed write message");
                 }
         }
@@ -320,12 +324,34 @@ class RenderWorker
         /**
          * Format log message.
          * 
+         * @param int $level The log level.
          * @param string $message The log message.
          * @return string
          */
-        private static function format($message)
+        private static function format($level, $message)
         {
-                return sprintf("%s %s\n", strftime("%x %X"), $message);
+                return sprintf("%s [%d] (%s) %s\n", strftime("%Y-%m-%d %H:%M:%S"), getmypid(), self::level($level), $message);
+        }
+
+        /**
+         * Get log level identifier.
+         * @param int $level The log level.
+         * @return string
+         */
+        private static function level($level)
+        {
+                switch ($level) {
+                        case self::LEVEL_ERROR:
+                                return '-';
+                        case self::LEVEL_NOTICE:
+                                return '!';
+                        case self::LEVEL_INFO:
+                                return 'i';
+                        case self::LEVEL_SUCCESS;
+                                return '+';
+                        case self::LEVEL_DEBUG:
+                                return 'd';
+                }
         }
 
         /**
