@@ -6,22 +6,30 @@
 # Date:   2010-05-17
 #
 
+declare dbname
+
 function dump_local()
 {
-    mysqldump --login-path=local -d    openexam2audit | sed s%'AUTO_INCREMENT=\([0-9]*\)'%'AUTO_INCREMENT=1'%g     > openexam-audit.sql
-    mysqldump --login-path=local -d -X openexam2audit | sed s%'Auto_increment="\([0-9]*\)"'%'Auto_increment="1"'%g > openexam-audit.xml
+    mysqldump --login-path=local -d    $dbname | sed s%'AUTO_INCREMENT=\([0-9]*\)'%'AUTO_INCREMENT=1'%g     > openexam-audit.sql
+    mysqldump --login-path=local -d -X $dbname | sed s%'Auto_increment="\([0-9]*\)"'%'Auto_increment="1"'%g > openexam-audit.xml
 }
 
 function dump_login()
 {
-    mysqldump -u root -p -d    openexam2audit | sed s%'AUTO_INCREMENT=\([0-9]*\)'%'AUTO_INCREMENT=1'%g     > openexam-audit.sql
-    mysqldump -u root -p -d -X openexam2audit | sed s%'Auto_increment="\([0-9]*\)"'%'Auto_increment="1"'%g > openexam-audit.xml
+    mysqldump -u root -p -d    $dbname | sed s%'AUTO_INCREMENT=\([0-9]*\)'%'AUTO_INCREMENT=1'%g     > openexam-audit.sql
+    mysqldump -u root -p -d -X $dbname | sed s%'Auto_increment="\([0-9]*\)"'%'Auto_increment="1"'%g > openexam-audit.xml
 }
 
 if [ -z "$1" ]; then
     login="local"
 else 
     login="$1"
+fi
+
+if [ -z "$2" ]; then
+    dbname="openexam2audit"
+else
+    dbname="$2"
 fi
 
 case "$login" in
