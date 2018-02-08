@@ -43,8 +43,9 @@ DROP TABLE IF EXISTS `admins`;
 CREATE TABLE `admins` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user` varchar(60) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `user` (`user`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,12 +78,18 @@ DROP TABLE IF EXISTS `audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `audit` (
-  `id` int(11) DEFAULT NULL,
-  `model` varchar(20) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `res` varchar(20) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `type` char(6) DEFAULT NULL,
   `user` varchar(60) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `changes` mediumblob
+  `changes` mediumblob,
+  PRIMARY KEY (`id`),
+  KEY `user` (`user`),
+  KEY `rid` (`rid`),
+  KEY `res` (`res`),
+  KEY `time` (`time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -104,6 +111,8 @@ CREATE TABLE `computers` (
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `computers_ibfk_1` (`room_id`),
+  KEY `hostname` (`hostname`),
+  KEY `ipaddr` (`ipaddr`),
   CONSTRAINT `computers_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -121,6 +130,7 @@ CREATE TABLE `contributors` (
   `user` varchar(60) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
+  KEY `user` (`user`),
   CONSTRAINT `contributors_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -138,6 +148,7 @@ CREATE TABLE `correctors` (
   `user` varchar(60) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `question_id` (`question_id`),
+  KEY `user` (`user`),
   CONSTRAINT `correctors_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -155,6 +166,7 @@ CREATE TABLE `decoders` (
   `user` varchar(60) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
+  KEY `user` (`user`),
   CONSTRAINT `decoders_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -184,11 +196,13 @@ CREATE TABLE `exams` (
   `orgdep` varchar(100) DEFAULT NULL,
   `orggrp` varchar(100) DEFAULT NULL,
   `grades` varchar(200) NOT NULL,
-  `course` varchar(20) DEFAULT NULL,
+  `course` varchar(30) DEFAULT NULL,
   `code` varchar(20) DEFAULT NULL,
   `testcase` enum('Y','N') NOT NULL DEFAULT 'N',
   `lockdown` varchar(500) NOT NULL DEFAULT '{"enable":true}',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `creator` (`creator`),
+  KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -208,8 +222,10 @@ CREATE TABLE `files` (
   `subtype` varchar(25) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `answer_id` (`answer_id`),
+  KEY `name` (`name`),
+  KEY `path` (`path`),
   CONSTRAINT `files_ibfk_1` FOREIGN KEY (`answer_id`) REFERENCES `answers` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -225,6 +241,7 @@ CREATE TABLE `invigilators` (
   `user` varchar(60) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
+  KEY `user` (`user`),
   CONSTRAINT `invigilators_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -307,7 +324,7 @@ CREATE TABLE `questions` (
   `exam_id` int(11) NOT NULL,
   `topic_id` int(11) NOT NULL,
   `slot` int(11) DEFAULT '0',
-  `uuid` varchar(32) DEFAULT NULL,
+  `uuid` varchar(36) DEFAULT NULL,
   `user` varchar(60) NOT NULL,
   `score` float NOT NULL,
   `name` varchar(30) NOT NULL,
@@ -427,7 +444,7 @@ CREATE TABLE `sessions` (
   `updated` int(15) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `session_id` (`session_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -442,7 +459,7 @@ CREATE TABLE `settings` (
   `user` varchar(60) NOT NULL,
   `data` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -464,6 +481,7 @@ CREATE TABLE `students` (
   `finished` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
+  KEY `user` (`user`),
   CONSTRAINT `students_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -478,8 +496,9 @@ DROP TABLE IF EXISTS `teachers`;
 CREATE TABLE `teachers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user` varchar(60) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `user` (`user`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -493,7 +512,7 @@ CREATE TABLE `topics` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `exam_id` int(11) NOT NULL,
   `slot` int(11) DEFAULT '0',
-  `uuid` varchar(32) DEFAULT NULL,
+  `uuid` varchar(36) DEFAULT NULL,
   `name` varchar(50) NOT NULL,
   `randomize` int(11) NOT NULL DEFAULT '0',
   `grades` varchar(500) DEFAULT NULL,
@@ -531,7 +550,13 @@ CREATE TABLE `users` (
   `affiliation` varchar(200) DEFAULT NULL,
   `source` varchar(10) NOT NULL,
   `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `principal` (`principal`),
+  KEY `given_name` (`given_name`),
+  KEY `display_name` (`display_name`),
+  KEY `sn` (`sn`),
+  KEY `cn` (`cn`),
+  KEY `pnr` (`pnr`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -544,4 +569,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-12-14  1:15:12
+-- Dump completed on 2018-02-08  1:07:29
