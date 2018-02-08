@@ -245,6 +245,10 @@ $config = new Config(
                 // 
                 'server'    => 'localhost',
                 // 
+                // The allowed submit host (string or array):
+                // 
+                'submit'    => '127.0.0.1',
+                // 
                 // Options for phpwkhtmltox extension:
                 // 
                 'extension' => array(
