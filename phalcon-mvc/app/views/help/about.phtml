@@ -30,8 +30,9 @@
     <ul>
         <li><a href="#tabs-0">General</a></li>
         <li><a href="#tabs-1">Authors</a></li>
-        <li><a href="#tabs-2">License</a></li>
-        <li><a href="#tabs-3">Project</a></li>
+        <li><a href="#tabs-2">Contributors</a></li>
+        <li><a href="#tabs-3">License</a></li>
+        <li><a href="#tabs-4">Project</a></li>
     </ul>
 
     <div id="tabs-0">
@@ -42,17 +43,33 @@
     <div id="tabs-1">
         <?php foreach ($composer->authors as $author): ?>
                 <p>
-                    <button class="btn btn-success" href="mailto:<?= $author->email ?>"><?= $author->name ?></button> - <?= $author->company ?> (<?= $author->role ?>) 
+                    <button class="btn btn-success about-link-mail" style="min-width: 165px; text-align: left" data-link="<?= $author->email ?>">
+                        <i class="fa fa-user"></i> 
+                        <?= $author->name ?>
+                    </button> - 
+                    <a href="<?= $author->homepage ?>"><?= $author->homepage ?></a> (<?= $author->role ?>) 
                 </p>
         <?php endforeach; ?>
     </div>
 
     <div id="tabs-2">
+        <p>The following organizations has contributed to the project:</p>
+        <?php foreach ($composer->contributors as $contributor): ?>
+                <p>
+                    <button class="btn btn-success about-link-href" style="min-width: 165px; text-align: left" data-link="<?= $contributor->link ?>">
+                        <i class="fa fa-sitemap"></i> 
+                        <?= $contributor->name ?>
+                    </button>
+                </p>
+        <?php endforeach; ?>
+    </div>
+
+    <div id="tabs-3">
         <p>Released under <?= $composer->license ?> license.</p>
         <button class="btn btn-default" id="project-license-btn">Details</button>
     </div>
 
-    <div id="tabs-3">
+    <div id="tabs-4">
         <p>
             More information is available on the <a href="<?= $composer->homepage ?>">project homepage</a>.
             Source code can be downloaded from <a href="<?= $composer->projpage ?>">GitHub</a>.
@@ -62,6 +79,7 @@
             <a href="<?= $composer->projpage ?>"><?= $composer->projpage ?></a>
         </p>
     </div>
+
 </div>
 
 <div class="oe-dialog-buttons">
@@ -98,6 +116,13 @@
             });
         });
 
+        $(document).on('click', 'button.about-link-mail', function () {
+            window.location.href = 'mailto:' + $(this).attr('data-link');
+        });
+
+        $(document).on('click', 'button.about-link-href', function () {
+            window.location.href = $(this).attr('data-link');
+        });
 </script>
 
 <div id="project-license" style="display: none" title="Project license"></div>

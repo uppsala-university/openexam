@@ -6,6 +6,16 @@
     "homepage": "http://openexam.io",
     "projpage": "http://github.com/openexam-online",
     "keywords": ["cbe", "exam", "phalcon", "soap"],
+    "contributors": [
+        {
+            "name": "Uppsala University",
+            "link": "http://www.uu.se"
+        },
+        {
+            "name": "Nowise Systems",
+            "link": "http://nowise.se"
+        }
+    ],
     "repositories": [
         {
             "type": "composer",
@@ -20,20 +30,20 @@
         {
             "name": "Anders Lövgren",
             "email": "anders.lovgren@bmc.uu.se",
-            "role": "Developer",
-            "company": "Computing Department at BMC, Uppsala University"
+            "homepage": "http://it.bmc.uu.se",
+            "role": "Developer"
         },
         {
             "name": "Ahsan Shahzad",
             "email": "ahsan.shahzad@medfarm.uu.se",
-            "role": "Developer",
-            "company": "Medfarm DoIT, Uppsala University"
+            "homepage": "http://doit.medfarm.uu.se",
+            "role": "Developer"
         },
         {
             "name": "Anders Lövgren",
             "email": "ipv6nu@gmail.com",
-            "role": "Developer",
-            "company": "Nowise Systems"
+            "homepage": "http://nowise.se",
+            "role": "Developer"
         }
     ],
     "require": {
@@ -52,5 +62,5 @@
         "jpgraph/jpgraph": "For statistical pages or dynamic generated GUI components, e.g. buttons.",
         "piotrooo/wsdl-creator": "Create WSDL document based on PHP classes using annotations and reflection mechanism."
     },
-    "bin": "admin/bin/openexam"
+    "bin": ["admin/bin/openexam"]
 }
