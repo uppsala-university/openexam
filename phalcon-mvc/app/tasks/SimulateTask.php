@@ -88,7 +88,7 @@ class SimulateTask extends MainTask implements TaskInterface
                                 '--output=file'    => 'Generate script file (for --script option).',
                                 '--result=file'    => 'Simulation result file.',
                                 '--target=url'     => 'Target server URL (defaults to this app on localhost).',
-                                '--remote=addr'    => 'The remote address for sessions (defaults to localhost).',
+                                '--remote=addr'    => 'The remote address for sessions (defaults to this computer).',
                                 '--exam=id'        => 'Use exam ID.',
                                 '--session=str'    => 'Use cookie string for authentication.',
                                 '--student=user'   => 'Run simulation as student user.',
@@ -1053,7 +1053,7 @@ class SimulateTask extends MainTask implements TaskInterface
                         $this->_options['target'] = sprintf("http://localhost/%s", $this->config->application->baseUri);
                 }
                 if (!$this->_options['remote']) {
-                        $this->_options['remote'] = '::1';
+                        $this->_options['remote'] = gethostbyname(gethostname());
                 } else {
                         $this->_options['remote'] = gethostbyname($this->_options['remote']);
                 }
