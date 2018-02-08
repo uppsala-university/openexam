@@ -88,6 +88,7 @@ class SimulateTask extends MainTask implements TaskInterface
                                 '--output=file'    => 'Generate script file (for --script option).',
                                 '--result=file'    => 'Simulation result file.',
                                 '--target=url'     => 'Target server URL (defaults to this app on localhost).',
+                                '--remote=addr'    => 'The remote address for sessions (defaults to localhost).',
                                 '--exam=id'        => 'Use exam ID.',
                                 '--session=str'    => 'Use cookie string for authentication.',
                                 '--student=user'   => 'Run simulation as student user.',
@@ -479,7 +480,7 @@ class SimulateTask extends MainTask implements TaskInterface
                         'user'   => $student->user,
                         'type'   => 'simulate',
                         'expire' => time() + $expires,
-                        'remote' => '::1'
+                        'remote' => $this->_options['remote']
                 );
 
                 // 
@@ -1005,12 +1006,12 @@ class SimulateTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->_options = array('verbose' => false, 'debug' => false, 'dry-run' => false, 'quiet' => false, 'read' => false, 'write' => false, 'natural' => false, 'torture' => false, 'script' => false, 'output' => 'simulate.sh', 'result' => false, 'target' => false, 'questions' => 12, 'start' => '30:1', 'sleep' => 10, 'duration' => 120, 'students' => 1);
+                $this->_options = array('verbose' => false, 'debug' => false, 'dry-run' => false, 'quiet' => false, 'read' => false, 'write' => false, 'natural' => false, 'torture' => false, 'script' => false, 'output' => 'simulate.sh', 'result' => false, 'target' => false, 'remote' => false, 'questions' => 12, 'start' => '30:1', 'sleep' => 10, 'duration' => 120, 'students' => 1);
 
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'debug', 'dry-run', 'quiet', 'setup', 'student', 'students', 'questions', 'run', 'exam', 'read', 'write', 'natural', 'torture', 'script', 'output', 'result', 'target', 'session', 'start', 'sleep', 'duration');
+                $options = array('verbose', 'debug', 'dry-run', 'quiet', 'setup', 'student', 'students', 'questions', 'run', 'exam', 'read', 'write', 'natural', 'torture', 'script', 'output', 'result', 'target', 'remote', 'session', 'start', 'sleep', 'duration');
                 $current = $action;
 
                 // 
@@ -1050,6 +1051,11 @@ class SimulateTask extends MainTask implements TaskInterface
                 }
                 if (!$this->_options['target']) {
                         $this->_options['target'] = sprintf("http://localhost/%s", $this->config->application->baseUri);
+                }
+                if (!$this->_options['remote']) {
+                        $this->_options['remote'] = '::1';
+                } else {
+                        $this->_options['remote'] = gethostbyname($this->_options['remote']);
                 }
 
                 $this->_options['endtime'] = time() + $this->_options['duration'];
