@@ -149,13 +149,13 @@ class DatabaseTask extends MainTask implements TaskInterface
                         'verbose'         => false,
                         'originalVersion' => null,
                         'force'           => false,
-                        'tableName'       => 'all',
+                        'tableName'       => '@',
                         'exportData'      => null
                 );
 
                 for ($i = 0; $i < count($params); ++$i) {
                         if ($params[$i] == 'version') {
-                                $options['originalVersion'] = $params[++$i];
+                                $options['version'] = $params[++$i];
                         }
                         if ($params[$i] == 'force') {
                                 $options['force'] = true;
