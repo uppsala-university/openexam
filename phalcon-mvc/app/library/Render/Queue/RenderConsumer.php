@@ -48,6 +48,9 @@ class RenderConsumer extends Component
          */
         public function hasNext()
         {
+                // 
+                // Find next queued or possibly unfinished render job:
+                // 
                 if ((Render::count("status = 'queued' OR queued > finish") > 0)) {
                         return true;
                 } else {
@@ -61,14 +64,35 @@ class RenderConsumer extends Component
          */
         public function getNext()
         {
+                // 
+                // Find next queued or possibly unfinished render job:
+                // 
                 if (!($job = Render::findFirst("status = 'queued' OR queued > finish"))) {
                         return false;
                 }
-                
+
+                // 
+                // Set render status, destination and lock properties:
+                // 
                 $job->status = Render::STATUS_RENDER;
                 $job->file = sprintf("%s/%s", $this->config->application->cacheDir, $job->path);
+                $job->lock = sprintf("%s/%s.lock", $this->config->application->cacheDir, $job->path);
 
+                // 
+                // Check if job is locked by another render host:
+                // 
+                if (file_exists($job->lock)) {
+                        return false;
+                } else {
+                        touch($job->lock);
+                }
+
+                // 
+                // Refresh job status, but remove lock if failed:
+                // 
+                // 
                 if (!$job->save()) {
+                        unlink($job->lock);
                         throw new Exception($job->getMessages()[0]);
                 }
 
@@ -81,13 +105,29 @@ class RenderConsumer extends Component
          */
         public function setResult($job)
         {
+                // 
+                // Update job status:
+                // 
                 if ($job->status != Render::STATUS_FINISH &&
                     $job->status != Render::STATUS_FAILED) {
                         $job->status = Render::STATUS_FINISH;
                 }
 
+                // 
+                // Use proper database timestamp:
+                // 
                 $job->finish = strftime("%Y-%m-%d %T");
 
+                // 
+                // Cleanup existing lock:
+                // 
+                if (file_exists($job->lock)) {
+                        unlink($job->lock);
+                }
+
+                // 
+                // Refresh job status:
+                // 
                 if (!$job->save()) {
                         throw new Exception($job->getMessages()[0]);
                 }
