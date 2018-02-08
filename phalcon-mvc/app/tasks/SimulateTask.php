@@ -112,8 +112,8 @@ class SimulateTask extends MainTask implements TaskInterface
                                         'command' => '--setup --questions=20'
                                 ),
                                 array(
-                                        'descr'   => 'Create exam with 250 students and 12 questions',
-                                        'command' => '--setup --questions=12 --students=250'
+                                        'descr'   => 'Create exam with 250 students and 12 questions allowing connections from 192.168.38.22',
+                                        'command' => '--setup --questions=12 --students=250 --remote=192.168.38.22'
                                 ),
                                 array(
                                         'descr'   => 'Create simulation script',
