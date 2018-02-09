@@ -224,6 +224,10 @@ class RenderWorker extends Component
         {
                 $consumer = new RenderConsumer();
 
+                if ($consumer->hasMissing()) {
+                        $consumer->addMissing();
+                }
+
                 if (!$consumer->hasNext()) {
                         unset($consumer);
                         return false;

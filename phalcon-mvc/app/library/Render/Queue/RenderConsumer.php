@@ -43,15 +43,70 @@ class RenderConsumer extends Component
 {
 
         /**
+         * Number of seconds for render job to complete.
+         */
+        const MISSING_RENDER_TIME = 600;
+
+        /**
+         * Check if missing render job exists.
+         * @return boolean
+         */
+        public function hasMissing()
+        {
+                // 
+                // Find missing render job:
+                // 
+                if ((Render::count("status = 'render' AND finish IS NOT NULL") > 0)) {
+                        return true;
+                } else {
+                        return false;
+                }
+        }
+
+        /**
+         * Add missing render job as queued.
+         */
+        public function addMissing()
+        {
+                // 
+                // Find missing render job:
+                // 
+                if (!($jobs = Render::find("status = 'render' AND finish IS NOT NULL"))) {
+                        return false;
+                }
+
+                // 
+                // Add missing job as queued:
+                // 
+                foreach ($jobs as $job) {
+                        $job->status = Render::STATUS_QUEUED;
+                        $job->finish = null;
+
+                        $job->file = sprintf("%s/%s", $this->config->application->cacheDir, $job->path);
+                        $job->lock = sprintf("%s/%s.lock", $this->config->application->cacheDir, $job->path);
+
+                        if (strtotime($job->queued) > time() - self::MISSING_RENDER_TIME) {
+                                continue;
+                        }
+                        if (file_exists($job->lock)) {
+                                unlink($job->lock);
+                        }
+                        if (!$job->save()) {
+                                throw new Exception($job->getMessages()[0]);
+                        }
+                }
+        }
+
+        /**
          * Check if queued render job exists.
          * @return boolean
          */
         public function hasNext()
         {
                 // 
-                // Find next queued or possibly unfinished render job:
+                // Find next queued render job:
                 // 
-                if ((Render::count("status = 'queued' OR queued > finish") > 0)) {
+                if ((Render::count("status = 'queued'") > 0)) {
                         return true;
                 } else {
                         return false;
@@ -65,9 +120,9 @@ class RenderConsumer extends Component
         public function getNext()
         {
                 // 
-                // Find next queued or possibly unfinished render job:
+                // Find next queued render job:
                 // 
-                if (!($job = Render::findFirst("status = 'queued' OR queued > finish"))) {
+                if (!($job = Render::findFirst("status = 'queued'"))) {
                         return false;
                 }
 
