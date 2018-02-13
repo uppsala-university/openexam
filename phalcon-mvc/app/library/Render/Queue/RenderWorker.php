@@ -102,6 +102,10 @@ class RenderWorker extends Component
          * The debug log level.
          */
         const LEVEL_DEBUG = 5;
+        /**
+         * Number of seconds between connection ping.
+         */
+        const CHECK_INTERVAL = 1800;
 
         /**
          * The render service.
@@ -128,6 +132,11 @@ class RenderWorker extends Component
          * @var int 
          */
         private $_level = self::LEVEL_INFO;
+        /**
+         * Next database connection ping.
+         * @var int 
+         */
+        private $_check;
 
         /**
          * Constructor.
@@ -139,6 +148,7 @@ class RenderWorker extends Component
                 $this->_logfile = $logfile;
 
                 $this->_sleep = $sleep;
+                $this->_check = time() + self::CHECK_INTERVAL;
         }
 
         /**
@@ -204,6 +214,9 @@ class RenderWorker extends Component
         private function fetch()
         {
                 try {
+                        if ($this->_check < time()) {
+                                $this->ping();
+                        }
                         if (!$this->consume()) {
                                 $this->sleep();
                         }
@@ -296,6 +309,23 @@ class RenderWorker extends Component
                 }
 
                 return true;
+        }
+
+        /**
+         * Ping database connections.
+         */
+        private function ping()
+        {
+                $this->dbread->connect();
+                $this->dbread->query("SELECT 1");
+                
+                $this->dbwrite->connect();
+                $this->dbwrite->query("SELECT 1");
+                
+                $this->dbaudit->connect();
+                $this->dbaudit->query("SELECT 1");
+
+                $this->_check = time() + self::CHECK_INTERVAL;
         }
 
         /**
