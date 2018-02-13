@@ -43,6 +43,11 @@ class DirectoryCache extends Component implements DirectoryQuery
          * @var BackendInterface 
          */
         private $_cache;
+        /**
+         * Lifetime of cache entry (default to backend).
+         * @var int 
+         */
+        private $_lifetime = null;
 
         /**
          * Constructor.
@@ -64,6 +69,15 @@ class DirectoryCache extends Component implements DirectoryQuery
         public function setBackend($cache)
         {
                 $this->_cache = $cache;
+        }
+
+        /**
+         * Set lifetime of cache entries.
+         * @param int $lifetime The entry lifetime.
+         */
+        public function setLifetime($lifetime)
+        {
+                $this->_lifetime = $lifetime;
         }
 
         public function getServiceName()
@@ -151,8 +165,8 @@ class DirectoryCache extends Component implements DirectoryQuery
          */
         private function getContent($cachekey)
         {
-                if ($this->_cache->exists($cachekey)) {
-                        return $this->_cache->get($cachekey);
+                if ($this->_cache->exists($cachekey, $this->_lifetime)) {
+                        return $this->_cache->get($cachekey, $this->_lifetime);
                 } else {
                         return false;
                 }
@@ -166,7 +180,7 @@ class DirectoryCache extends Component implements DirectoryQuery
          */
         private function setContent($cachekey, $content)
         {
-                $this->_cache->save($cachekey, $content);
+                $this->_cache->save($cachekey, $content, $this->_lifetime);
         }
 
 }

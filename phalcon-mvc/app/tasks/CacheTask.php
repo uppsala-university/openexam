@@ -60,18 +60,19 @@ class CacheTask extends MainTask implements TaskInterface
                         'usage'    => array(
                                 '--clean [--key=name]',
                                 '--query [--key=name]',
-                                '--fill [--days=num]',
+                                '--fill [--days=num] [--server=addr]',
                                 '--info'
                         ),
                         'options'  => array(
-                                '--clean'    => 'Cleanup cache.',
-                                '--query'    => 'Query cache entries.',
-                                '--info'     => 'Show cache information.',
-                                '--fill'     => 'Fill cache with exam data',
-                                '--days=num' => 'Fill cache for num days',
-                                '--key=name' => 'Match cache key name (e.g. acl, ldap or roles).',
-                                '--count'    => 'Count matching keys',
-                                '--verbose'  => 'Be more verbose.'
+                                '--clean'       => 'Cleanup cache.',
+                                '--query'       => 'Query cache entries.',
+                                '--info'        => 'Show cache information.',
+                                '--fill'        => 'Fill cache with exam data',
+                                '--days=num'    => 'Fill cache for num days',
+                                '--server=addr' => 'Target server for --fill (default to localhost)',
+                                '--key=name'    => 'Match cache key name (e.g. acl, ldap or roles).',
+                                '--count'       => 'Count matching keys',
+                                '--verbose'     => 'Be more verbose.'
                         ),
                         'examples' => array(
                                 array(
@@ -88,7 +89,7 @@ class CacheTask extends MainTask implements TaskInterface
                                 ),
                                 array(
                                         'descr'   => 'Fill cache with 5 days of exam data',
-                                        'command' => '--fill --days=5'
+                                        'command' => '--fill --days=5 --server=192.168.23.77'
                                 )
                         )
                 );
@@ -233,8 +234,9 @@ class CacheTask extends MainTask implements TaskInterface
                         // 
                         // Can't fill web cache from CLI:
                         // 
-                        $host = "http://127.0.0.1";
-                        $path = $this->url->get(sprintf("/utility/cache/fill/%d", $exam->id));
+                        $days = $this->_options['days'];
+                        $host = $this->_options['server'];
+                        $path = $this->url->get(sprintf("/utility/cache/fill/%d/%d", $exam->id, $days));
 
                         if (!($curl = curl_init(sprintf("%s%s", $host, $path)))) {
                                 throw new Exception("Failed initialize cURL");
@@ -260,12 +262,12 @@ class CacheTask extends MainTask implements TaskInterface
                 // 
                 // Default options.
                 // 
-                $this->_options = array('verbose' => false, 'days' => 3);
+                $this->_options = array('verbose' => false, 'days' => 3, 'server' => 'localhost');
 
                 // 
                 // Supported options.
                 // 
-                $options = array('verbose', 'clean', 'query', 'info', 'fill', 'days', 'prefix', 'key', 'count');
+                $options = array('verbose', 'clean', 'query', 'info', 'fill', 'days', 'server', 'prefix', 'key', 'count');
                 $current = $action;
 
                 // 
@@ -297,6 +299,11 @@ class CacheTask extends MainTask implements TaskInterface
                                 throw new Exception("Unknown task action/parameters '$option'");
                         }
                 }
+
+                // 
+                // Resolve destination server address:
+                // 
+                $this->_options['server'] = gethostbyname($this->_options['server']);
         }
 
 }

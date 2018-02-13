@@ -40,7 +40,7 @@ use OpenExam\Models\Exam;
 class CacheController extends GuiController
 {
 
-        public function fillAction($eid)
+        public function fillAction($eid, $days = 3)
         {
                 // 
                 // Sanitize request parameters:
@@ -64,15 +64,17 @@ class CacheController extends GuiController
                 // 
                 // Populate cache by query models and properties.
                 // 
-                $this->fillCache($exam);
+                $this->fillCache($exam, $days);
         }
 
         /**
          * Fill exam cache.
          * @param Exam $exam The exam model.
          */
-        private function fillCache($exam)
+        private function fillCache($exam, $days)
         {
+                $this->catalog->getCache()->setLifetime($days * 86400);
+
                 $this->catalog->getName($exam->creator);
                 $this->catalog->getMail($exam->creator);
 
