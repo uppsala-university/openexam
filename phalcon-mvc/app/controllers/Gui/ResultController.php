@@ -151,7 +151,7 @@ class ResultController extends GuiController
                         // Question correctors data:
                         // 
                         foreach ($question->getCorrectors() as $corrector) {
-                                $data['qCorrectors'][$corrector->user][] = $question->name;
+                                $data['qCorrectors'][$corrector->user][] = $question->slot;
                         }
 
                         // 

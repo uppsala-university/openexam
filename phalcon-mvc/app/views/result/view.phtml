@@ -140,12 +140,12 @@ use Phalcon\Tag;
                                                             <th>Notice</th>
                                                         </tr>
 
-                                                        <?php foreach ($data['questions'] as $qNo => $question): ?>
+                                                        <?php foreach ($data['questions'] as $question): ?>
                                                                 <?php foreach ($data['qData'][$question->id]['qParts'] as $pTitle => $pData): ?>
                                                                         <tr>
                                                                             <td>
                                                                                 <?php if ($pTitle == 'a'): ?>
-                                                                                        <span style="color:#990000; font-weight: bold">Q<?= $qNo + 1 ?></span>
+                                                                                        <span style="color:#990000; font-weight: bold">Q<?= $question->slot ?></span>
                                                                                         <?= (count($data['qData'][$question->id]['qParts']) > 1) ? ", " : ""; ?>
                                                                                 <?php endif; ?>
 
@@ -386,8 +386,8 @@ use Phalcon\Tag;
                                                                         <a href="mailto:<?= $this->catalog->getMail($corrector) ?>" style="color:#990000; text-decoration:none"><?= $this->catalog->getName($corrector) ?></a>                                                                                <div>
                                                                             <span style="color:#000">Corrected questions:</span> 
                                                                             <ul>
-                                                                                <?php foreach ($qList as $qName): ?>
-                                                                                        <li>Question <?= $qName ?></li>
+                                                                                <?php foreach ($qList as $qSlot): ?>
+                                                                                        <li>Question <?= $qSlot ?></li>
                                                                                 <?php endforeach; ?>
                                                                             </ul>
                                                                         </div>       
