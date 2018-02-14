@@ -145,9 +145,10 @@ return array(
         // the controller/action.
         // 
         'public' => array(
-                'index' => array('*'),
+                'index'  => array('*'),
                 'error'  => array('*'),
-                'signup' => array('index')
+                'signup' => array('index'),
+                'cache'  => array('fill'),
         ),
         'protected'      => array(
                 'soap'   => array('*'),

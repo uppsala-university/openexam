@@ -31,6 +31,7 @@ use Exception;
 use OpenExam\Controllers\GuiController;
 use OpenExam\Library\Core\Error;
 use OpenExam\Models\Exam;
+use UUP\Authentication\Restrictor\AddressRestrictor;
 
 /**
  * Web and application cache controller.
@@ -40,19 +41,41 @@ use OpenExam\Models\Exam;
 class CacheController extends GuiController
 {
 
+        /**
+         * Fill cache with directory information.
+         * 
+         * @param int $eid The exam ID.
+         * @param int $days The number of days.
+         * @throws Exception
+         */
         public function fillAction($eid, $days = 3)
         {
+                // 
+                // Don't load view:
+                // 
+                $this->view->disable();
+
                 // 
                 // Sanitize request parameters:
                 // 
                 if (!($eid = $this->filter->sanitize($eid, "int"))) {
                         throw new Exception("Expected eid parameter", Error::BAD_REQUEST);
                 }
+                if (!($days = $this->filter->sanitize($days, "int"))) {
+                        throw new Exception("Expected days parameter", Error::BAD_REQUEST);
+                }
 
                 // 
-                // Don't load view:
+                // Check method call restrictions:
                 // 
-                $this->view->disable();
+                if ($this->config->cache->filler->maxdays < $days) {
+                        throw new Exception("Exceeded maximum days config", Error::NOT_ACCEPTABLE);
+                }
+
+                $restrictor = new AddressRestrictor($this->config->cache->filler->remote);
+                if (!$restrictor->match($this->request->getServerAddress())) {
+                        throw new Exception("You are not allowed to invoke this action", Error::METHOD_NOT_ALLOWED);
+                }
 
                 // 
                 // Fetch requested exam:

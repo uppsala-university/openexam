@@ -343,6 +343,15 @@ $config = new Config(
                                 'prefix'   => '',
                                 'cacheDir' => 'app/'
                         )
+                ),
+                /**
+                 * Optional list of servers allowed to fill cache. Either an array or 
+                 * string containing single, range or subnet of IP-addresses. The localhost 
+                 * is always permitted. 
+                 */
+                'filler'   => array(
+                        'remote'  => null,
+                        'maxdays' => 31
                 )
         ),
         /**
