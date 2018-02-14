@@ -285,7 +285,7 @@
                 }
 
                 if (result.status === 'finish') {
-                    setStatusMessage("Render finished on " + new Date());
+                    setStatusMessage("Render finished on " + new Date(result.finish));
                 }
 
                 if (result.status === 'cancelled' && result.result === false) {
