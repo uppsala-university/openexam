@@ -292,6 +292,13 @@ class Mediator extends Proxy implements AdapterInterface
                 $exclude = $this->_handler->getFilter();
 
                 // 
+                // Return data for pseudo-SQL (i.e. SELECT 1):
+                // 
+                if (!isset($cached[0])) {
+                        return $data;
+                }
+
+                // 
                 // Check table exclude filter.
                 // 
                 if (in_array($cached[0], $exclude['tables'])) {
