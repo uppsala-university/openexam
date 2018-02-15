@@ -1089,9 +1089,16 @@ class ExamController extends GuiController
          * @param int $eid The exam ID.
          * @param bool $download Should archive be downloaded?
          */
-        public function archiveAction($eid, $download = false)
+        public function archiveAction($eid, $download = false, $correct = false)
         {
                 $data = array();
+
+                // 
+                // Display correct answers or not:
+                // 
+                if ($this->request->has('correct')) {
+                        $correct = $this->request->get('correct') === 'true';
+                }
 
                 // 
                 // Sanitize request parameters:
@@ -1198,8 +1205,9 @@ class ExamController extends GuiController
                 }
 
                 $this->view->setVars(array(
-                        'exam' => $exam,
-                        'data' => $data
+                        'exam'    => $exam,
+                        'data'    => $data,
+                        'correct' => $correct
                     )
                 );
                 $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);

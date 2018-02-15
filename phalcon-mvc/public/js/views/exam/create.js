@@ -383,7 +383,16 @@ $(document).ready(function () {
         document.getElementById('exam-archive-action-online').click();
     });
 
-    // TODO: Move this even handler to settings.phtm
+    $(document).on('click', '#exam-archive-show-correct', function () {
+        var correct = $(this).is(':checked');
+
+        $.each($('.exam-archive-action-target'), function (idx, obj) {
+            var link = $(obj);
+            var part = link.attr('href').split('?');
+
+            link.attr('href', part[0] + '?correct=' + correct);
+        });
+    });
 
     // 
     // Exam's other setting's update:

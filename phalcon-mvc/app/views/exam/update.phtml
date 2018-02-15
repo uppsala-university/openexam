@@ -166,11 +166,11 @@ if (in_array("editable", $exam->flags)) {
 </style>
 
 <script type="text/x-mathjax-config">
-        MathJax.Hub.Config({
-                extensions: ["tex2jax.js"],
-                jax: ["input/TeX","output/HTML-CSS"],
-                tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
-        });
+    MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+    tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+    });
 </script>
 <?= Tag::javascriptInclude('plugins/mathjax/MathJax.js'); ?>
 
@@ -329,8 +329,8 @@ if (in_array("editable", $exam->flags)) {
         Use this tool to access exam content (i.e. questions) in format suitable for printing or archiving. 
         This is also the right tool to use if some students need to write this exam on paper.
     </div>
-    <a style="display: none" href="<?= $this->url->get('exam/archive/' . $exam->id); ?>" id="exam-archive-action-online" target="_blank"></a>
-    <a style="display: none" href="<?= $this->url->get('exam/archive/' . $exam->id) . '/download'; ?>" id="exam-archive-action-download"></a>
+    <a style="display: none" class="exam-archive-action-target" href="<?= $this->url->get('exam/archive/' . $exam->id) . '?correct=false'; ?>" id="exam-archive-action-online" target="_blank"></a>
+    <a style="display: none" class="exam-archive-action-target" href="<?= $this->url->get('exam/archive/' . $exam->id) . '/download?correct=false'; ?>" id="exam-archive-action-download"></a>
 
     <center>
         <span style="min-width: 9em" class="btn btn-default" id="exam-archive-online">
@@ -341,7 +341,12 @@ if (in_array("editable", $exam->flags)) {
             <i class="fa fa-file-archive-o"></i>
             <span>Download Archive</span>
         </span>
-    </center>	
+    </center>
+    <div style="margin-top: 20px">
+        <label>
+            <input type="checkbox" id="exam-archive-show-correct"> Display correct answers for questions
+        </label>
+    </div>
 
     <div class="oe-dialog-buttons">
         <hr>
