@@ -1089,7 +1089,7 @@ class ExamController extends GuiController
          * @param int $eid The exam ID.
          * @param bool $download Should archive be downloaded?
          */
-        public function archiveAction($eid, $download = false, $correct = false)
+        public function archiveAction($eid, $download = false, $correct = false, $cleanup = false)
         {
                 $data = array();
 
@@ -1098,6 +1098,13 @@ class ExamController extends GuiController
                 // 
                 if ($this->request->has('correct')) {
                         $correct = $this->request->get('correct') === 'true';
+                }
+                
+                // 
+                // Cleanup any existing PDF:
+                // 
+                if ($this->request->has('cleanup')) {
+                        $cleanup = $this->request->get('cleanup') === 'true';
                 }
 
                 // 
@@ -1133,6 +1140,9 @@ class ExamController extends GuiController
                 // Send archive if requested.
                 // 
                 if ($download) {
+                        if ($cleanup && $handler->exists()) {
+                                $handler->delete();
+                        }
                         if (!$handler->exists()) {
                                 $handler->create();
                         }

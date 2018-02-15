@@ -383,15 +383,27 @@ $(document).ready(function () {
         document.getElementById('exam-archive-action-online').click();
     });
 
-    $(document).on('click', '#exam-archive-show-correct', function () {
-        var correct = $(this).is(':checked');
+    // 
+    // Set properties for exam archive:
+    // 
+    var setExamArchiveProperties = function () {
+        var correct = $('#exam-archive-show-correct').is(':checked');
+        var cleanup = $('#exam-archive-cleanup-file').is(':checked');
 
         $.each($('.exam-archive-action-target'), function (idx, obj) {
             var link = $(obj);
             var part = link.attr('href').split('?');
 
-            link.attr('href', part[0] + '?correct=' + correct);
+            link.attr('href', part[0] + '?correct=' + correct + '&cleanup=' + cleanup);
         });
+    };
+
+    $(document).on('click', '#exam-archive-show-correct', function () {
+        setExamArchiveProperties();
+    });
+
+    $(document).on('click', '#exam-archive-cleanup-file', function () {
+        setExamArchiveProperties();
     });
 
     // 
