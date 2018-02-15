@@ -77,9 +77,11 @@ class Archive extends Component
 
         /**
          * Constructor.
+         * 
          * @param Exam $exam The exam model.
+         * @param boolean $correct Display correct answers.
          */
-        public function __construct($exam)
+        public function __construct($exam, $correct = false)
         {
                 $this->_exam = $exam;
 
@@ -87,7 +89,7 @@ class Archive extends Component
                 $this->_file = sprintf("%s/%d.pdf", $this->_path, $this->_exam->id);
                 $this->_name = sprintf("%s.pdf", $this->_exam->name);
 
-                $this->_from = $this->getSource($this->getToken());
+                $this->_from = $this->getSource($this->getToken(), $correct);
 
                 $this->prepare();
         }
@@ -225,13 +227,15 @@ class Archive extends Component
 
         /**
          * Get source URL.
+         * 
          * @param string $token The render token.
+         * @param boolean $correct Display correct answers.
          * @return string
          */
-        private function getSource($token)
+        private function getSource($token, $correct = false)
         {
                 $expand = $this->url->get(sprintf("exam/archive/%d", $this->_exam->id));
-                $source = sprintf("http://%s%s?token=%s&user=%s&render=archive", $this->config->render->server, $expand, $token, $this->_exam->creator);
+                $source = sprintf("http://%s%s?token=%s&user=%s&render=archive&correct=%s", $this->config->render->server, $expand, $token, $this->_exam->creator, $correct ? 'true' : 'false');
                 return $source;
         }
 

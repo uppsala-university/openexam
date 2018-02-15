@@ -1124,7 +1124,7 @@ class ExamController extends GuiController
                 // 
                 // Check access.
                 // 
-                $handler = new Archive($exam);
+                $handler = new Archive($exam, $correct);
                 if (!$handler->accessable()) {
                         throw new ModelException("You are not allowed to access exam archive.", Error::FORBIDDEN);
                 }
