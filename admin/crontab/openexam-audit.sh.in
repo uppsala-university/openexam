@@ -40,7 +40,7 @@ fi
 touch $lock
 
 # Cleanup expired audit data:
-/usr/bin/sudo -u $user /usr/bin/php $script --audit --clean --days=90 $options $*
+/usr/bin/sudo -u $user php $script --audit --clean --days=90 $options $*
 
 # Cleanup lock file:
 rm -f $lock
