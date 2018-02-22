@@ -144,7 +144,7 @@ class Database extends Component implements ServiceCheck
                 // Use database service for working test.
                 // 
 
-                if (!($this->dbwrite->insert("performance", array('io', ''), array('mode', 'data')))) {
+                if (!($this->dbwrite->insert("performance", array('io', '', '', ''), array('mode', 'data', 'host', 'addr')))) {
                         $this->_result['dbwrite']['working'] = false;
                         $this->_failed = true;
                 } else {
