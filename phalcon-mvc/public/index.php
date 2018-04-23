@@ -53,14 +53,14 @@ define('EXTERN_DIR', APP_DIR . '/extern/');
  */
 define('CONFIG_PHP', CONFIG_SYS . '/config.php');
 
-// 
+//
 // Get application config from cache if existing.
-// 
+//
 $config = require_once('config.inc');
 
-// 
+//
 // Config error settings different for development/production:
-// 
+//
 if ($config->application->release) {
         error_reporting(E_ALL ^ E_NOTICE & ~E_DEPRECATED ^ E_STRICT);
         ini_set('display_errors', 0);
@@ -77,6 +77,5 @@ ini_set('session.cookie_lifetime', 0);
 
 include CONFIG_SYS . "/loader.php";
 include CONFIG_SYS . "/services.php";
-
 $application = new \Phalcon\Mvc\Application($di);
 echo $application->handle()->getContent();
