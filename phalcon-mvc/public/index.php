@@ -53,6 +53,20 @@ define('EXTERN_DIR', APP_DIR . '/extern/');
  */
 define('CONFIG_PHP', CONFIG_SYS . '/config.php');
 
+function log_errors_on_shutdown()
+{
+    $last_error = error_get_last();
+
+    if (!is_null($last_error)) { // if there has been an error at some point
+      // do something with the error
+      file_put_contents(
+        PROJ_DIR . '/logs/error.log', print_r($last_error, true) . "\n", FILE_APPEND
+      );
+    }
+}
+
+register_shutdown_function('log_errors_on_shutdown');
+
 //
 // Get application config from cache if existing.
 //

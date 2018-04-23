@@ -3,3 +3,4 @@ vendor/
 vendor
 nbproject/private
 logs/
+.env.db

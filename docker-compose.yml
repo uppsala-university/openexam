@@ -7,15 +7,17 @@ services:
       - .:/var/www/open-exam
     ports:
       - "8080:80"
-    # links:
-    #   - db
-    env_file:
-      - '.env'
+    links:
+      - db
+    # env_file:
+    #   - '.env'
 
-  # db:
-  #   image: mysql:5.7
-  #   ports:
-  #     - "3306:3306"
-  #   restart: unless-stopped
-  #   env_file:
-  #     - '.env.db'
+  # redis:
+  #   image: redis:
+  db:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    env_file:
+      - '.env.db'
