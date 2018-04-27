@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    CatalogHandler.php
 // Created: 2015-04-03 14:31:38
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\WebService\Handler;
 
@@ -79,24 +79,24 @@ class CatalogHandler extends ServiceHandler
 
         /**
          * List all domains.
-         * @return ServiceResponse 
+         * @return ServiceResponse
          */
         public function getDomains()
         {
                 $this->formatRequest("domains");
-                
+
                 $result = $this->_catalog->getDomains();
                 return new ServiceResponse($this, self::SUCCESS, $result);
         }
 
         /**
          * Get name from user principal.
-         * @return ServiceResponse 
+         * @return ServiceResponse
          */
         public function getName()
         {
                 $this->formatRequest("name");
-                
+
                 $result = $this->_catalog->getName($this->_request->data['principal']);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
@@ -104,12 +104,12 @@ class CatalogHandler extends ServiceHandler
 
         /**
          * Get mail address from user principal.
-         * @return ServiceResponse 
+         * @return ServiceResponse
          */
         public function getMail()
         {
                 $this->formatRequest("mail");
-                
+
                 $result = $this->_catalog->getMail($this->_request->data['principal']);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
@@ -117,12 +117,12 @@ class CatalogHandler extends ServiceHandler
 
         /**
          * Get attribute from user principal.
-         * @return ServiceResponse 
+         * @return ServiceResponse
          */
         public function getAttribute()
         {
                 $this->formatRequest("attribute");
-                
+
                 $result = $this->_catalog->getAttribute($this->_request->data['attribute'], $this->_request->data['principal']);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
@@ -133,7 +133,7 @@ class CatalogHandler extends ServiceHandler
          * @param string $method The request method (GET or POST).
          * @param string $principal The user principal.
          * @param string $output The output format.
-         * @return ServiceResponse 
+         * @return ServiceResponse
          */
         public function getGroups($method = "POST", $principal = null, $output = null)
         {
@@ -143,7 +143,7 @@ class CatalogHandler extends ServiceHandler
                 }
 
                 $this->formatRequest("groups");
-                
+
                 $result = $this->_catalog->getGroups($this->_request->data['principal'], $this->_request->data['attributes']);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
@@ -154,7 +154,7 @@ class CatalogHandler extends ServiceHandler
          * @param string $method The request method (GET or POST).
          * @param string $group The group name.
          * @param string $output The output format.
-         * @return ServiceResponse 
+         * @return ServiceResponse
          */
         public function getMembers($method = "POST", $group = null, $output = null)
         {
@@ -164,7 +164,7 @@ class CatalogHandler extends ServiceHandler
                 }
 
                 $this->formatRequest("members");
-                
+
                 $result = $this->_catalog->getMembers($this->_request->data['group'], $this->_request->data['domain'], $this->_request->data['attributes']);
                 $result = $this->formatResult($result);
                 return new ServiceResponse($this, self::SUCCESS, $result);
@@ -172,7 +172,7 @@ class CatalogHandler extends ServiceHandler
 
         /**
          * Search for user principals.
-         * @return ServiceResponse 
+         * @return ServiceResponse
          */
         public function findPrincipals()
         {
@@ -194,9 +194,9 @@ class CatalogHandler extends ServiceHandler
                 $output = $this->_request->params['output'];
                 $svcref = $this->_request->params['svcref'];
 
-                // 
+                //
                 // Strip service references if requested:
-                // 
+                //
                 if ($svcref == false) {
                         for ($i = 0; $i < count($input); $i++) {
                                 if ($input[$i] instanceof Principal) {
@@ -207,9 +207,9 @@ class CatalogHandler extends ServiceHandler
                         }
                 }
 
-                // 
+                //
                 // Convert single index array to strings:
-                // 
+                //
                 if (is_array(current($input))) {
                         for ($i = 0; $i < count($input); $i++) {
                                 foreach ($input[$i] as $key => $val) {
@@ -220,9 +220,9 @@ class CatalogHandler extends ServiceHandler
                         }
                 }
 
-                // 
+                //
                 // Format output:
-                // 
+                //
                 if ($output == self::OUTPUT_OBJECT) {
                         return $input;
                 } elseif ($output == self::OUTPUT_STRIP) {

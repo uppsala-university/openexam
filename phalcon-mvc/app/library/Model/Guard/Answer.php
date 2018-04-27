@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Answer.php
 // Created: 2017-10-20 14:47:54
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Library\Model\Guard;
 
@@ -32,10 +32,10 @@ use Phalcon\Mvc\Model;
 
 /**
  * Answer model guard.
- * 
+ *
  * Prevent use of various methods known to be problematic. Defined
  * as a trait to be included in various models.
- * 
+ *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 trait Answer
@@ -43,11 +43,11 @@ trait Answer
 
         /**
          * Guard against bad model access.
-         * 
+         *
          * @param array $parameters The query parameters.
          * @return Model
          * @throws Exception
-         * 
+         *
          * @deprecated since 2.0.5
          */
         public static function findFirstByAnswerId($parameters = null)
@@ -57,11 +57,11 @@ trait Answer
 
         /**
          * Guard against bad model access.
-         * 
+         *
          * @param array $parameters The query parameters.
          * @return mixed
          * @throws Exception
-         * 
+         *
          * @deprecated since 2.0.5
          */
         public static function findByAnswerId($parameters = null)

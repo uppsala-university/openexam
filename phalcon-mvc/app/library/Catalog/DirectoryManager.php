@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    DirectoryManager.php
 // Created: 2014-10-22 03:44:35
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Catalog;
 
@@ -37,15 +37,15 @@ use Phalcon\Mvc\User\Component;
 
 /**
  * Directory service manager.
- * 
+ *
  * This class maintains a register of directory services grouped by domains
  * and provides uniform queries against all services registered for a single
  * domain or all domains at once.
- * 
+ *
  * The magic attribute methods. All these methods has a short name equivalent
  * too, i.e. getName(...) vs. name(...). The user principal defaults to caller
  * if unset.
- * 
+ *
  * @method array getAffiliation(string $principal = null, boolean $single = true) Get user affiliation (Principal::ATTR_AFFIL).
  * @method array getAssurance(string $principal = null, boolean $single = true) Get data assurance (Principal::ATTR_ASSUR).
  * @method array|string getName(string $principal = null, boolean $single = true) Get name of user (Principal::ATTR_NAME).
@@ -57,7 +57,7 @@ use Phalcon\Mvc\User\Component;
  * @method array|string getUID(string $principal = null, boolean $single = true) Get username of user (Principal::ATTR_UID).
  *
  * @property-read AttributeEnumerator $attrib Get attribute enumerator.
- * 
+ *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class DirectoryManager extends Component implements DirectoryService
@@ -74,27 +74,27 @@ class DirectoryManager extends Component implements DirectoryService
 
         /**
          * The collection of directory services.
-         * @var array 
+         * @var array
          */
         private $_services;
         /**
          * The user domain.
-         * @var string 
+         * @var string
          */
         private $_domain;
         /**
          * The attributes filter.
-         * @var array 
+         * @var array
          */
         private $_filter;
         /**
          * The directory cache.
-         * @var DirectoryCache 
+         * @var DirectoryCache
          */
         private $_cache;
         /**
          * The attribute enumerator.
-         * @var AttributeEnumerator 
+         * @var AttributeEnumerator
          */
         private $_enumerator;
 
@@ -151,10 +151,10 @@ class DirectoryManager extends Component implements DirectoryService
 
         /**
          * Register an directory service.
-         * 
+         *
          * This function register an directory service as a catalog for
          * one or more domains.
-         *  
+         *
          * @param Adapter $service The directory service.
          * @param array|string $domains The domains.
          * @param string $name Directory service name (optional)
@@ -223,9 +223,9 @@ class DirectoryManager extends Component implements DirectoryService
 
         /**
          * Get services registered for domain.
-         * 
+         *
          * If $domain is null or '*', then all services are returned.
-         * 
+         *
          * @param string $domain The domain name.
          * @return DirectoryService[]
          */
@@ -249,7 +249,7 @@ class DirectoryManager extends Component implements DirectoryService
         /**
          * Check if services is registered for domain.
          * @param string $domain The domain name.
-         * @return boolean 
+         * @return boolean
          */
         public function hasServices($domain)
         {
@@ -259,7 +259,7 @@ class DirectoryManager extends Component implements DirectoryService
         /**
          * Get service.
          * @param string $name The service name.
-         * @return DirectoryService 
+         * @return DirectoryService
          */
         public function getService($name)
         {
@@ -275,7 +275,7 @@ class DirectoryManager extends Component implements DirectoryService
         /**
          * Check if service is defined.
          * @param string $name The service name.
-         * @return boolean 
+         * @return boolean
          */
         public function hasService($name)
         {
@@ -365,33 +365,33 @@ class DirectoryManager extends Component implements DirectoryService
 
         /**
          * Get single attribute (Principal::ATTR_XXX) for user.
-         * 
-         * Returns first found attribute from directory service. Use 
-         * getAttributes() to get full set of attributes from all directory 
+         *
+         * Returns first found attribute from directory service. Use
+         * getAttributes() to get full set of attributes from all directory
          * serices.
-         * 
+         *
          * If $principal argument is missing, then it defaults to calling
          * user that has to be authenticated.
-         * 
+         *
          * <code>
          * // Get email address of caller:
          * $service->getAttribute(Principal::ATTR_MAIL);
-         * 
+         *
          * // Get email address for user@example.com:
          * $service->getAttribute(Principal::ATTR_MAIL, 'user@example.com');
-         * 
+         *
          * // Get given name for user@example.com:
          * $service->getAttribute('user@example.com', Principal::ATTR_GN);
          * </code>
-         * 
+         *
          * Notice that affiliation and assurance are always returned as
          * array. For assurance its questionable if we should return any
          * value at all.
-         * 
+         *
          * @param string $attribute The attribute to return.
          * @param string $principal The user principal name (defaults to caller).
          * @return string|array
-         * 
+         *
          * @see getAttributes()
          */
         public function getAttribute($attribute, $principal = null)
@@ -412,29 +412,29 @@ class DirectoryManager extends Component implements DirectoryService
 
         /**
          * Get multiple attributes (Principal::ATTR_XXX) for user.
-         * 
+         *
          * Returns all attribute from all directory services. A single user
          * might occure in multiple directory services. Each service might also
          * return multiple attributes (mail addresses is a typical case).
-         * 
+         *
          * If $principal argument is missing, then it defaults to calling
          * user that has to be authenticated.
-         * 
+         *
          * <code>
          * // Get email addresses of caller:
          * $service->getAttributes(Principal::ATTR_MAIL);
-         * 
+         *
          * // Get email addresses for user@example.com:
          * $service->getAttributes(Principal::ATTR_MAIL, 'user@example.com');
-         * 
+         *
          * // Get given names for user@example.com:
          * $service->getAttributes(Principal::ATTR_GN, 'user@example.com');
          * </code>
-         * 
+         *
          * @param string $attribute The attribute to return.
          * @param string $principal The user principal name (defaults to caller).
          * @return array
-         * 
+         *
          * @see getAttribute()
          */
         public function getAttributes($attribute, $principal = null)
@@ -455,11 +455,11 @@ class DirectoryManager extends Component implements DirectoryService
 
         /**
          * Get multiple user principal objects.
-         * 
+         *
          * The $needle defines the search string and $search defines the search
          * type. The options parameter defines common search options (i.e. limit
          * on returned records) or which attributes to return.
-         * 
+         *
          * Supported options are:
          * <code>
          * $options = array(
@@ -468,30 +468,30 @@ class DirectoryManager extends Component implements DirectoryService
          *       'domain' => null       // The domain filter
          * )
          * </code>
-         * 
+         *
          * The attr in $options defines which properties to set in returned
          * user principal objects. Non-standard attributes are populated in
          * the attr member of the user principal class.
-         * 
+         *
          * Some examples:
          * <code>
          * // Search for users named Thomas in all domains:
          * $manager->getPrincipal('Thomas');
-         * 
+         *
          * // Search three first Tomas in example.com domain:
          * $manager->getPrincipal('Thomas', Principal::ATTR_GN, array('domain' => 'example.com', 'limit' => 3));
-         * 
+         *
          * // Get email attributes for user thomas:
          * $manager->getPrincipal('thomas', Principal::ATTR_UID, array('attr' => Principal::ATTR_MAIL));
-         * 
+         *
          * // Get email attributes for user principal name thomas@example.com:
          * $manager->getPrincipal('thomas@example.com', Principal::ATTR_PN, array('attr' => Principal::ATTR_MAIL));
          * </code>
-         * 
+         *
          * @param string $needle The attribute search string.
          * @param string $attrib The attribute to query (optional).
          * @param array $options Various search options (optional).
-         * 
+         *
          * @return Principal[] Matching user principal objects.
          */
         public function getPrincipals($needle, $attrib = null, $options = null)
@@ -513,17 +513,17 @@ class DirectoryManager extends Component implements DirectoryService
 
         /**
          * Get single user principal object.
-         * 
+         *
          * Similar to getPrincipals(), but only returns null (not found) or
          * a single principal object. Use $domain to restrict search scope.
          * The $attr array is the attributes to fetch and populate in the
          * principal object returned.
-         * 
+         *
          * @param string $needle The attribute search string.
          * @param string $attrib The attribute to query (optional).
          * @param string $domain The search domain (optional).
          * @param array|string $inject The attributes to return (optional).
-         * 
+         *
          * @return Principal The matching user principal object.
          */
         public function getPrincipal($needle, $attrib = null, $domain = null, $inject = null)
@@ -583,11 +583,11 @@ class DirectoryManager extends Component implements DirectoryService
 
         /**
          * Get service connection.
-         * 
+         *
          * This method will always return null as the service connection is not
-         * unique within the manager, its a container for multiple directory 
+         * unique within the manager, its a container for multiple directory
          * services delivering catalog data for one or more domains.
-         * 
+         *
          * @return Connection
          */
         public function getConnection()

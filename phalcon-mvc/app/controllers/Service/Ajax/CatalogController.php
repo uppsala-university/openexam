@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    CatalogController.php
 // Created: 2014-10-31 10:38:09
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Controllers\Service\Ajax;
 
@@ -32,126 +32,126 @@ use OpenExam\Library\WebService\Handler\CatalogHandler;
 
 /**
  * AJAX controller for catalog (directory information) service.
- * 
+ *
  * All query handlers operating on an user principal name can be called without
  * the principal argument. If principal is missing, then the logged on user
  * principal is used instead.
- * 
+ *
  * To get the department of calling user, just append the required attribute:
- * 
+ *
  * input: '{"attribute":"department"}'  // Use logged on user principal name.
- * 
+ *
  * Query attributes (/ajax/catalog/attribut):
  * ---------------------------------------------
- * 
+ *
  * Get attributes (like email addresses) for user principal.
- * 
+ *
  * // Get mail attribute(s) using default domain:
  * input: '{"principal":"user","attribute":"mail"}'
- * 
+ *
  * // Get mail attribute(s) using principal name:
  * input: '{"principal":"user@example.com","attribute":"mail"}'
- * 
+ *
  * // Get all attributes:
  * input: '{"principal":"user@example.com","attribute":"*"}'
- * 
+ *
  * // Get custom attributes (service dependant) -> ["employee","member","staff"]:
  * input: '{"principal":"user@example.com","attribute":"edupersonaffiliation"}'
- * 
+ *
  * // Get user affiliation of caller -> ["student"]:
  * input: '{"attribute":"affiliation"}'
- * 
+ *
  * Query members (/ajax/catalog/members):
  * ---------------------------------------------
- * 
+ *
  * Get members of group.
- * 
+ *
  * // Get all members in group 3FV271, looking in all domains:
  * input: '{"group":"3FV271"}'
- * 
+ *
  * // Get all members in group 3FV271, looking in domain example.com:
  * input: '{"group":"3FV271","domain":"example.com"}'
- * 
+ *
  * // Filter returned attributes (depends on directory service backend):
  * input: '{"group":"3FV271","attributes":["principal","cn","mail"]}'
- * 
+ *
  * Query principals (/ajax/catalog/principal):
  * ---------------------------------------------
- * 
+ *
  * Get user principal objects. This is a pure search action.
- * 
+ *
  * // Get first five user principals with given name equals to Anders:
  * input: '{"data":{"gn":"Anders"},"params":{"attr":["principal","mail","uid"],"domain":"example.com","limit":5}}'
- * 
+ *
  * // Get complete principal objects:
  * input: '{"data":{"uid":"test*"},"params":{"attr":["*"],"domain":"example.com","data":true}}'
- * 
+ *
  * // Get complete principal objects (better):
  * input: '{"data":{"uid":"test*"},"params":{"attr":["principal","uid","cn","sn","gn","pnr","mail"]}}'
- * 
+ *
  * // Get complete principal objects including extended data:
  * input: '{"data":{"uid":"test*"},"params":{"attr":["*"],"domain":"example.com","data":true}}'
- * 
+ *
  * // Get principal objects including the user affiliation:
  * input: '{"data":{"uid":"test*"},"params":{"attr":["principal","affiliation"]}}'
- * 
+ *
  * Reading groups (/ajax/catalog/groups):
  * ---------------------------------------------
- * 
+ *
  * Get groups that the user principal is a member of.
- * 
+ *
  * // The default is to only list group names:
  * input: '{"principal":"user@example.com"}'
- * 
+ *
  * // Select attributes to include:
  * input: '{"principal":"user@example.com","attributes":["cn","name","gidnumber","distinguishedName","description"]}'
- * 
+ *
  * // Format output. Possible arguments are strip, object, array or compact:
  * '{"data":{"principal":"user@example.com"},"params":{"output":"array"}}'
- * 
+ *
  * // All attributes including nested groups etc. Will fail if attributes
  * // contains binary data:
  * input: '{"principal":"user@example.com","attributes":["*"]}'
- * 
+ *
  * Output formatting:
  * ---------------------------------------------
- * 
+ *
  * Most actions supports output filtering. The output format is submitted in
  * params (for POST). The members and groups action also supports GET request,
  * and the output format is then provided after the subject:
- * 
+ *
  * <code>
  * curl -XGET ${BASEURL}/ajax/catalog/groups/user@example.com/array
  * </code>
- * 
+ *
  * The possible output formatters are: object (default), array, compact
  * and strip.
- * 
+ *
  * o) Some examples:
- * 
+ *
  * // Get member of group formatted as array:
  * input: '{"data":{"group":"3FV271"},"params":{"output":"array"}}'
- * 
+ *
  * // User principals in stripped format:
  * input: '{"data":{"uid":"test*"},"params":{"output":"strip"}}'
- * 
+ *
  * o) Directory entity references:
- * 
+ *
  * By default, the result contains directory entity references to support
- * browsing. If browsing is not required, then the service reference can 
+ * browsing. If browsing is not required, then the service reference can
  * be stripped by passing svcref == false:
- * 
+ *
  * input: '{"data":{...},"params":{"svcref":false}}'
- * 
+ *
  * Combining output formatting with svcref == false can be used to return
  * plain values or simple key/value arrays:
- * 
+ *
  * // Return key/value array of first 10 people named Anders:
  * input: '{"data":{"gn":"Anders"},"params":{"attr":["name"],"output":"strip","svcref":false,"limit":10}}'
- * 
+ *
  * // Same as above, but formatted as plain value array:
  * input: '{"data":{"gn":"Anders"},"params":{"attr":["name"],"output":"compact","svcref":false,"limit":10}}'
- * 
+ *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class CatalogController extends AjaxController
@@ -159,7 +159,7 @@ class CatalogController extends AjaxController
 
         /**
          *
-         * @var CatalogHandler 
+         * @var CatalogHandler
          */
         private $_handler;
 
@@ -212,7 +212,7 @@ class CatalogController extends AjaxController
 
         public function indexAction()
         {
-                
+
         }
 
         /**

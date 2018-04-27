@@ -18,21 +18,21 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    user-search.js
 // Created: 2017-02-23 04:16:57
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
-// 
+//
 // Store tooltips in array for dynamic content update:
-// 
+//
 var opentips = [];
 
-// 
+//
 // Attach user search tooltip (using index) on element:
-// 
+//
 function attachCatalogSearch(index, element)
 {
     var userman = $("#user-insert-box").clone();
@@ -50,9 +50,9 @@ function attachCatalogSearch(index, element)
     opentips.push(opentip);
 }
 
-// 
+//
 // Insert new staff user in tooltip dialog.
-// 
+//
 function insertStaffUser(item)
 {
     if (item.mail === undefined) {
@@ -62,9 +62,9 @@ function insertStaffUser(item)
         item.name = item.id;
     }
 
-    // 
+    //
     // Check if already present:
-    // 
+    //
     $('#user-insert-box').find('.user-staff-add').each(function () {
         if ($(this).attr('data-user') === item.id) {
             item.exist = true;
@@ -75,9 +75,9 @@ function insertStaffUser(item)
         return;
     }
 
-    // 
+    //
     // Create new user entry and append to user-insert-box template:
-    // 
+    //
     var insert = $('#user-insert-box').find('.user-insert-staff > div');
     var uentry = insert.find(".user-staff-entry").first().clone();
     var anchor = uentry.find('.user-staff-add');
@@ -87,9 +87,9 @@ function insertStaffUser(item)
     anchor.text(item.name + ' [' + item.id + ']');
     insert.append(uentry);
 
-    // 
+    //
     // Refresh tooltip content from user-insert-box template:
-    // 
+    //
     for (var i = 0; i < opentips.length; ++i) {
         var opentip = opentips[i];
         var userman = $("#user-insert-box").clone();
@@ -106,9 +106,9 @@ function removeStaffUser(item)
     });
 }
 
-// 
+//
 // Search users in catalog. Return in response callback.
-// 
+//
 function searchCatalogUser(term, response)
 {
     var respObj = [];
@@ -144,9 +144,9 @@ function searchCatalogUser(term, response)
             });
 }
 
-// 
+//
 // Insert user from catalog. The item contains data and element is the target menu list.
-// 
+//
 function insertCatalogUser(item, element)
 {
     element.val('');
@@ -168,9 +168,9 @@ function insertCatalogUser(item, element)
     }
 }
 
-// 
+//
 // Check if corrector exist on question.
-// 
+//
 function hasCorrector(item, anchor)
 {
     item.exists = false;
@@ -185,9 +185,9 @@ function hasCorrector(item, anchor)
     return item.exists;
 }
 
-// 
+//
 // Add corrector on question.
-// 
+//
 function addCorrector(item, anchor, model)
 {
     var qid = anchor.attr('qid');
@@ -199,9 +199,9 @@ function addCorrector(item, anchor, model)
             .end();
 
     if (qid) {
-        // 
+        //
         // Send AJAX request to add corrector of question:
-        // 
+        //
         ajax(
                 baseURL + 'ajax/core/' + role + '/corrector/create',
                 {
@@ -218,9 +218,9 @@ function addCorrector(item, anchor, model)
     }
 }
 
-// 
+//
 // Check if user has role.
-// 
+//
 function hasUserRole(item, anchor)
 {
     item.exists = false;
@@ -235,14 +235,14 @@ function hasUserRole(item, anchor)
     return item.exists;
 }
 
-// 
+//
 // Add user role on exam.
-// 
+//
 function addUserRole(item, anchor, model)
 {
-    // 
+    //
     // Send AJAX request to save added role:
-    // 
+    //
     ajax(
             baseURL + 'ajax/core/' + role + '/' + model + '/create',
             {
@@ -250,49 +250,49 @@ function addUserRole(item, anchor, model)
                 user: item.id
             },
             function (response) {
-                // 
+                //
                 // Prepare item to be added:
-                // 
+                //
                 var entry = anchor.closest('li')
-                        // 
+                        //
                         // Hide default message, if it was visible:
-                        // 
+                        //
                         .find('.menu-level-1')
                         .find('.left-col-def-msg')
                         .hide()
                         .end()
 
-                        // 
+                        //
                         // Find template item and prepare it to add:
-                        // 
+                        //
                         .find('li:first')
                         .clone()
 
-                        // 
+                        //
                         // Update data-ref attribute; helpful in deletion:
-                        // 
+                        //
                         .find('.deluuid')
                         .attr('data-ref', response.id)
                         .end()
                         .show()
 
-                        // 
+                        //
                         // Update username data:
-                        // 
+                        //
                         .find('.left-col-user')
                         .attr('data-user', item.id)
                         .html(item.name)
                         .show()
                         .end();
 
-                // 
+                //
                 // Add item to the menu:
-                // 
+                //
                 anchor.closest('li').find('.menu-level-1').show().append(entry);
 
-                // 
+                //
                 // Append to staff list:
-                // 
+                //
                 insertStaffUser(item);
             });
 
@@ -300,9 +300,9 @@ function addUserRole(item, anchor, model)
 
 $(document).ready(function () {
 
-    // 
+    //
     // Add user top menu from list:
-    // 
+    //
     $(document).on('click', '.user-staff-add', function () {
         var elem = $(this).closest('.user-insert-staff').parent().find('input.user-search');
         var item = {
@@ -313,9 +313,9 @@ $(document).ready(function () {
         return false;
     });
 
-    // 
+    //
     // Add user top menu from input textbox:
-    // 
+    //
     $(document).on('click', '.user-search-add', function () {
         var elem = $(this).parent().find('input.user-search');
         var item = {
@@ -326,9 +326,9 @@ $(document).ready(function () {
         return false;
     });
 
-    // 
+    //
     // Show email address instead of username in user saerch dialog:
-    // 
+    //
     $(document).on('click', '.user-insert-show-mail', function () {
         var checked = $(this).is(':checked');
         $('.user-staff-add').each(function () {
@@ -340,9 +340,9 @@ $(document).ready(function () {
         });
     });
 
-    // 
+    //
     // Handle incremental catalog user search.
-    // 
+    //
     $(document).on("keyup.autocomplete", '.user-search', function () {
         var element = $(this);
         $(this).autocomplete({

@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Members.php
 // Created: 2017-04-11 22:59:40
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Catalog\Manager\Search;
 
@@ -43,17 +43,17 @@ class Members implements Search
 
         /**
          * The group name.
-         * @var string 
+         * @var string
          */
         private $_group;
         /**
          * The search domain.
-         * @var string 
+         * @var string
          */
         private $_domain;
         /**
          * The attribute filter.
-         * @var array 
+         * @var array
          */
         private $_filter;
 
@@ -115,13 +115,12 @@ class Members implements Search
                                 $result = array_merge($result, $members);
                         }
                 }
-
                 return $result;
         }
 
         /**
          * Get directory members.
-         * 
+         *
          * @param DirectoryManager $manager The directory manager.
          * @param DirectoryService $service The directory service.
          * @param string $name The service name.

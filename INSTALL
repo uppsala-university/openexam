@@ -6,14 +6,14 @@
 
    These are the requirements. Tested versions within brackets, but other
    versions might work just OK.
-   
+
         *) PHP >= 5.6.x || 7.x [5.6.33, 7.0.27]
         *) An SQL database (RDBS) supported by PDO. [MySQL 5.6.38]
         *) Apache web server [2.4.27]
         *) Composer 1.2.xxx [2016-09-12]
-	 
+
    PECL Extensions (including those builtin in PHP):
-	    
+
         *) phalcon.so  - Core MVC functionality, use the 3.x branch (required).
         *) fileinfo.so - For detection of MIME type for uploaded files (required).
 
@@ -25,7 +25,7 @@
         *) pcntl.so    - Signal handling in render worker (optional).
         *) soap.so     - Service intergration with external systems (optional).
 
-   The script admin/compat/check.sh will check the code and display a list of all 
+   The script admin/compat/check.sh will check the code and display a list of all
    required extensions.
 
    It's highly recommended to enable database, model and catalog information cache
@@ -35,9 +35,9 @@
         *) apcu.so     - System local cache when using PHP 5.6/7.x (recommended).
         *) redis.so    - Distributed database query cache (recommended).
 
-   If getting errors about the apc_fetch() function is missing when using PHP 7.x, 
-   try to install the APCu backwards compatibility module. Make sure to load this 
-   extension after apcu. Downloaded source code from https://pecl.php.net/apcu_bc 
+   If getting errors about the apc_fetch() function is missing when using PHP 7.x,
+   try to install the APCu backwards compatibility module. Make sure to load this
+   extension after apcu. Downloaded source code from https://pecl.php.net/apcu_bc
    if required.
 
    Useful links for downloading required software:
@@ -48,13 +48,13 @@
 ** CONFIGURATION:
 
    Turn off magic quotes in php.ini:
-   
+
         magic_quotes_gpc = Off
         magic_quotes_runtime = Off
-   
-   It's no longer recommended to enable magic quotes. This feature defaults 
+
+   It's no longer recommended to enable magic quotes. This feature defaults
    to off in PHP 5.3.x and is scheduled for removal in PHP 6.
-   
+
 ** INSTALL:
 
    To keep instructions compact, lets define some SHELL variables to use:
@@ -65,7 +65,7 @@
 
    1. Install Composer:
 
-      Package dependencies are handled by Composer: https://getcomposer.org/. Follow these 
+      Package dependencies are handled by Composer: https://getcomposer.org/. Follow these
       instructions for installing Composer globally:
 
             bash$> curl -sS https://getcomposer.org/installer | \
@@ -92,7 +92,7 @@
       extension is enabled:
 
             bash$> php -m | grep phalcon
-      
+
    3. Install OpenExam:
 
       o) From source code:
@@ -119,7 +119,7 @@
    4. Configure OpenExam:
 
       Make config protected versions from the template configuration files (*.def.in):
-	       
+
             bash$> cd ${appdir}/openexam-online/phalcon-mvc/app/config
             bash$> for f in *.in; do cp -i $f ${f%%.in}; done
 
@@ -131,9 +131,9 @@
       UPDATE and DELETE privileges. If using phalcon.php (phalcon/devtools), then the connection
       must be granted CREATE, ALTER and DROP table privileges.
 
-      Insert the connection parameter in ${appdir}/openexam-online/phalcon-mvc/app/config/config.def. 
-      
-      Repeat the database creation procedure on any SQL-server that is going to be used for load 
+      Insert the connection parameter in ${appdir}/openexam-online/phalcon-mvc/app/config/config.def.
+
+      Repeat the database creation procedure on any SQL-server that is going to be used for load
       balancing. For a simple setup without load balancing, the same same SQL-server (typical 
       running on localhost) is going to be used both for dbread and dbwrite.
 
@@ -160,13 +160,13 @@
 
    6. Language support:
 
-      To get laguage support (translation) working, you have to compile the *.po files for your 
+      To get laguage support (translation) working, you have to compile the *.po files for your
       platform. This is done by running make in the package root directory:
 
             bash$> cd ${appdir}/openexam-online
             bash$> make
 
-      This should compile all *.po to *.mo that can be read by PHP's GNU gettext extension. If 
+      This should compile all *.po to *.mo that can be read by PHP's GNU gettext extension. If
       the gettext extension is missing, then application defaults to english text.
 
    7. Javascript plugins:
@@ -174,10 +174,10 @@
       Install required javascript plugins by running:
 
         o) cd ${appdir}/openexam-online/phalcon-mvc/public/plugins && ./mathjax.sh
-	    
+
    8. Finishing:
 
-      The user defined setting files (*.def) should not be readable by world, only by trusted 
+      The user defined setting files (*.def) should not be readable by world, only by trusted
       users and the account the web server is running under (see admin/setperm.sh):
 
             bash$> cd ${appdir}/openexam-online/phalcon-mvc/app/config

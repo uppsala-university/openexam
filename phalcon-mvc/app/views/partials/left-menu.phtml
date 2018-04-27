@@ -17,12 +17,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    left-menu.phtml
-// 
+//
 // Author:  Ahsan Shahzad (MedfarmDoIT)
 // Author:  Anders Lövgren (QNET)
-// 
+//
 
 
 $userRoles = array(
@@ -43,7 +43,7 @@ $exam->is_contributable = in_array("contributable", $exam->flags);
 
         <!-- Roles listing section -->
         <?php foreach ($userRoles as $model => $name): ?>
-                <li> 
+                <li>
                     <?php $roles = $exam->{$model . 's'}; ?>
                     <span style="display: flex">
                         <a href="#" style="min-width: 180px;" rel="menu-level-1" data-model="<?= $model ?>" id="uu-id<?= $i++ ?>">
@@ -65,17 +65,17 @@ $exam->is_contributable = in_array("contributable", $exam->flags);
                                 <li style="display:none;">
                                     <span>
                                         <a href="#" class="deluuid" data-ref="">
-                                            <i class="menu-item-del fa fa-minus-circle" aria-hidden="true"></i>                                  
+                                            <i class="menu-item-del fa fa-minus-circle" aria-hidden="true"></i>
                                         </a>
                                         <a href="#" class="prevent">
                                             <span class="left-col-user" data-user=""></span>
-                                        </a> 
+                                        </a>
                                     </span>
                                 </li>
                         <?php endif; ?>
 
-                        <li style=" <?= (count($roles) ? 'display:none' : '') ?>" class="left-col-def-msg"> 
-                            <a href="#" class="prevent">&nbsp;<span class="left-col-def-msg">No user has been added</span></a> 
+                        <li style=" <?= (count($roles) ? 'display:none' : '') ?>" class="left-col-def-msg">
+                            <a href="#" class="prevent">&nbsp;<span class="left-col-def-msg">No user has been added</span></a>
                         </li>
 
                         <?php foreach ($roles as $user): ?>
@@ -83,15 +83,15 @@ $exam->is_contributable = in_array("contributable", $exam->flags);
                                     <span>
                                         <?php if ($this->user->hasCapability($model, 'delete') && $exam->is_editable): ?>
                                                 <a href="#" class="deluuid" data-ref="<?= $user->id ?>">
-                                                    <i class="menu-item-del fa fa-minus-circle" aria-hidden="true"></i>                                  
+                                                    <i class="menu-item-del fa fa-minus-circle" aria-hidden="true"></i>
                                                 </a>
                                         <?php endif; ?>
 
-                                        <a href="#" class="prevent"> 
+                                        <a href="#" class="prevent">
                                             <span class="left-col-user" data-user="<?= $user->user ?>" data-mail="<?= $user->mail[0] ?>">
                                                 <?= $user->display ?>
-                                            </span> 
-                                        </a> 
+                                            </span>
+                                        </a>
                                     </span>
                                 </li>
                         <?php endforeach ?>
@@ -100,10 +100,10 @@ $exam->is_contributable = in_array("contributable", $exam->flags);
         <?php endforeach; ?>
 
         <!-- Students listing section -->
-        <li> 
+        <li>
             <span style="display: flex">
                 <a href="#" style="min-width: 180px;">
-                    <i class="menu-list-caret fa fa-caret-right" aria-hidden="true"></i> 
+                    <i class="menu-list-caret fa fa-caret-right" aria-hidden="true"></i>
                     &nbsp;Students (<span class="total-exam-students"><?= count($exam->getStudents()) ?></span>)
                 </a>
 
@@ -114,13 +114,13 @@ $exam->is_contributable = in_array("contributable", $exam->flags);
                             <?php else: ?>
                                     <i class="menu-item-off fa fa-gear" aria-hidden="true"></i>
                             <?php endif; ?>
-                        </a>                        
+                        </a>
                 <?php endif; ?>
             </span>
         </li>
 
         <!-- Question listing section -->
-        <li> 
+        <li>
             <span style="display: flex">
                 <a href="#" style="min-width: 180px;" rel="menu-level-1">
                     <i class="menu-list-caret fa fa-caret-down" aria-hidden="true"></i>
@@ -135,17 +135,17 @@ $exam->is_contributable = in_array("contributable", $exam->flags);
             </span>
 
             <ul class="menu-level-1 sortable-qs" topic-id="<?= $exam->topics[0]->id ?>">
-                <li class="left-col-item" style="display:none"> 
-                    <span class="q" q-no=""></span> 
-                    <span class="q-txt"></span> 
-                </li>                                                
+                <li class="left-col-item" style="display:none">
+                    <span class="q" q-no=""></span>
+                    <span class="q-txt"></span>
+                </li>
                 <?php if (($questions = $exam->getQuestions(array("order" => "slot")))) : ?>
                         <?php if (count($questions)) : ?>
                                 <?php foreach ($questions as $key => $question): ?>
                                         <?php $questArr = json_decode($question->quest, true); ?>
-                                        <li q-id="<?= $question->id ?>" class="left-col-item"> 
-                                            <span class="q" q-no="<?= $question->slot ?>">Q<?= $question->slot ?>:</span> 
-                                            <span class="q-txt"><?= substr(strip_tags($questArr['a']['q_text']), 0, 75) ?></span> 
+                                        <li q-id="<?= $question->id ?>" class="left-col-item">
+                                            <span class="q" q-no="<?= $question->slot ?>">Q<?= $question->slot ?>:</span>
+                                            <span class="q-txt"><?= substr(strip_tags($questArr['a']['q_text']), 0, 75) ?></span>
                                         </li>
                                         <?php $question->slot ?>
                                 <?php endforeach; ?>
@@ -159,12 +159,12 @@ $exam->is_contributable = in_array("contributable", $exam->flags);
 <script>
         $(function () {
 
-            // 
+            //
             // Initialize opentip for adding users for roles:
-            // 
+            //
             $('.search-catalog-service').each(function (index, element) {
                 attachCatalogSearch(index, element);
             });
 
         });
-</script> 
+</script>

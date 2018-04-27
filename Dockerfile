@@ -13,12 +13,13 @@ RUN curl -sSL "https://codeload.github.com/phalcon/cphalcon/tar.gz/v${PHALCON_VE
 ############################
 
 RUN apt-get update -y \
-    && apt-get install -y openssl zip unzip git mysql-client gettext-base \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y openssl zip unzip git mysql-client gettext-base libldap2-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN docker-php-ext-install pdo pdo_mysql mbstring gettext
+RUN docker-php-ext-install pdo pdo_mysql mbstring ldap gettext
 
 RUN echo extension=gettext.so > /usr/local/etc/php/conf.d/gettext.ini
 

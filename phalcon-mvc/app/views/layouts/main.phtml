@@ -21,14 +21,14 @@ use Phalcon\Tag;
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    main.phtml
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
 // Author:  Ahsan Shahzad (MedfarmDoIT)
-// 
+//
 // Add profiling check point:
-// 
+//
 $this->profiler->add("view");
 
 ?>
@@ -91,7 +91,7 @@ $user = $this->user->getUser();
 
 $link = new NavigateMenuActivator($ctrl, $user);
 
-if ($theme == 'high-contrast') {
+if (!empty($theme) && $theme == 'high-contrast') {
         $theme_high_contrast = "active";
 } else {
         $theme_high_contrast = "";
@@ -100,10 +100,10 @@ if ($theme == 'high-contrast') {
 ?>
 
 <!-- Header area -->
-<div id="oe-header"> 
+<div id="oe-header">
 
     <!-- Top navigation -->
-    <div class="component"> 
+    <div class="component">
 
         <!-- Logo -->
         <div class="top-image">
@@ -132,16 +132,16 @@ if ($theme == 'high-contrast') {
     </div>
 
     <!-- Top menu -->
-    <div id="oe-top-menu"> 
+    <div id="oe-top-menu">
         <nav class="navbar navbar-inverse" style="z-index: 1">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>                        
+                        <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand hidden-sm hidden-md hidden-lg" href="<?= $this->url->get() ?>">OpenExam</a>  
+                    <a class="navbar-brand hidden-sm hidden-md hidden-lg" href="<?= $this->url->get() ?>">OpenExam</a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="myNavbar">
@@ -282,7 +282,7 @@ if ($theme == 'high-contrast') {
                     </ul>
                 </div>
             </div>
-        </nav>            
+        </nav>
     </div>
 </div>
 

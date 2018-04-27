@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    User.php
 // Created: 2014-09-02 10:57:05
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Library\Security;
 
@@ -35,28 +35,28 @@ use Phalcon\Mvc\User\Component;
 
 /**
  * Represents a logged on user.
- * 
+ *
  * This class supports user principal names. The default domain for
- * unqualified usernames must be set in system config. 
- * 
- * This class is intentional immutable to prevent priviledge escalation 
+ * unqualified usernames must be set in system config.
+ *
+ * This class is intentional immutable to prevent priviledge escalation
  * by changing the user associated with the roles by misstake.
- * 
+ *
  * The "act-as" pattern is supported by passing an array of roles to
- * the constructor or by setting the roles property. Use this feature 
+ * the constructor or by setting the roles property. Use this feature
  * with *caution* as it is effectivelly user impersonation. True user
  * impersonation is supported by the impersonate() method.
- * 
- * The affiliation is working on the effective user, not the real user. 
+ *
+ * The affiliation is working on the effective user, not the real user.
  * This means that if impersonation is active, then affiliation is done
  * using the impersonated user, not the actor (real user).
- * 
+ *
  * @property Roles $roles The roles associated with this user.
  * @property Settings $settings The user settings.
  * @property-read Impersonation $impersonation The current impersonation.
  * @property-read Affiliation $affiliation The user affiliation.
  * @property-read Departments $departments The user departments.
- * 
+ *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class User extends Component
@@ -64,27 +64,27 @@ class User extends Component
 
         /**
          * The user domain.
-         * @var string 
+         * @var string
          */
         private $_domain;
         /**
          * The user name.
-         * @var string 
+         * @var string
          */
         private $_user;
         /**
          * The primary role.
-         * @var string 
+         * @var string
          */
         private $_role;
         /**
          * The primary group.
-         * @var string 
+         * @var string
          */
         private $_group;
         /**
          * Construction time injected roles.
-         * @var array 
+         * @var array
          */
         private $_injected;
 
@@ -225,7 +225,7 @@ class User extends Component
 
         /**
          * Check action capability on model.
-         * 
+         *
          * @param string|ModelBase $model The model object or resource string.
          * @param string $action The requested action (i.e. create or delete).
          * @return bool
@@ -237,24 +237,24 @@ class User extends Component
 
         /**
          * Acquire roles on object.
-         * 
+         *
          * Try to acquire multiple roles at once. Returns the acquired roles or
-         * false if none was acquired. If $id == 0, then roles are acquired 
+         * false if none was acquired. If $id == 0, then roles are acquired
          * globally.
-         * 
+         *
          * <code>
          * // Get specific roles acquired:
          * $roles = $this->user->acquire(array('admin', 'teacher', 'student'), $id);
-         * 
+         *
          * // Get all acquired roles:
          * $roles = $this->user->roles->getRoles($id);
          * </code>
-         * 
+         *
          * Use the bind parameter to connect id with non-native model for that
          * role. For example, the corrector role is native allocated against the
          * question model. Pass bind == 'exam' to check corrector role agains
          * the exam instead.
-         * 
+         *
          * @param array $roles The requested roles.
          * @param int $id The object ID.
          * @param string $bind The model to bind id against.
@@ -276,17 +276,17 @@ class User extends Component
 
         /**
          * Enable impersonation as $user.
-         * 
+         *
          * If user is set, then impersonation is enabled as user if caller
          * is admin. The current username (in this object) is replaced with
          * the user argument.
-         * 
+         *
          * If user is unset, then the current impersonation is breaked and
          * original user (from actor) is restored as current username in this
          * user object.
-         * 
+         *
          * @param string $user The user to impersonate.
-         * @return boolean 
+         * @return boolean
          */
         public function impersonate($user)
         {
@@ -313,7 +313,7 @@ class User extends Component
 
         /**
          * Get roles object.
-         * 
+         *
          * @return Roles
          */
         private function getRoles()
@@ -386,10 +386,10 @@ class User extends Component
 
         /**
          * Get user primary group.
-         * 
-         * If primary group is unset, then the trailing part of the department 
+         *
+         * If primary group is unset, then the trailing part of the department
          * name is used. The department name is fetched from the catalog.
-         * 
+         *
          * @return string
          */
         public function getPrimaryGroup()

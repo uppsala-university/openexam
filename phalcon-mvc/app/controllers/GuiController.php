@@ -18,13 +18,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    GuiController.php
 // Created: 2014-08-27 11:35:20
-// 
+//
 // Author:  Ahsan Shahzad (MedfarmDoIT)
 //          Anders Lövgren (BMC-IT)
-// 
+//
 
 namespace OpenExam\Controllers;
 
@@ -41,10 +41,10 @@ use const CONFIG_DIR;
 
 /**
  * Base class for GUI controllers.
- * 
+ *
  * Controllers that (mostly) have actions with visual interface can derive from
  * this class to use the main layout.
- *  
+ *
  * @author Ahsan Shahzad (MedfarmDoIT)
  * @author Anders Lövgren (BMC-IT)
  */
@@ -59,22 +59,22 @@ class GuiController extends ControllerBase
                 $this->detectPrimaryRole();
                 $this->detectRequestParams();
 
-                // 
+                //
                 // Set authenticators list for HTML template:
-                // 
+                //
                 $this->view->setVar("authenticators", $this->auth->getChain("web"));
 
-                // 
+                //
                 // Set user interface theme:
-                // 
+                //
                 if ($this->cookies->has("theme")) {
                         $theme = $this->cookies->get("theme")->getValue();
                         $this->view->setVar("theme", $theme);
                 }
 
-                // 
+                //
                 // Try to acquire all roles:
-                // 
+                //
                 $this->user->acquire(array(
                         Roles::ADMIN,
                         Roles::CREATOR,
@@ -148,10 +148,10 @@ class GuiController extends ControllerBase
          */
         public function exceptionAction($exception)
         {
-                // 
+                //
                 // See https://github.com/phalcon/cphalcon/issues/2851 for discussion under
                 // which circumstances forward to error page will fail.
-                // 
+                //
                 echo $exception->getMessage();
                 $error = new Error($exception);
 
@@ -216,7 +216,7 @@ class GuiController extends ControllerBase
 
         /**
          * Get access permission map.
-         * 
+         *
          * @param string $controller The requested controller.
          * @param string $action The requested action.
          * @return Config
@@ -231,40 +231,40 @@ class GuiController extends ControllerBase
 
         /**
          * Check dispatched route.
-         * 
+         *
          * @param string $controller The requested controller.
          * @param string $action The requested action.
          * @param array $params Optional parameters.
-         * 
+         *
          * @return boolean
          * @throws SecurityException
          */
         private function checkRoute($controller, $action, $params)
         {
-                // 
+                //
                 // Get access permissions:
-                // 
+                //
                 $permit = $this->getPermissionMap($controller, $action);
 
-                // 
+                //
                 // Set dispatcher params if defined:
-                // 
+                //
                 if (isset($params)) {
                         foreach ($params as $key => $val) {
                                 $this->dispatcher->setParam($key, $val);
                         }
                 }
 
-                // 
+                //
                 // Inject primary role if requested:
-                // 
+                //
                 if (($role = $this->dispatcher->getParam('role'))) {
                         $this->injectPrimaryRole($role);
                 }
 
-                // 
+                //
                 // Bypass for non-configured controller/action:
-                // 
+                //
                 if (!isset($permit)) {
                         if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
                                 $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rule missing)", $controller, $action));
@@ -278,9 +278,9 @@ class GuiController extends ControllerBase
                         return true;
                 }
 
-                // 
+                //
                 // Using roles == '*' means access for all roles:
-                // 
+                //
                 if ($permit[0] == '*') {
                         if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
                                 $this->logger->access->debug(sprintf("Bypass access restriction on %s -> %s (access rule is '*')", $controller, $action));
@@ -288,16 +288,16 @@ class GuiController extends ControllerBase
                         return true;
                 }
 
-                // 
+                //
                 // Using roles == '@' means any roles:
-                // 
+                //
                 if ($permit[0] == '@') {
                         $permit = $this->capabilities->getRoles();
                 }
 
-                // 
+                //
                 // Check exam access:
-                // 
+                //
                 if (($id = $this->dispatcher->getParam('eid'))) {
                         if (($roles = $this->user->acquire($permit, $id, 'exam'))) {
                                 if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
@@ -313,9 +313,9 @@ class GuiController extends ControllerBase
                         }
                 }
 
-                // 
+                //
                 // Check question access:
-                // 
+                //
                 if (($id = $this->dispatcher->getParam('qid'))) {
                         if (($roles = $this->user->acquire(array(Roles::CORRECTOR), $id))) {
                                 if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
@@ -331,9 +331,9 @@ class GuiController extends ControllerBase
                         }
                 }
 
-                // 
+                //
                 // Check role access:
-                // 
+                //
                 if (($roles = $this->user->acquire($permit))) {
                         if ($this->logger->access->getLogLevel() >= Logger::DEBUG) {
                                 $this->logger->access->debug(sprintf("Permitted role based access on %s -> %s (roles: %s)", $controller, $action, implode(",", $roles)));
@@ -342,9 +342,9 @@ class GuiController extends ControllerBase
                         return true;
                 }
 
-                // 
+                //
                 // Nuke access with a proper contact us message:
-                // 
+                //
                 throw new SecurityException(sprintf(
                     "You are not allowed to access this URL. Please contact <a href='mailto:%s'>%s</a> if you think this is an error.", $this->config->contact->addr, $this->config->contact->name
                 ), Error::METHOD_NOT_ALLOWED
@@ -353,44 +353,44 @@ class GuiController extends ControllerBase
 
         /**
          * Perform access check.
-         * 
+         *
          * Check if caller has permission to access route (controller -> action)
          * based on rules in user configuration file access.def. The control
          * is done against list of explicit defined private URL's. If a route
          * is not defined, then access is permitted.
-         * 
-         * Object specific check (thru role acquire) is done if exam or question 
+         *
+         * Object specific check (thru role acquire) is done if exam or question
          * ID is passed in request. The order of access check is: question,
-         * exam and then generic role acquire check. 
-         * 
-         * For actions where exam/question ID is passed as method argument, 
+         * exam and then generic role acquire check.
+         *
+         * For actions where exam/question ID is passed as method argument,
          * set dispatch parameters or pass them as method argument. Notice that
          * setParams() will replace other dispatch parameters.
-         * 
+         *
          * <code>
          * $this->dispatcher->setParam('eid', 18372);
          * $this->dispatcher->setParam('qid', 69456);
-         * 
+         *
          * $this->dispatcher->setParams(array(
          *      'eid' => 18372
          *      'qid' => 29456
          * ));
-         * 
+         *
          * $this->checkAccess(array('eid' => 18372));
          * $this->checkAccess(array('qid' => 69456));
          * </code>
-         * 
+         *
          * The same method can also be used for setting primary role:
          * <code>
          * $this->dispatcher->setParam('role', 'contributor');
          * $this->checkAccess();
-         * 
+         *
          * $this->checkAccess(array('role' => 'contributor'));
          * </code>
-         * 
-         * Return true if access is permitted. Throws an exception if the route 
+         *
+         * Return true if access is permitted. Throws an exception if the route
          * is private and no permitted role was acquired.
-         * 
+         *
          * @param array $params The object ID's
          * @return boolean
          * @throws SecurityException

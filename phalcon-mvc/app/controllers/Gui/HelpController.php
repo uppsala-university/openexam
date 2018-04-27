@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    HelpController.php
 // Created: 2015-11-23 22:05:44
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Controllers\Gui;
 
@@ -41,7 +41,7 @@ class HelpController extends GuiController
 
         /**
          * Supported MIME types.
-         * @var array 
+         * @var array
          */
         private static $_mime = array(
                 "pdf"  => "application/pdf",
@@ -50,7 +50,7 @@ class HelpController extends GuiController
         );
         /**
          * Help content description.
-         * @var array 
+         * @var array
          */
         private static $_help = array(
                 "manual" => array(
@@ -119,21 +119,21 @@ class HelpController extends GuiController
         {
                 $filename = sprintf("%s/LICENSE", PROJ_DIR);
                 $content = file_get_contents($filename);
-                
+
                 $this->view->setVar('content', $content);
         }
 
         /**
          * Handle manual request.
-         * 
+         *
          * Deliver manual content or (if manual content is missing), provide
          * links to downloadable content.
-         * 
+         *
          * @param string $target The target manual.
          * @param string $language The manual language.
          * @param string $format The manual format (e.g. pdf)
          * @throws Exception
-         * 
+         *
          * @location /help/manual/*
          */
         public function manualAction($target = null, $language = null, $format = "pdf")
@@ -145,10 +145,10 @@ class HelpController extends GuiController
                         'english' => 'en'
                 );
 
-                // 
-                // Use prefered language unless explicit selecting other 
+                //
+                // Use prefered language unless explicit selecting other
                 // language. The default language is swedish.
-                // 
+                //
                 if (!isset($language)) {
                         $language = $this->locale->getLanguage(
                             $this->locale->getLocale()
@@ -173,10 +173,10 @@ class HelpController extends GuiController
 
         /**
          * Handles the teacher manual.
-         * 
+         *
          * This manual should be restricted. This is subject to changes and
          * should defined in access.def.
-         * 
+         *
          * @param string $target The target manual.
          * @param string $language The manual language.
          * @param string $format The manual format (e.g. pdf)
@@ -197,10 +197,10 @@ class HelpController extends GuiController
 
         /**
          * Handles the student manual.
-         * 
+         *
          * This manual should be restricted. This is subject to changes and
          * should defined in access.def.
-         * 
+         *
          * @param string $target The target manual.
          * @param string $language The manual language.
          * @param string $format The manual format (e.g. pdf)
@@ -217,7 +217,7 @@ class HelpController extends GuiController
 
         /**
          * Send manual in requested format.
-         * 
+         *
          * @param string $path The absolute path.
          * @param string $name The file name.
          * @param string $format Requested format (e.g. pdf)

@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Affilation.php
 // Created: 2015-03-16 00:31:09
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Catalog;
 
@@ -31,13 +31,13 @@ use Phalcon\Mvc\User\Component;
 
 /**
  * User affiliation class.
- * 
+ *
  * This class provides user affiliation information from the catalog service.
  * Notice that properties (e.g. student) is unrelated to roles in the system.
- * 
+ *
  * The class uses lazy loading. The user affiliation is loaded on demand from
  * the catalog whenever one of the member functions is called.
- * 
+ *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
 class Affiliation extends Component
@@ -66,21 +66,21 @@ class Affiliation extends Component
 
         /**
          * All user affiliations.
-         * @var array 
+         * @var array
          */
         private $_affiliations;
         /**
          * The affected principal name.
-         * @var string 
+         * @var string
          */
         private $_principal;
 
         /**
          * Constructor.
-         * 
+         *
          * If user principal name is null, then current logged on user is
          * used as target user for catalog queries.
-         * 
+         *
          * @param string $principal The user principal name.
          */
         public function __construct($principal = null)
@@ -168,7 +168,6 @@ class Affiliation extends Component
                 if (!isset($this->_affiliations)) {
                         $this->setAffilations();
                 }
-
                 return $this->_affiliations;
         }
 

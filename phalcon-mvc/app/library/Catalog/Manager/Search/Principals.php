@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Principals.php
 // Created: 2017-04-12 00:10:14
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Catalog\Manager\Search;
 
@@ -43,23 +43,23 @@ class Principals implements Search
 
         /**
          * The attribute search string.
-         * @var string 
+         * @var string
          */
         private $_needle;
         /**
          * The attribute to query.
-         * @var string 
+         * @var string
          */
         private $_attrib;
         /**
          * Miscellanous search options
-         * @var array 
+         * @var array
          */
         private $_options;
 
         /**
          * Constructor.
-         * 
+         *
          * @param DirectoryManager $manager The directory manager.
          * @param string $needle The attribute search string.
          * @param string $attrib The attribute to query (optional).
@@ -176,7 +176,7 @@ class Principals implements Search
 
         /**
          * Get directory principals.
-         * 
+         *
          * @param DirectoryManager $manager The directory manager.
          * @param DirectoryService $service The directory service.
          * @param string $name The service name.
