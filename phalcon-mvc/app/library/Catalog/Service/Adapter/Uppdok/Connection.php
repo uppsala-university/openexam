@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Connection.php
 // Created: 2016-06-02 01:42:45
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Catalog\Service\Adapter\Uppdok;
 
@@ -50,10 +50,10 @@ if (!defined('INFO_CGI_VERBOSE')) {
 
 /**
  * The UPPDOK service connection.
- * 
+ *
  * Connection to UPPDOK (thru InfoCGI) is stateless, so we always return
  * true on open() and connected().
- * 
+ *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
 class Connection extends Component implements ServiceConnection
@@ -66,27 +66,27 @@ class Connection extends Component implements ServiceConnection
 
         /**
          * The cURL handle.
-         * @var resource 
+         * @var resource
          */
         private $_handle;
         /**
          * The InfoCGI service username.
-         * @var string 
+         * @var string
          */
         private $_user;
         /**
          * The InfoCGI service password.
-         * @var string 
+         * @var string
          */
         private $_pass;
         /**
          * The InfoCGI service hostname.
-         * @var string 
+         * @var string
          */
         private $_host;
         /**
          * The InfoCGI service port.
-         * @var int 
+         * @var int
          */
         private $_port;
 
