@@ -206,6 +206,7 @@ class Ldap extends AttributeService
                 //
                 $filter = sprintf("(&(objectClass=%s)(%s=%s))", $class, $this->_attrmap[$class][$type], $value);
 
+
                 //
                 // Search directory tree and return entries:
                 //

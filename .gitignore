@@ -5,3 +5,4 @@ nbproject/private
 logs/
 .env.db
 simplesamlphp
+.DS_Store
