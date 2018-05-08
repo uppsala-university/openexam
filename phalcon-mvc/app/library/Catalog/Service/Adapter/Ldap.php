@@ -73,7 +73,6 @@ class Ldap extends AttributeService
         {
                 $this->_conn = $connection;
                 $this->_type = 'ldap';
-
                 parent::__construct(array(
                         'person' => array(
                                 Principal::ATTR_UID   => 'uid',
@@ -206,7 +205,6 @@ class Ldap extends AttributeService
                 //
                 $filter = sprintf("(&(objectClass=%s)(%s=%s))", $class, $this->_attrmap[$class][$type], $value);
 
-
                 //
                 // Search directory tree and return entries:
                 //
@@ -239,7 +237,7 @@ class Ldap extends AttributeService
          * @param string $class The LDAP object class (e.g. user or group).
          * @return array The directory entry data.
          */
-        private function read($path, $attributes, $class = 'person')
+        private function read($path, $attributes = array(), $class = 'person')
         {
                 //
                 // Return entry from cache if existing:
@@ -456,7 +454,7 @@ class Ldap extends AttributeService
          * @param array $attributes The attributes to return.
          * @return array
          */
-        public function getGroups($principal, $attributes = null)
+        public function getGroups($principal, $attributes = array())
         {
                 //
                 // Return entry from cache if existing:
@@ -638,7 +636,7 @@ class Ldap extends AttributeService
          * @param array $attributes The attributes to return.
          * @return Principal[]
          */
-        public function getMembers($group, $domain = null, $attributes = null)
+        public function getMembers($group, $domain = null, $attributes = array())
         {
                 //
                 // Return entry from cache if existing:
