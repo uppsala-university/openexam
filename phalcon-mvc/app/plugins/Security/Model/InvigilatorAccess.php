@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    InvigilatorAccess.php
 // Created: 2014-09-30 14:51:27
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Plugins\Security\Model;
 
@@ -41,7 +41,7 @@ class InvigilatorAccess extends ObjectAccess
 
         /**
          * Check object role.
-         * 
+         *
          * @param string $action The model action.
          * @param Invigilator $model The model object.
          * @param User $user The peer object.
@@ -55,13 +55,13 @@ class InvigilatorAccess extends ObjectAccess
                         ));
                 }
 
-                // 
+                //
                 // Perform access control in a trusted context:
-                // 
+                //
                 return $this->trustedContextCall(function($role) use($action, $model, $user) {
-                            // 
+                            //
                             // Check role on exam, question or global:
-                            // 
+                            //
                             if ($role == Roles::CONTRIBUTOR ||
                                 $role == Roles::CREATOR ||
                                 $role == Roles::DECODER ||

@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    CoreHandler.php
 // Created: 2014-09-30 10:09:52
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Library\Core\Handler;
 
@@ -42,7 +42,7 @@ use stdClass;
 
 /**
  * Core service handler.
- * 
+ *
  * This class acts as the glue between AJAX/REST/SOAP services and the
  * model. It provides an interface for CRUD-operations against all models
  * and their underlying tables.
@@ -92,10 +92,11 @@ class CoreHandler extends Component
          * Build model object from name and data.
          * @param string $name The model name (lower case).
          * @param array $data The model data.'
-         * @return Model 
+         * @return Model
          */
         public function build($name, $data)
         {
+
                 $class = ModelBase::getRelation($name);
 
                 if (!class_exists($class)) {
@@ -128,16 +129,16 @@ class CoreHandler extends Component
 
         /**
          * Perform action.
-         * 
+         *
          * This function uses database transactions if number of models are
          * greater than one. Requested action is etiher performed on all
          * models or none (rollback).
-         * 
+         *
          * @param Model[] $models The input models.
          * @param string $action The action to perform.
          * @param array $params Optional parameters for read action.
-         * 
-         * @return mixed 
+         *
+         * @return mixed
          * @throws Exception
          * @see http://docs.phalconphp.com/en/latest/api/Phalcon_Mvc_Model_Query_Builder.html
          */
@@ -293,32 +294,32 @@ class CoreHandler extends Component
 
         /**
          * Query model.
-         * 
-         * The behavour depends on whether the model ID is set or not. If the 
+         *
+         * The behavour depends on whether the model ID is set or not. If the
          * ID != 0, then the single object having that ID is returned. If the
          * ID == 0, then a result set is returned where the model argument is
          * used for defining a simple where query.
-         * 
-         * If called with primary role set and if the argument is an exam or 
+         *
+         * If called with primary role set and if the argument is an exam or
          * question model object, then the returned objects is restricted to
          * the calling user and role.
-         * 
+         *
          * @param Model $model
          * @return array|Model
          * @throws Exception
          */
         public function read($model, $params = array())
         {
-                // 
+                //
                 // Set default count policy:
-                // 
+                //
                 if (!isset($params['count'])) {
                         $params['count'] = self::COUNT_DEFAULT;
                 }
 
-                // 
+                //
                 // Strip relations from model.
-                // 
+                //
                 $strip = function($model) {
                         if (!($model instanceof Model)) {
                                 throw new Exception("Expected model object");
@@ -334,25 +335,25 @@ class CoreHandler extends Component
                         return $dump;
                 };
 
-                // 
+                //
                 // Get unique model:
-                // 
+                //
                 if ($model->id != 0) {
                         $class = get_class($model);
                         return $strip($class::findFirstById($model->id));
                 }
 
-                // 
+                //
                 // The following is dealing with searching for array of
                 // models using conditions supplied in the passed model
                 // object.
-                // 
+                //
 
                 $class = get_class($model);
 
-                // 
+                //
                 // Create conditions from model values:
-                // 
+                //
                 foreach ($model->toArray() as $key => $val) {
                         if (isset($val)) {
                                 if (!isset($params['conditions'])) {
@@ -373,18 +374,18 @@ class CoreHandler extends Component
                         }
                 }
 
-                // 
+                //
                 // Get matching models, possibly taking roles into account
                 // and collect requested model data excluding any relations
                 // with other models.
-                // 
+                //
 
                 $models = $class::find($params);
                 $result = array();
 
-                // 
+                //
                 // Process non-empty resultset:
-                // 
+                //
                 if (count($models) != 0) {
                         $filter = $models->getFirst()->getFilter($params);
 
@@ -397,9 +398,9 @@ class CoreHandler extends Component
                         }
                 }
 
-                // 
+                //
                 // Return count on resultset or simply the result:
-                // 
+                //
                 if ($params['count'] === self::COUNT_INLINE) {
                         return array('count' => count($result), 'result' => $result);
                 } elseif ($params['count'] === self::COUNT_SIMPLE) {
@@ -448,15 +449,15 @@ class CoreHandler extends Component
 
         /**
          * Cleanup database cache after failed model transaction.
-         * 
+         *
          * @param Model $model The model object.
          * @param string $action The model action.
          */
         private function cleanup($model, $action)
         {
-                // 
+                //
                 // Transaction will set write connection as read connection.
-                // 
+                //
                 if (!($adapter = $model->getReadConnection())) {
                         return false;
                 }
@@ -500,7 +501,7 @@ class CoreHandler extends Component
 
         /**
          * Invalidate cache records.
-         * 
+         *
          * @param string $name The model name (lower case).
          * @param int $id The model ID.
          * @return boolean True if successful invalidated.
@@ -508,24 +509,24 @@ class CoreHandler extends Component
         private function invalidate($name, $id)
         {
                 /**
-                 * This method should never be needed ;-) 
-                 * 
+                 * This method should never be needed ;-)
+                 *
                  * This is a last resort to fix cache inconsistence caused by
                  * by entries being present in the cache, while record in the
                  * database or cache table index has been deleted.
-                 * 
-                 * Normal request thru the mediator will take care of cache 
-                 * invalidation. This method will delete any cache entries 
+                 *
+                 * Normal request thru the mediator will take care of cache
+                 * invalidation. This method will delete any cache entries
                  * having $id as its primary key.
-                 * 
+                 *
                  * If this method gets called, then it implies that something
                  * needs to be fixed in cache settings. For example, setting
-                 * longer TTL in table indexes or don't delete these entries 
+                 * longer TTL in table indexes or don't delete these entries
                  * in the first place!
                  */
-                // 
+                //
                 // Check if current mediator can do cache invalidation:
-                // 
+                //
                 if (!($this->dbread instanceof CacheMediator)) {
                         return false;
                 }
@@ -539,9 +540,9 @@ class CoreHandler extends Component
                         return false;
                 }
 
-                // 
+                //
                 // Set proper table name:
-                // 
+                //
                 if ($name == 'access' || $name == 'profile') {
                         $table = $name;
                         $cache = $handler->getCache();
@@ -550,9 +551,9 @@ class CoreHandler extends Component
                         $cache = $handler->getCache();
                 }
 
-                // 
+                //
                 // Try to invalidate cache entries:
-                // 
+                //
                 if ($cache->invalidate($table, $id)) {
                         return true;
                 }
@@ -560,9 +561,9 @@ class CoreHandler extends Component
                         return true;
                 }
 
-                // 
+                //
                 // Nothing was invalidated:
-                // 
+                //
                 return false;
         }
 
