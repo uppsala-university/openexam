@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Setup.php
 // Created: 2014-12-17 02:51:48
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Core\Exam\Student;
 
@@ -33,47 +33,43 @@ use Phalcon\Mvc\User\Component;
 
 /**
  * Prepare exam for student on first access.
- * 
+ *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Setup extends Component
-{
+class Setup extends Component {
 
-        /**
-         * @var Exam 
-         */
-        private $_exam;
-        /**
-         * @var Student 
-         */
-        private $_student;
+  /**
+   * @var Exam
+   */
+  private $_exam;
+  /**
+   * @var Student
+   */
+  private $_student;
 
-        /**
-         * Constructor.
-         * @param Exam $exam The current exam.
-         * @param Student $student The current student.
-         */
-        public function __construct($exam, $student)
-        {
-                $this->_exam = $exam;
-                $this->_student = $student;
-        }
+  /**
+   * Constructor.
+   * @param Exam $exam The current exam.
+   * @param Student $student The current student.
+   */
+  public function __construct($exam, $student) {
+    $this->_exam = $exam;
+    $this->_student = $student;
+  }
 
-        /**
-         * Destructor.
-         */
-        public function __destruct()
-        {
-                unset($this->_exam);
-                unset($this->_student);
-        }
+  /**
+   * Destructor.
+   */
+  public function __destruct() {
+    unset($this->_exam);
+    unset($this->_student);
+  }
 
-        /**
-         * Prepare exam for first use.
-         */
-        public function prepare()
-        {
-                // TODO: Add code to initialize exam
-        }
+  /**
+   * Prepare exam for first use.
+   */
+  public function prepare() {
+    // TODO: Add code to initialize exam
+  }
 
 }

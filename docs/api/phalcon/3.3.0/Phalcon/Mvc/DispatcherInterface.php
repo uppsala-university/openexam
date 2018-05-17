@@ -1,25 +1,20 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc {
 
-	interface DispatcherInterface {
+  interface DispatcherInterface {
 
-		public function setControllerSuffix($controllerSuffix);
+    public function setControllerSuffix($controllerSuffix);
 
+    public function setDefaultController($controllerName);
 
-		public function setDefaultController($controllerName);
+    public function setControllerName($controllerName);
 
+    public function getControllerName();
 
-		public function setControllerName($controllerName);
+    public function getLastController();
 
+    public function getActiveController();
 
-		public function getControllerName();
-
-
-		public function getLastController();
-
-
-		public function getActiveController();
-
-	}
+  }
 }

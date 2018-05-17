@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    FileAccess.php
 // Created: 2014-09-30 14:50:58
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Plugins\Security\Model;
 
@@ -37,94 +37,91 @@ use Phalcon\Logger\Adapter\File;
  * Access control for the File model.
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class FileAccess extends ObjectAccess
-{
+class FileAccess extends ObjectAccess {
 
-        /**
-         * Check object role.
-         * 
-         * @param string $action The model action.
-         * @param File $model The model object.
-         * @param User $user The peer object.
-         * @return boolean
-         */
-        public function checkObjectRole($action, $model, $user)
-        {
-                if ($this->logger->debug) {
-                        $this->logger->debug->log(sprintf(
-                                "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getResourceName(), $user->getPrincipalName()
-                        ));
-                }
+  /**
+   * Check object role.
+   *
+   * @param string $action The model action.
+   * @param File $model The model object.
+   * @param User $user The peer object.
+   * @return boolean
+   */
+  public function checkObjectRole($action, $model, $user) {
+    if ($this->logger->debug) {
+      $this->logger->debug->log(sprintf(
+        "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getResourceName(), $user->getPrincipalName()
+      ));
+    }
 
-                // 
-                // Perform access control in a trusted context:
-                // 
-                return $this->trustedContextCall(function($role) use($action, $model, $user) {
-                            // 
-                            // Check role on exam or question:
-                            // 
-                            if ($role == Roles::CONTRIBUTOR ||
-                                $role == Roles::CREATOR ||
-                                $role == Roles::DECODER ||
-                                $role == Roles::INVIGILATOR) {
-                                    if ($user->roles->acquire($role, $model->answer->question->exam_id)) {
-                                            return true;
-                                    }
-                            } elseif ($role == Roles::STUDENT) {
-                                    if ($user->roles->acquire($role, $model->answer->student->exam_id)) {
-                                            return true;
-                                    }
-                            } elseif ($role == Roles::CORRECTOR) {
-                                    if ($user->roles->acquire($role, $model->answer->question->id)) {
-                                            return true;
-                                    }
-                            } elseif (isset($role)) {
-                                    if ($user->roles->acquire($role)) {
-                                            return true;
-                                    }
-                            }
-
-                            if (isset($role)) {
-                                    throw new Exception(sprintf("Failed acquire role %s", $role), Exception::ROLE);
-                            } else {
-                                    return true;
-                            }
-                    });
+    //
+    // Perform access control in a trusted context:
+    //
+    return $this->trustedContextCall(function ($role) use ($action, $model, $user) {
+      //
+      // Check role on exam or question:
+      //
+      if ($role == Roles::CONTRIBUTOR ||
+        $role == Roles::CREATOR ||
+        $role == Roles::DECODER ||
+        $role == Roles::INVIGILATOR) {
+        if ($user->roles->acquire($role, $model->answer->question->exam_id)) {
+          return true;
         }
-
-        /**
-         * Check object action.
-         * 
-         * @param string $action The model action.
-         * @param File $model The model object.
-         * @param User $user The peer object.
-         * @return boolean
-         */
-        public function checkObjectAction($action, $model, $user)
-        {
-                if ($this->logger->debug) {
-                        $this->logger->debug->log(sprintf(
-                                "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getResourceName(), $user->getPrincipalName()
-                        ));
-                }
-
-                // 
-                // Perform access control in a trusted context:
-                // 
-                return $this->trustedContextCall(function($role) use($action, $model, $user) {
-                            // 
-                            // Students can only access their own files:
-                            // 
-                            if ($action != self::CREATE) {
-                                    if ($role == Roles::STUDENT) {
-                                            if ($model->answer->student->user != $user->getPrincipalName()) {
-                                                    throw new Exception("Only the owner can access this object", Exception::OWNER);
-                                            }
-                                    }
-                            }
-
-                            return true;
-                    });
+      } elseif ($role == Roles::STUDENT) {
+        if ($user->roles->acquire($role, $model->answer->student->exam_id)) {
+          return true;
         }
+      } elseif ($role == Roles::CORRECTOR) {
+        if ($user->roles->acquire($role, $model->answer->question->id)) {
+          return true;
+        }
+      } elseif (isset($role)) {
+        if ($user->roles->acquire($role)) {
+          return true;
+        }
+      }
+
+      if (isset($role)) {
+        throw new Exception(sprintf("Failed acquire role %s", $role), Exception::ROLE);
+      } else {
+        return true;
+      }
+    });
+  }
+
+  /**
+   * Check object action.
+   *
+   * @param string $action The model action.
+   * @param File $model The model object.
+   * @param User $user The peer object.
+   * @return boolean
+   */
+  public function checkObjectAction($action, $model, $user) {
+    if ($this->logger->debug) {
+      $this->logger->debug->log(sprintf(
+        "%s(action=%s, model=%s, user=%s)", __METHOD__, $action, $model->getResourceName(), $user->getPrincipalName()
+      ));
+    }
+
+    //
+    // Perform access control in a trusted context:
+    //
+    return $this->trustedContextCall(function ($role) use ($action, $model, $user) {
+      //
+      // Students can only access their own files:
+      //
+      if ($action != self::CREATE) {
+        if ($role == Roles::STUDENT) {
+          if ($model->answer->student->user != $user->getPrincipalName()) {
+            throw new Exception("Only the owner can access this object", Exception::OWNER);
+          }
+        }
+      }
+
+      return true;
+    });
+  }
 
 }

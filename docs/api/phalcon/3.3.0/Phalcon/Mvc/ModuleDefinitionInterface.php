@@ -1,13 +1,12 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc {
 
-	interface ModuleDefinitionInterface {
+  interface ModuleDefinitionInterface {
 
-		public function registerAutoloaders(\Phalcon\DiInterface $dependencyInjector=null);
+    public function registerAutoloaders(\Phalcon\DiInterface $dependencyInjector = null);
 
+    public function registerServices(\Phalcon\DiInterface $dependencyInjector);
 
-		public function registerServices(\Phalcon\DiInterface $dependencyInjector);
-
-	}
+  }
 }

@@ -1,16 +1,14 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc\Model\Query {
 
-	interface StatusInterface {
+  interface StatusInterface {
 
-		public function getModel();
+    public function getModel();
 
+    public function getMessages();
 
-		public function getMessages();
+    public function success();
 
-
-		public function success();
-
-	}
+  }
 }

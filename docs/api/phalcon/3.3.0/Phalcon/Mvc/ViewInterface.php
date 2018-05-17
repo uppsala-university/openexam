@@ -1,91 +1,64 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc {
 
-	interface ViewInterface {
+  interface ViewInterface {
 
-		public function setLayoutsDir($layoutsDir);
+    public function setLayoutsDir($layoutsDir);
 
+    public function getLayoutsDir();
 
-		public function getLayoutsDir();
+    public function setPartialsDir($partialsDir);
 
+    public function getPartialsDir();
 
-		public function setPartialsDir($partialsDir);
+    public function setBasePath($basePath);
 
+    public function getBasePath();
 
-		public function getPartialsDir();
+    public function setRenderLevel($level);
 
+    public function setMainView($viewPath);
 
-		public function setBasePath($basePath);
+    public function getMainView();
 
+    public function setLayout($layout);
 
-		public function getBasePath();
+    public function getLayout();
 
+    public function setTemplateBefore($templateBefore);
 
-		public function setRenderLevel($level);
+    public function cleanTemplateBefore();
 
+    public function setTemplateAfter($templateAfter);
 
-		public function setMainView($viewPath);
+    public function cleanTemplateAfter();
 
+    public function getControllerName();
 
-		public function getMainView();
+    public function getActionName();
 
+    public function getParams();
 
-		public function setLayout($layout);
+    public function start();
 
+    public function registerEngines($engines);
 
-		public function getLayout();
+    public function render($controllerName, $actionName, $params = null);
 
+    public function pick($renderView);
 
-		public function setTemplateBefore($templateBefore);
+    public function finish();
 
+    public function getActiveRenderPath();
 
-		public function cleanTemplateBefore();
+    public function disable();
 
+    public function enable();
 
-		public function setTemplateAfter($templateAfter);
+    public function reset();
 
+    public function isDisabled();
 
-		public function cleanTemplateAfter();
-
-
-		public function getControllerName();
-
-
-		public function getActionName();
-
-
-		public function getParams();
-
-
-		public function start();
-
-
-		public function registerEngines($engines);
-
-
-		public function render($controllerName, $actionName, $params=null);
-
-
-		public function pick($renderView);
-
-
-		public function finish();
-
-
-		public function getActiveRenderPath();
-
-
-		public function disable();
-
-
-		public function enable();
-
-
-		public function reset();
-
-
-		public function isDisabled();
-
-	}
+  }
 }

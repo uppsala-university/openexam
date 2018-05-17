@@ -18,55 +18,52 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Admin.php
 // Created: 2014-02-24 07:04:58
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Models;
 
 /**
  * The admin model.
- * 
+ *
  * Represents a user having the admin role.
- * 
+ *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Admin extends Role
-{
+class Admin extends Role {
 
-        /**
-         * The object ID.
-         * @var integer
-         */
-        public $id;
-        /**
-         * The user principal name (e.g. user@example.com).
-         * @var string
-         */
-        public $user;
+  /**
+   * The object ID.
+   * @var integer
+   */
+  public $id;
+  /**
+   * The user principal name (e.g. user@example.com).
+   * @var string
+   */
+  public $user;
 
-        /**
-         * Get source table name.
-         * @return string
-         */
-        public function getSource()
-        {
-                return 'admins';
-        }
+  /**
+   * Get source table name.
+   * @return string
+   */
+  public function getSource() {
+    return 'admins';
+  }
 
-        /**
-         * Get table column map.
-         * @return array
-         */
-        public function columnMap()
-        {
-                return array(
-                        'id'   => 'id',
-                        'user' => 'user'
-                );
-        }
+  /**
+   * Get table column map.
+   * @return array
+   */
+  public function columnMap() {
+    return array(
+      'id' => 'id',
+      'user' => 'user',
+    );
+  }
 
 }

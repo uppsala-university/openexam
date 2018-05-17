@@ -18,22 +18,22 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    database.php
 // Created: 2014-09-09 03:27:04
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 define('TASKS_PHP', __DIR__ . '/../app/config/system/tasks.php');
-include(TASKS_PHP);
+include TASKS_PHP;
 
 use OpenExam\Library\Console\Application;
 
 try {
-        $console = new Application($di);
-        $console->process(array('task' => 'database'));
+  $console = new Application($di);
+  $console->process(array('task' => 'database'));
 } catch (\Exception $exception) {
-        $di->get('flash')->error($exception->getMessage());
-        exit(255);
+  $di->get('flash')->error($exception->getMessage());
+  exit(255);
 }

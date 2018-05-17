@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Replace.php
 // Created: 2017-09-20 13:25:42
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Library\Model\Behavior\Transform;
 
@@ -32,28 +32,26 @@ use Phalcon\Mvc\ModelInterface;
 
 /**
  * String replace on field.
- * 
- * This behavior performs a search and replace of substring on requested 
+ *
+ * This behavior performs a search and replace of substring on requested
  * model property.
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class Replace extends ModelBehavior
-{
+class Replace extends ModelBehavior {
 
-        public function notify($type, ModelInterface $model)
-        {
-                if (($options = $this->getOptions($type))) {
+  public function notify($type, ModelInterface $model) {
+    if (($options = $this->getOptions($type))) {
 
-                        $field = $options['field'];
-                        $input = $model->$field;
+      $field = $options['field'];
+      $input = $model->$field;
 
-                        if (isset($options['search']) && isset($options['replace'])) {
-                                $model->$field = str_replace($options['search'], $options['replace'], $input);
-                        }
+      if (isset($options['search']) && isset($options['replace'])) {
+        $model->$field = str_replace($options['search'], $options['replace'], $input);
+      }
 
-                        return true;
-                }
-        }
+      return true;
+    }
+  }
 
 }

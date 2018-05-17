@@ -18,45 +18,44 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Exception.php
 // Created: 2014-09-02 23:15:25
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Security;
 
-class Exception extends \Exception
-{
+class Exception extends \Exception {
 
-        /**
-         * Failed acquire role.
-         */
-        const ROLE = 1;
-        /**
-         * Caller are not the owner of requested object.
-         */
-        const OWNER = 2;
-        /**
-         * Access is denied.
-         */
-        const ACCESS = 3;
-        /**
-         * Action is not allowed.
-         */
-        const ACTION = 4;
-        /**
-         * The ACL service is missing.
-         */
-        const ACL = 5;
-        /**
-         * The user service is missing.
-         */
-        const USER = 6;
-        /**
-         * Caller is not authenticated.
-         */
-        const AUTH = 7;
+  /**
+   * Failed acquire role.
+   */
+  const ROLE = 1;
+  /**
+   * Caller are not the owner of requested object.
+   */
+  const OWNER = 2;
+  /**
+   * Access is denied.
+   */
+  const ACCESS = 3;
+  /**
+   * Action is not allowed.
+   */
+  const ACTION = 4;
+  /**
+   * The ACL service is missing.
+   */
+  const ACL = 5;
+  /**
+   * The user service is missing.
+   */
+  const USER = 6;
+  /**
+   * Caller is not authenticated.
+   */
+  const AUTH = 7;
 
 }

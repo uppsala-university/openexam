@@ -1,37 +1,28 @@
-<?php 
+<?php
 
 namespace Phalcon\Cli\Router {
 
-	interface RouteInterface {
+  interface RouteInterface {
 
-		public function compilePattern($pattern);
+    public function compilePattern($pattern);
 
+    public function reConfigure($pattern, $paths = null);
 
-		public function reConfigure($pattern, $paths=null);
+    public function getName();
 
+    public function setName($name);
 
-		public function getName();
+    public function getRouteId();
 
+    public function getPattern();
 
-		public function setName($name);
+    public function getCompiledPattern();
 
+    public function getPaths();
 
-		public function getRouteId();
+    public function getReversedPaths();
 
+    public static function reset();
 
-		public function getPattern();
-
-
-		public function getCompiledPattern();
-
-
-		public function getPaths();
-
-
-		public function getReversedPaths();
-
-
-		public static function reset();
-
-	}
+  }
 }

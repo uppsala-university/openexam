@@ -18,121 +18,115 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Xcache.php
 // Created: 2017-01-02 07:33:08
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Core\Cache\Backend;
 
 use Phalcon\Cache\Backend;
-use Phalcon\Cache\Backend\Prefixable;
 use Phalcon\Cache\BackendInterface;
+use Phalcon\Cache\Backend\Prefixable;
 use Phalcon\Cache\Exception;
 
 /**
  * Alternative XCache backend.
- * 
+ *
  * The XCache backend in Phalcon caused memory limit exhausted errors in some
  * cases. This class can be used as a replacement for that class.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Xcache extends Backend implements BackendInterface
-{
+class Xcache extends Backend implements BackendInterface {
 
-        use Prefixable;
+  use Prefixable;
 
-        /**
-         * {@inheritdoc}
-         *
-         * @param  string  $keyName
-         * @return bool
-         */
-        public function delete($keyName)
-        {
-                $ckey = $this->getPrefixedIdentifier($keyName);
-                return xcache_unset($ckey);
-        }
+  /**
+   * {@inheritdoc}
+   *
+   * @param  string  $keyName
+   * @return bool
+   */
+  public function delete($keyName) {
+    $ckey = $this->getPrefixedIdentifier($keyName);
+    return xcache_unset($ckey);
+  }
 
-        /**
-         * {@inheritdoc}
-         *
-         * @param  string  $keyName
-         * @param  string  $lifetime
-         * @return bool
-         */
-        public function exists($keyName = null, $lifetime = null)
-        {
-                $ckey = $this->getPrefixedIdentifier($keyName);
-                return xcache_isset($ckey);
-        }
+  /**
+   * {@inheritdoc}
+   *
+   * @param  string  $keyName
+   * @param  string  $lifetime
+   * @return bool
+   */
+  public function exists($keyName = null, $lifetime = null) {
+    $ckey = $this->getPrefixedIdentifier($keyName);
+    return xcache_isset($ckey);
+  }
 
-        /**
-         * {@inheritdoc}
-         *
-         * @param  string     $keyName
-         * @param  integer    $lifetime
-         * @return mixed|null
-         */
-        public function get($keyName, $lifetime = null)
-        {
-                $ckey = $this->getPrefixedIdentifier($keyName);
-                $data = xcache_get($ckey);
+  /**
+   * {@inheritdoc}
+   *
+   * @param  string     $keyName
+   * @param  integer    $lifetime
+   * @return mixed|null
+   */
+  public function get($keyName, $lifetime = null) {
+    $ckey = $this->getPrefixedIdentifier($keyName);
+    $data = xcache_get($ckey);
 
-                $this->_lastKey = $ckey;
+    $this->_lastKey = $ckey;
 
-                return $this->_frontend->afterRetrieve($data);
-        }
+    return $this->_frontend->afterRetrieve($data);
+  }
 
-        /**
-         * {@inheritdoc}
-         *
-         * @param  string $keyName
-         * @param  string $content
-         * @param  int    $lifetime
-         * @param  bool   $stopBuffer
-         * @throws Exception
-         */
-        public function save($keyName = null, $content = null, $lifetime = null, $stopBuffer = true)
-        {
-                if ($keyName === null) {
-                        $ckey = $this->_lastKey;
-                } else {
-                        $ckey = $this->getPrefixedIdentifier($keyName);
-                }
+  /**
+   * {@inheritdoc}
+   *
+   * @param  string $keyName
+   * @param  string $content
+   * @param  int    $lifetime
+   * @param  bool   $stopBuffer
+   * @throws Exception
+   */
+  public function save($keyName = null, $content = null, $lifetime = null, $stopBuffer = true) {
+    if ($keyName === null) {
+      $ckey = $this->_lastKey;
+    } else {
+      $ckey = $this->getPrefixedIdentifier($keyName);
+    }
 
-                if ($content === null) {
-                        $data = $this->_frontend->getContent();
-                } else {
-                        $data = $content;
-                }
+    if ($content === null) {
+      $data = $this->_frontend->getContent();
+    } else {
+      $data = $content;
+    }
 
-                if (is_string($data)) {
-                        xcache_set($ckey, $data, $lifetime);
-                } else {
-                        xcache_set($ckey, serialize($data), $lifetime);
-                }
+    if (is_string($data)) {
+      xcache_set($ckey, $data, $lifetime);
+    } else {
+      xcache_set($ckey, serialize($data), $lifetime);
+    }
 
-                if ($stopBuffer) {
-                        $this->_frontend->stop();
-                }
+    if ($stopBuffer) {
+      $this->_frontend->stop();
+    }
 
-                $this->_started = false;
-        }
+    $this->_started = false;
+  }
 
-        /**
-         * {@inheritdoc}
-         * 
-         * @todo Not yet implemented
-         * @param  string $prefix
-         * @return array
-         */
-        public function queryKeys($prefix = null)
-        {
-                return null;
-        }
+  /**
+   * {@inheritdoc}
+   *
+   * @todo Not yet implemented
+   * @param  string $prefix
+   * @return array
+   */
+  public function queryKeys($prefix = null) {
+    return null;
+  }
 
 }

@@ -1,34 +1,26 @@
-<?php 
+<?php
 
 namespace Phalcon {
 
-	interface CryptInterface {
+  interface CryptInterface {
 
-		public function setCipher($cipher);
+    public function setCipher($cipher);
 
+    public function getCipher();
 
-		public function getCipher();
+    public function setKey($key);
 
+    public function getKey();
 
-		public function setKey($key);
+    public function encrypt($text, $key = null);
 
+    public function decrypt($text, $key = null);
 
-		public function getKey();
+    public function encryptBase64($text, $key = null);
 
+    public function decryptBase64($text, $key = null);
 
-		public function encrypt($text, $key=null);
+    public function getAvailableCiphers();
 
-
-		public function decrypt($text, $key=null);
-
-
-		public function encryptBase64($text, $key=null);
-
-
-		public function decryptBase64($text, $key=null);
-
-
-		public function getAvailableCiphers();
-
-	}
+  }
 }

@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    RenderPdfDocument.php
 // Created: 2014-10-27 21:43:16
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Render\Extension;
 
@@ -31,62 +31,59 @@ use OpenExam\Library\Render\Renderer;
 
 /**
  * PDF document render class.
- * 
- * This class renders and URL or local HTML file as an PDF file using the PHP 
+ *
+ * This class renders and URL or local HTML file as an PDF file using the PHP
  * wrapper extension (phpwkhtmltox) for libwkhtmltox.
- * 
+ *
  * <code>
  * $pages = array(
  *      array('page'  => 'http://www.google.com/'),
  *      array('page'  => 'https://se.yahoo.com')
  * );
- * 
- * // 
+ *
+ * //
  * // Save PDF document to file:
- * // 
+ * //
  * $render = new RenderPdfDocument();
  * $render->save('/tmp/output.pdf', $pages);
- * 
- * // 
+ *
+ * //
  * // Send PDF document to stdout:
- * // 
+ * //
  * $render = new RenderPdfDocument();
  * $render->send('file.pdf', $pages);
  * </code>
- * 
+ *
  * @author Anders Lövgren (QNET/BMC CompDept)
  * @see http://wkhtmltopdf.org/libwkhtmltox/pagesettings.html
  */
-class RenderPdfDocument extends RenderBase implements Renderer
-{
+class RenderPdfDocument extends RenderBase implements Renderer {
 
-        /**
-         * Save rendered PDF document.
-         * 
-         * @param string $filename The output file.
-         * @param array $objects PDF object settings.
-         * @return bool
-         */
-        public function save($filename, $objects)
-        {
-                return parent::render('pdf', array('out' => $filename), (array) $objects);
-        }
+  /**
+   * Save rendered PDF document.
+   *
+   * @param string $filename The output file.
+   * @param array $objects PDF object settings.
+   * @return bool
+   */
+  public function save($filename, $objects) {
+    return parent::render('pdf', array('out' => $filename), (array) $objects);
+  }
 
-        /**
-         * Send rendered PDF document.
-         * 
-         * @param string $filename The suggested filename.
-         * @param array $objects PDF object settings.
-         * @param bool $headers Output HTTP headers.
-         * @return bool
-         */
-        public function send($filename, $objects, $headers = true)
-        {
-                if ($headers) {
-                        header(sprintf('Content-type: %s', 'application/pdf'));
-                        header(sprintf("Content-Disposition: attachment; filename=\"%s\"", $filename));
-                }
-                return parent::render('pdf', array('out' => '-'), (array) $objects);
-        }
+  /**
+   * Send rendered PDF document.
+   *
+   * @param string $filename The suggested filename.
+   * @param array $objects PDF object settings.
+   * @param bool $headers Output HTTP headers.
+   * @return bool
+   */
+  public function send($filename, $objects, $headers = true) {
+    if ($headers) {
+      header(sprintf('Content-type: %s', 'application/pdf'));
+      header(sprintf("Content-Disposition: attachment; filename=\"%s\"", $filename));
+    }
+    return parent::render('pdf', array('out' => '-'), (array) $objects);
+  }
 
 }

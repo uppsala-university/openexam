@@ -18,13 +18,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    config.php
 // Created: 2014-09-09 23:41:57
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
-$config = include(__DIR__ . '/../system/config.php');
-include(__DIR__ . '/../system/loader.php');
+$config = include __DIR__ . '/../system/config.php';
+include __DIR__ . '/../system/loader.php';
 return $config;

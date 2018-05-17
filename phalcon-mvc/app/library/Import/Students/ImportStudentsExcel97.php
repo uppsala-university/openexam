@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    ImportStudentsExcel97.php
 // Created: 2015-04-15 00:26:32
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Import\Students;
 
@@ -34,20 +34,17 @@ use PHPExcel_Reader_Excel5;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class ImportStudentsExcel97 extends ImportStudents
-{
+class ImportStudentsExcel97 extends ImportStudents {
 
-        private static $_mimedef = "application/vnd.ms-excel";
+  private static $_mimedef = "application/vnd.ms-excel";
 
-        public function __construct($accept = "")
-        {
-                parent::__construct(self::$_mimedef);
-        }
+  public function __construct($accept = "") {
+    parent::__construct(self::$_mimedef);
+  }
 
-        public function open()
-        {
-                $this->_reader = new PHPExcel_Reader_Excel5();
-                $this->_reader->setReadDataOnly(true);
-        }
+  public function open() {
+    $this->_reader = new PHPExcel_Reader_Excel5();
+    $this->_reader->setReadDataOnly(true);
+  }
 
 }

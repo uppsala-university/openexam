@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 namespace Phalcon {
 
-	abstract class Factory implements \Phalcon\FactoryInterface {
+  abstract class Factory implements \Phalcon\FactoryInterface {
 
-		protected static function loadClass($namespace, $config){ }
+    protected static function loadClass($namespace, $config) {}
 
-	}
+  }
 }

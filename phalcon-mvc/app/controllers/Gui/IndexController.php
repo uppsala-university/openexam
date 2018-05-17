@@ -18,13 +18,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    IndexController.php
 // Created: 2014-08-26 09:18:12
-// 
+//
 // Author:  Ahsan Shahzad (MedfarmDoIT)
 // Author:  Anders Lövgren (QNET)
-// 
+//
 
 namespace OpenExam\Controllers\Gui;
 
@@ -36,18 +36,15 @@ use Phalcon\Mvc\View;
  *
  * @author Ahsan Shahzad (MedfarmDoIT)
  */
-class IndexController extends GuiController
-{
+class IndexController extends GuiController {
 
-        public function initialize()
-        {
-                parent::initialize();
-        }
+  public function initialize() {
+    parent::initialize();
+  }
 
-        public function indexAction()
-        {
-                $this->checkAccess();
-                $this->view->disableLevel(View::LEVEL_BEFORE_TEMPLATE);
-        }
+  public function indexAction() {
+    $this->checkAccess();
+    $this->view->disableLevel(View::LEVEL_BEFORE_TEMPLATE);
+  }
 
 }

@@ -18,19 +18,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Exception.php
 // Created: 2014-10-27 23:36:40
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Render;
 
 /**
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Exception extends \Exception
-{
-        
+class Exception extends \Exception {
+
 }

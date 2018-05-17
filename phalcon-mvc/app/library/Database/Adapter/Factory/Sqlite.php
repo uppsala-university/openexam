@@ -18,42 +18,40 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Sqlite.php
 // Created: 2017-01-16 02:22:18
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Database\Adapter\Factory;
 
 use OpenExam\Library\Database\Adapter\Deferred\Sqlite as SqliteAdapterDeferred;
 use Phalcon\Config;
-use Phalcon\Db\Adapter\Pdo\Sqlite as SqliteAdapterStandard;
 use Phalcon\Db\AdapterInterface;
+use Phalcon\Db\Adapter\Pdo\Sqlite as SqliteAdapterStandard;
 
 /**
  * SQLite database adapter factory.
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Sqlite implements AdapterFactory
-{
+class Sqlite implements AdapterFactory {
 
-        /**
-         * Get database adapter.
-         * 
-         * @param Config $config The adapter configuration.
-         * @param Config $params The connection parameters.
-         * @return AdapterInterface 
-         */
-        public function createAdapter($config, $params = null)
-        {
-                if (isset($params)) {
-                        return new SqliteAdapterDeferred($config->toArray(), $params);
-                } else {
-                        return new SqliteAdapterStandard($config->toArray());
-                }
-        }
+  /**
+   * Get database adapter.
+   *
+   * @param Config $config The adapter configuration.
+   * @param Config $params The connection parameters.
+   * @return AdapterInterface
+   */
+  public function createAdapter($config, $params = null) {
+    if (isset($params)) {
+      return new SqliteAdapterDeferred($config->toArray(), $params);
+    } else {
+      return new SqliteAdapterStandard($config->toArray());
+    }
+  }
 
 }

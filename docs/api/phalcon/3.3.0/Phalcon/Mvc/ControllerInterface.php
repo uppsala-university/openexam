@@ -1,7 +1,7 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc {
 
-	interface ControllerInterface {
-	}
+  interface ControllerInterface {
+  }
 }

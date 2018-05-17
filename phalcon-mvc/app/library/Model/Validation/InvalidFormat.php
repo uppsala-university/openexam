@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    InvalidFormat.php
 // Created: 2017-10-25 00:47:23
-// 
+//
 // Author:  Anders Lövgren (QNET)
-// 
+//
 
 namespace OpenExam\Library\Model\Validation;
 
@@ -34,60 +34,58 @@ use Phalcon\Validation\ValidatorInterface;
 
 /**
  * Input data validation.
- * 
- * Use this class to validate that input data is not invalid. Could i.e. be 
- * used to prevent empty JSON object from being stored as score. 
+ *
+ * Use this class to validate that input data is not invalid. Could i.e. be
+ * used to prevent empty JSON object from being stored as score.
  *
  * @author Anders Lövgren (QNET)
  */
-class InvalidFormat extends Validator implements ValidatorInterface
-{
+class InvalidFormat extends Validator implements ValidatorInterface {
 
-        /**
-         * Executes the validation
-         *
-         * @param Validation $validator
-         * @param string     $attribute
-         * @return boolean
-         */
-        public function validate(Validation $validator, $attribute)
-        {
-                // 
-                // Get bound model:
-                // 
-                $record = $validator->getEntity();
+  /**
+   * Executes the validation
+   *
+   * @param Validation $validator
+   * @param string     $attribute
+   * @return boolean
+   */
+  public function validate(Validation $validator, $attribute) {
+    //
+    // Get bound model:
+    //
+    $record = $validator->getEntity();
 
-                // 
-                // Get invalid input data:
-                // 
-                $input = $this->getOption("input", array("{}", ""));
+    //
+    // Get invalid input data:
+    //
+    $input = $this->getOption("input", array("{}", ""));
 
-                // 
-                // Get message (if any):
-                // 
-                if (!($message = $this->getOption("message", false))) {
-                        $message = sprintf("Invalid input %s for %s", $record->$attribute, $attribute);
-                }
+    //
+    // Get message (if any):
+    //
+    if (!($message = $this->getOption("message", false))) {
+      $message = sprintf("Invalid input %s for %s", $record->$attribute, $attribute);
+    }
 
-                // 
-                // Support using string as input:
-                // 
-                if (is_string($input)) {
-                        $input = array($input);
-                }
+    //
+    // Support using string as input:
+    //
+    if (is_string($input)) {
+      $input = array($input);
+    }
 
-                // 
-                // Check that input data isn't invalid:
-                // 
-                if (in_array($record->$attribute, $input)) {
-                        $validator->appendMessage(new Message($message, $attribute));
-                        return false;
-                }
+    //
+    // Check that input data isn't invalid:
+    //
+    if (in_array($record->$attribute, $input)) {
+      $validator->appendMessage(new Message($message, $attribute));
+      return false;
+    }
 
-                // 
-                // Input data is OK:
-                // 
-                return true;
-        }
+    //
+    // Input data is OK:
+    //
+    return true;
+  }
 
 }

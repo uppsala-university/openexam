@@ -21,7 +21,7 @@
 /*
  * Created: 2018-01-24 01:15:40
  * File:    CacheController.php
- * 
+ *
  * Author:  Anders Lövgren (QNET)
  */
 
@@ -38,81 +38,78 @@ use UUP\Authentication\Restrictor\AddressRestrictor;
  *
  * @author Anders Lövgren (QNET)
  */
-class CacheController extends GuiController
-{
+class CacheController extends GuiController {
 
-        /**
-         * Fill cache with directory information.
-         * 
-         * @param int $eid The exam ID.
-         * @param int $days The number of days.
-         * @throws Exception
-         */
-        public function fillAction($eid, $days = 3)
-        {
-                // 
-                // Don't load view:
-                // 
-                $this->view->disable();
+  /**
+   * Fill cache with directory information.
+   *
+   * @param int $eid The exam ID.
+   * @param int $days The number of days.
+   * @throws Exception
+   */
+  public function fillAction($eid, $days = 3) {
+    //
+    // Don't load view:
+    //
+    $this->view->disable();
 
-                // 
-                // Sanitize request parameters:
-                // 
-                if (!($eid = $this->filter->sanitize($eid, "int"))) {
-                        throw new Exception("Expected eid parameter", Error::BAD_REQUEST);
-                }
-                if (!($days = $this->filter->sanitize($days, "int"))) {
-                        throw new Exception("Expected days parameter", Error::BAD_REQUEST);
-                }
+    //
+    // Sanitize request parameters:
+    //
+    if (!($eid = $this->filter->sanitize($eid, "int"))) {
+      throw new Exception("Expected eid parameter", Error::BAD_REQUEST);
+    }
+    if (!($days = $this->filter->sanitize($days, "int"))) {
+      throw new Exception("Expected days parameter", Error::BAD_REQUEST);
+    }
 
-                // 
-                // Check method call restrictions:
-                // 
-                if ($this->config->cache->filler->maxdays < $days) {
-                        throw new Exception("Exceeded maximum days config", Error::NOT_ACCEPTABLE);
-                }
+    //
+    // Check method call restrictions:
+    //
+    if ($this->config->cache->filler->maxdays < $days) {
+      throw new Exception("Exceeded maximum days config", Error::NOT_ACCEPTABLE);
+    }
 
-                $restrictor = new AddressRestrictor($this->config->cache->filler->remote);
-                if (!$restrictor->match($this->request->getServerAddress())) {
-                        throw new Exception("You are not allowed to invoke this action", Error::METHOD_NOT_ALLOWED);
-                }
+    $restrictor = new AddressRestrictor($this->config->cache->filler->remote);
+    if (!$restrictor->match($this->request->getServerAddress())) {
+      throw new Exception("You are not allowed to invoke this action", Error::METHOD_NOT_ALLOWED);
+    }
 
-                // 
-                // Fetch requested exam:
-                // 
-                if (!($exam = Exam::findFirstById($eid))) {
-                        throw new Exception("Failed fetch exam");
-                }
+    //
+    // Fetch requested exam:
+    //
+    if (!($exam = Exam::findFirstById($eid))) {
+      throw new Exception("Failed fetch exam");
+    }
 
-                // 
-                // Populate cache by query models and properties.
-                // 
-                $this->fillCache($exam, $days);
-        }
+    //
+    // Populate cache by query models and properties.
+    //
+    $this->fillCache($exam, $days);
+  }
 
-        /**
-         * Fill exam cache.
-         * @param Exam $exam The exam model.
-         */
-        private function fillCache($exam, $days)
-        {
-                $this->catalog->getCache()->setLifetime($days * 86400);
+  /**
+   * Fill exam cache.
+   * @param Exam $exam The exam model.
+   */
+  private function fillCache($exam, $days) {
+    $this->catalog->getCache()->setLifetime($days * 86400);
 
-                $this->catalog->getName($exam->creator);
-                $this->catalog->getMail($exam->creator);
+    $this->catalog->getName($exam->creator);
+    $this->catalog->getMail($exam->creator);
 
-                foreach ($exam->students as $model) {
-                        $this->catalog->getPrincipal($model->user);
-                }
-                foreach ($exam->contributors as $model) {
-                        $this->catalog->getPrincipal($model->user);
-                }
-                foreach ($exam->decoders as $model) {
-                        $this->catalog->getPrincipal($model->user);
-                }
-                foreach ($exam->invigilators as $model) {
-                        $this->catalog->getPrincipal($model->user);
-                }
-        }
+    foreach ($exam->students as $model) {
+      $this->catalog->getPrincipal($model->user);
+    }
+    foreach ($exam->contributors as $model) {
+      $this->catalog->getPrincipal($model->user);
+    }
+    foreach ($exam->decoders as $model) {
+      $this->catalog->getPrincipal($model->user);
+    }
+    foreach ($exam->invigilators as $model) {
+      $this->catalog->getPrincipal($model->user);
+    }
+  }
 
 }

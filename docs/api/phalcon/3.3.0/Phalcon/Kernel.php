@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 namespace Phalcon {
 
-	class Kernel {
+  class Kernel {
 
-		public static function preComputeHashKey($key){ }
+    public static function preComputeHashKey($key) {}
 
-	}
+  }
 }

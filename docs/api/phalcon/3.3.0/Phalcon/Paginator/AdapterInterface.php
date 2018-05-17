@@ -1,19 +1,16 @@
-<?php 
+<?php
 
 namespace Phalcon\Paginator {
 
-	interface AdapterInterface {
+  interface AdapterInterface {
 
-		public function setCurrentPage($page);
+    public function setCurrentPage($page);
 
+    public function getPaginate();
 
-		public function getPaginate();
+    public function setLimit($limit);
 
+    public function getLimit();
 
-		public function setLimit($limit);
-
-
-		public function getLimit();
-
-	}
+  }
 }

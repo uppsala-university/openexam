@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Student.php
 // Created: 2014-02-24 07:04:58
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Models;
 
@@ -41,232 +41,223 @@ use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * The student model.
- * 
- * Represents a user having the student role. The student can have an 
- * associated tag. It's usually used for storing miscellanous data that can 
+ *
+ * Represents a user having the student role. The student can have an
+ * associated tag. It's usually used for storing miscellanous data that can
  * be used in the result report process.
- * 
+ *
  * @property Answer[] $answers Answers related to this student.
  * @property Exam $exam The related exam.
  * @property Lock[] $locks Active computer/exam locks for this student.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Student extends Role
-{
+class Student extends Role {
 
-        /**
-         * Guard against problematic methods use.
-         */
-        use ExamModelGuard;
+  /**
+   * Guard against problematic methods use.
+   */
+  use ExamModelGuard;
 
-        /**
-         * The object ID.
-         * @var integer
-         */
-        public $id;
-        /**
-         * The exam ID.
-         * @var integer
-         */
-        public $exam_id;
-        /**
-         * The user principal name (e.g. user@example.com).
-         * @var string
-         */
-        public $user;
-        /**
-         * The student code (anonymous).
-         * @var string
-         */
-        public $code;
-        /**
-         * Generic tag for this student (e.g. course).
-         * @var string
-         */
-        public $tag;
-        /**
-         * Does this student needs an enquiry?
-         * @var bool 
-         */
-        /**
-         * Override start time defined exam object for this student.
-         * @var string 
-         */
-        public $starttime;
-        /**
-         * Override end time defined exam object for this student.
-         * @var string 
-         */
-        public $endtime;
-        /**
-         * Set finished time (after saved, the exam can't be opened again).
-         * @var string 
-         */
-        public $finished;
-        /**
-         * The student personal number.
-         * @var string 
-         */
-        public $persnr;
+  /**
+   * The object ID.
+   * @var integer
+   */
+  public $id;
+  /**
+   * The exam ID.
+   * @var integer
+   */
+  public $exam_id;
+  /**
+   * The user principal name (e.g. user@example.com).
+   * @var string
+   */
+  public $user;
+  /**
+   * The student code (anonymous).
+   * @var string
+   */
+  public $code;
+  /**
+   * Generic tag for this student (e.g. course).
+   * @var string
+   */
+  public $tag;
+  /**
+   * Does this student needs an enquiry?
+   * @var bool
+   */
+  /**
+   * Override start time defined exam object for this student.
+   * @var string
+   */
+  public $starttime;
+  /**
+   * Override end time defined exam object for this student.
+   * @var string
+   */
+  public $endtime;
+  /**
+   * Set finished time (after saved, the exam can't be opened again).
+   * @var string
+   */
+  public $finished;
+  /**
+   * The student personal number.
+   * @var string
+   */
+  public $persnr;
 
-        public function initialize()
-        {
-                parent::initialize();
+  public function initialize() {
+    parent::initialize();
 
-                $this->hasMany('id', 'OpenExam\Models\Answer', 'student_id', array(
-                        'alias' => 'answers'
-                ));
-                $this->hasMany('id', 'OpenExam\Models\Lock', 'student_id', array(
-                        'alias'    => 'locks',
-                        'reusable' => true
-                ));
-                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array(
-                        'foreignKey' => true,
-                        'alias'      => 'exam',
-                        'reusable'   => true
-                ));
+    $this->hasMany('id', 'OpenExam\Models\Answer', 'student_id', array(
+      'alias' => 'answers',
+    ));
+    $this->hasMany('id', 'OpenExam\Models\Lock', 'student_id', array(
+      'alias' => 'locks',
+      'reusable' => true,
+    ));
+    $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array(
+      'foreignKey' => true,
+      'alias' => 'exam',
+      'reusable' => true,
+    ));
 
-                $this->addBehavior(new StudentBehavior(array(
-                        'beforeValidationOnCreate' => array(
-                                'code' => true,
-                                'user' => true
-                        )
-                )));
+    $this->addBehavior(new StudentBehavior(array(
+      'beforeValidationOnCreate' => array(
+        'code' => true,
+        'user' => true,
+      ),
+    )));
 
-                $this->addBehavior(new DateTimeNull(array(
-                        'beforeSave' => array(
-                                'field'  => array('starttime', 'endtime'),
-                                'format' => 'Y-m-d H:i:s'
-                        )
-                )));
+    $this->addBehavior(new DateTimeNull(array(
+      'beforeSave' => array(
+        'field' => array('starttime', 'endtime'),
+        'format' => 'Y-m-d H:i:s',
+      ),
+    )));
 
-                $this->addBehavior(new Trim(array(
-                        'beforeValidationOnCreate' => array(
-                                'field' => array('user', 'code', 'tag'),
-                                'value' => null
-                        ),
-                        'beforeValidationOnUpdate' => array(
-                                'field' => array('user', 'code', 'tag'),
-                                'value' => null
-                        )
-                )));
+    $this->addBehavior(new Trim(array(
+      'beforeValidationOnCreate' => array(
+        'field' => array('user', 'code', 'tag'),
+        'value' => null,
+      ),
+      'beforeValidationOnUpdate' => array(
+        'field' => array('user', 'code', 'tag'),
+        'value' => null,
+      ),
+    )));
 
-                // 
-                // Required for datetime validator:
-                // 
-                $this->keepSnapshots(true);
-        }
+    //
+    // Required for datetime validator:
+    //
+    $this->keepSnapshots(true);
+  }
 
-        /**
-         * Get source table name.
-         * @return string
-         */
-        public function getSource()
-        {
-                return 'students';
-        }
+  /**
+   * Get source table name.
+   * @return string
+   */
+  public function getSource() {
+    return 'students';
+  }
 
-        /**
-         * Get table column map.
-         * @return array
-         */
-        public function columnMap()
-        {
-                return array(
-                        'id'        => 'id',
-                        'exam_id'   => 'exam_id',
-                        'user'      => 'user',
-                        'code'      => 'code',
-                        'tag'       => 'tag',
-                        'enquiry'   => 'enquiry',
-                        'starttime' => 'starttime',
-                        'endtime'   => 'endtime',
-                        'finished'  => 'finished'
-                );
-        }
+  /**
+   * Get table column map.
+   * @return array
+   */
+  public function columnMap() {
+    return array(
+      'id' => 'id',
+      'exam_id' => 'exam_id',
+      'user' => 'user',
+      'code' => 'code',
+      'tag' => 'tag',
+      'enquiry' => 'enquiry',
+      'starttime' => 'starttime',
+      'endtime' => 'endtime',
+      'finished' => 'finished',
+    );
+  }
 
-        public function validation()
-        {
-                if (parent::validation() == false) {
-                        return false;
-                }
+  public function validation() {
+    if (parent::validation() == false) {
+      return false;
+    }
 
-                if (defined('VALIDATION_SKIP_UNIQUENESS_CHECK')) {
-                        return true;
-                }
+    if (defined('VALIDATION_SKIP_UNIQUENESS_CHECK')) {
+      return true;
+    }
 
-                $validator = new Validation();
+    $validator = new Validation();
 
-                $validator->add(
-                    array(
-                        "code", "exam_id"
-                    ), new Uniqueness(
-                    array(
-                        "message" => "The code '$this->code' is already in use on this exam"
-                    )
-                ));
-                $validator->add(
-                    "code", new RegexValidator(
-                    array(
-                        "message" => "The anonymous code '$this->code' is not matching expected format",
-                        "pattern" => Pattern::get(Pattern::MATCH_CODE)
-                    )
-                ));
-                $validator->add(
-                    "timestamp", new SequenceValidator(
-                    array(
-                        "sequence" => array("starttime", "endtime"),
-                        "message"  => "Start time can't come after end time",
-                        "type"     => "datetime"
-                    )
-                ));
-                $validator->add(
-                    array(
-                        "starttime", "endtime"
-                    ), new DateTimeValidator(
-                    array(
-                        "message" => "The datetime value can't be in the past",
-                        "current" => $this->getSnapshotData()
-                    )
-                ));
+    $validator->add(
+      array(
+        "code", "exam_id",
+      ), new Uniqueness(
+        array(
+          "message" => "The code '$this->code' is already in use on this exam",
+        )
+      ));
+    $validator->add(
+      "code", new RegexValidator(
+        array(
+          "message" => "The anonymous code '$this->code' is not matching expected format",
+          "pattern" => Pattern::get(Pattern::MATCH_CODE),
+        )
+      ));
+    $validator->add(
+      "timestamp", new SequenceValidator(
+        array(
+          "sequence" => array("starttime", "endtime"),
+          "message" => "Start time can't come after end time",
+          "type" => "datetime",
+        )
+      ));
+    $validator->add(
+      array(
+        "starttime", "endtime",
+      ), new DateTimeValidator(
+        array(
+          "message" => "The datetime value can't be in the past",
+          "current" => $this->getSnapshotData(),
+        )
+      ));
 
-                return $this->validate($validator);
-        }
+    return $this->validate($validator);
+  }
 
-        /**
-         * Called before model is created.
-         */
-        public function beforeValidationOnCreate()
-        {
-                if (!isset($this->enquiry)) {
-                        $this->enquiry = false;
-                }
-        }
+  /**
+   * Called before model is created.
+   */
+  public function beforeValidationOnCreate() {
+    if (!isset($this->enquiry)) {
+      $this->enquiry = false;
+    }
+  }
 
-        /**
-         * Called before model is saved.
-         */
-        public function beforeSave()
-        {
-                $this->enquiry = $this->enquiry ? 'Y' : 'N';
-        }
+  /**
+   * Called before model is saved.
+   */
+  public function beforeSave() {
+    $this->enquiry = $this->enquiry ? 'Y' : 'N';
+  }
 
-        /**
-         * Called after model is saved.
-         */
-        public function afterSave()
-        {
-                $this->enquiry = $this->enquiry == 'Y';
-        }
+  /**
+   * Called after model is saved.
+   */
+  public function afterSave() {
+    $this->enquiry = $this->enquiry == 'Y';
+  }
 
-        /**
-         * Called after the model was read.
-         */
-        public function afterFetch()
-        {
-                $this->enquiry = $this->enquiry == 'Y';
-                $this->persnr = $this->getAttribute(Principal::ATTR_PNR);
-                parent::afterFetch();
-        }
+  /**
+   * Called after the model was read.
+   */
+  public function afterFetch() {
+    $this->enquiry = $this->enquiry == 'Y';
+    $this->persnr = $this->getAttribute(Principal::ATTR_PNR);
+    parent::afterFetch();
+  }
 
 }

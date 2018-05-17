@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 namespace Phalcon\Acl {
 
-	interface RoleAware {
+  interface RoleAware {
 
-		public function getRoleName();
+    public function getRoleName();
 
-	}
+  }
 }

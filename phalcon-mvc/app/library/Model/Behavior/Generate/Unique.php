@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Unique.php
 // Created: 2017-04-21 01:46:33
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Model\Behavior\Generate;
 
@@ -35,40 +35,38 @@ use Phalcon\Mvc\ModelInterface;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Unique extends ModelBehavior
-{
+class Unique extends ModelBehavior {
 
-        /**
-         * Default format string.
-         */
-        const FORMAT = 'UUID%d';
+  /**
+   * Default format string.
+   */
+  const FORMAT = 'UUID%d';
 
-        /**
-         * Receives notifications from the Models Manager
-         *
-         * @param string $type The event type.
-         * @param ModelInterface $model The target model.
-         */
-        public function notify($type, ModelInterface $model)
-        {
-                if (($options = $this->getOptions($type))) {
-                        $field = $options['field'];
-                        $limit = $options['limit'];
+  /**
+   * Receives notifications from the Models Manager
+   *
+   * @param string $type The event type.
+   * @param ModelInterface $model The target model.
+   */
+  public function notify($type, ModelInterface $model) {
+    if (($options = $this->getOptions($type))) {
+      $field = $options['field'];
+      $limit = $options['limit'];
 
-                        if (!isset($options['format'])) {
-                                $format = self::FORMAT;
-                        } else {
-                                $format = $options['format'];
-                        }
+      if (!isset($options['format'])) {
+        $format = self::FORMAT;
+      } else {
+        $format = $options['format'];
+      }
 
-                        $count = sprintf("%s = %d AND %s = '%s'", $limit, $model->$limit, $field, $model->$field);
+      $count = sprintf("%s = %d AND %s = '%s'", $limit, $model->$limit, $field, $model->$field);
 
-                        if (!isset($model->$field)) {
-                                $model->$field = sprintf($format, time());
-                        } elseif ($model->count($count) != 0) {
-                                $model->$field = sprintf($format, time());
-                        }
-                }
-        }
+      if (!isset($model->$field)) {
+        $model->$field = sprintf($format, time());
+      } elseif ($model->count($count) != 0) {
+        $model->$field = sprintf($format, time());
+      }
+    }
+  }
 
 }

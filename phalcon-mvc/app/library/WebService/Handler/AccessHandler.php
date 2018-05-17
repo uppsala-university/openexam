@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    AccessHandler.php
 // Created: 2015-01-29 11:37:52
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Library\WebService\Handler;
 
@@ -42,152 +42,145 @@ use OpenExam\Models\Lock;
  * Access service handler.
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class AccessHandler extends ServiceHandler
-{
+class AccessHandler extends ServiceHandler {
 
-        /**
-         * @var Exam 
-         */
-        private $_exam;
-        /**
-         * @var Lock 
-         */
-        private $_lock;
-        /**
-         * @var Access 
-         */
-        private $_access;
+  /**
+   * @var Exam
+   */
+  private $_exam;
+  /**
+   * @var Lock
+   */
+  private $_lock;
+  /**
+   * @var Access
+   */
+  private $_access;
 
-        /**
-         * Constructor.
-         * @param ServiceRequest $request The service request.
-         * @param User $user The logged in user.
-         */
-        public function __construct($request, $user)
-        {
-                parent::__construct($request, $user);
+  /**
+   * Constructor.
+   * @param ServiceRequest $request The service request.
+   * @param User $user The logged in user.
+   */
+  public function __construct($request, $user) {
+    parent::__construct($request, $user);
 
-                if (isset($request->data['exam_id'])) {
-                        if (($this->_exam = Exam::findFirstById($request->data['exam_id'])) == false) {
-                                throw new SecurityException("No exam found!", self::UNDEFINED);
-                        }
-                }
-                if (isset($request->data['lock_id'])) {
-                        if (($this->_lock = Lock::findFirstById($request->data['lock_id'])) == false) {
-                                throw new SecurityException("No lock found!", self::UNDEFINED);
-                        }
-                }
+    if (isset($request->data['exam_id'])) {
+      if (($this->_exam = Exam::findFirstById($request->data['exam_id'])) == false) {
+        throw new SecurityException("No exam found!", self::UNDEFINED);
+      }
+    }
+    if (isset($request->data['lock_id'])) {
+      if (($this->_lock = Lock::findFirstById($request->data['lock_id'])) == false) {
+        throw new SecurityException("No lock found!", self::UNDEFINED);
+      }
+    }
 
-                $this->_access = new Access($this->_exam);
-        }
+    $this->_access = new Access($this->_exam);
+  }
 
-        /**
-         * Open exam.
-         * @return ServiceResponse
-         */
-        public function open()
-        {
-                if (!isset($this->_exam)) {
-                        return new ServiceResponse($this, self::UNDEFINED, "Undefined exam object.");
-                }
+  /**
+   * Open exam.
+   * @return ServiceResponse
+   */
+  public function open() {
+    if (!isset($this->_exam)) {
+      return new ServiceResponse($this, self::UNDEFINED, "Undefined exam object.");
+    }
 
-                $this->_user->setPrimaryRole(Roles::STUDENT);
-                $status = $this->_access->open($this->_exam);
+    $this->_user->setPrimaryRole(Roles::STUDENT);
+    $status = $this->_access->open($this->_exam);
 
-                if ($status == Access::OPEN_APPROVED) {
-                        return new ServiceResponse($this, self::SUCCESS, true);
-                } else if ($status == Access::OPEN_PENDING) {
-                        return new ServiceResponse($this, self::PENDING, "The exam connection is pending approval.");
-                } else if ($status == Access::OPEN_DENIED) {
-                        return new ServiceResponse($this, self::FORBIDDEN, "Permission denied.");
-                } else {
-                        return new ServiceResponse($this, self::UNDEFINED, "Unhandled open mode.");
-                }
-        }
+    if ($status == Access::OPEN_APPROVED) {
+      return new ServiceResponse($this, self::SUCCESS, true);
+    } else if ($status == Access::OPEN_PENDING) {
+      return new ServiceResponse($this, self::PENDING, "The exam connection is pending approval.");
+    } else if ($status == Access::OPEN_DENIED) {
+      return new ServiceResponse($this, self::FORBIDDEN, "Permission denied.");
+    } else {
+      return new ServiceResponse($this, self::UNDEFINED, "Unhandled open mode.");
+    }
+  }
 
-        /**
-         * Close exam lock.
-         * @return ServiceResponse
-         */
-        public function close()
-        {
-                if (!isset($this->_exam)) {
-                        return new ServiceResponse($this, self::UNDEFINED, "Undefined exam object.");
-                }
+  /**
+   * Close exam lock.
+   * @return ServiceResponse
+   */
+  public function close() {
+    if (!isset($this->_exam)) {
+      return new ServiceResponse($this, self::UNDEFINED, "Undefined exam object.");
+    }
 
-                $this->_user->setPrimaryRole(Roles::STUDENT);
-                $status = $this->_access->close($this->_exam);
+    $this->_user->setPrimaryRole(Roles::STUDENT);
+    $status = $this->_access->close($this->_exam);
 
-                if ($status == true) {
-                        return new ServiceResponse($this, self::SUCCESS, true);
-                } else {
-                        return new ServiceResponse($this, self::FORBIDDEN, "Permission denied.");
-                }
-        }
+    if ($status == true) {
+      return new ServiceResponse($this, self::SUCCESS, true);
+    } else {
+      return new ServiceResponse($this, self::FORBIDDEN, "Permission denied.");
+    }
+  }
 
-        /**
-         * Approve exam lock.
-         * @return ServiceResponse
-         */
-        public function approve()
-        {
-                if (!isset($this->_lock)) {
-                        return new ServiceResponse($this, self::UNDEFINED, "Undefined lock object.");
-                }
+  /**
+   * Approve exam lock.
+   * @return ServiceResponse
+   */
+  public function approve() {
+    if (!isset($this->_lock)) {
+      return new ServiceResponse($this, self::UNDEFINED, "Undefined lock object.");
+    }
 
-                $this->_user->setPrimaryRole(Roles::INVIGILATOR);
-                $this->_access->approve($this->_lock);
+    $this->_user->setPrimaryRole(Roles::INVIGILATOR);
+    $this->_access->approve($this->_lock);
 
-                return new ServiceResponse($this, self::SUCCESS, true);
-        }
+    return new ServiceResponse($this, self::SUCCESS, true);
+  }
 
-        /**
-         * Release exam lock.
-         * @return ServiceResponse
-         */
-        public function release()
-        {
-                if (!isset($this->_lock)) {
-                        return new ServiceResponse($this, self::UNDEFINED, "Undefined lock object.");
-                }
+  /**
+   * Release exam lock.
+   * @return ServiceResponse
+   */
+  public function release() {
+    if (!isset($this->_lock)) {
+      return new ServiceResponse($this, self::UNDEFINED, "Undefined lock object.");
+    }
 
-                $this->_user->setPrimaryRole(Roles::INVIGILATOR);
-                $this->_access->release($this->_lock);
+    $this->_user->setPrimaryRole(Roles::INVIGILATOR);
+    $this->_access->release($this->_lock);
 
-                return new ServiceResponse($this, self::SUCCESS, true);
-        }
+    return new ServiceResponse($this, self::SUCCESS, true);
+  }
 
-        /**
-         * Get location/access information entries.
-         * @param Location $location The location and information service.
-         * @param string $section The section (active, system or recent).
-         * @return ServiceResponse
-         */
-        public function entries($location, $section = null)
-        {
-                if (!isset($this->_request->data['exam_id'])) {
-                        $this->_request->data['exam_id'] = 0;
-                }
-                if (isset($section)) {
-                        $this->_request->params['filter'] = array(
-                                $section => true
-                        );
-                }
-                if (!isset($this->_request->params['filter'])) {
-                        $this->_request->params['filter'] = array(
-                                'system' => true,
-                                'recent' => true,
-                                'active' => true
-                        );
-                }
-                if (!isset($this->_request->params['flat'])) {
-                        $this->_request->params['flat'] = false;
-                }
+  /**
+   * Get location/access information entries.
+   * @param Location $location The location and information service.
+   * @param string $section The section (active, system or recent).
+   * @return ServiceResponse
+   */
+  public function entries($location, $section = null) {
+    if (!isset($this->_request->data['exam_id'])) {
+      $this->_request->data['exam_id'] = 0;
+    }
+    if (isset($section)) {
+      $this->_request->params['filter'] = array(
+        $section => true,
+      );
+    }
+    if (!isset($this->_request->params['filter'])) {
+      $this->_request->params['filter'] = array(
+        'system' => true,
+        'recent' => true,
+        'active' => true,
+      );
+    }
+    if (!isset($this->_request->params['flat'])) {
+      $this->_request->params['flat'] = false;
+    }
 
-                $result = $location->getEntries(
-                    $this->_request->data['exam_id'], $this->_request->params['filter'], $this->_request->params['flat']
-                );
-                return new ServiceResponse($this, self::SUCCESS, $result);
-        }
+    $result = $location->getEntries(
+      $this->_request->data['exam_id'], $this->_request->params['filter'], $this->_request->params['flat']
+    );
+    return new ServiceResponse($this, self::SUCCESS, $result);
+  }
 
 }

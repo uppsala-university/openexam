@@ -1,25 +1,20 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc {
 
-	interface UrlInterface {
+  interface UrlInterface {
 
-		public function setBaseUri($baseUri);
+    public function setBaseUri($baseUri);
 
+    public function getBaseUri();
 
-		public function getBaseUri();
+    public function setBasePath($basePath);
 
+    public function getBasePath();
 
-		public function setBasePath($basePath);
+    public function get($uri = null, $args = null, $local = null);
 
+    public function path($path = null);
 
-		public function getBasePath();
-
-
-		public function get($uri=null, $args=null, $local=null);
-
-
-		public function path($path=null);
-
-	}
+  }
 }

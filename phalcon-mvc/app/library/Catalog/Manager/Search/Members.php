@@ -38,102 +38,95 @@ use OpenExam\Library\Catalog\Principal as UserPrincipal;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Members implements Search
-{
+class Members implements Search {
 
-        /**
-         * The group name.
-         * @var string
-         */
-        private $_group;
-        /**
-         * The search domain.
-         * @var string
-         */
-        private $_domain;
-        /**
-         * The attribute filter.
-         * @var array
-         */
-        private $_filter;
+  /**
+   * The group name.
+   * @var string
+   */
+  private $_group;
+  /**
+   * The search domain.
+   * @var string
+   */
+  private $_domain;
+  /**
+   * The attribute filter.
+   * @var array
+   */
+  private $_filter;
 
-        /**
-         * Constructor.
-         * @param string $group The group name.
-         * @param string $domain Restrict search to domain.
-         * @param array $attributes The attributes to return.
-         */
-        public function __construct($group, $domain = null, $attributes = null)
-        {
-                if (empty($attributes)) {
-                        $attributes = array(UserPrincipal::ATTR_PN, UserPrincipal::ATTR_NAME, UserPrincipal::ATTR_MAIL);
-                }
+  /**
+   * Constructor.
+   * @param string $group The group name.
+   * @param string $domain Restrict search to domain.
+   * @param array $attributes The attributes to return.
+   */
+  public function __construct($group, $domain = null, $attributes = null) {
+    if (empty($attributes)) {
+      $attributes = array(UserPrincipal::ATTR_PN, UserPrincipal::ATTR_NAME, UserPrincipal::ATTR_MAIL);
+    }
 
-                $this->_group = $group;
-                $this->_domain = $domain;
-                $this->_filter = $attributes;
-        }
+    $this->_group = $group;
+    $this->_domain = $domain;
+    $this->_filter = $attributes;
+  }
 
-        /**
-         * Set group name.
-         * @param string $group The group name.
-         */
-        public function setGroup($group)
-        {
-                $this->_group = $group;
-        }
+  /**
+   * Set group name.
+   * @param string $group The group name.
+   */
+  public function setGroup($group) {
+    $this->_group = $group;
+  }
 
-        /**
-         * Set search domain.
-         * @param string $domain The search domain.
-         */
-        public function setDomain($domain)
-        {
-                $this->_domain = $domain;
-        }
+  /**
+   * Set search domain.
+   * @param string $domain The search domain.
+   */
+  public function setDomain($domain) {
+    $this->_domain = $domain;
+  }
 
-        /**
-         * Set attributes filter.
-         * @param array $attributes The returned attributes.
-         */
-        public function setFilter($attributes)
-        {
-                $this->_filter = $attributes;
-        }
+  /**
+   * Set attributes filter.
+   * @param array $attributes The returned attributes.
+   */
+  public function setFilter($attributes) {
+    $this->_filter = $attributes;
+  }
 
-        /**
-         * Get directory manager search result.
-         * @param DirectoryManager $manager The directory manager.
-         * @return array
-         */
-        public function getResult($manager)
-        {
-                $result = array();
+  /**
+   * Get directory manager search result.
+   * @param DirectoryManager $manager The directory manager.
+   * @return array
+   */
+  public function getResult($manager) {
+    $result = array();
 
-                foreach ($manager->getServices($this->_domain) as $name => $service) {
-                        if (($members = $this->getMembers($manager, $service, $name)) != null) {
-                                $result = array_merge($result, $members);
-                        }
-                }
+    foreach ($manager->getServices($this->_domain) as $name => $service) {
+      if (($members = $this->getMembers($manager, $service, $name)) != null) {
+        $result = array_merge($result, $members);
+      }
+    }
 
-                return $result;
-        }
+    return $result;
+  }
 
-        /**
-         * Get directory members.
-         *
-         * @param DirectoryManager $manager The directory manager.
-         * @param DirectoryService $service The directory service.
-         * @param string $name The service name.
-         * @return array
-         */
-        private function getMembers($manager, $service, $name)
-        {
-                try {
-                        return $service->getMembers($this->_group, $this->_domain, $this->_filter);
-                } catch (Exception $exception) {
-                        $manager->report($exception, $service, $name);
-                }
-        }
+  /**
+   * Get directory members.
+   *
+   * @param DirectoryManager $manager The directory manager.
+   * @param DirectoryService $service The directory service.
+   * @param string $name The service name.
+   * @return array
+   */
+  private function getMembers($manager, $service, $name) {
+    try {
+      return $service->getMembers($this->_group, $this->_domain, $this->_filter);
+    } catch (Exception $exception) {
+      $manager->report($exception, $service, $name);
+    }
+  }
 
 }

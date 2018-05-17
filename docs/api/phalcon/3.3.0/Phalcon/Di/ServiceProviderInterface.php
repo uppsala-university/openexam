@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 namespace Phalcon\Di {
 
-	interface ServiceProviderInterface {
+  interface ServiceProviderInterface {
 
-		public function register(\Phalcon\DiInterface $di);
+    public function register(\Phalcon\DiInterface $di);
 
-	}
+  }
 }

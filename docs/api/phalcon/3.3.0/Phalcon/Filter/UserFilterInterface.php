@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 namespace Phalcon\Filter {
 
-	interface UserFilterInterface {
+  interface UserFilterInterface {
 
-		public function filter($value);
+    public function filter($value);
 
-	}
+  }
 }

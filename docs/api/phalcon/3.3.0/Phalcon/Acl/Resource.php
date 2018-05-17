@@ -1,41 +1,38 @@
-<?php 
+<?php
 
 namespace Phalcon\Acl {
 
-	/**
-	 * Phalcon\Acl\Resource
-	 *
-	 * This class defines resource entity and its description
-	 */
-	
-	class Resource implements \Phalcon\Acl\ResourceInterface {
+  /**
+   * Phalcon\Acl\Resource
+   *
+   * This class defines resource entity and its description
+   */
 
-		protected $_name;
+  class Resource implements \Phalcon\Acl\ResourceInterface {
 
-		protected $_description;
+    protected $_name;
 
-		/**
-		 * Resource name
-		 */
-		public function getName(){ }
+    protected $_description;
 
+    /**
+     * Resource name
+     */
+    public function getName() {}
 
-		/**
-		 * Resource name
-		 */
-		public function __toString(){ }
+    /**
+     * Resource name
+     */
+    public function __toString() {}
 
+    /**
+     * Resource description
+     */
+    public function getDescription() {}
 
-		/**
-		 * Resource description
-		 */
-		public function getDescription(){ }
+    /**
+     * \Phalcon\Acl\Resource constructor
+     */
+    public function __construct($name, $description = null) {}
 
-
-		/**
-		 * \Phalcon\Acl\Resource constructor
-		 */
-		public function __construct($name, $description=null){ }
-
-	}
+  }
 }

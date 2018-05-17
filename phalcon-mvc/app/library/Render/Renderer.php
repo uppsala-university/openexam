@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Renderer.php
 // Created: 2014-10-27 21:34:30
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Render;
 
@@ -31,30 +31,29 @@ namespace OpenExam\Library\Render;
  * Page render interface.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-interface Renderer
-{
+interface Renderer {
 
-        /**
-         * Render image.
-         */
-        const FORMAT_IMAGE = 'image';
-        /**
-         * Render PDF document.
-         */
-        const FORMAT_PDF = 'pdf';
+  /**
+   * Render image.
+   */
+  const FORMAT_IMAGE = 'image';
+  /**
+   * Render PDF document.
+   */
+  const FORMAT_PDF = 'pdf';
 
-        /**
-         * Save rendered page(s) to file.
-         * @param string $filename The output file.
-         * @param array $settings The render settings or objects.
-         */
-        function save($filename, $settings);
+  /**
+   * Save rendered page(s) to file.
+   * @param string $filename The output file.
+   * @param array $settings The render settings or objects.
+   */
+  function save($filename, $settings);
 
-        /**
-         * Send rendered page(s) to stdout.
-         * @param string $filename The suggested filename.
-         * @param array $settings The render settings or objects.
-         * @param bool $headers Output HTTP headers.
-         */
-        function send($filename, $settings, $headers = true);
+  /**
+   * Send rendered page(s) to stdout.
+   * @param string $filename The suggested filename.
+   * @param array $settings The render settings or objects.
+   * @param bool $headers Output HTTP headers.
+   */
+  function send($filename, $settings, $headers = true);
 }

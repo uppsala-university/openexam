@@ -1,25 +1,20 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc\Model {
 
-	interface QueryInterface {
+  interface QueryInterface {
 
-		public function parse();
+    public function parse();
 
+    public function cache($cacheOptions);
 
-		public function cache($cacheOptions);
+    public function getCacheOptions();
 
+    public function setUniqueRow($uniqueRow);
 
-		public function getCacheOptions();
+    public function getUniqueRow();
 
+    public function execute($bindParams = null, $bindTypes = null);
 
-		public function setUniqueRow($uniqueRow);
-
-
-		public function getUniqueRow();
-
-
-		public function execute($bindParams=null, $bindTypes=null);
-
-	}
+  }
 }

@@ -1,16 +1,14 @@
-<?php 
+<?php
 
 namespace Phalcon {
 
-	interface FilterInterface {
+  interface FilterInterface {
 
-		public function add($name, $handler);
+    public function add($name, $handler);
 
+    public function sanitize($value, $filters);
 
-		public function sanitize($value, $filters);
+    public function getFilters();
 
-
-		public function getFilters();
-
-	}
+  }
 }

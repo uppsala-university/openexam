@@ -153,112 +153,103 @@ use OpenExam\Library\WebService\Handler\CoreHandler;
  * @see http://docs.phalconphp.com/en/latest/api/Phalcon_Mvc_Model_Query_Builder.html
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class CoreController extends AjaxController
-{
+class CoreController extends AjaxController {
 
-        /**
-         * @var CoreHandler
-         */
-        protected $_handler;
+  /**
+   * @var CoreHandler
+   */
+  protected $_handler;
 
-        public function initialize()
-        {
-                parent::initialize();
-                $this->_handler = new CoreHandler($this->getRequest(), $this->user, $this->capabilities);
-        }
+  public function initialize() {
+    parent::initialize();
+    $this->_handler = new CoreHandler($this->getRequest(), $this->user, $this->capabilities);
+  }
 
-        /**
-         * Destructor.
-         */
-        public function __destruct()
-        {
-                unset($this->_handler);
-                parent::__destruct();
-        }
+  /**
+   * Destructor.
+   */
+  public function __destruct() {
+    unset($this->_handler);
+    parent::__destruct();
+  }
 
-        /**
-         * Perform create operation.
-         * @param string $role The requested role.
-         * @param string $type The requested model.
-         */
-        public function createAction($role, $type)
-        {
-                $response = $this->_handler->create($role, $type);
-                $this->sendResponse($response);
-                unset($response);
-        }
+  /**
+   * Perform create operation.
+   * @param string $role The requested role.
+   * @param string $type The requested model.
+   */
+  public function createAction($role, $type) {
+    $response = $this->_handler->create($role, $type);
+    $this->sendResponse($response);
+    unset($response);
+  }
 
-        /**
-         * Perform read operation.
-         * @param string $role The requested role.
-         * @param string $type The requested model.
-         */
-        public function readAction($role, $type)
-        {
-                $response = $this->_handler->read($role, $type);
-                $this->sendResponse($response);
-                unset($response);
-        }
+  /**
+   * Perform read operation.
+   * @param string $role The requested role.
+   * @param string $type The requested model.
+   */
+  public function readAction($role, $type) {
+    $response = $this->_handler->read($role, $type);
+    $this->sendResponse($response);
+    unset($response);
+  }
 
-        /**
-         * Perform update operation.
-         * @param string $role The requested role.
-         * @param string $type The requested model.
-         */
-        public function updateAction($role, $type)
-        {
-                $response = $this->_handler->update($role, $type);
-                $this->sendResponse($response);
-                unset($response);
-        }
+  /**
+   * Perform update operation.
+   * @param string $role The requested role.
+   * @param string $type The requested model.
+   */
+  public function updateAction($role, $type) {
+    $response = $this->_handler->update($role, $type);
+    $this->sendResponse($response);
+    unset($response);
+  }
 
-        /**
-         * Perform delete operation.
-         * @param string $role The requested role.
-         * @param string $type The requested model.
-         */
-        public function deleteAction($role, $type)
-        {
-                $response = $this->_handler->delete($role, $type);
-                $this->sendResponse($response);
-                unset($response);
-        }
+  /**
+   * Perform delete operation.
+   * @param string $role The requested role.
+   * @param string $type The requested model.
+   */
+  public function deleteAction($role, $type) {
+    $response = $this->_handler->delete($role, $type);
+    $this->sendResponse($response);
+    unset($response);
+  }
 
-        /**
-         * Handle static capability checks.
-         */
-        public function capabilityAction()
-        {
-                $response = $this->_handler->capability();
-                $this->sendResponse($response);
-                unset($response);
-        }
+  /**
+   * Handle static capability checks.
+   */
+  public function capabilityAction() {
+    $response = $this->_handler->capability();
+    $this->sendResponse($response);
+    unset($response);
+  }
 
-        /**
-         * Display documentation of the AJAX service API.
-         */
-        public function apiAction()
-        {
-                // TODO: use view for displaying API docs
+  /**
+   * Display documentation of the AJAX service API.
+   */
+  public function apiAction() {
+    // TODO: use view for displaying API docs
 
-                $content = array(
-                        "usage"   => array(
-                                "/ajax/core/{role}/{model}/{action}" => "POST"
-                        ),
-                        "example" => array(
-                                "/ajax/core/teacher/exam/create"         => "Create exam",
-                                "/ajax/core/student/exam/read"           => "Read exam",
-                                "/ajax/core/creator/exam/update"         => "Update exam",
-                                "/ajax/core/creator/exam/delete"         => "Delete exam",
-                                "/ajax/core/student/question/capability" => "Get static capabilities"
-                        )
-                );
+    $content = array(
+      "usage" => array(
+        "/ajax/core/{role}/{model}/{action}" => "POST",
+      ),
+      "example" => array(
+        "/ajax/core/teacher/exam/create" => "Create exam",
+        "/ajax/core/student/exam/read" => "Read exam",
+        "/ajax/core/creator/exam/update" => "Update exam",
+        "/ajax/core/creator/exam/delete" => "Delete exam",
+        "/ajax/core/student/question/capability" => "Get static capabilities",
+      ),
+    );
 
-                $response = new ServiceResponse($this->_handler, ServiceHandler::SUCCESS, $content);
-                $this->sendResponse($response);
+    $response = new ServiceResponse($this->_handler, ServiceHandler::SUCCESS, $content);
+    $this->sendResponse($response);
 
-                unset($content);
-                unset($response);
-        }
+    unset($content);
+    unset($response);
+  }
 
 }

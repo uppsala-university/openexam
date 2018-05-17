@@ -1,37 +1,28 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc {
 
-	interface ViewBaseInterface {
+  interface ViewBaseInterface {
 
-		public function setViewsDir($viewsDir);
+    public function setViewsDir($viewsDir);
 
+    public function getViewsDir();
 
-		public function getViewsDir();
+    public function setParamToView($key, $value);
 
+    public function setVar($key, $value);
 
-		public function setParamToView($key, $value);
+    public function getParamsToView();
 
+    public function getCache();
 
-		public function setVar($key, $value);
+    public function cache($options = null);
 
+    public function setContent($content);
 
-		public function getParamsToView();
+    public function getContent();
 
+    public function partial($partialPath, $params = null);
 
-		public function getCache();
-
-
-		public function cache($options=null);
-
-
-		public function setContent($content);
-
-
-		public function getContent();
-
-
-		public function partial($partialPath, $params=null);
-
-	}
+  }
 }

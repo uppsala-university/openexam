@@ -1,46 +1,34 @@
-<?php 
+<?php
 
 namespace Phalcon\Cache {
 
-	interface BackendInterface {
+  interface BackendInterface {
 
-		public function start($keyName, $lifetime=null);
+    public function start($keyName, $lifetime = null);
 
+    public function stop($stopBuffer = null);
 
-		public function stop($stopBuffer=null);
+    public function getFrontend();
 
+    public function getOptions();
 
-		public function getFrontend();
+    public function isFresh();
 
+    public function isStarted();
 
-		public function getOptions();
+    public function setLastKey($lastKey);
 
+    public function getLastKey();
 
-		public function isFresh();
+    public function get($keyName, $lifetime = null);
 
+    public function save($keyName = null, $content = null, $lifetime = null, $stopBuffer = null);
 
-		public function isStarted();
+    public function delete($keyName);
 
+    public function queryKeys($prefix = null);
 
-		public function setLastKey($lastKey);
+    public function exists($keyName = null, $lifetime = null);
 
-
-		public function getLastKey();
-
-
-		public function get($keyName, $lifetime=null);
-
-
-		public function save($keyName=null, $content=null, $lifetime=null, $stopBuffer=null);
-
-
-		public function delete($keyName);
-
-
-		public function queryKeys($prefix=null);
-
-
-		public function exists($keyName=null, $lifetime=null);
-
-	}
+  }
 }

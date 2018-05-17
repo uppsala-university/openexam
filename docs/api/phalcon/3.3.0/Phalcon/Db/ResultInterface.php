@@ -1,31 +1,24 @@
-<?php 
+<?php
 
 namespace Phalcon\Db {
 
-	interface ResultInterface {
+  interface ResultInterface {
 
-		public function execute();
+    public function execute();
 
+    public function fetch();
 
-		public function fetch();
+    public function fetchArray();
 
+    public function fetchAll();
 
-		public function fetchArray();
+    public function numRows();
 
+    public function dataSeek($number);
 
-		public function fetchAll();
+    public function setFetchMode($fetchMode);
 
+    public function getInternalResult();
 
-		public function numRows();
-
-
-		public function dataSeek($number);
-
-
-		public function setFetchMode($fetchMode);
-
-
-		public function getInternalResult();
-
-	}
+  }
 }

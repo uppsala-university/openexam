@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    TeacherAccess.php
 // Created: 2014-09-30 14:55:05
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Plugins\Security\Model;
 
@@ -33,7 +33,6 @@ use OpenExam\Plugins\Security\Model\ObjectAccess;
  * Access control for the Teacher model.
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class TeacherAccess extends ObjectAccess
-{
-        
+class TeacherAccess extends ObjectAccess {
+
 }

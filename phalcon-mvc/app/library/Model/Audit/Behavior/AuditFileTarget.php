@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    AuditFileTarget.php
 // Created: 2016-04-15 15:49:54
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Library\Model\Audit\Behavior;
 
@@ -34,7 +34,7 @@ use Phalcon\Mvc\ModelInterface;
 
 /**
  * Audit trail for models (file storage).
- * 
+ *
  * Implement audit on a model by enable snapshots and adding the database
  * target audit.
  *
@@ -58,31 +58,29 @@ use Phalcon\Mvc\ModelInterface;
  *      )));
  * }
  * </code>
- * 
+ *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class AuditFileTarget extends Audit
-{
+class AuditFileTarget extends Audit {
 
-        /**
-         * Receives notifications from the Models Manager
-         *
-         * @param string $type The event type.
-         * @param ModelInterface $model The target model.
-         */
-        public function notify($type, $model)
-        {
-                if (($options = $this->getOptions($type))) {
-                        $audit = new AuditConfig(array(
-                                Audit::TARGET_FILE => $options
-                        ));
+  /**
+   * Receives notifications from the Models Manager
+   *
+   * @param string $type The event type.
+   * @param ModelInterface $model The target model.
+   */
+  public function notify($type, $model) {
+    if (($options = $this->getOptions($type))) {
+      $audit = new AuditConfig(array(
+        Audit::TARGET_FILE => $options,
+      ));
 
-                        if (($changes = parent::getChanges($type, $model))) {
-                                $config = $audit->getTarget(Audit::TARGET_FILE);
-                                $target = new FileTarget($config, $model);
-                                return $target->write($changes);
-                        }
-                }
-        }
+      if (($changes = parent::getChanges($type, $model))) {
+        $config = $audit->getTarget(Audit::TARGET_FILE);
+        $target = new FileTarget($config, $model);
+        return $target->write($changes);
+      }
+    }
+  }
 
 }

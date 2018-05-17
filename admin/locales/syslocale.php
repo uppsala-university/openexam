@@ -1,48 +1,43 @@
 <?php
 
-// 
+//
 // List all system locales as PHP array.
-// 
+//
 
-class ListLocales
-{
+class ListLocales {
 
-        public $command = 'locale -a -v';
-        private $locales = array();
-        private $output = array();
-        private $locale;
-        private $language;
-        private $match = array();
+  public $command = 'locale -a -v';
+  private $locales = array();
+  private $output = array();
+  private $locale;
+  private $language;
+  private $match = array();
 
-        public function getLocales()
-        {
-                return $this->locales;
-        }
+  public function getLocales() {
+    return $this->locales;
+  }
 
-        public function enumLocales()
-        {
-                exec($this->command, $this->output);
+  public function enumLocales() {
+    exec($this->command, $this->output);
 
-                foreach ($this->output as $row) {
-                        $row = trim($row);
-                        $this->matchLocale($row);
-                        $this->matchLanguage($row);
-                }
-        }
+    foreach ($this->output as $row) {
+      $row = trim($row);
+      $this->matchLocale($row);
+      $this->matchLanguage($row);
+    }
+  }
 
-        private function matchLocale($row)
-        {
-                if (preg_match("/^(locale):\s+(.*?)\s+.*/", $row, $this->match)) {
-                        $this->locale = trim($this->match[2]);
-                }
-        }
+  private function matchLocale($row) {
+    if (preg_match("/^(locale):\s+(.*?)\s+.*/", $row, $this->match)) {
+      $this->locale = trim($this->match[2]);
+    }
+  }
 
-        private function matchLanguage($row)
-        {
-                if (preg_match("/^(language)\s+\|\s+(.*)/", $row, $this->match)) {
-                        $this->locales[$this->locale] = trim($this->match[2]);
-                }
-        }
+  private function matchLanguage($row) {
+    if (preg_match("/^(language)\s+\|\s+(.*)/", $row, $this->match)) {
+      $this->locales[$this->locale] = trim($this->match[2]);
+    }
+  }
 
 }
 

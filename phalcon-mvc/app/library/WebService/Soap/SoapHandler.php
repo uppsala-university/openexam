@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    SoapHandler.php
 // Created: 2014-10-10 03:26:30
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\WebService\Soap;
 
@@ -31,7 +31,6 @@ namespace OpenExam\Library\WebService\Soap;
  * SOAP handler interface.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-interface SoapHandler
-{
-        
+interface SoapHandler {
+
 }

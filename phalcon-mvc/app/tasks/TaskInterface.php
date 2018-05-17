@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    TaskInterface.php
 // Created: 2016-01-13 13:52:13
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Console\Tasks;
 
@@ -31,17 +31,16 @@ namespace OpenExam\Console\Tasks;
  * Common interface for tasks.
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-interface TaskInterface
-{
+interface TaskInterface {
 
-        /**
-         * Get task usage information.
-         * @return array
-         */
-        static function getUsage();
+  /**
+   * Get task usage information.
+   * @return array
+   */
+  static function getUsage();
 
-        /**
-         * Display usage information.
-         */
-        public function helpAction();
+  /**
+   * Display usage information.
+   */
+  public function helpAction();
 }

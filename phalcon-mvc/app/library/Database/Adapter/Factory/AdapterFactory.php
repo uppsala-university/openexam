@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    AdapterFactory.php
 // Created: 2017-01-16 02:35:09
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Database\Adapter\Factory;
 
@@ -34,15 +34,14 @@ use Phalcon\Db\AdapterInterface;
  * Database adapter factory.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-interface AdapterFactory
-{
+interface AdapterFactory {
 
-        /**
-         * Get database adapter.
-         * 
-         * @param Config $config The adapter configuration.
-         * @param Config $params The connection parameters.
-         * @return AdapterInterface 
-         */
-        function createAdapter($config, $params = null);
+  /**
+   * Get database adapter.
+   *
+   * @param Config $config The adapter configuration.
+   * @param Config $params The connection parameters.
+   * @return AdapterInterface
+   */
+  function createAdapter($config, $params = null);
 }

@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    AuditTarget.php
 // Created: 2016-04-26 22:27:45
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Model\Audit\Target;
 
@@ -31,13 +31,12 @@ namespace OpenExam\Library\Model\Audit\Target;
  * Audit target interface.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-interface AuditTarget
-{
+interface AuditTarget {
 
-        /**
-         * Save model changes.
-         * @param array $changes The model changes.
-         * @return int The number of bytes written.
-         */
-        function write($changes);
+  /**
+   * Save model changes.
+   * @param array $changes The model changes.
+   * @return int The number of bytes written.
+   */
+  function write($changes);
 }

@@ -1,13 +1,12 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc\Model {
 
-	interface ValidatorInterface {
+  interface ValidatorInterface {
 
-		public function getMessages();
+    public function getMessages();
 
+    public function validate(\Phalcon\Mvc\EntityInterface $record);
 
-		public function validate(\Phalcon\Mvc\EntityInterface $record);
-
-	}
+  }
 }

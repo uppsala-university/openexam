@@ -18,30 +18,29 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Collector.php
 // Created: 2016-05-23 22:59:57
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Monitor\Performance;
 
 /**
  * Interface for performance collectors.
- * 
+ *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-interface Collector
-{
+interface Collector {
 
-        /**
-         * Start performance collector.
-         */
-        function start();
+  /**
+   * Start performance collector.
+   */
+  function start();
 
-        /**
-         * Stop performance collector.
-         */
-        function stop();
+  /**
+   * Stop performance collector.
+   */
+  function stop();
 }

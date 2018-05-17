@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc\Model {
 
-	interface ResultInterface {
+  interface ResultInterface {
 
-		public function setDirtyState($dirtyState);
+    public function setDirtyState($dirtyState);
 
-	}
+  }
 }

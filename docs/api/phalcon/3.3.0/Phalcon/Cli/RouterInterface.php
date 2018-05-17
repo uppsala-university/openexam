@@ -1,55 +1,40 @@
-<?php 
+<?php
 
 namespace Phalcon\Cli {
 
-	interface RouterInterface {
+  interface RouterInterface {
 
-		public function setDefaultModule($moduleName);
+    public function setDefaultModule($moduleName);
 
+    public function setDefaultTask($taskName);
 
-		public function setDefaultTask($taskName);
+    public function setDefaultAction($actionName);
 
+    public function setDefaults($defaults);
 
-		public function setDefaultAction($actionName);
+    public function handle($arguments = null);
 
+    public function add($pattern, $paths = null);
 
-		public function setDefaults($defaults);
+    public function getModuleName();
 
+    public function getTaskName();
 
-		public function handle($arguments=null);
+    public function getActionName();
 
+    public function getParams();
 
-		public function add($pattern, $paths=null);
+    public function getMatchedRoute();
 
+    public function getMatches();
 
-		public function getModuleName();
+    public function wasMatched();
 
+    public function getRoutes();
 
-		public function getTaskName();
+    public function getRouteById($id);
 
+    public function getRouteByName($name);
 
-		public function getActionName();
-
-
-		public function getParams();
-
-
-		public function getMatchedRoute();
-
-
-		public function getMatches();
-
-
-		public function wasMatched();
-
-
-		public function getRoutes();
-
-
-		public function getRouteById($id);
-
-
-		public function getRouteByName($name);
-
-	}
+  }
 }

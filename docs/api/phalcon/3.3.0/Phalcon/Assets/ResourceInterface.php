@@ -1,28 +1,22 @@
-<?php 
+<?php
 
 namespace Phalcon\Assets {
 
-	interface ResourceInterface {
+  interface ResourceInterface {
 
-		public function setType($type);
+    public function setType($type);
 
+    public function getType();
 
-		public function getType();
+    public function setFilter($filter);
 
+    public function getFilter();
 
-		public function setFilter($filter);
+    public function setAttributes($attributes);
 
+    public function getAttributes();
 
-		public function getFilter();
+    public function getResourceKey();
 
-
-		public function setAttributes($attributes);
-
-
-		public function getAttributes();
-
-
-		public function getResourceKey();
-
-	}
+  }
 }

@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    SoapController.php
 // Created: 2015-03-13 00:18:24
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Controllers\Service;
 
@@ -37,34 +37,30 @@ use SoapServer;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class SoapController extends ServiceController
-{
+class SoapController extends ServiceController {
 
-        protected function getRequest($remapper = null)
-        {
-                // Ignore
-        }
+  protected function getRequest($remapper = null) {
+    // Ignore
+  }
 
-        protected function sendResponse($response)
-        {
-                if ($this->profiler->enabled()) {
-                        $this->response->setHeader(Profiler::HEADER, sprintf(
-                                "%f:%f:%f", $this->request->getHeader(Profiler::HEADER), $this->profiler->initial(), microtime(true)
-                        ));
-                }
-        }
+  protected function sendResponse($response) {
+    if ($this->profiler->enabled()) {
+      $this->response->setHeader(Profiler::HEADER, sprintf(
+        "%f:%f:%f", $this->request->getHeader(Profiler::HEADER), $this->profiler->initial(), microtime(true)
+      ));
+    }
+  }
 
-        /**
-         * The exception handler.
-         * @param Exception $exception
-         */
-        public function exceptionAction($exception)
-        {
-                // 
-                // TODO: Verify function using a SOAP client.
-                // 
-                $server = new SoapServer(null);
-                $server->fault("Server", $exception->getMessage());
-        }
+  /**
+   * The exception handler.
+   * @param Exception $exception
+   */
+  public function exceptionAction($exception) {
+    //
+    // TODO: Verify function using a SOAP client.
+    //
+    $server = new SoapServer(null);
+    $server->fault("Server", $exception->getMessage());
+  }
 
 }

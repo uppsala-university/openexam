@@ -21,7 +21,7 @@
 /*
  * Created: 2014-09-13 00:39:37
  * File:    Composer.php
- * 
+ *
  * Author:  Anders Lövgren (QNET/BMC CompDept)
  */
 
@@ -31,48 +31,45 @@ use Composer\Installer\PackageEvent;
 
 /**
  * Handles install/update hooks for Composer.
- * 
+ *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Installer
-{
+class Installer {
 
-        /**
-         * Package to installer class map.
-         * @var array 
-         */
-        private static $packages = array(
-                'phalcon/devtools' => 'OpenExam\Composer\PhalconInstaller'
-        );
+  /**
+   * Package to installer class map.
+   * @var array
+   */
+  private static $packages = array(
+    'phalcon/devtools' => 'OpenExam\Composer\PhalconInstaller',
+  );
 
-        /**
-         * Package install hook.
-         * @param \Composer\Script\Event $event
-         */
-        public static function postPackageInstall(PackageEvent $event)
-        {
-                $package = $event->getOperation()->getPackage();
+  /**
+   * Package install hook.
+   * @param \Composer\Script\Event $event
+   */
+  public static function postPackageInstall(PackageEvent $event) {
+    $package = $event->getOperation()->getPackage();
 
-                if (array_key_exists($package->getName(), self::$packages)) {
-                        $handler = self::$packages[$package->getName()];
-                        $installer = new $handler($package);
-                        $installer->install();
-                }
-        }
+    if (array_key_exists($package->getName(), self::$packages)) {
+      $handler = self::$packages[$package->getName()];
+      $installer = new $handler($package);
+      $installer->install();
+    }
+  }
 
-        /**
-         * Package update hook.
-         * @param \Composer\Script\Event $event
-         */
-        public static function postPackageUpdate(PackageEvent $event)
-        {
-                $package = $event->getOperation()->getInitialPackage();
+  /**
+   * Package update hook.
+   * @param \Composer\Script\Event $event
+   */
+  public static function postPackageUpdate(PackageEvent $event) {
+    $package = $event->getOperation()->getInitialPackage();
 
-                if (array_key_exists($package->getName(), self::$packages)) {
-                        $handler = self::$packages[$package->getName()];
-                        $installer = new $handler($package);
-                        $installer->update();
-                }
-        }
+    if (array_key_exists($package->getName(), self::$packages)) {
+      $handler = self::$packages[$package->getName()];
+      $installer = new $handler($package);
+      $installer->update();
+    }
+  }
 
 }

@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    ImportStudentExcel2003Xml.php
 // Created: 2015-04-15 00:25:22
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Import\Students;
 
@@ -34,20 +34,17 @@ use PHPExcel_Reader_Excel2003XML;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class ImportStudentsExcel2003Xml extends ImportStudents
-{
+class ImportStudentsExcel2003Xml extends ImportStudents {
 
-        private static $_mimedef = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+  private static $_mimedef = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-        public function __construct($accept = "")
-        {
-                parent::__construct(self::$_mimedef);
-        }
+  public function __construct($accept = "") {
+    parent::__construct(self::$_mimedef);
+  }
 
-        public function open()
-        {
-                $this->_reader = new PHPExcel_Reader_Excel2003XML();
-                $this->_reader->setReadDataOnly(true);
-        }
+  public function open() {
+    $this->_reader = new PHPExcel_Reader_Excel2003XML();
+    $this->_reader->setReadDataOnly(true);
+  }
 
 }

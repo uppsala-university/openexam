@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Store.php
 // Created: 2017-12-18 13:23:45
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Library\Core\Exam\Result;
 
@@ -38,232 +38,221 @@ use Phalcon\Mvc\User\Component;
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-abstract class Store extends Component
-{
+abstract class Store extends Component {
 
-        /**
-         * @var Exam 
-         */
-        protected $_exam;
+  /**
+   * @var Exam
+   */
+  protected $_exam;
 
-        /**
-         * Constructor.
-         * @param int|Exam $eid The exam.
-         * @throws ModelException
-         */
-        public function __construct($eid)
-        {
-                if (!is_numeric($eid)) {
-                        $this->_exam = $eid;
-                } elseif (!($this->_exam = Exam::findFirst($eid))) {
-                        throw new ModelException("Failed find target exam.", Error::PRECONDITION_FAILED);
-                }
+  /**
+   * Constructor.
+   * @param int|Exam $eid The exam.
+   * @throws ModelException
+   */
+  public function __construct($eid) {
+    if (!is_numeric($eid)) {
+      $this->_exam = $eid;
+    } elseif (!($this->_exam = Exam::findFirst($eid))) {
+      throw new ModelException("Failed find target exam.", Error::PRECONDITION_FAILED);
+    }
+  }
+
+  /**
+   * Destructor.
+   */
+  public function __destruct() {
+    unset($this->_exam);
+  }
+
+  /**
+   * Force generate files even if existing.
+   * @var bool
+   */
+  private $_forced = false;
+
+  /**
+   * Check if forced file generation is enabled.
+   * @return boolean
+   */
+  public function getForced() {
+    return $this->_forced;
+  }
+
+  /**
+   * Force generate files even if existing.
+   * @param bool $enable
+   */
+  public function setForced($enable = true) {
+    $this->_forced = $enable;
+  }
+
+  /**
+   * Check if caller can access student result.
+   *
+   * This method modifies the argument if unset and caller is found
+   * in the students collection on this exam.
+   *
+   * @param int $sid The student ID.
+   * @return boolean
+   */
+  public function canAccess(&$sid) {
+    //
+    // Admins and staff can always access student result.
+    //
+    if ($this->user->roles->isAdmin() ||
+      $this->user->roles->isStaff($this->_exam->id)) {
+      return true;
+    }
+
+    //
+    // Find student in students on this exam.
+    //
+    if (!$sid) {
+      $found = $this->_exam->students->filter(function ($student) {
+        if ($student->user == $this->user->getPrincipalName()) {
+          return $student;
         }
-
-        /**
-         * Destructor.
-         */
-        public function __destruct()
-        {
-                unset($this->_exam);
+      });
+    } else {
+      $found = $this->_exam->students->filter(function ($student) use ($sid) {
+        if ($student->id == $sid) {
+          return $student;
         }
+      });
+    }
 
-        /**
-         * Force generate files even if existing.
-         * @var bool 
-         */
-        private $_forced = false;
+    //
+    // Check filtered students result:
+    //
+    if (count($found) != 1) {
+      return false;
+    }
+    if ($found[0]->user != $this->user->getPrincipalName()) {
+      return false;
+    }
 
-        /**
-         * Check if forced file generation is enabled.
-         * @return boolean
-         */
-        public function getForced()
-        {
-                return $this->_forced;
-        }
+    if (!isset($sid)) {
+      $sid = $found[0]->id;
+    }
 
-        /**
-         * Force generate files even if existing.
-         * @param bool $enable
-         */
-        public function setForced($enable = true)
-        {
-                $this->_forced = $enable;
-        }
+    return true;
+  }
 
-        /**
-         * Check if caller can access student result.
-         * 
-         * This method modifies the argument if unset and caller is found
-         * in the students collection on this exam.
-         * 
-         * @param int $sid The student ID.
-         * @return boolean
-         */
-        public function canAccess(&$sid)
-        {
-                // 
-                // Admins and staff can always access student result.
-                // 
-                if ($this->user->roles->isAdmin() ||
-                    $this->user->roles->isStaff($this->_exam->id)) {
-                        return true;
-                }
+  /**
+   * Check if student has result file.
+   * @param Student $student The student model.
+   */
+  public function hasFile($student) {
+    return file_exists(self::getPath($this->_exam->id, $student->id, 'pdf'));
+  }
 
-                // 
-                // Find student in students on this exam.
-                // 
-                if (!$sid) {
-                        $found = $this->_exam->students->filter(function($student) {
-                                if ($student->user == $this->user->getPrincipalName()) {
-                                        return $student;
-                                }
-                        });
-                } else {
-                        $found = $this->_exam->students->filter(function($student) use($sid) {
-                                if ($student->id == $sid) {
-                                        return $student;
-                                }
-                        });
-                }
+  /**
+   * Check if result directory exists for this exam.
+   * @return bool
+   */
+  public function exist() {
+    return file_exists(self::getPath($this->_exam->id));
+  }
 
-                // 
-                // Check filtered students result:
-                // 
-                if (count($found) != 1) {
-                        return false;
-                }
-                if ($found[0]->user != $this->user->getPrincipalName()) {
-                        return false;
-                }
+  /**
+   * Cleanup result for this exam.
+   */
+  protected function clean() {
+    foreach ($this->_exam->students as $student) {
+      $this->delete($student);
+    }
 
-                if (!isset($sid)) {
-                        $sid = $found[0]->id;
-                }
+    $target = sprintf("%s.zip", self::getPath($this->_exam->id));
+    if (file_exists($target)) {
+      if (!unlink($target)) {
+        throw new Exception("Failed unlink result archive.");
+      }
+    }
+    unset($target);
 
-                return true;
-        }
+    $target = sprintf("%s.xls", self::getPath($this->_exam->id));
+    if (file_exists($target)) {
+      if (!unlink($target)) {
+        throw new Exception("Failed unlink result spreadsheet.");
+      }
+    }
+    unset($target);
 
-        /**
-         * Check if student has result file.
-         * @param Student $student The student model.
-         */
-        public function hasFile($student)
-        {
-                return file_exists(self::getPath($this->_exam->id, $student->id, 'pdf'));
-        }
+    $target = sprintf("%s", self::getPath($this->_exam->id));
+    if (file_exists($target)) {
+      if (!rmdir($target)) {
+        throw new Exception("Failed delete result directory.");
+      }
+    }
+    unset($target);
+  }
 
-        /**
-         * Check if result directory exists for this exam.
-         * @return bool
-         */
-        public function exist()
-        {
-                return file_exists(self::getPath($this->_exam->id));
-        }
+  /**
+   * Get directory path.
+   *
+   * @param int $eid The exam ID.
+   * @param int $sid The student ID.
+   * @return string
+   */
+  protected function getPath($eid = 0, $sid = 0, $ext = null) {
+    if ($eid == 0) {
+      return sprintf("%s/result", $this->config->application->cacheDir);
+    } elseif ($sid == 0) {
+      return sprintf("%s/result/%d", $this->config->application->cacheDir, $eid);
+    } elseif (!isset($ext)) {
+      return sprintf("%s/result/%d/%d", $this->config->application->cacheDir, $eid, $sid);
+    } else {
+      return sprintf("%s/result/%d/%d.%s", $this->config->application->cacheDir, $eid, $sid, $ext);
+    }
+  }
 
-        /**
-         * Cleanup result for this exam.
-         */
-        protected function clean()
-        {
-                foreach ($this->_exam->students as $student) {
-                        $this->delete($student);
-                }
+  /**
+   * Get student model.
+   *
+   * @param int $sid The student ID.
+   * @return Student
+   * @throws ModelException
+   */
+  protected function getStudent($sid) {
+    if (!($student = Student::findFirst($sid))) {
+      throw new ModelException("Failed find student.", Error::PRECONDITION_FAILED);
+    }
 
-                $target = sprintf("%s.zip", self::getPath($this->_exam->id));
-                if (file_exists($target)) {
-                        if (!unlink($target)) {
-                                throw new Exception("Failed unlink result archive.");
-                        }
-                }
-                unset($target);
+    return $student;
+  }
 
-                $target = sprintf("%s.xls", self::getPath($this->_exam->id));
-                if (file_exists($target)) {
-                        if (!unlink($target)) {
-                                throw new Exception("Failed unlink result spreadsheet.");
-                        }
-                }
-                unset($target);
+  /**
+   * Delete file associated with this student.
+   * @param int|Student $sid The student.
+   */
+  public abstract function delete($sid);
 
-                $target = sprintf("%s", self::getPath($this->_exam->id));
-                if (file_exists($target)) {
-                        if (!rmdir($target)) {
-                                throw new Exception("Failed delete result directory.");
-                        }
-                }
-                unset($target);
-        }
+  /**
+   * Create PDF for this student.
+   *
+   * @param int|Student $sid The student ID or model.
+   * @return boolean True if new file was created.
+   * @throws Exception
+   */
+  public abstract function createFile($sid);
 
-        /**
-         * Get directory path.
-         * 
-         * @param int $eid The exam ID.
-         * @param int $sid The student ID.
-         * @return string
-         */
-        protected function getPath($eid = 0, $sid = 0, $ext = null)
-        {
-                if ($eid == 0) {
-                        return sprintf("%s/result", $this->config->application->cacheDir);
-                } elseif ($sid == 0) {
-                        return sprintf("%s/result/%d", $this->config->application->cacheDir, $eid);
-                } elseif (!isset($ext)) {
-                        return sprintf("%s/result/%d/%d", $this->config->application->cacheDir, $eid, $sid);
-                } else {
-                        return sprintf("%s/result/%d/%d.%s", $this->config->application->cacheDir, $eid, $sid, $ext);
-                }
-        }
+  /**
+   * Create all PDF files in this exam.
+   */
+  public abstract function createFiles();
 
-        /**
-         * Get student model.
-         * 
-         * @param int $sid The student ID.
-         * @return Student
-         * @throws ModelException
-         */
-        protected function getStudent($sid)
-        {
-                if (!($student = Student::findFirst($sid))) {
-                        throw new ModelException("Failed find student.", Error::PRECONDITION_FAILED);
-                }
+  /**
+   * Create zip-file of exam results.
+   */
+  public abstract function createArchive();
 
-                return $student;
-        }
-
-        /**
-         * Delete file associated with this student.
-         * @param int|Student $sid The student.
-         */
-        public abstract function delete($sid);
-
-        /**
-         * Create PDF for this student.
-         * 
-         * @param int|Student $sid The student ID or model.
-         * @return boolean True if new file was created.
-         * @throws Exception
-         */
-        public abstract function createFile($sid);
-
-        /**
-         * Create all PDF files in this exam.
-         */
-        public abstract function createFiles();
-
-        /**
-         * Create zip-file of exam results.
-         */
-        public abstract function createArchive();
-
-        /**
-         * Create archives for all exams where endtime is after date and
-         * decoded status is true.
-         * 
-         * @param string|int $date The start date.
-         * @throws ModelException
-         */
-        public abstract static function createArchives($date);
+  /**
+   * Create archives for all exams where endtime is after date and
+   * decoded status is true.
+   *
+   * @param string|int $date The start date.
+   * @throws ModelException
+   */
+  public abstract static function createArchives($date);
 }

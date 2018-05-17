@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Trigger.php
 // Created: 2016-06-09 03:54:14
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Monitor\Performance;
 
@@ -33,16 +33,15 @@ use OpenExam\Models\Performance;
  * The triggers interface.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-interface Trigger
-{
-        /**
-         * How to format UNIX timestamps.
-         */
-        const DATE_FORMAT = '%Y-%m-%d %H:%M:%S';
+interface Trigger {
+  /**
+   * How to format UNIX timestamps.
+   */
+  const DATE_FORMAT = '%Y-%m-%d %H:%M:%S';
 
-        /**
-         * Process this performance model.
-         * @param Performance $model
-         */
-        function process($model);
+  /**
+   * Process this performance model.
+   * @param Performance $model
+   */
+  function process($model);
 }

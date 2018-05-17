@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 namespace Phalcon\Acl {
 
-	interface ResourceAware {
+  interface ResourceAware {
 
-		public function getResourceName();
+    public function getResourceName();
 
-	}
+  }
 }

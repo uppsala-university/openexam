@@ -1,61 +1,44 @@
-<?php 
+<?php
 
 namespace Phalcon\Db {
 
-	interface ColumnInterface {
+  interface ColumnInterface {
 
-		public function getSchemaName();
+    public function getSchemaName();
 
+    public function getName();
 
-		public function getName();
+    public function getType();
 
+    public function getTypeReference();
 
-		public function getType();
+    public function getTypeValues();
 
+    public function getSize();
 
-		public function getTypeReference();
+    public function getScale();
 
+    public function isUnsigned();
 
-		public function getTypeValues();
+    public function isNotNull();
 
+    public function isPrimary();
 
-		public function getSize();
+    public function isAutoIncrement();
 
+    public function isNumeric();
 
-		public function getScale();
+    public function isFirst();
 
+    public function getAfterPosition();
 
-		public function isUnsigned();
+    public function getBindType();
 
+    public function getDefault();
 
-		public function isNotNull();
+    public function hasDefault();
 
+    public static function __set_state($data);
 
-		public function isPrimary();
-
-
-		public function isAutoIncrement();
-
-
-		public function isNumeric();
-
-
-		public function isFirst();
-
-
-		public function getAfterPosition();
-
-
-		public function getBindType();
-
-
-		public function getDefault();
-
-
-		public function hasDefault();
-
-
-		public static function __set_state($data);
-
-	}
+  }
 }

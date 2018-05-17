@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 namespace Phalcon {
 
-	interface FactoryInterface {
+  interface FactoryInterface {
 
-		public static function load($config);
+    public static function load($config);
 
-	}
+  }
 }

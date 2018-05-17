@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    ServiceCheck.php
 // Created: 2016-06-02 02:43:42
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Monitor\Diagnostics;
 
@@ -31,30 +31,29 @@ namespace OpenExam\Library\Monitor\Diagnostics;
  * Interface for service checks.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-interface ServiceCheck
-{
+interface ServiceCheck {
 
-        /**
-         * True if last check has failed.
-         * @boolean
-         */
-        function hasFailed();
+  /**
+   * True if last check has failed.
+   * @boolean
+   */
+  function hasFailed();
 
-        /**
-         * Check if service is online.
-         * @return boolean
-         */
-        function isOnline();
+  /**
+   * Check if service is online.
+   * @return boolean
+   */
+  function isOnline();
 
-        /**
-         * Check if service is working.
-         * @return boolean
-         */
-        function isWorking();
+  /**
+   * Check if service is working.
+   * @return boolean
+   */
+  function isWorking();
 
-        /**
-         * Get check result.
-         * @return array
-         */
-        function getResult();
+  /**
+   * Get check result.
+   * @return array
+   */
+  function getResult();
 }

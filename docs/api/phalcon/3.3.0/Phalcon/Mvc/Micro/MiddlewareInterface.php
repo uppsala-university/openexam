@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc\Micro {
 
-	interface MiddlewareInterface {
+  interface MiddlewareInterface {
 
-		public function call(\Phalcon\Mvc\Micro $application);
+    public function call(\Phalcon\Mvc\Micro $application);
 
-	}
+  }
 }

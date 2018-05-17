@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    DispatchHelper.php
 // Created: 2015-02-17 10:38:55
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Plugins\Security\Dispatcher;
 
@@ -32,12 +32,11 @@ namespace OpenExam\Plugins\Security\Dispatcher;
  * @access private
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-interface DispatchHelper
-{
+interface DispatchHelper {
 
-        /**
-         * Get handler data.
-         * @return array 
-         */
-        function getData();
+  /**
+   * Get handler data.
+   * @return array
+   */
+  function getData();
 }

@@ -1,153 +1,134 @@
-<?php 
+<?php
 
 namespace Phalcon {
 
-	/**
-	 * Phalcon\Debug
-	 *
-	 * Provides debug capabilities to Phalcon applications
-	 */
-	
-	class Debug {
+  /**
+   * Phalcon\Debug
+   *
+   * Provides debug capabilities to Phalcon applications
+   */
 
-		public $_uri;
+  class Debug {
 
-		public $_theme;
+    public $_uri;
 
-		protected $_hideDocumentRoot;
+    public $_theme;
 
-		protected $_showBackTrace;
+    protected $_hideDocumentRoot;
 
-		protected $_showFiles;
+    protected $_showBackTrace;
 
-		protected $_showFileFragment;
+    protected $_showFiles;
 
-		protected $_data;
+    protected $_showFileFragment;
 
-		protected static $_isActive;
+    protected $_data;
 
-		/**
-		 * Change the base URI for static resources
-		 */
-		public function setUri($uri){ }
+    protected static $_isActive;
 
+    /**
+     * Change the base URI for static resources
+     */
+    public function setUri($uri) {}
 
-		/**
-		 * Sets if files the exception's backtrace must be showed
-		 */
-		public function setShowBackTrace($showBackTrace){ }
+    /**
+     * Sets if files the exception's backtrace must be showed
+     */
+    public function setShowBackTrace($showBackTrace) {}
 
+    /**
+     * Set if files part of the backtrace must be shown in the output
+     */
+    public function setShowFiles($showFiles) {}
 
-		/**
-		 * Set if files part of the backtrace must be shown in the output
-		 */
-		public function setShowFiles($showFiles){ }
+    /**
+     * Sets if files must be completely opened and showed in the output
+     * or just the fragment related to the exception
+     */
+    public function setShowFileFragment($showFileFragment) {}
 
+    /**
+     * Listen for uncaught exceptions and unsilent notices or warnings
+     */
+    public function listen($exceptions = null, $lowSeverity = null) {}
 
-		/**
-		 * Sets if files must be completely opened and showed in the output
-		 * or just the fragment related to the exception
-		 */
-		public function setShowFileFragment($showFileFragment){ }
+    /**
+     * Listen for uncaught exceptions
+     */
+    public function listenExceptions() {}
 
+    /**
+     * Listen for unsilent notices or warnings
+     */
+    public function listenLowSeverity() {}
 
-		/**
-		 * Listen for uncaught exceptions and unsilent notices or warnings
-		 */
-		public function listen($exceptions=null, $lowSeverity=null){ }
+    /**
+     * Halts the request showing a backtrace
+     */
+    public function halt() {}
 
+    /**
+     * Adds a variable to the debug output
+     */
+    public function debugVar($varz, $key = null) {}
 
-		/**
-		 * Listen for uncaught exceptions
-		 */
-		public function listenExceptions(){ }
+    /**
+     * Clears are variables added previously
+     */
+    public function clearVars() {}
 
+    /**
+     * Escapes a string with htmlentities
+     */
+    protected function _escapeString($value) {}
 
-		/**
-		 * Listen for unsilent notices or warnings
-		 */
-		public function listenLowSeverity(){ }
+    /**
+     * Produces a recursive representation of an array
+     */
+    protected function _getArrayDump($argument, $n = null) {}
 
+    /**
+     * Produces an string representation of a variable
+     */
+    protected function _getVarDump($variable) {}
 
-		/**
-		 * Halts the request showing a backtrace
-		 */
-		public function halt(){ }
+    /**
+     * Returns the major framework's version
+     *
+     * @deprecated Will be removed in 4.0.0
+     * @see \Phalcon\Version::getPart()
+     */
+    public function getMajorVersion() {}
 
+    /**
+     * Generates a link to the current version documentation
+     */
+    public function getVersion() {}
 
-		/**
-		 * Adds a variable to the debug output
-		 */
-		public function debugVar($varz, $key=null){ }
+    /**
+     * Returns the css sources
+     */
+    public function getCssSources() {}
 
+    /**
+     * Returns the javascript sources
+     */
+    public function getJsSources() {}
 
-		/**
-		 * Clears are variables added previously
-		 */
-		public function clearVars(){ }
+    /**
+     * Shows a backtrace item
+     */
+    final protected function showTraceItem($n, $trace) {}
 
+    /**
+     * Throws an exception when a notice or warning is raised
+     */
+    public function onUncaughtLowSeverity($severity, $message, $file, $line, $context) {}
 
-		/**
-		 * Escapes a string with htmlentities
-		 */
-		protected function _escapeString($value){ }
+    /**
+     * Handles uncaught exceptions
+     */
+    public function onUncaughtException(\Exception $exception) {}
 
-
-		/**
-		 * Produces a recursive representation of an array
-		 */
-		protected function _getArrayDump($argument, $n=null){ }
-
-
-		/**
-		 * Produces an string representation of a variable
-		 */
-		protected function _getVarDump($variable){ }
-
-
-		/**
-		 * Returns the major framework's version
-		 *
-		 * @deprecated Will be removed in 4.0.0
-		 * @see \Phalcon\Version::getPart()
-		 */
-		public function getMajorVersion(){ }
-
-
-		/**
-		 * Generates a link to the current version documentation
-		 */
-		public function getVersion(){ }
-
-
-		/**
-		 * Returns the css sources
-		 */
-		public function getCssSources(){ }
-
-
-		/**
-		 * Returns the javascript sources
-		 */
-		public function getJsSources(){ }
-
-
-		/**
-		 * Shows a backtrace item
-		 */
-		final protected function showTraceItem($n, $trace){ }
-
-
-		/**
-		 * Throws an exception when a notice or warning is raised
-		 */
-		public function onUncaughtLowSeverity($severity, $message, $file, $line, $context){ }
-
-
-		/**
-		 * Handles uncaught exceptions
-		 */
-		public function onUncaughtException(\Exception $exception){ }
-
-	}
+  }
 }

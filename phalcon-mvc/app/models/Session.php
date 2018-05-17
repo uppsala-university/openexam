@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Session.php
 // Created: 2014-09-20 13:00:59
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Models;
 
@@ -33,85 +33,81 @@ use Phalcon\Validation\Validator\Uniqueness;
 
 /**
  * The session model.
- * 
+ *
  * This model represents logon sessions.
- * 
+ *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Session extends ModelBase
-{
+class Session extends ModelBase {
 
-        /**
-         * Guard against problematic methods use.
-         */
-        use SessionModelGuard;
+  /**
+   * Guard against problematic methods use.
+   */
+  use SessionModelGuard;
 
-        /**
-         * The object ID.
-         * @var integer
-         */
-        public $id;
-        /**
-         * The session ID.
-         * @var string
-         */
-        public $session_id;
-        /**
-         * The session data.
-         * @var string
-         */
-        public $data;
-        /**
-         * Timestamp.
-         * @var integer
-         */
-        public $created;
-        /**
-         * Timestamp.
-         * @var integer
-         */
-        public $updated;
+  /**
+   * The object ID.
+   * @var integer
+   */
+  public $id;
+  /**
+   * The session ID.
+   * @var string
+   */
+  public $session_id;
+  /**
+   * The session data.
+   * @var string
+   */
+  public $data;
+  /**
+   * Timestamp.
+   * @var integer
+   */
+  public $created;
+  /**
+   * Timestamp.
+   * @var integer
+   */
+  public $updated;
 
-        /**
-         * Get source table name.
-         * @return string
-         */
-        public function getSource()
-        {
-                return 'sessions';
-        }
+  /**
+   * Get source table name.
+   * @return string
+   */
+  public function getSource() {
+    return 'sessions';
+  }
 
-        /**
-         * Get table column map.
-         * @return array
-         */
-        public function columnMap()
-        {
-                return array(
-                        'id'         => 'id',
-                        'session_id' => 'session_id',
-                        'data'       => 'data',
-                        'created'    => 'created',
-                        'updated'    => 'updated'
-                );
-        }
+  /**
+   * Get table column map.
+   * @return array
+   */
+  public function columnMap() {
+    return array(
+      'id' => 'id',
+      'session_id' => 'session_id',
+      'data' => 'data',
+      'created' => 'created',
+      'updated' => 'updated',
+    );
+  }
 
-        /**
-         * Validates business rules.
-         * @return boolean
-         */
-        public function validation()
-        {
-                $validator = new Validation();
-                
-                $validator->add(
-                    'session_id', new Uniqueness(
-                    array(
-                        'message' => "The session $this->session_id exists already"
-                    )
-                ));
+  /**
+   * Validates business rules.
+   * @return boolean
+   */
+  public function validation() {
+    $validator = new Validation();
 
-                return $this->validate($validator);
-        }
+    $validator->add(
+      'session_id', new Uniqueness(
+        array(
+          'message' => "The session $this->session_id exists already",
+        )
+      ));
+
+    return $this->validate($validator);
+  }
 
 }

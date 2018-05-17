@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Connection.php
 // Created: 2014-11-05 20:18:44
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Catalog\Service;
 
@@ -31,35 +31,34 @@ namespace OpenExam\Library\Catalog\Service;
  * The service backend connection.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-interface Connection
-{
+interface Connection {
 
-        /**
-         * Open connection to backend server.
-         * @return bool True if successful connected.
-         */
-        public function open();
+  /**
+   * Open connection to backend server.
+   * @return bool True if successful connected.
+   */
+  public function open();
 
-        /**
-         * Close connection to backend server.
-         */
-        public function close();
+  /**
+   * Close connection to backend server.
+   */
+  public function close();
 
-        /**
-         * Check if connected to backend server.
-         * @return bool True if already connected.
-         */
-        public function connected();
+  /**
+   * Check if connected to backend server.
+   * @return bool True if already connected.
+   */
+  public function connected();
 
-        /**
-         * Get service hostname.
-         * @return string 
-         */
-        public function hostname();
+  /**
+   * Get service hostname.
+   * @return string
+   */
+  public function hostname();
 
-        /**
-         * Get service port.
-         * @return int
-         */
-        public function port();
+  /**
+   * Get service port.
+   * @return int
+   */
+  public function port();
 }

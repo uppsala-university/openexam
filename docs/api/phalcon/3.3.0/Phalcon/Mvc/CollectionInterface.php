@@ -1,67 +1,48 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc {
 
-	interface CollectionInterface {
+  interface CollectionInterface {
 
-		public function setId($id);
+    public function setId($id);
 
+    public function getId();
 
-		public function getId();
+    public function getReservedAttributes();
 
+    public function getSource();
 
-		public function getReservedAttributes();
+    public function setConnectionService($connectionService);
 
+    public function getConnection();
 
-		public function getSource();
+    public function setDirtyState($dirtyState);
 
+    public function getDirtyState();
 
-		public function setConnectionService($connectionService);
+    public static function cloneResult(\Phalcon\Mvc\CollectionInterface $collection, $document);
 
+    public function fireEvent($eventName);
 
-		public function getConnection();
+    public function fireEventCancel($eventName);
 
+    public function validationHasFailed();
 
-		public function setDirtyState($dirtyState);
+    public function getMessages();
 
+    public function appendMessage(\Phalcon\Mvc\Model\MessageInterface $message);
 
-		public function getDirtyState();
+    public function save();
 
+    public static function findById($id);
 
-		public static function cloneResult(\Phalcon\Mvc\CollectionInterface $collection, $document);
+    public static function findFirst($parameters = null);
 
+    public static function find($parameters = null);
 
-		public function fireEvent($eventName);
+    public static function count($parameters = null);
 
+    public function delete();
 
-		public function fireEventCancel($eventName);
-
-
-		public function validationHasFailed();
-
-
-		public function getMessages();
-
-
-		public function appendMessage(\Phalcon\Mvc\Model\MessageInterface $message);
-
-
-		public function save();
-
-
-		public static function findById($id);
-
-
-		public static function findFirst($parameters=null);
-
-
-		public static function find($parameters=null);
-
-
-		public static function count($parameters=null);
-
-
-		public function delete();
-
-	}
+  }
 }

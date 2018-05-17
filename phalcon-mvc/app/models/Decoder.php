@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Decoder.php
 // Created: 2014-02-24 07:04:58
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Models;
 
@@ -31,88 +31,82 @@ use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
 
 /**
  * The decoder model.
- * 
+ *
  * Represents a user having the decoder role.
- * 
+ *
  * @property Exam $exam The related exam.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Decoder extends Role
-{
+class Decoder extends Role {
 
-        /**
-         * Guard against problematic methods use.
-         */
-        use ExamModelGuard;
+  /**
+   * Guard against problematic methods use.
+   */
+  use ExamModelGuard;
 
-        /**
-         * This object ID.
-         * @var integer
-         */
-        public $id;
-        /**
-         * The exam ID.
-         * @var integer
-         */
-        public $exam_id;
-        /**
-         * The user principal name (e.g. user@example.com).
-         * @var string
-         */
-        public $user;
+  /**
+   * This object ID.
+   * @var integer
+   */
+  public $id;
+  /**
+   * The exam ID.
+   * @var integer
+   */
+  public $exam_id;
+  /**
+   * The user principal name (e.g. user@example.com).
+   * @var string
+   */
+  public $user;
 
-        /**
-         * Initialize method for model.
-         */
-        public function initialize()
-        {
-                parent::initialize();
+  /**
+   * Initialize method for model.
+   */
+  public function initialize() {
+    parent::initialize();
 
-                $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array(
-                        'foreignKey' => true,
-                        'alias'      => 'exam',
-                        'reusable'   => true
-                ));
-        }
+    $this->belongsTo('exam_id', 'OpenExam\Models\Exam', 'id', array(
+      'foreignKey' => true,
+      'alias' => 'exam',
+      'reusable' => true,
+    ));
+  }
 
-        /**
-         * Get source table name.
-         * @return string
-         */
-        public function getSource()
-        {
-                return 'decoders';
-        }
+  /**
+   * Get source table name.
+   * @return string
+   */
+  public function getSource() {
+    return 'decoders';
+  }
 
-        /**
-         * Get table column map.
-         * @return array
-         */
-        public function columnMap()
-        {
-                return array(
-                        'id'      => 'id',
-                        'exam_id' => 'exam_id',
-                        'user'    => 'user'
-                );
-        }
+  /**
+   * Get table column map.
+   * @return array
+   */
+  public function columnMap() {
+    return array(
+      'id' => 'id',
+      'exam_id' => 'exam_id',
+      'user' => 'user',
+    );
+  }
 
-        /**
-         * Called after model is created.
-         */
-        public function afterCreate()
-        {
-                parent::afterCreate();
-                $this->exam->getStaff()->addRole($this);
-        }
+  /**
+   * Called after model is created.
+   */
+  public function afterCreate() {
+    parent::afterCreate();
+    $this->exam->getStaff()->addRole($this);
+  }
 
-        /**
-         * Called after model is deleted.
-         */
-        public function afterDelete()
-        {
-                parent::afterDelete();
-                $this->exam->getStaff()->removeRole($this);
-        }
+  /**
+   * Called after model is deleted.
+   */
+  public function afterDelete() {
+    parent::afterDelete();
+    $this->exam->getStaff()->removeRole($this);
+  }
 
 }

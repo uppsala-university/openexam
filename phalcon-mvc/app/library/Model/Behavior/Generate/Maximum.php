@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Maximum.php
 // Created: 2017-04-21 00:44:45
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Model\Behavior\Generate;
 
@@ -35,33 +35,31 @@ use Phalcon\Mvc\ModelInterface;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class Maximum extends ModelBehavior
-{
+class Maximum extends ModelBehavior {
 
-        /**
-         * Receives notifications from the Models Manager
-         *
-         * @param string $type The event type.
-         * @param ModelInterface $model The target model.
-         */
-        public function notify($type, ModelInterface $model)
-        {
-                if (($options = $this->getOptions($type))) {
-                        $field = $options['field'];
-                        $limit = $options['limit'];
+  /**
+   * Receives notifications from the Models Manager
+   *
+   * @param string $type The event type.
+   * @param ModelInterface $model The target model.
+   */
+  public function notify($type, ModelInterface $model) {
+    if (($options = $this->getOptions($type))) {
+      $field = $options['field'];
+      $limit = $options['limit'];
 
-                        $params = array(
-                                sprintf("%s = %d", $limit, $model->$limit),
-                                'column' => "$field"
-                        );
-                        $count = sprintf("%s = %d AND %s = %d", $limit, $model->$limit, $field, $model->$field);
+      $params = array(
+        sprintf("%s = %d", $limit, $model->$limit),
+        'column' => "$field",
+      );
+      $count = sprintf("%s = %d AND %s = %d", $limit, $model->$limit, $field, $model->$field);
 
-                        if (!isset($model->$field)) {
-                                $model->$field = $model->maximum($params) + 1;
-                        } elseif ($model->count($count) != 0) {
-                                $model->$field = $model->maximum($params) + 1;
-                        }
-                }
-        }
+      if (!isset($model->$field)) {
+        $model->$field = $model->maximum($params) + 1;
+      } elseif ($model->count($count) != 0) {
+        $model->$field = $model->maximum($params) + 1;
+      }
+    }
+  }
 
 }

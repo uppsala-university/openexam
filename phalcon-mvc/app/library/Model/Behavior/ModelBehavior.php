@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    ModelBehavior.php
 // Created: 2014-11-13 01:41:59
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Model\Behavior;
 
@@ -40,75 +40,71 @@ use Phalcon\Mvc\Model\BehaviorInterface;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class ModelBehavior extends Behavior implements BehaviorInterface
-{
+class ModelBehavior extends Behavior implements BehaviorInterface {
 
-        /**
-         * The logger service.
-         * @var Logger 
-         */
-        protected $logger;
-        /**
-         * The authenticated user.
-         * @var User 
-         */
-        protected $user;
-        /**
-         * The primary role.
-         * @var string 
-         */
-        protected $role;
+  /**
+   * The logger service.
+   * @var Logger
+   */
+  protected $logger;
+  /**
+   * The authenticated user.
+   * @var User
+   */
+  protected $user;
+  /**
+   * The primary role.
+   * @var string
+   */
+  protected $role;
 
-        /**
-         * Setup for making trusted call.
-         * @param DiInterface $dependencyInjector
-         */
-        private function setup($dependencyInjector)
-        {
-                if (!isset($dependencyInjector)) {
-                        $dependencyInjector = \Phalcon\DI::getDefault();
-                }
+  /**
+   * Setup for making trusted call.
+   * @param DiInterface $dependencyInjector
+   */
+  private function setup($dependencyInjector) {
+    if (!isset($dependencyInjector)) {
+      $dependencyInjector = \Phalcon\DI::getDefault();
+    }
 
-                $this->logger = $dependencyInjector->getLogger();
-                $this->user = $dependencyInjector->getUser();
-                $this->role = $this->user->getPrimaryRole();
+    $this->logger = $dependencyInjector->getLogger();
+    $this->user = $dependencyInjector->getUser();
+    $this->role = $this->user->getPrimaryRole();
 
-                $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
+    $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1];
 
-                $trace['user'] = $this->user->getPrincipalName();
-                $trace['role'] = $this->user->getPrimaryRole();
+    $trace['user'] = $this->user->getPrincipalName();
+    $trace['role'] = $this->user->getPrimaryRole();
 
-                $this->logger->access->debug(print_r($trace, true));
+    $this->logger->access->debug(print_r($trace, true));
 
-                $this->user->setPrimaryRole(Roles::TRUSTED);
-        }
+    $this->user->setPrimaryRole(Roles::TRUSTED);
+  }
 
-        /**
-         * Leave after making trusted call.
-         */
-        private function leave()
-        {
-                $this->user->setPrimaryRole($this->role);
-        }
+  /**
+   * Leave after making trusted call.
+   */
+  private function leave() {
+    $this->user->setPrimaryRole($this->role);
+  }
 
-        /**
-         * Invoke callback function in trusted context.
-         * @param callable $callback The callback function.
-         * @param DiInterface $dependencyInjector
-         */
-        protected function trustedContextCall($callback, $dependencyInjector = null)
-        {
-                try {
-                        $this->setup($dependencyInjector);
-                        $result = $callback($this->user, $this->role);
-                } catch (Exception $exception) {
-                        $this->logger->access->error($exception->getMessage());
-                        throw $exception;
-                } finally {
-                        $this->leave();
-                }
+  /**
+   * Invoke callback function in trusted context.
+   * @param callable $callback The callback function.
+   * @param DiInterface $dependencyInjector
+   */
+  protected function trustedContextCall($callback, $dependencyInjector = null) {
+    try {
+      $this->setup($dependencyInjector);
+      $result = $callback($this->user, $this->role);
+    } catch (Exception $exception) {
+      $this->logger->access->error($exception->getMessage());
+      throw $exception;
+    } finally {
+      $this->leave();
+    }
 
-                return $result;
-        }
+    return $result;
+  }
 
 }

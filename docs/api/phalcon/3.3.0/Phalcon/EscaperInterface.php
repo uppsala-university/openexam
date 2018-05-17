@@ -1,31 +1,24 @@
-<?php 
+<?php
 
 namespace Phalcon {
 
-	interface EscaperInterface {
+  interface EscaperInterface {
 
-		public function setEncoding($encoding);
+    public function setEncoding($encoding);
 
+    public function getEncoding();
 
-		public function getEncoding();
+    public function setHtmlQuoteType($quoteType);
 
+    public function escapeHtml($text);
 
-		public function setHtmlQuoteType($quoteType);
+    public function escapeHtmlAttr($text);
 
+    public function escapeCss($css);
 
-		public function escapeHtml($text);
+    public function escapeJs($js);
 
+    public function escapeUrl($url);
 
-		public function escapeHtmlAttr($text);
-
-
-		public function escapeCss($css);
-
-
-		public function escapeJs($js);
-
-
-		public function escapeUrl($url);
-
-	}
+  }
 }

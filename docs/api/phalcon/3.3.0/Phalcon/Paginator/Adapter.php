@@ -1,33 +1,31 @@
-<?php 
+<?php
 
 namespace Phalcon\Paginator {
 
-	/**
-	 * Phalcon\Paginator\Adapter
-	 */
-	
-	abstract class Adapter implements \Phalcon\Paginator\AdapterInterface {
+  /**
+   * Phalcon\Paginator\Adapter
+   */
 
-		protected $_limitRows;
+  abstract class Adapter implements \Phalcon\Paginator\AdapterInterface {
 
-		protected $_page;
+    protected $_limitRows;
 
-		/**
-		 * Set the current page number
-		 */
-		public function setCurrentPage($page){ }
+    protected $_page;
 
+    /**
+     * Set the current page number
+     */
+    public function setCurrentPage($page) {}
 
-		/**
-		 * Set current rows limit
-		 */
-		public function setLimit($limitRows){ }
+    /**
+     * Set current rows limit
+     */
+    public function setLimit($limitRows) {}
 
+    /**
+     * Get current rows limit
+     */
+    public function getLimit() {}
 
-		/**
-		 * Get current rows limit
-		 */
-		public function getLimit(){ }
-
-	}
+  }
 }

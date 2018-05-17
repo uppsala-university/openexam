@@ -18,46 +18,45 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Setup.php
 // Created: 2014-09-19 12:11:58
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Library\Globalization\Translate;
 
 /**
  * Translation setup.
  * Interface for classes managing translation resources.
- * 
+ *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-interface Setup
-{
+interface Setup {
 
-        /**
-         * Initialize.
-         */
-        function initialize();
+  /**
+   * Initialize.
+   */
+  function initialize();
 
-        /**
-         * Cleanup.
-         */
-        function clean();
+  /**
+   * Cleanup.
+   */
+  function clean();
 
-        /**
-         * Update translations.
-         */
-        function update();
+  /**
+   * Update translations.
+   */
+  function update();
 
-        /**
-         * Compile translations.
-         */
-        function compile();
+  /**
+   * Compile translations.
+   */
+  function compile();
 
-        /**
-         * Merge translations.
-         */
-        function merge();
+  /**
+   * Merge translations.
+   */
+  function merge();
 }

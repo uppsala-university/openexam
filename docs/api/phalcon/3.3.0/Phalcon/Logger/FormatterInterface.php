@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 namespace Phalcon\Logger {
 
-	interface FormatterInterface {
+  interface FormatterInterface {
 
-		public function format($message, $type, $timestamp, $context=null);
+    public function format($message, $type, $timestamp, $context = null);
 
-	}
+  }
 }

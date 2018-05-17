@@ -18,28 +18,25 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Substitute.php
 // Created: 2014-11-04 01:02:43
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 if (!function_exists('_')) {
 
-        function _($msgid)
-        {
-                return vsprintf($msgid, func_get_args());
-        }
+  function _($msgid) {
+    return vsprintf($msgid, func_get_args());
+  }
 
-        function ngettext($msgid1, $msgid2, $n)
-        {
-                return vsprintf($n < 2 ? $msgid1 : $msgid2, func_get_args());
-        }
+  function ngettext($msgid1, $msgid2, $n) {
+    return vsprintf($n < 2 ? $msgid1 : $msgid2, func_get_args());
+  }
 
-        function dngettext($domain, $msgid1, $msgid2, $n)
-        {
-                return ngettext($msgid1, $msgid2, $n);
-        }
+  function dngettext($domain, $msgid1, $msgid2, $n) {
+    return ngettext($msgid1, $msgid2, $n);
+  }
 
 }

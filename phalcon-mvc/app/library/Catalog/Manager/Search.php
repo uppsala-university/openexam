@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Search.php
 // Created: 2017-04-11 23:04:00
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Catalog\Manager;
 
@@ -33,13 +33,12 @@ use OpenExam\Library\Catalog\DirectoryManager;
  * The directory search interface.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-interface Search
-{
+interface Search {
 
-        /**
-         * Get search result from directory manager.
-         * @param DirectoryManager $manager The directory manager.
-         * @return array
-         */
-        function getResult($manager);
+  /**
+   * Get search result from directory manager.
+   * @param DirectoryManager $manager The directory manager.
+   * @return array
+   */
+  function getResult($manager);
 }

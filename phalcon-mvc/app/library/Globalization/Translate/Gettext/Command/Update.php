@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Update.php
 // Created: 2014-09-19 14:17:49
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Library\Globalization\Translate\Gettext\Command;
 
@@ -31,52 +31,47 @@ namespace OpenExam\Library\Globalization\Translate\Gettext\Command;
  * Update command.
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class Update extends Command
-{
+class Update extends Command {
 
-        /**
-         * Update text domain template file (POT-file).
-         */
-        public function process()
-        {
-                foreach ($this->getLocales() as $locale) {
-                        $this->processLocale($locale);
-                }
-        }
+  /**
+   * Update text domain template file (POT-file).
+   */
+  public function process() {
+    foreach ($this->getLocales() as $locale) {
+      $this->processLocale($locale);
+    }
+  }
 
-        private function processLocale($locale)
-        {
-                foreach ($this->getModules() as $module) {
-                        $this->processModule($locale, $module);
-                }
-        }
+  private function processLocale($locale) {
+    foreach ($this->getModules() as $module) {
+      $this->processModule($locale, $module);
+    }
+  }
 
-        private function processModule($locale, $module)
-        {
-                $topdir = $this->_config->application->localeDir;
-                $template = sprintf("%s/%s.pot", $topdir, $module);
+  private function processModule($locale, $module) {
+    $topdir = $this->_config->application->localeDir;
+    $template = sprintf("%s/%s.pot", $topdir, $module);
 
-                $this->processFile($template, $module, $topdir);
-        }
+    $this->processFile($template, $module, $topdir);
+  }
 
-        private function processFile($template, $module, $topdir)
-        {
-                if ($this->_options['verbose']) {
-                        $this->_flash->notice("Updating template $template");
-                }
+  private function processFile($template, $module, $topdir) {
+    if ($this->_options['verbose']) {
+      $this->_flash->notice("Updating template $template");
+    }
 
-                $program = $this->_config->gettext->program->xgettext;
-                $options = $this->_config->gettext->options->xgettext;
+    $program = $this->_config->gettext->program->xgettext;
+    $options = $this->_config->gettext->options->xgettext;
 
-                $cmdopts = $this->substitute($options, array('template' => $template));
+    $cmdopts = $this->substitute($options, array('template' => $template));
 
-                $filelist = sprintf("%s/%s.list", $topdir, $module);
-                file_put_contents($filelist, implode("\n", $this->getSourceFiles()));
+    $filelist = sprintf("%s/%s.list", $topdir, $module);
+    file_put_contents($filelist, implode("\n", $this->getSourceFiles()));
 
-                $cmdopts = sprintf("%s --files-from=%s", $cmdopts, $filelist);
-                $this->execute($program, $cmdopts);
+    $cmdopts = sprintf("%s --files-from=%s", $cmdopts, $filelist);
+    $this->execute($program, $cmdopts);
 
-                unlink($filelist);
-        }
+    unlink($filelist);
+  }
 
 }

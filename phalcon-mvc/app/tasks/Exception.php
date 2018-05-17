@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Exception.php
 // Created: 2014-09-09 14:13:08
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Console\Tasks;
 
@@ -32,7 +32,6 @@ namespace OpenExam\Console\Tasks;
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class Exception extends \Exception
-{
-        
+class Exception extends \Exception {
+
 }

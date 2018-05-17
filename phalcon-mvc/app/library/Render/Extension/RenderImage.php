@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    RenderImage.php
 // Created: 2014-10-27 21:42:58
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Render\Extension;
 
@@ -31,24 +31,24 @@ use OpenExam\Library\Render\Renderer;
 
 /**
  * Image render class.
- * 
- * This class renders and URL or local HTML file as an image using the PHP 
+ *
+ * This class renders and URL or local HTML file as an image using the PHP
  * wrapper extension (phpwkhtmltox) for libwkhtmltox.
- * 
+ *
  * <code>
  * $settings = array(
  *      'in'  => 'http://www.google.com/'
  * );
- * 
- * // 
+ *
+ * //
  * // Save JPEG image to file:
- * // 
+ * //
  * $render = new RenderImage();
  * $render->save('/tmp/output.jpeg', $settings);
- * 
- * // 
+ *
+ * //
  * // Send JPEG image to stdout:
- * // 
+ * //
  * $render = new RenderImage();
  * $render->send('file.jpeg', $settings);
  * </code>
@@ -56,43 +56,40 @@ use OpenExam\Library\Render\Renderer;
  * @author Anders Lövgren (QNET/BMC CompDept)
  * @see http://wkhtmltopdf.org/libwkhtmltox/pagesettings.html
  */
-class RenderImage extends RenderBase implements Renderer
-{
+class RenderImage extends RenderBase implements Renderer {
 
-        private static $_mime = array(
-                'png' => 'image/png',
-                'jpg' => 'image/jpeg',
-                'bmp' => 'image/bmp',
-                'svg' => 'image/svg+xml'
-        );
+  private static $_mime = array(
+    'png' => 'image/png',
+    'jpg' => 'image/jpeg',
+    'bmp' => 'image/bmp',
+    'svg' => 'image/svg+xml',
+  );
 
-        /**
-         * Save rendered image.
-         * 
-         * @param string $filename The output file.
-         * @param array $settings The image settings.
-         * @return bool
-         */
-        public function save($filename, $settings)
-        {
-                return parent::render('image', array_merge((array) $settings, array('out' => $filename)));
-        }
+  /**
+   * Save rendered image.
+   *
+   * @param string $filename The output file.
+   * @param array $settings The image settings.
+   * @return bool
+   */
+  public function save($filename, $settings) {
+    return parent::render('image', array_merge((array) $settings, array('out' => $filename)));
+  }
 
-        /**
-         * Send rendered image.
-         * 
-         * @param string $filename The suggested filename.
-         * @param array $settings The image settings.
-         * @param bool $headers Output HTTP headers.
-         * @return bool
-         */
-        public function send($filename, $settings, $headers = true)
-        {
-                if ($headers) {
-                        header(sprintf('Content-type: %s', self::$_mime[$settings['fmt']]));
-                        header(sprintf("Content-Disposition: attachment; filename=\"%s\"", $filename));
-                }
-                return parent::render('image', array_merge((array) $settings, array('out' => '-')));
-        }
+  /**
+   * Send rendered image.
+   *
+   * @param string $filename The suggested filename.
+   * @param array $settings The image settings.
+   * @param bool $headers Output HTTP headers.
+   * @return bool
+   */
+  public function send($filename, $settings, $headers = true) {
+    if ($headers) {
+      header(sprintf('Content-type: %s', self::$_mime[$settings['fmt']]));
+      header(sprintf("Content-Disposition: attachment; filename=\"%s\"", $filename));
+    }
+    return parent::render('image', array_merge((array) $settings, array('out' => '-')));
+  }
 
 }

@@ -18,19 +18,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Exception.php
 // Created: 2014-09-19 14:41:46
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Library\Globalization;
 
 /**
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class Exception extends \Exception
-{
-        
+class Exception extends \Exception {
+
 }

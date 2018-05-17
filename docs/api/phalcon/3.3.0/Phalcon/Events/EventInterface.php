@@ -1,28 +1,22 @@
-<?php 
+<?php
 
 namespace Phalcon\Events {
 
-	interface EventInterface {
+  interface EventInterface {
 
-		public function getData();
+    public function getData();
 
+    public function setData($data = null);
 
-		public function setData($data=null);
+    public function getType();
 
+    public function setType($type);
 
-		public function getType();
+    public function stop();
 
+    public function isStopped();
 
-		public function setType($type);
+    public function isCancelable();
 
-
-		public function stop();
-
-
-		public function isStopped();
-
-
-		public function isCancelable();
-
-	}
+  }
 }

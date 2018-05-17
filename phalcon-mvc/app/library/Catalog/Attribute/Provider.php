@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Provider.php
 // Created: 2016-11-13 14:05:18
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Catalog\Attribute;
 
@@ -34,30 +34,29 @@ use OpenExam\Models\User;
  * User attribute provider.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-interface Provider
-{
+interface Provider {
 
-        /**
-         * Return true if attributes are present.
-         * @return boolean
-         */
-        function hasAttributes();
+  /**
+   * Return true if attributes are present.
+   * @return boolean
+   */
+  function hasAttributes();
 
-        /**
-         * Get user attributes.
-         * @return array 
-         */
-        function getAttributes();
+  /**
+   * Get user attributes.
+   * @return array
+   */
+  function getAttributes();
 
-        /**
-         * Get user principal object.
-         * @return Principal 
-         */
-        function getPrincipal();
+  /**
+   * Get user principal object.
+   * @return Principal
+   */
+  function getPrincipal();
 
-        /**
-         * Get user model.
-         * @return User
-         */
-        function getUser();
+  /**
+   * Get user model.
+   * @return User
+   */
+  function getUser();
 }

@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Exception.php
 // Created: 2015-02-03 12:26:21
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Library\WebService\Common;
 
@@ -31,7 +31,6 @@ namespace OpenExam\Library\WebService\Common;
  * Web service exception.
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class Exception extends \Exception
-{
-        
+class Exception extends \Exception {
+
 }

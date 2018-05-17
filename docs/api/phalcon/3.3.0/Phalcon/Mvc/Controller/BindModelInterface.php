@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc\Controller {
 
-	interface BindModelInterface {
+  interface BindModelInterface {
 
-		public static function getModelName();
+    public static function getModelName();
 
-	}
+  }
 }

@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    ImportStudentsHtml.php
 // Created: 2015-04-15 23:07:01
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Library\Import\Students;
 
@@ -34,20 +34,17 @@ use PHPExcel_Reader_HTML;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class ImportStudentsHtml extends ImportStudents
-{
+class ImportStudentsHtml extends ImportStudents {
 
-        private static $_mimedef = "text/html";
+  private static $_mimedef = "text/html";
 
-        public function __construct($accept = "")
-        {
-                parent::__construct(self::$_mimedef);
-        }
+  public function __construct($accept = "") {
+    parent::__construct(self::$_mimedef);
+  }
 
-        public function open()
-        {
-                $this->_reader = new PHPExcel_Reader_HTML();
-                $this->_reader->setReadDataOnly(true);
-        }
+  public function open() {
+    $this->_reader = new PHPExcel_Reader_HTML();
+    $this->_reader->setReadDataOnly(true);
+  }
 
 }

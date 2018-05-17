@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Setup.php
 // Created: 2014-09-19 12:21:24
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Library\Globalization\Translate\Gettext;
 
@@ -38,70 +38,62 @@ use Phalcon\Mvc\User\Component;
 
 /**
  * Translation setup class for GNU gettext.
- * 
+ *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class Setup extends Component implements SetupInterface
-{
+class Setup extends Component implements SetupInterface {
 
-        /**
-         * Runtime options.
-         * @var array 
-         */
-        private $_options;
-        private $_consumer;
+  /**
+   * Runtime options.
+   * @var array
+   */
+  private $_options;
+  private $_consumer;
 
-        /**
-         * Constructor.
-         * @param array $options Runtime options.
-         */
-        public function __construct($consumer, $options)
-        {
-                if (!extension_loaded('gettext')) {
-                        throw new Exception('The gettext extension is not loaded.');
-                }
+  /**
+   * Constructor.
+   * @param array $options Runtime options.
+   */
+  public function __construct($consumer, $options) {
+    if (!extension_loaded('gettext')) {
+      throw new Exception('The gettext extension is not loaded.');
+    }
 
-                $this->_consumer = $consumer;
-                $this->_options = $options;
-        }
+    $this->_consumer = $consumer;
+    $this->_options = $options;
+  }
 
-        /**
-         * Set text domain for next call.
-         * @param string $domain The text domain.
-         */
-        public function setDomain($domain)
-        {
-                $this->_options['module'] = $domain;
-        }
+  /**
+   * Set text domain for next call.
+   * @param string $domain The text domain.
+   */
+  public function setDomain($domain) {
+    $this->_options['module'] = $domain;
+  }
 
-        public function clean()
-        {
-                $command = new CleanCommand($this->_consumer, $this->_options);
-                $command->process();
-        }
+  public function clean() {
+    $command = new CleanCommand($this->_consumer, $this->_options);
+    $command->process();
+  }
 
-        public function compile()
-        {
-                $command = new CompileCommand($this->_consumer, $this->_options);
-                $command->process();
-        }
+  public function compile() {
+    $command = new CompileCommand($this->_consumer, $this->_options);
+    $command->process();
+  }
 
-        public function initialize()
-        {
-                $command = new InitializeCommand($this->_consumer, $this->_options);
-                $command->process();
-        }
+  public function initialize() {
+    $command = new InitializeCommand($this->_consumer, $this->_options);
+    $command->process();
+  }
 
-        public function merge()
-        {
-                $command = new MergeCommand($this->_consumer, $this->_options);
-                $command->process();
-        }
+  public function merge() {
+    $command = new MergeCommand($this->_consumer, $this->_options);
+    $command->process();
+  }
 
-        public function update()
-        {
-                $command = new UpdateCommand($this->_consumer, $this->_options);
-                $command->process();
-        }
+  public function update() {
+    $command = new UpdateCommand($this->_consumer, $this->_options);
+    $command->process();
+  }
 
 }

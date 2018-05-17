@@ -1,34 +1,26 @@
-<?php 
+<?php
 
 namespace Phalcon\Db {
 
-	interface ReferenceInterface {
+  interface ReferenceInterface {
 
-		public function getName();
+    public function getName();
 
+    public function getSchemaName();
 
-		public function getSchemaName();
+    public function getReferencedSchema();
 
+    public function getColumns();
 
-		public function getReferencedSchema();
+    public function getReferencedTable();
 
+    public function getReferencedColumns();
 
-		public function getColumns();
+    public function getOnDelete();
 
+    public function getOnUpdate();
 
-		public function getReferencedTable();
+    public static function __set_state($data);
 
-
-		public function getReferencedColumns();
-
-
-		public function getOnDelete();
-
-
-		public function getOnUpdate();
-
-
-		public static function __set_state($data);
-
-	}
+  }
 }

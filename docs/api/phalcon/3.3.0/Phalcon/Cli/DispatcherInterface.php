@@ -1,25 +1,20 @@
-<?php 
+<?php
 
 namespace Phalcon\Cli {
 
-	interface DispatcherInterface {
+  interface DispatcherInterface {
 
-		public function setTaskSuffix($taskSuffix);
+    public function setTaskSuffix($taskSuffix);
 
+    public function setDefaultTask($taskName);
 
-		public function setDefaultTask($taskName);
+    public function setTaskName($taskName);
 
+    public function getTaskName();
 
-		public function setTaskName($taskName);
+    public function getLastTask();
 
+    public function getActiveTask();
 
-		public function getTaskName();
-
-
-		public function getLastTask();
-
-
-		public function getActiveTask();
-
-	}
+  }
 }

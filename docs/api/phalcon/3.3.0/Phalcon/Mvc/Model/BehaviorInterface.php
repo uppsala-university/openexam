@@ -1,13 +1,12 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc\Model {
 
-	interface BehaviorInterface {
+  interface BehaviorInterface {
 
-		public function notify($type, \Phalcon\Mvc\ModelInterface $model);
+    public function notify($type, \Phalcon\Mvc\ModelInterface $model);
 
+    public function missingMethod(\Phalcon\Mvc\ModelInterface $model, $method, $arguments = null);
 
-		public function missingMethod(\Phalcon\Mvc\ModelInterface $model, $method, $arguments=null);
-
-	}
+  }
 }

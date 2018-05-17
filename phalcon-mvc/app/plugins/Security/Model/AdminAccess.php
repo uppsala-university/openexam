@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    Admin.php
 // Created: 2014-09-29 14:09:58
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Plugins\Security\Model;
 
@@ -33,7 +33,6 @@ use OpenExam\Plugins\Security\Model\ObjectAccess;
  * Access control for the Admin model.
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class AdminAccess extends ObjectAccess
-{
-        
+class AdminAccess extends ObjectAccess {
+
 }

@@ -1,13 +1,12 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc {
 
-	interface EntityInterface {
+  interface EntityInterface {
 
-		public function readAttribute($attribute);
+    public function readAttribute($attribute);
 
+    public function writeAttribute($attribute, $value);
 
-		public function writeAttribute($attribute, $value);
-
-	}
+  }
 }

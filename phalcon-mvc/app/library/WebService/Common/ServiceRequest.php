@@ -18,42 +18,40 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    ServiceRequest.php
 // Created: 2015-01-29 10:50:39
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Library\WebService\Common;
 
 /**
  * Generic representation of a web service request.
- * 
+ *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class ServiceRequest
-{
-        /**
-         * The request data.
-         * @var array 
-         */
-        public $data;
-        /**
-         * The request parameters.
-         * @var array 
-         */
-        public $params;
+class ServiceRequest {
+  /**
+   * The request data.
+   * @var array
+   */
+  public $data;
+  /**
+   * The request parameters.
+   * @var array
+   */
+  public $params;
 
-        /**
-         * Constructor.
-         * @param array $data
-         * @param type $params
-         */
-        public function __construct($data, $params = array())
-        {
-                $this->data = $data;
-                $this->params = $params;
-        }
+  /**
+   * Constructor.
+   * @param array $data
+   * @param type $params
+   */
+  public function __construct($data, $params = array()) {
+    $this->data = $data;
+    $this->params = $params;
+  }
 
 }

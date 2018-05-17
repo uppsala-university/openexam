@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 namespace Phalcon\Assets {
 
-	interface FilterInterface {
+  interface FilterInterface {
 
-		public function filter($content);
+    public function filter($content);
 
-	}
+  }
 }

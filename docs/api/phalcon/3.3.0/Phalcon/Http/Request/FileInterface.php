@@ -1,25 +1,20 @@
-<?php 
+<?php
 
 namespace Phalcon\Http\Request {
 
-	interface FileInterface {
+  interface FileInterface {
 
-		public function getSize();
+    public function getSize();
 
+    public function getName();
 
-		public function getName();
+    public function getTempName();
 
+    public function getType();
 
-		public function getTempName();
+    public function getRealType();
 
+    public function moveTo($destination);
 
-		public function getType();
-
-
-		public function getRealType();
-
-
-		public function moveTo($destination);
-
-	}
+  }
 }

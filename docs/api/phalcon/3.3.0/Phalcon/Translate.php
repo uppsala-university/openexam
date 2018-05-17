@@ -1,7 +1,7 @@
-<?php 
+<?php
 
 namespace Phalcon {
 
-	abstract class Translate {
-	}
+  abstract class Translate {
+  }
 }

@@ -154,139 +154,127 @@ use OpenExam\Library\WebService\Handler\CatalogHandler;
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class CatalogController extends AjaxController
-{
+class CatalogController extends AjaxController {
 
-        /**
-         *
-         * @var CatalogHandler
-         */
-        private $_handler;
+  /**
+   *
+   * @var CatalogHandler
+   */
+  private $_handler;
 
-        /**
-         * Constructor.
-         */
-        public function initialize()
-        {
-                parent::initialize();
-                $this->_handler = new CatalogHandler($this->getRequest(), $this->user, $this->catalog);
-        }
+  /**
+   * Constructor.
+   */
+  public function initialize() {
+    parent::initialize();
+    $this->_handler = new CatalogHandler($this->getRequest(), $this->user, $this->catalog);
+  }
 
-        /**
-         * Destructor.
-         */
-        public function __destruct()
-        {
-                unset($this->_handler);
-                parent::__destruct();
-        }
+  /**
+   * Destructor.
+   */
+  public function __destruct() {
+    unset($this->_handler);
+    parent::__destruct();
+  }
 
-        /**
-         * Display documentation of the AJAX service API.
-         */
-        public function apiAction()
-        {
-                // TODO: use view for displaying API docs
+  /**
+   * Display documentation of the AJAX service API.
+   */
+  public function apiAction() {
+    // TODO: use view for displaying API docs
 
-                $content = array(
-                        "usage"   => array(
-                                "/ajax/catalog/{target}"           => "POST",
-                                "/ajax/catalog/{target}/{subject}" => "GET",
-                        ),
-                        "example" => array(
-                                "/ajax/catalog/attribute"       => "Query user attributes (POST)",
-                                "/ajax/catalog/groups"          => "Get user groups (POST)",
-                                "/ajax/catalog/groups/{user}"   => "Browse user groups (GET)",
-                                "/ajax/catalog/members"         => "Get group members (POST)",
-                                "/ajax/catalog/members/{group}" => "Browse group members (GET)",
-                                "/ajax/catalog/principal"       => "Get user principal object(s) (POST)",
-                                "/ajax/catalog/domains"         => "Get all domains (GET)",
-                                "/ajax/catalog/name"            => "Query user principal names (POST)",
-                                "/ajax/catalog/mail"            => "Query user principal email addresses (POST)",
-                        )
-                );
+    $content = array(
+      "usage" => array(
+        "/ajax/catalog/{target}" => "POST",
+        "/ajax/catalog/{target}/{subject}" => "GET",
+      ),
+      "example" => array(
+        "/ajax/catalog/attribute" => "Query user attributes (POST)",
+        "/ajax/catalog/groups" => "Get user groups (POST)",
+        "/ajax/catalog/groups/{user}" => "Browse user groups (GET)",
+        "/ajax/catalog/members" => "Get group members (POST)",
+        "/ajax/catalog/members/{group}" => "Browse group members (GET)",
+        "/ajax/catalog/principal" => "Get user principal object(s) (POST)",
+        "/ajax/catalog/domains" => "Get all domains (GET)",
+        "/ajax/catalog/name" => "Query user principal names (POST)",
+        "/ajax/catalog/mail" => "Query user principal email addresses (POST)",
+      ),
+    );
 
-                $this->response->setJsonContent($content);
-                $this->response->send();
-        }
+    $this->response->setJsonContent($content);
+    $this->response->send();
+  }
 
-        public function indexAction()
-        {
+  public function indexAction() {
 
-        }
+  }
 
-        /**
-         * List all domains.
-         */
-        public function domainsAction()
-        {
-                $response = $this->_handler->getDomains();
-                $this->sendResponse($response);
-                unset($response);
-        }
+  /**
+   * List all domains.
+   */
+  public function domainsAction() {
+    $response = $this->_handler->getDomains();
+    $this->sendResponse($response);
+    unset($response);
+  }
 
-        /**
-         * Get name from user principal.
-         */
-        public function nameAction()
-        {
-                $response = $this->_handler->getName();
-                $this->sendResponse($response);
-                unset($response);
-        }
+  /**
+   * Get name from user principal.
+   */
+  public function nameAction() {
+    $response = $this->_handler->getName();
+    $this->sendResponse($response);
+    unset($response);
+  }
 
-        /**
-         * Get mail address from user principal.
-         */
-        public function mailAction()
-        {
-                $response = $this->_handler->getMail();
-                $this->sendResponse($response);
-                unset($response);
-        }
+  /**
+   * Get mail address from user principal.
+   */
+  public function mailAction() {
+    $response = $this->_handler->getMail();
+    $this->sendResponse($response);
+    unset($response);
+  }
 
-        /**
-         * Get attribute from user principal.
-         */
-        public function attributeAction()
-        {
-                $response = $this->_handler->getAttribute();
-                $this->sendResponse($response);
-                unset($response);
-        }
+  /**
+   * Get attribute from user principal.
+   */
+  public function attributeAction() {
+    $response = $this->_handler->getAttribute();
+    $this->sendResponse($response);
+    unset($response);
+  }
 
-        /**
-         * Get user principal groups (GET and POST).
-         * @param string $principal The user principal.
-         * @param string $output The output format.
-         */
-        public function groupsAction($principal = null, $output = null)
-        {
-                $response = $this->_handler->getGroups($this->request->getMethod(), $principal, $output);
-                $this->sendResponse($response);
-                unset($response);
-        }
+  /**
+   * Get user principal groups (GET and POST).
+   * @param string $principal The user principal.
+   * @param string $output The output format.
+   */
+  public function groupsAction($principal = null, $output = null) {
+    $response = $this->_handler->getGroups($this->request->getMethod(), $principal, $output);
+    $this->sendResponse($response);
+    unset($response);
+  }
 
-        /**
-         * Get group members (GET and POST).
-         * @param string $group The group name.
-         * @param string $output The output format.
-         */
-        public function membersAction($group = null, $output = null)
-        {
-                $response = $this->_handler->getMembers($this->request->getMethod(), $group, $output);
-                $this->sendResponse($response);
-                unset($response);
-        }
+  /**
+   * Get group members (GET and POST).
+   * @param string $group The group name.
+   * @param string $output The output format.
+   */
+  public function membersAction($group = null, $output = null) {
+    $response = $this->_handler->getMembers($this->request->getMethod(), $group, $output);
+    $this->sendResponse($response);
+    unset($response);
+  }
 
-        /**
-         * Search for user principals.
-         */
-        public function principalAction()
-        {
-                $response = $this->_handler->findPrincipals();
-                $this->sendResponse($response);
-                unset($response);
-        }
+  /**
+   * Search for user principals.
+   */
+  public function principalAction() {
+    $response = $this->_handler->findPrincipals();
+    $this->sendResponse($response);
+    unset($response);
+  }
 
 }

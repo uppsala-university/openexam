@@ -1,16 +1,14 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc\View {
 
-	interface EngineInterface {
+  interface EngineInterface {
 
-		public function getContent();
+    public function getContent();
 
+    public function partial($partialPath, $params = null);
 
-		public function partial($partialPath, $params=null);
+    public function render($path, $params, $mustClean = null);
 
-
-		public function render($path, $params, $mustClean=null);
-
-	}
+  }
 }

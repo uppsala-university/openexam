@@ -1,55 +1,40 @@
-<?php 
+<?php
 
 namespace Phalcon {
 
-	interface ValidationInterface {
+  interface ValidationInterface {
 
-		public function validate($data=null, $entity=null);
+    public function validate($data = null, $entity = null);
 
+    public function add($field, \Phalcon\Validation\ValidatorInterface $validator);
 
-		public function add($field, \Phalcon\Validation\ValidatorInterface $validator);
+    public function rule($field, \Phalcon\Validation\ValidatorInterface $validator);
 
+    public function rules($field, $validators);
 
-		public function rule($field, \Phalcon\Validation\ValidatorInterface $validator);
+    public function setFilters($field, $filters);
 
+    public function getFilters($field = null);
 
-		public function rules($field, $validators);
+    public function getValidators();
 
+    public function getEntity();
 
-		public function setFilters($field, $filters);
+    public function setDefaultMessages($messages = null);
 
+    public function getDefaultMessage($type);
 
-		public function getFilters($field=null);
+    public function getMessages();
 
+    public function setLabels($labels);
 
-		public function getValidators();
+    public function getLabel($field);
 
+    public function appendMessage(\Phalcon\Validation\MessageInterface $message);
 
-		public function getEntity();
+    public function bind($entity, $data);
 
+    public function getValue($field);
 
-		public function setDefaultMessages($messages=null);
-
-
-		public function getDefaultMessage($type);
-
-
-		public function getMessages();
-
-
-		public function setLabels($labels);
-
-
-		public function getLabel($field);
-
-
-		public function appendMessage(\Phalcon\Validation\MessageInterface $message);
-
-
-		public function bind($entity, $data);
-
-
-		public function getValue($field);
-
-	}
+  }
 }

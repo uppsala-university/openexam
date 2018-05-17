@@ -53,16 +53,15 @@ define('EXTERN_DIR', APP_DIR . '/extern/');
  */
 define('CONFIG_PHP', CONFIG_SYS . '/config.php');
 
-function log_errors_on_shutdown()
-{
-    $last_error = error_get_last();
+function log_errors_on_shutdown() {
+  $last_error = error_get_last();
 
-    if (!is_null($last_error)) { // if there has been an error at some point
-      // do something with the error
-      file_put_contents(
-        PROJ_DIR . '/logs/error.log', print_r($last_error, true) . "\n", FILE_APPEND
-      );
-    }
+  if (!is_null($last_error)) { // if there has been an error at some point
+    // do something with the error
+    file_put_contents(
+      PROJ_DIR . '/logs/error.log', print_r($last_error, true) . "\n", FILE_APPEND
+    );
+  }
 }
 
 register_shutdown_function('log_errors_on_shutdown');
@@ -70,18 +69,18 @@ register_shutdown_function('log_errors_on_shutdown');
 //
 // Get application config from cache if existing.
 //
-$config = require_once('config.inc');
+$config = require_once 'config.inc';
 
 //
 // Config error settings different for development/production:
 //
 if ($config->application->release) {
-        error_reporting(E_ALL ^ E_NOTICE & ~E_DEPRECATED ^ E_STRICT);
-        ini_set('display_errors', 0);
+  error_reporting(E_ALL ^ E_NOTICE & ~E_DEPRECATED ^ E_STRICT);
+  ini_set('display_errors', 0);
 } else {
-        error_reporting(E_ALL | E_STRICT);
-        ini_set('display_errors', 1);
-        ini_set('display_startup_errors', 1);
+  error_reporting(E_ALL | E_STRICT);
+  ini_set('display_errors', 1);
+  ini_set('display_startup_errors', 1);
 }
 
 ini_set('session.gc_probability', 1);

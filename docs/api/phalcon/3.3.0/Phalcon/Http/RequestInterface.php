@@ -1,136 +1,94 @@
-<?php 
+<?php
 
 namespace Phalcon\Http {
 
-	interface RequestInterface {
+  interface RequestInterface {
 
-		public function get($name=null, $filters=null, $defaultValue=null);
+    public function get($name = null, $filters = null, $defaultValue = null);
 
+    public function getPost($name = null, $filters = null, $defaultValue = null);
 
-		public function getPost($name=null, $filters=null, $defaultValue=null);
+    public function getQuery($name = null, $filters = null, $defaultValue = null);
 
+    public function getServer($name);
 
-		public function getQuery($name=null, $filters=null, $defaultValue=null);
+    public function has($name);
 
+    public function hasPost($name);
 
-		public function getServer($name);
+    public function hasPut($name);
 
+    public function hasQuery($name);
 
-		public function has($name);
+    public function hasServer($name);
 
+    public function getHeader($header);
 
-		public function hasPost($name);
+    public function getScheme();
 
+    public function isAjax();
 
-		public function hasPut($name);
+    public function isSoapRequested();
 
+    public function isSecureRequest();
 
-		public function hasQuery($name);
+    public function getRawBody();
 
+    public function getServerAddress();
 
-		public function hasServer($name);
+    public function getServerName();
 
+    public function getHttpHost();
 
-		public function getHeader($header);
+    public function getPort();
 
+    public function getClientAddress($trustForwardedHeader = null);
 
-		public function getScheme();
+    public function getMethod();
 
+    public function getUserAgent();
 
-		public function isAjax();
+    public function isMethod($methods, $strict = null);
 
+    public function isPost();
 
-		public function isSoapRequested();
+    public function isGet();
 
+    public function isPut();
 
-		public function isSecureRequest();
+    public function isHead();
 
+    public function isDelete();
 
-		public function getRawBody();
+    public function isOptions();
 
+    public function isPurge();
 
-		public function getServerAddress();
+    public function isTrace();
 
+    public function isConnect();
 
-		public function getServerName();
+    public function hasFiles($onlySuccessful = null);
 
+    public function getUploadedFiles($onlySuccessful = null);
 
-		public function getHttpHost();
+    public function getHTTPReferer();
 
+    public function getAcceptableContent();
 
-		public function getPort();
+    public function getBestAccept();
 
+    public function getClientCharsets();
 
-		public function getClientAddress($trustForwardedHeader=null);
+    public function getBestCharset();
 
+    public function getLanguages();
 
-		public function getMethod();
+    public function getBestLanguage();
 
+    public function getBasicAuth();
 
-		public function getUserAgent();
+    public function getDigestAuth();
 
-
-		public function isMethod($methods, $strict=null);
-
-
-		public function isPost();
-
-
-		public function isGet();
-
-
-		public function isPut();
-
-
-		public function isHead();
-
-
-		public function isDelete();
-
-
-		public function isOptions();
-
-
-		public function isPurge();
-
-
-		public function isTrace();
-
-
-		public function isConnect();
-
-
-		public function hasFiles($onlySuccessful=null);
-
-
-		public function getUploadedFiles($onlySuccessful=null);
-
-
-		public function getHTTPReferer();
-
-
-		public function getAcceptableContent();
-
-
-		public function getBestAccept();
-
-
-		public function getClientCharsets();
-
-
-		public function getBestCharset();
-
-
-		public function getLanguages();
-
-
-		public function getBestLanguage();
-
-
-		public function getBasicAuth();
-
-
-		public function getDigestAuth();
-
-	}
+  }
 }

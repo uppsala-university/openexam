@@ -1,75 +1,67 @@
-<?php 
+<?php
 
 namespace Phalcon\Mvc\Model {
 
-	/**
-	 * Phalcon\Mvc\Model\Binding
-	 *
-	 * This is an class for binding models into params for handler
-	 */
-	
-	class Binder implements \Phalcon\Mvc\Model\BinderInterface {
+  /**
+   * Phalcon\Mvc\Model\Binding
+   *
+   * This is an class for binding models into params for handler
+   */
 
-		protected $boundModels;
+  class Binder implements \Phalcon\Mvc\Model\BinderInterface {
 
-		protected $cache;
+    protected $boundModels;
 
-		protected $internalCache;
+    protected $cache;
 
-		protected $originalValues;
+    protected $internalCache;
 
-		/**
-		 * Array for storing active bound models
-		 */
-		public function getBoundModels(){ }
+    protected $originalValues;
 
+    /**
+     * Array for storing active bound models
+     */
+    public function getBoundModels() {}
 
-		/**
-		 * Array for original values
-		 */
-		public function getOriginalValues(){ }
+    /**
+     * Array for original values
+     */
+    public function getOriginalValues() {}
 
+    /**
+     * \Phalcon\Mvc\Model\Binder constructor
+     */
+    public function __construct(\Phalcon\Cache\BackendInterface $cache = null) {}
 
-		/**
-		 * \Phalcon\Mvc\Model\Binder constructor
-		 */
-		public function __construct(\Phalcon\Cache\BackendInterface $cache=null){ }
+    /**
+     * Gets cache instance
+     */
+    public function setCache(\Phalcon\Cache\BackendInterface $cache) {}
 
+    /**
+     * Sets cache instance
+     */
+    public function getCache() {}
 
-		/**
-		 * Gets cache instance
-		 */
-		public function setCache(\Phalcon\Cache\BackendInterface $cache){ }
+    /**
+     * Bind models into params in proper handler
+     */
+    public function bindToHandler($handler, $params, $cacheKey, $methodName = null) {}
 
+    /**
+     * Find the model by param value.
+     */
+    protected function findBoundModel($paramValue, $className) {}
 
-		/**
-		 * Sets cache instance
-		 */
-		public function getCache(){ }
+    /**
+     * Get params classes from cache by key
+     */
+    protected function getParamsFromCache($cacheKey) {}
 
+    /**
+     * Get modified params for handler using reflection
+     */
+    protected function getParamsFromReflection($handler, $params, $cacheKey, $methodName) {}
 
-		/**
-		 * Bind models into params in proper handler
-		 */
-		public function bindToHandler($handler, $params, $cacheKey, $methodName=null){ }
-
-
-		/**
-		 * Find the model by param value.
-		 */
-		protected function findBoundModel($paramValue, $className){ }
-
-
-		/**
-		 * Get params classes from cache by key
-		 */
-		protected function getParamsFromCache($cacheKey){ }
-
-
-		/**
-		 * Get modified params for handler using reflection
-		 */
-		protected function getParamsFromReflection($handler, $params, $cacheKey, $methodName){ }
-
-	}
+  }
 }

@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    HelpTask.php
 // Created: 2014-09-09 05:44:47
-// 
+//
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 namespace OpenExam\Console\Tasks;
 
@@ -32,58 +32,54 @@ namespace OpenExam\Console\Tasks;
  *
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class HelpTask extends MainTask implements TaskInterface
-{
+class HelpTask extends MainTask implements TaskInterface {
 
-        /**
-         * Display usage information.
-         */
-        public function indexAction()
-        {
-                $this->helpAction();
-        }
+  /**
+   * Display usage information.
+   */
+  public function indexAction() {
+    $this->helpAction();
+  }
 
-        public static function getUsage()
-        {
-                $usage = array(
-                        'header'   => 'OpenExam management utility.',
-                        'action'   => '--help',
-                        'examples' => array(
-                                array(
-                                        'descr'   => 'Show help specific for the database task',
-                                        'command' => '--database --help'
-                                )
-                        )
-                );
+  public static function getUsage() {
+    $usage = array(
+      'header' => 'OpenExam management utility.',
+      'action' => '--help',
+      'examples' => array(
+        array(
+          'descr' => 'Show help specific for the database task',
+          'command' => '--database --help',
+        ),
+      ),
+    );
 
-                foreach (array(
-                    DatabaseTask::getUsage(),
-                    ModelTask::getUsage(),
-                    GettextTask::getUsage(),
-                    SoapServiceTask::getUsage(),
-                    RenderTask::getUsage(),
-                    CacheTask::getUsage(),
-                    ResultTask::getUsage(),
-                    AuditTask::getUsage(),
-                    StatisticsTask::getUsage(),
-                    PerformanceTask::getUsage(),
-                    DiagnosticsTask::getUsage(),
-                    CatalogTask::getUsage(),
-                    UserTask::getUsage(),
-                    ArchiveTask::getUsage()
-                ) as $task) {
-                        foreach ($task['usage'] as $val) {
-                                $usage['usage'][] = sprintf("%s %s", $task['action'], $val);
-                        }
-                        $usage['usage'][] = "";
-                }
+    foreach (array(
+      DatabaseTask::getUsage(),
+      ModelTask::getUsage(),
+      GettextTask::getUsage(),
+      SoapServiceTask::getUsage(),
+      RenderTask::getUsage(),
+      CacheTask::getUsage(),
+      ResultTask::getUsage(),
+      AuditTask::getUsage(),
+      StatisticsTask::getUsage(),
+      PerformanceTask::getUsage(),
+      DiagnosticsTask::getUsage(),
+      CatalogTask::getUsage(),
+      UserTask::getUsage(),
+      ArchiveTask::getUsage(),
+    ) as $task) {
+      foreach ($task['usage'] as $val) {
+        $usage['usage'][] = sprintf("%s %s", $task['action'], $val);
+      }
+      $usage['usage'][] = "";
+    }
 
-                return $usage;
-        }
+    return $usage;
+  }
 
-        public function helpAction()
-        {
-                parent::showUsage(self::getUsage());
-        }
+  public function helpAction() {
+    parent::showUsage(self::getUsage());
+  }
 
 }

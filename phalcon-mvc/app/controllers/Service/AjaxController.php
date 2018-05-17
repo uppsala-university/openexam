@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    AjaxController.php
 // Created: 2014-11-13 09:35:22
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 namespace OpenExam\Controllers\Service;
 
@@ -39,88 +39,84 @@ use OpenExam\Library\WebService\Common\ServiceResponse;
  * Common base class for AJAX controllers.
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-class AjaxController extends ServiceController
-{
+class AjaxController extends ServiceController {
 
-        /**
-         * Success level response tag.
-         */
-        const SUCCESS = 'success';
-        /**
-         * Notice level response tag.
-         */
-        const NOTICE = 'notice';
-        /**
-         * Warning level response tag.
-         */
-        const WARNING = 'warning';
-        /**
-         * Failure level response tag.
-         */
-        const FAILURE = 'failed';
+  /**
+   * Success level response tag.
+   */
+  const SUCCESS = 'success';
+  /**
+   * Notice level response tag.
+   */
+  const NOTICE = 'notice';
+  /**
+   * Warning level response tag.
+   */
+  const WARNING = 'warning';
+  /**
+   * Failure level response tag.
+   */
+  const FAILURE = 'failed';
 
-        /**
-         * The exception handler.
-         * @param Exception $exception
-         */
-        public function exceptionAction($exception)
-        {
-                $response = new ServiceResponse(null, ServiceHandler::ERROR, $exception->getMessage());
+  /**
+   * The exception handler.
+   * @param Exception $exception
+   */
+  public function exceptionAction($exception) {
+    $response = new ServiceResponse(null, ServiceHandler::ERROR, $exception->getMessage());
 
-                $this->report($exception);
-                $this->sendResponse($response);
+    $this->report($exception);
+    $this->sendResponse($response);
 
-                unset($response);
-        }
+    unset($response);
+  }
 
-        /**
-         * Get service request.
-         * @param callable $remapper Callback remapping path element to field names (e.g. exams -> exam_id).
-         * @return ServiceRequest
-         * @throws ServiceException
-         */
-        protected function getRequest($remapper = null)
-        {
-                if ($this->request->isPost()) {
-                        list($data, $params) = $this->getPayload();
-                        $request = new ServiceRequest($data, $params);
-                        return $request;
-                } else {
-                        throw new ServiceException("Expected POST request");
-                }
-        }
+  /**
+   * Get service request.
+   * @param callable $remapper Callback remapping path element to field names (e.g. exams -> exam_id).
+   * @return ServiceRequest
+   * @throws ServiceException
+   */
+  protected function getRequest($remapper = null) {
+    if ($this->request->isPost()) {
+      list($data, $params) = $this->getPayload();
+      $request = new ServiceRequest($data, $params);
+      return $request;
+    } else {
+      throw new ServiceException("Expected POST request");
+    }
+  }
 
-        /**
-         * Send service response.
-         * @param ServiceResponse $response The service response.
-         */
-        protected function sendResponse($response)
-        {
-                $action = $this->dispatcher->getActionName();
-                $target = $this->dispatcher->getControllerName();
+  /**
+   * Send service response.
+   * @param ServiceResponse $response The service response.
+   */
+  protected function sendResponse($response) {
+    $action = $this->dispatcher->getActionName();
+    $target = $this->dispatcher->getControllerName();
 
-                if ($response->status == ServiceHandler::SUCCESS) {
-                        $status = self::SUCCESS;
-                } elseif ($response->status == ServiceHandler::PENDING) {
-                        $status = self::NOTICE;
-                } else {
-                        $status = self::FAILURE;
-                }
+    if ($response->status == ServiceHandler::SUCCESS) {
+      $status = self::SUCCESS;
+    } elseif ($response->status == ServiceHandler::PENDING) {
+      $status = self::NOTICE;
+    } else {
+      $status = self::FAILURE;
+    }
 
-                $this->response->setJsonContent(array(
-                        $status => array(
-                                'target' => $target,
-                                'action' => $action,
-                                'return' => $response->result
-                )));
+    $this->response->setJsonContent(array(
+      $status => array(
+        'target' => $target,
+        'action' => $action,
+        'return' => $response->result,
+      )));
 
-                if ($this->profiler->enabled()) {
-                        $this->response->setHeader(Profiler::HEADER, sprintf(
-                                "%f:%f:%f", $this->request->getHeader(Profiler::HEADER), $this->profiler->initial(), microtime(true)
-                        ));
-                }
+    if ($this->profiler->enabled()) {
+      $this->response->setHeader(Profiler::HEADER, sprintf(
+        "%f:%f:%f", $this->request->getHeader(Profiler::HEADER), $this->profiler->initial(), microtime(true)
+      ));
+    }
 
-                $this->response->send();
-        }
+    $this->response->send();
+  }
 
 }

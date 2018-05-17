@@ -38,35 +38,32 @@ use Phalcon\Mvc\Model;
  *
  * @author Anders Lövgren (Computing Department at BMC, Uppsala University)
  */
-trait Answer
-{
+trait Answer {
 
-        /**
-         * Guard against bad model access.
-         *
-         * @param array $parameters The query parameters.
-         * @return Model
-         * @throws Exception
-         *
-         * @deprecated since 2.0.5
-         */
-        public static function findFirstByAnswerId($parameters = null)
-        {
-                throw new Exception("Use Answer::findFirst(\"answer_id = '...'\") instead as magic property calls involving underscore properties are known to cause problem.");
-        }
+  /**
+   * Guard against bad model access.
+   *
+   * @param array $parameters The query parameters.
+   * @return Model
+   * @throws Exception
+   *
+   * @deprecated since 2.0.5
+   */
+  public static function findFirstByAnswerId($parameters = null) {
+    throw new Exception("Use Answer::findFirst(\"answer_id = '...'\") instead as magic property calls involving underscore properties are known to cause problem.");
+  }
 
-        /**
-         * Guard against bad model access.
-         *
-         * @param array $parameters The query parameters.
-         * @return mixed
-         * @throws Exception
-         *
-         * @deprecated since 2.0.5
-         */
-        public static function findByAnswerId($parameters = null)
-        {
-                throw new Exception("Use Answer::find(\"answer_id = '...'\") instead as magic property calls involving underscore properties are known to cause problem.");
-        }
+  /**
+   * Guard against bad model access.
+   *
+   * @param array $parameters The query parameters.
+   * @return mixed
+   * @throws Exception
+   *
+   * @deprecated since 2.0.5
+   */
+  public static function findByAnswerId($parameters = null) {
+    throw new Exception("Use Answer::find(\"answer_id = '...'\") instead as magic property calls involving underscore properties are known to cause problem.");
+  }
 
 }
