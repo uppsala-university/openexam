@@ -650,6 +650,18 @@ class Exam extends ModelBase {
 
     $user = $dependencyInjector->get('user');
     $role = $user->getPrimaryRole();
+    $isSuperInvigilator = false;
+    if(
+      $role == ROLES::INVIGILATOR &&
+      SuperInvigilator::count(array(
+        "user = :user:",
+        "bind" => array(
+          "user" => $user->getPrincipalName(),
+        ),
+      )) > 0
+    ) {
+      $isSuperInvigilator = true;
+    }
 
     //
     // Wrap string search in array:
@@ -668,7 +680,7 @@ class Exam extends ModelBase {
     //
     // Group by exam by default:
     //
-    if (!isset($parameters['group'])) {
+    if (!isset($parameters['group']) && !$isSuperInvigilator) {
       $parameters['group'] = self::getRelation('exam') . '.id';
     }
 
@@ -699,21 +711,23 @@ class Exam extends ModelBase {
     $builder = new Builder($parameters);
     $builder->from(self::getRelation('exam'));
 
-    if ($role == Roles::CORRECTOR) {
-      $builder
-        ->from(self::getRelation('exam'))
-        ->join(self::getRelation('question'), self::getRelation('exam', 'id', 'exam_id', 'question'))
-        ->join(self::getRelation('corrector'), self::getRelation('question', 'id', 'question_id', 'corrector'))
-        ->andWhere(sprintf("%s.user = '%s'", self::getRelation('corrector'), $user->getPrincipalName()));
-    } elseif ($role == Roles::CREATOR) {
-      $builder
-        ->from(self::getRelation('exam'))
-        ->andWhere(sprintf("%s.creator = '%s'", self::getRelation('exam'), $user->getPrincipalName()));
-    } else {
-      $builder
-        ->from(self::getRelation('exam'))
-        ->join(self::getRelation($role), self::getRelation('exam', 'id', 'exam_id'))
-        ->andWhere(sprintf("%s.user = '%s'", self::getRelation($role), $user->getPrincipalName()));
+    if (!$isSuperInvigilator) {
+      if ($role == Roles::CORRECTOR) {
+        $builder
+          ->from(self::getRelation('exam'))
+          ->join(self::getRelation('question'), self::getRelation('exam', 'id', 'exam_id', 'question'))
+          ->join(self::getRelation('corrector'), self::getRelation('question', 'id', 'question_id', 'corrector'))
+          ->andWhere(sprintf("%s.user = '%s'", self::getRelation('corrector'), $user->getPrincipalName()));
+      } elseif ($role == Roles::CREATOR) {
+        $builder
+          ->from(self::getRelation('exam'))
+          ->andWhere(sprintf("%s.creator = '%s'", self::getRelation('exam'), $user->getPrincipalName()));
+      } else {
+        $builder
+          ->from(self::getRelation('exam'))
+          ->join(self::getRelation($role), self::getRelation('exam', 'id', 'exam_id'))
+          ->andWhere(sprintf("%s.user = '%s'", self::getRelation($role), $user->getPrincipalName()));
+      }
     }
 
     if (isset($parameters['bind'])) {
@@ -747,7 +761,19 @@ class Exam extends ModelBase {
 
     $builder = new Builder();
 
-    if ($user->hasPrimaryRole() == false || Roles::isGlobal($role)) {
+    if (
+      $user->hasPrimaryRole() == false ||
+      Roles::isGlobal($role) ||
+      (
+        $role == ROLES::INVIGILATOR &&
+        SuperInvigilator::count(array(
+         "user = :user:",
+         "bind" => array(
+           "user" => $user->getPrincipalName(),
+         ),
+       )) > 0
+      )
+    ) {
       $builder
         ->addFrom(self::getRelation('exam'), 'Exam');
     } elseif ($role == Roles::CORRECTOR) {
@@ -843,6 +869,7 @@ class Exam extends ModelBase {
 
     $qs = trim($qs);
     $qe = trim($qe);
+
 
     if (strlen($qe) == 0) {
       $result = sprintf("%s %s", $qs, $relations);
