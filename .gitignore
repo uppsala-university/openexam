@@ -6,3 +6,4 @@ logs/
 .env.db
 simplesamlphp
 .DS_Store
+phinx.yml
