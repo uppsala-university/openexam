@@ -5,7 +5,7 @@
     "license": "GPL-2.0-only",
     "homepage": "http://openexam.io",
     "projpage": "http://github.com/openexam-online",
-    "keywords": ["cbe", "exam", "phalcon", "soap"],
+    "keywords": ["cbe", "exam", "phalcon"],
     "contributors": [
         {
             "name": "Uppsala University",

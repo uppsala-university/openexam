@@ -18,24 +18,24 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    access.def
 // Created: 2014-08-28 14:34:23
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
-/** 
- * This map is used for defining the ACL in the system by defining relations 
- * between roles, resources and permissions. 
- * 
+/**
+ * This map is used for defining the ACL in the system by defining relations
+ * between roles, resources and permissions.
+ *
  * Except for creator can't have the create (obvious), it should be safe to
- * define any other mappings. 
+ * define any other mappings.
  */
 return array(
-        // 
+        //
         // Permissions map:
-        // 
+        //
         'permissions' => array(
                 '*'      => '*',
                 'read'   => 'read',
@@ -44,13 +44,13 @@ return array(
                 'manage' => array('read', 'update', 'delete'),
                 'full'   => array('create', 'read', 'update', 'delete')
         ),
-        // 
-        // Model access map. 
-        // 
-        // Defines which role are allowed to perform an CRUD operation on an 
-        // model. The data structure format are role -> model -> action, where 
+        //
+        // Model access map.
+        //
+        // Defines which role are allowed to perform an CRUD operation on an
+        // model. The data structure format are role -> model -> action, where
         // the model or action might use '*' to mean all access.
-        // 
+        //
         'roles'       => array(
                 'admin'       => '*',
                 'teacher'     => array(
@@ -133,17 +133,17 @@ return array(
                         'student'     => 'read'
                 )
         ),
-        // 
+        //
         // Controller access map.
-        // 
-        // Defines which roles are allowed to execute controller actions. The data 
-        // structure are protection -> controller -> actions -> roles, where actions 
-        // or roles uses '*' to denote all access. 
-        // 
-        // The protection is either public, protected or private. Using protected 
-        // means that authentication is required, but might be handled internal by 
+        //
+        // Defines which roles are allowed to execute controller actions. The data
+        // structure are protection -> controller -> actions -> roles, where actions
+        // or roles uses '*' to denote all access.
+        //
+        // The protection is either public, protected or private. Using protected
+        // means that authentication is required, but might be handled internal by
         // the controller/action.
-        // 
+        //
         'public' => array(
                 'index'  => array('*'),
                 'error'  => array('*'),
@@ -151,7 +151,6 @@ return array(
                 'cache'  => array('fill'),
         ),
         'protected'      => array(
-                'soap'   => array('*'),
                 'auth'   => array('*')
         ),
         'private' => array(

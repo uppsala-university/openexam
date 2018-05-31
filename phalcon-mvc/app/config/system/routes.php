@@ -175,16 +175,6 @@ $router->mount(
 );
 
 /**
- * Route SOAP and WSDL requests:
- */
-$router->mount(
-  new PrefixRoute(array(
-    "prefix" => "/soap",
-    "namespace" => "OpenExam\Controllers\Service\Soap",
-  ))
-);
-
-/**
  * Route AJAX requests (e.g. "/ajax/core/student/exam/read").
  */
 $group = $router->mount(

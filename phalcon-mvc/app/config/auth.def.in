@@ -18,12 +18,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    auth.def
 // Created: 2014-08-25 15:09:23
-// 
+//
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 use OpenExam\Library\Security\Login\ActiveDirectoryLogin;
 use OpenExam\Library\Security\Login\ActiveDirectorySession;
@@ -35,23 +35,23 @@ use OpenExam\Library\Security\Login\SystemLogin;
 use UUP\Authentication\Authenticator\Authenticator;
 use UUP\Authentication\Restrictor\AddressRestrictor;
 
-// 
-// The chain of authenticator plugins for various services. 
-// 
-// The allowed authentication methods can be configured for each service or 
+//
+// The chain of authenticator plugins for various services.
+//
+// The allowed authentication methods can be configured for each service or
 // for all using the authentication '*' group.
-// 
-// It's also possible to add login restrictions. E.g. date/time restriction 
+//
+// It's also possible to add login restrictions. E.g. date/time restriction
 // can be added by inserting an plugin based on DateTimeRestrictor.
-// 
+//
 return array(
-        // 
+        //
         // Web/AJAX service authentication:
-        // 
+        //
         'web'  => array(
-                // 
+                //
                 // Enable CAS login, but only for web:
-                // 
+                //
                 'cas'  => array(
                         'method' => function() use($config) {
                                 return new CasLogin(
@@ -71,36 +71,18 @@ return array(
                         'visible' => true
                 )
         ),
-        // 
+        //
         // REST service authentication:
-        // 
+        //
         'rest' => array(),
-        // 
-        // SOAP service authentication:
-        // 
-        'soap' => array(
-                // 
-                // Example on connection restrictions. In this case, we want
-                // to limit SOAP access to subnet 192.168.34.0/24.
-                // 
-                'from' => array(
-                        'method' => function() {
-                                $restriction = new AddressRestrictor('192.168.34.0/24');
-                                $restriction->control(Authenticator::REQUIRED);
-                                $restriction->visible(false);
-                                return $restriction;
-                        },
-                        'desc' => null
-                )                
-        ),
-        // 
+        //
         // Common authentication plugins or restrictions:
-        // 
+        //
         '*' => array(
-                // 
-                // Enable MSAD login globally (web, rest and soap). The options
+                //
+                // Enable MSAD login globally (web and rest). The options
                 // array is required when serving multiple forests:
-                // 
+                //
                 'msad1' => array(
                         'method' => function() use($config) {
                                 return new ActiveDirectoryLogin(
@@ -110,10 +92,10 @@ return array(
                         'desc' => 'Active Directory (AD1)',
                         'visible' => true
                 ),
-                // 
-                // Equivalent to the ordinary active directory login, but 
+                //
+                // Equivalent to the ordinary active directory login, but
                 // session aware. Use this if in doubt.
-                // 
+                //
                 'msad2' => array(
                         'method' => function() use($config) {
                                 return new ActiveDirectorySession(
@@ -123,10 +105,10 @@ return array(
                         'desc' => 'Active Directory (AD2)',
                         'visible' => true
                 ),
-                // 
-                // System login for the render service. This authenticator 
+                //
+                // System login for the render service. This authenticator
                 // is required by the rendering service.
-                // 
+                //
                 'render' => array(
                         'method' => function() use($config) {
                                 return new SystemLogin(
@@ -145,6 +127,6 @@ return array(
                         },
                         'desc' => 'Anonymous Code',
                         'visible' => true
-                )                            
+                )
         )
 );

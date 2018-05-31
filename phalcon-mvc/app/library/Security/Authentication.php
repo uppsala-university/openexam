@@ -45,7 +45,7 @@ class Authentication implements Authenticator, Restrictor {
    * The array of service groups and authenticator chains.
    * @var array
    */
-  private $_chains = array('soap' => array(), 'rest' => array(), 'web' => array(), '*' => array());
+  private $_chains = array('rest' => array(), 'web' => array(), '*' => array());
   /**
    * Current selected authenticator.
    * @var AuthenticatorBase
@@ -93,7 +93,7 @@ class Authentication implements Authenticator, Restrictor {
    * </code>
    *
    * The $service is a key used to associate a group of auth plugins
-   * for a service, e.g. 'soap' or 'web'. If $service parameter is
+   * for a service, e.g. 'web'. If $service parameter is
    * missing, then the authenticator is placed in the common group.
    *
    * @param string $name The identifier for the authenticator plugin.

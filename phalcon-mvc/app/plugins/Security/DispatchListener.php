@@ -193,7 +193,7 @@ class DispatchListener extends Plugin {
    *
    * <code>
    * array(
-   *      'service' => web|rest|soap|ajax,
+   *      'service' => web|rest|ajax,
    *      'type'    => service|gui
    * )
    * </code>
@@ -224,11 +224,6 @@ class DispatchListener extends Plugin {
             'service' => 'rest',
             'type' => 'service',
           );
-        case 'OpenExam\Controllers\Service\SoapController':
-          return array(
-            'service' => 'soap',
-            'type' => 'service',
-          );
         }
       }
     }
@@ -256,11 +251,6 @@ class DispatchListener extends Plugin {
     } elseif ($this->request->isAjax()) {
       return array(
         'service' => 'ajax',
-        'type' => 'service',
-      );
-    } elseif ($this->request->isSoapRequested()) {
-      return array(
-        'service' => 'soap',
         'type' => 'service',
       );
     } else {
