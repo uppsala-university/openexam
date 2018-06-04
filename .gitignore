@@ -7,3 +7,5 @@ logs/
 simplesamlphp
 .DS_Store
 phinx.yml
+.phpintel/
+*.sublime-*
