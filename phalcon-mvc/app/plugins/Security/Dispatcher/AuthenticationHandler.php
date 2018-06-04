@@ -67,15 +67,20 @@ class AuthenticationHandler extends Component implements DispatchHelper {
    */
   public function __construct($listener, $service) {
     $this->_listener = $listener;
-    $this->_service = $service == "ajax" ? "web" : $service;
-    $this->_remote = $this->request->getClientAddress(true);
+    $this->_service  = $service == "ajax" ? "web" : $service;
+    $this->_remote   = $this->request->getClientAddress(true);
   }
 
+  /**
+   * @param $property
+   * @return mixed
+   */
   public function __get($property) {
     if ($property == 'type') {
       return $this->auth->getAuthenticator()->name;
     } elseif ($property == 'user') {
-      if ($this->auth->accepted($this->_service)) { // Required by CAS
+      if ($this->auth->accepted($this->_service)) {
+        // Required by CAS
         return $this->auth->getSubject();
       }
     } else {
@@ -181,12 +186,12 @@ class AuthenticationHandler extends Component implements DispatchHelper {
   }
 
   public function getData() {
-    return array(
-      'type' => $this->type,
-      'user' => $this->user,
-      'remote' => $this->_remote,
+    return [
+      'type'    => $this->type,
+      'user'    => $this->user,
+      'remote'  => $this->_remote,
       'service' => $this->_service,
-    );
+    ];
   }
 
   public function __toString() {

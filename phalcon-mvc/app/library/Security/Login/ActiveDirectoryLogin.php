@@ -79,36 +79,36 @@ class ActiveDirectoryLogin extends RequestAuthenticator implements FormLogin, Re
    */
   public function __construct($config, $server, $port = 636, $options = null) {
     if (!isset($options)) {
-      $options = array(
-        'form' => array(
+      $options = [
+        'form' => [
           'login' => null,
-          'name' => null,
-          'user' => null,
-          'pass' => null,
-        ),
-      );
+          'name'  => null,
+          'user'  => null,
+          'pass'  => null,
+        ],
+      ];
     }
 
     //
     // Keep for future reference:
     //
     $this->_server = $server;
-    $this->_port = $port;
+    $this->_port   = $port;
 
     //
     // These are the default options:
     //
-    $defaults = array(
-      'form' => array(
-        'name' => 'msad',
-        'user' => 'user',
-        'pass' => 'pass',
+    $defaults = [
+      'form' => [
+        'name'   => 'msad',
+        'user'   => 'user',
+        'pass'   => 'pass',
         'domain' => $config->user->domain,
-      ),
-      'ldap' => array(
-        LDAP_OPT_REFERRALS => false,
+      ],
+      'ldap' => [
+        LDAP_OPT_REFERRALS        => false,
         LDAP_OPT_PROTOCOL_VERSION => 3,
-      ));
+      ]];
 
     //
     // Merge caller options with default. Using array_merge() is
@@ -116,7 +116,7 @@ class ActiveDirectoryLogin extends RequestAuthenticator implements FormLogin, Re
     //
     foreach ($defaults as $service => $array) {
       if (!isset($options[$service])) {
-        $options[$service] = array();
+        $options[$service] = [];
       }
       foreach ($array as $key => $val) {
         if (!isset($options[$service][$key]) || $options[$service][$key] == null) {

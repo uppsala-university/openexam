@@ -83,7 +83,7 @@ class Archive extends Component {
   public function __construct($exam, $correct = false) {
     $this->_exam = $exam;
 
-    $this->_path = sprintf("%s/archive", $this->config->application->cacheDir);
+    $this->_path = sprintf("%sarchive", $this->config->application->cacheDir);
     $this->_file = sprintf("%s/%d.pdf", $this->_path, $this->_exam->id);
     $this->_name = sprintf("%s.pdf", $this->_exam->name);
 
@@ -193,9 +193,10 @@ class Archive extends Component {
    * Render archive source to PDF.
    */
   private function render() {
-    $config = array(array('page' => $this->_from));
+    $config = [['page' => $this->_from]];
 
     $render = $this->render->getRender(Renderer::FORMAT_PDF);
+    // var_dump($render);
     $render->save($this->_file, $config);
   }
 
@@ -247,5 +248,4 @@ class Archive extends Component {
   public function getFilename() {
     return $this->_file;
   }
-
 }

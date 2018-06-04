@@ -6,3 +6,5 @@ logs/
 .env.db
 simplesamlphp
 .DS_Store
+*.sublime-*
+.phpintel/

@@ -34,203 +34,206 @@ $router->setDefaultNamespace("OpenExam\Controllers");
  */
 class PrefixRoute extends Phalcon\Mvc\Router\Group {
 
-  public function __construct($config = array()) {
+  /**
+   * @param array $config
+   */
+  public function __construct($config = []) {
     $this->setPrefix($config['prefix']);
-    $this->add("/:controller", array(
+    $this->add("/:controller", [
       "controller" => 1,
-      "action" => "index",
-      "namespace" => $config['namespace'],
-    )
+      "action"     => "index",
+      "namespace"  => $config['namespace'],
+    ]
     );
-    $this->add("/:controller/:action/:params", array(
+    $this->add("/:controller/:action/:params", [
       "controller" => 1,
-      "action" => 2,
-      "params" => 3,
-      "namespace" => $config['namespace'],
-    )
+      "action"     => 2,
+      "params"     => 3,
+      "namespace"  => $config['namespace'],
+    ]
     );
   }
 
 }
 
 $router->add(
-  "/", array(
+  "/", [
     "controller" => "index",
-    "namespace" => "OpenExam\Controllers\Gui",
-  )
+    "namespace"  => "OpenExam\Controllers\Gui",
+  ]
 );
 
 $router->add(
-  "/:controller", array(
+  "/:controller", [
     "controller" => 1,
-    "namespace" => "OpenExam\Controllers\Gui",
-  )
+    "namespace"  => "OpenExam\Controllers\Gui",
+  ]
 );
 
 $router->add(
-  "/:controller/:action", array(
+  "/:controller/:action", [
     "controller" => 1,
-    "action" => 2,
-    "namespace" => "OpenExam\Controllers\Gui",
-  )
+    "action"     => 2,
+    "namespace"  => "OpenExam\Controllers\Gui",
+  ]
 );
 
 $router->add(
-  "/:controller/:action/:params", array(
+  "/:controller/:action/:params", [
     "controller" => 1,
-    "action" => 2,
-    "params" => 3,
-    "namespace" => "OpenExam\Controllers\Gui",
-  )
+    "action"     => 2,
+    "params"     => 3,
+    "namespace"  => "OpenExam\Controllers\Gui",
+  ]
 );
 
 $router->add(
-  "/about", array(
+  "/about", [
     "controller" => "index",
-    "action" => "about",
-    "namespace" => "OpenExam\Controllers\Gui",
-  )
+    "action"     => "about",
+    "namespace"  => "OpenExam\Controllers\Gui",
+  ]
 );
 
 /**
  * Route Gui - private pages
  */
 $router->add(
-  "/exam/:action/:params", array(
+  "/exam/:action/:params", [
     "controller" => "exam",
-    "action" => 1,
-    "params" => 2,
-    "namespace" => "OpenExam\Controllers\Gui",
-  )
+    "action"     => 1,
+    "params"     => 2,
+    "namespace"  => "OpenExam\Controllers\Gui",
+  ]
 );
 
 $router->add(
-  "/question/:action/:params", array(
+  "/question/:action/:params", [
     "controller" => "question",
-    "action" => 1,
-    "params" => 2,
-    "namespace" => "OpenExam\Controllers\Gui",
-  )
+    "action"     => 1,
+    "params"     => 2,
+    "namespace"  => "OpenExam\Controllers\Gui",
+  ]
 );
 
 $router->add(
-  "/media/:action", array(
+  "/media/:action", [
     "controller" => "media",
-    "action" => 1,
-    "namespace" => "OpenExam\Controllers\Utility",
-  )
+    "action"     => 1,
+    "namespace"  => "OpenExam\Controllers\Utility",
+  ]
 );
 
 $router->add(
-  "/exam/:int", array(
+  "/exam/:int", [
     "controller" => "exam",
-    "action" => "instruction",
-    "exam_id" => 1,
-    "namespace" => "OpenExam\Controllers\Gui",
-  )
+    "action"     => "instruction",
+    "exam_id"    => 1,
+    "namespace"  => "OpenExam\Controllers\Gui",
+  ]
 );
 
 $router->add(
-  "/result/:int/:action", array(
+  "/result/:int/:action", [
     "controller" => "result",
-    "action" => 2,
-    "exam_id" => 1,
-    "namespace" => "OpenExam\Controllers\Gui",
-  )
+    "action"     => 2,
+    "exam_id"    => 1,
+    "namespace"  => "OpenExam\Controllers\Gui",
+  ]
 );
 
 $router->add(
-  "/result/:int/:action/:int", array(
+  "/result/:int/:action/:int", [
     "controller" => "result",
-    "action" => 2,
-    "exam_id" => 1,
+    "action"     => 2,
+    "exam_id"    => 1,
     "student_id" => 3,
-    "namespace" => "OpenExam\Controllers\Gui",
-  )
+    "namespace"  => "OpenExam\Controllers\Gui",
+  ]
 );
 
 $router->add(
-  "/exam/{exam_id}/question/{question_id}", array(
+  "/exam/{exam_id}/question/{question_id}", [
     "controller" => "question",
-    "action" => "view",
-    "namespace" => "OpenExam\Controllers\Gui",
-  )
+    "action"     => "view",
+    "namespace"  => "OpenExam\Controllers\Gui",
+  ]
 );
 
 $router->add(
-  "/exam/:int/correction/:params", array(
-    "controller" => "question",
-    "action" => "correction",
-    "exam_id" => 1,
+  "/exam/:int/correction/:params", [
+    "controller"  => "question",
+    "action"      => "correction",
+    "exam_id"     => 1,
     "question_id" => 2,
-    "namespace" => "OpenExam\Controllers\Gui",
-  )
+    "namespace"   => "OpenExam\Controllers\Gui",
+  ]
 );
 
 $router->mount(
-  new PrefixRoute(array(
-    "prefix" => "/utility",
+  new PrefixRoute([
+    "prefix"    => "/utility",
     "namespace" => "OpenExam\Controllers\Utility",
-  ))
+  ])
 );
 
 /**
  * Route SOAP and WSDL requests:
  */
 $router->mount(
-  new PrefixRoute(array(
-    "prefix" => "/soap",
+  new PrefixRoute([
+    "prefix"    => "/soap",
     "namespace" => "OpenExam\Controllers\Service\Soap",
-  ))
+  ])
 );
 
 /**
  * Route AJAX requests (e.g. "/ajax/core/student/exam/read").
  */
 $group = $router->mount(
-  new PrefixRoute(array(
-    "prefix" => "/ajax",
+  new PrefixRoute([
+    "prefix"    => "/ajax",
     "namespace" => "OpenExam\Controllers\Service\Ajax",
-  ))
+  ])
 );
 $group->addPost(
-  "/ajax/core/{role}/{model}/:action", array(
+  "/ajax/core/{role}/{model}/:action", [
     "controller" => "core",
-    "action" => 3,
-    "namespace" => "OpenExam\Controllers\Service\Ajax",
-  )
+    "action"     => 3,
+    "namespace"  => "OpenExam\Controllers\Service\Ajax",
+  ]
 );
 $group->addPost(
-  "/ajax/core/:action", array(
+  "/ajax/core/:action", [
     "controller" => "core",
-    "action" => 1,
-    "namespace" => "OpenExam\Controllers\Service\Ajax",
-  )
+    "action"     => 1,
+    "namespace"  => "OpenExam\Controllers\Service\Ajax",
+  ]
 );
 
 /**
  * Route REST requests.
  */
 $group = $router->mount(
-  new PrefixRoute(array(
-    "prefix" => "/rest",
+  new PrefixRoute([
+    "prefix"    => "/rest",
     "namespace" => "OpenExam\Controllers\Service\Rest",
-  ))
+  ])
 );
 $group->add(
-  "/rest/core/{role}/{target}/:params", array(
+  "/rest/core/{role}/{target}/:params", [
     "controller" => "core",
-    "action" => "index",
-    "namespace" => "OpenExam\Controllers\Service\Rest",
-    "params" => 3,
-  )
+    "action"     => "index",
+    "namespace"  => "OpenExam\Controllers\Service\Rest",
+    "params"     => 3,
+  ]
 );
 $group->add(
-  "/rest/core/{role}/search/{target}", array(
+  "/rest/core/{role}/search/{target}", [
     "controller" => "core",
-    "action" => "search",
-    "namespace" => "OpenExam\Controllers\Service\Rest",
-  )
+    "action"     => "search",
+    "namespace"  => "OpenExam\Controllers\Service\Rest",
+  ]
 )->setHttpMethods('POST');
 
 $router->removeExtraSlashes(true);

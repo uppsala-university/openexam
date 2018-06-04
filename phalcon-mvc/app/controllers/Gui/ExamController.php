@@ -79,9 +79,9 @@ class ExamController extends GuiController {
       // Get all published exams using the student role:
       //
       $this->user->setPrimaryRole(Roles::STUDENT);
-      if (!($exams = Exam::find(array(
+      if (!($exams = Exam::find([
         'conditions' => "published = 'Y'",
-      )))) {
+      ]))) {
         throw new Exception("Failed query student exams");
       }
 
@@ -129,33 +129,33 @@ class ExamController extends GuiController {
     //
     // Set state for sections:
     //
-    $state = array(
+    $state = [
       'student-finished' => State::FINISHED,
       'student-upcoming' => State::UPCOMING | State::RUNNING,
-    );
+    ];
 
     //
     // Use these filter options:
     //
-    $filter = array(
-      'sort' => 'desc',
-      'order' => 'created',
-      'first' => 1,
-      'limit' => 5,
+    $filter = [
+      'sort'   => 'desc',
+      'order'  => 'created',
+      'first'  => 1,
+      'limit'  => 5,
       'search' => '',
-      'state' => 0,
-      'match' => array(),
-    );
+      'state'  => 0,
+      'match'  => [],
+    ];
 
     //
     // Set data for view:
     //
-    $this->view->setVars(array(
-      'state' => $state,
-      'roles' => $roles,
-      'expand' => array(),
+    $this->view->setVars([
+      'state'  => $state,
+      'roles'  => $roles,
+      'expand' => [],
       'filter' => $filter,
-    ));
+    ]);
   }
 
   /**
@@ -179,7 +179,7 @@ class ExamController extends GuiController {
     if (strstr($sect, '-')) {
       list($role, $part) = explode('-', $sect);
     } else {
-      list($role, $part) = array($sect, false);
+      list($role, $part) = [$sect, false];
     }
 
     //
@@ -191,13 +191,13 @@ class ExamController extends GuiController {
     //
     // Get request parameters:
     //
-    $order = $this->request->getPost('order', 'string', 'created');
-    $sort = $this->request->getPost('sort', 'string', 'desc');
-    $first = $this->request->getPost('first', 'int', 1);
-    $limit = $this->request->getPost('limit', 'int', 5);
+    $order  = $this->request->getPost('order', 'string', 'created');
+    $sort   = $this->request->getPost('sort', 'string', 'desc');
+    $first  = $this->request->getPost('first', 'int', 1);
+    $limit  = $this->request->getPost('limit', 'int', 5);
     $search = $this->request->getPost('search', 'string', '');
-    $state = $this->request->getPost('state', 'int', 0);
-    $match = $this->request->getPost('match', 'string', array());
+    $state  = $this->request->getPost('state', 'int', 0);
+    $match  = $this->request->getPost('match', 'string', []);
 
     //
     // Convert boolean strings to enum:
@@ -238,7 +238,7 @@ class ExamController extends GuiController {
     //
     // The exam array to paginate:
     //
-    $exams = array();
+    $exams = [];
 
     if ($state > 0) {
       //
@@ -261,25 +261,25 @@ class ExamController extends GuiController {
     //
     // Create paginator for result set:
     //
-    $paginator = new PaginatorArray(array(
-      "data" => $exams,
+    $paginator = new PaginatorArray([
+      "data"  => $exams,
       "limit" => $limit,
-      "page" => $first,
-    ));
+      "page"  => $first,
+    ]);
 
     //
     // Pass data to view:
     //
-    $this->view->setVars(array(
-      'role' => $role,
-      'sect' => $sect,
-      'page' => $paginator->getPaginate(),
-      'sort' => $sort,
-      'order' => $order,
-      'first' => $first,
-      'limit' => $limit,
+    $this->view->setVars([
+      'role'   => $role,
+      'sect'   => $sect,
+      'page'   => $paginator->getPaginate(),
+      'sort'   => $sort,
+      'order'  => $order,
+      'first'  => $first,
+      'limit'  => $limit,
       'search' => $search,
-    ));
+    ]);
   }
 
   /**
@@ -296,12 +296,12 @@ class ExamController extends GuiController {
     //
     $exam = new Exam();
 
-    if ($exam->save(array(
-      'name' => '@@replace@@',
-      'descr' => '@@replace@@',
+    if ($exam->save([
+      'name'    => '@@replace@@',
+      'descr'   => '@@replace@@',
       'creator' => $this->user->getPrincipalName(),
-      'grades' => 'U:0&#13;&#10;G:50&#13;&#10;VG:75',
-    )) == false) {
+      'grades'  => 'U:0&#13;&#10;G:50&#13;&#10;VG:75',
+    ]) == false) {
       throw new Exception(
         sprintf("Failed to initialize exam (%s)", $exam->getMessages()[0])
       );
@@ -335,10 +335,10 @@ class ExamController extends GuiController {
     //
     // Check route access:
     //
-    $this->checkAccess(array(
-      'eid' => $eid,
+    $this->checkAccess([
+      'eid'  => $eid,
       'role' => $role,
-    ));
+    ]);
 
     //
     // Fetch data:
@@ -356,13 +356,13 @@ class ExamController extends GuiController {
     //
     // Set view data:
     //
-    $this->view->setVars(array(
-      'exam' => $exam,
-      'mode' => $mode,
-      'role' => $role,
+    $this->view->setVars([
+      'exam'  => $exam,
+      'mode'  => $mode,
+      'role'  => $role,
       'check' => $check,
       'staff' => $staff,
-    ));
+    ]);
   }
 
   /**
@@ -378,9 +378,9 @@ class ExamController extends GuiController {
     //
     // Check route access:
     //
-    $this->checkAccess(array(
+    $this->checkAccess([
       'eid' => $eid,
-    ));
+    ]);
 
     //
     // Must be owner of exam or admin:
@@ -423,14 +423,14 @@ class ExamController extends GuiController {
       $newExam = new Exam();
       $newExam->setTransaction($transaction);
 
-      if ($newExam->save(array(
-        "name" => $oldExam->name,
-        "descr" => $oldExam->descr,
+      if ($newExam->save([
+        "name"    => $oldExam->name,
+        "descr"   => $oldExam->descr,
         "creator" => $oldExam->creator,
         "details" => $oldExam->details,
         "orgunit" => $oldExam->orgunit,
-        "grades" => $oldExam->grades,
-      )) == false) {
+        "grades"  => $oldExam->grades,
+      ]) == false) {
         throw new Exception(
           sprintf("Failed save new exam (%s)", $newExam->getMessages()[0])
         );
@@ -451,21 +451,21 @@ class ExamController extends GuiController {
         //
         // Map between old and new topics:
         //
-        $topicsMap = array();
+        $topicsMap = [];
 
         //
         // Keep track of used question and topics names and slots:
         //
-        $idmap = array(
-          'q' => array(
+        $idmap = [
+          'q' => [
             'n' => 0,
             's' => 0,
-          ),
-          't' => array(
+          ],
+          't' => [
             'n' => 0,
             's' => 0,
-          ),
-        );
+          ],
+        ];
 
         //
         // Replicate topics if selected:
@@ -475,7 +475,7 @@ class ExamController extends GuiController {
           // Replicate topics. Keep track on new topics by
           // adding them to the topics map.
           //
-          foreach ($oldExam->getTopics(array('order' => 'slot,name')) as $oldTopic) {
+          foreach ($oldExam->getTopics(['order' => 'slot,name']) as $oldTopic) {
 
             //
             // Remap name and slot order:
@@ -499,13 +499,13 @@ class ExamController extends GuiController {
             $newTopic = new Topic();
             $newTopic->setTransaction($transaction);
 
-            if ($newTopic->save(array(
-              "exam_id" => $newExam->id,
-              "name" => $oldTopic->name,
+            if ($newTopic->save([
+              "exam_id"   => $newExam->id,
+              "name"      => $oldTopic->name,
               "randomize" => $oldTopic->randomize,
-              "grades" => $oldTopic->grades,
-              "depend" => $oldTopic->depend,
-            )) == false) {
+              "grades"    => $oldTopic->grades,
+              "depend"    => $oldTopic->depend,
+            ]) == false) {
               throw new Exception(
                 sprintf("Failed duplicate topic (%s)", $newTopic->getMessages()[0])
               );
@@ -528,7 +528,7 @@ class ExamController extends GuiController {
         // Replicate questions and correctors if selected:
         //
         if (in_array('questions', $replicateOpts)) {
-          foreach ($oldExam->getQuestions(array('order' => 'slot,name')) as $oldQuest) {
+          foreach ($oldExam->getQuestions(['order' => 'slot,name']) as $oldQuest) {
 
             //
             // Remap name and slot order:
@@ -546,16 +546,16 @@ class ExamController extends GuiController {
             $newQuest = new Question();
             $newQuest->setTransaction($transaction);
 
-            if ($newQuest->save(array(
-              "exam_id" => $newExam->id,
+            if ($newQuest->save([
+              "exam_id"  => $newExam->id,
               "topic_id" => $topicsMap[$oldQuest->topic_id],
-              "score" => $oldQuest->score,
-              "name" => $oldQuest->name,
-              "quest" => $oldQuest->quest,
-              "status" => $oldQuest->status,
-              "comment" => $oldQuest->comment,
-              "grades" => $oldQuest->grades,
-            )) == false) {
+              "score"    => $oldQuest->score,
+              "name"     => $oldQuest->name,
+              "quest"    => $oldQuest->quest,
+              "status"   => $oldQuest->status,
+              "comment"  => $oldQuest->comment,
+              "grades"   => $oldQuest->grades,
+            ]) == false) {
               throw new Exception(
                 sprintf("Failed duplicate question (%s)", $newQuest->getMessages()[0])
               );
@@ -572,10 +572,10 @@ class ExamController extends GuiController {
               $newCorrector = new Corrector();
               $newCorrector->setTransaction($transaction);
 
-              if ($newCorrector->save(array(
+              if ($newCorrector->save([
                 "question_id" => $newQuest->id,
-                "user" => $oldCorrector->user,
-              )) == false) {
+                "user"        => $oldCorrector->user,
+              ]) == false) {
                 throw new Exception(
                   sprintf("Failed duplicate corrector (%s)", $newCorrector->getMessages()[0])
                 );
@@ -597,11 +597,11 @@ class ExamController extends GuiController {
           //
           // The roles to be replicated:
           //
-          $roles = array(
+          $roles = [
             'contributors' => '\OpenExam\Models\Contributor',
-            'decoders' => '\OpenExam\Models\Decoder',
+            'decoders'     => '\OpenExam\Models\Decoder',
             'invigilators' => '\OpenExam\Models\Invigilator',
-          );
+          ];
 
           foreach ($roles as $role => $class) {
             foreach ($oldExam->$role as $member) {
@@ -616,15 +616,14 @@ class ExamController extends GuiController {
               $newRole = new $class();
               $newRole->setTransaction($transaction);
 
-              if ($newRole->save(array(
+              if ($newRole->save([
                 "exam_id" => $newExam->id,
-                "user" => $member->user,
-              )) == false) {
+                "user"    => $member->user,
+              ]) == false) {
                 throw new Exception(
                   sprintf("Failed duplicate role (%s)", $newRole->getMessages()[0])
                 );
               }
-
               unset($newRole);
             }
           }
@@ -646,10 +645,10 @@ class ExamController extends GuiController {
     $this->session->set('draft-exam-id', $newExam->id);
 
     $this->view->disable();
-    $this->response->setJsonContent(array(
-      "status" => "success",
+    $this->response->setJsonContent([
+      "status"  => "success",
       "exam_id" => $newExam->id,
-    ));
+    ]);
     $this->response->send();
   }
 
@@ -669,9 +668,9 @@ class ExamController extends GuiController {
     //
     // Check route access:
     //
-    $this->checkAccess(array(
+    $this->checkAccess([
       'eid' => $eid,
-    ));
+    ]);
 
     //
     // Fetch exam data either as creator or student:
@@ -740,19 +739,19 @@ class ExamController extends GuiController {
     //
     // Check route access:
     //
-    $this->checkAccess(array(
+    $this->checkAccess([
       'eid' => $eid,
-    ));
+    ]);
 
     //
     // Try to find exam in request parameter:
     //
-    if (!($exam = Exam::findFirst(array(
+    if (!($exam = Exam::findFirst([
       'conditions' => 'id = :exam:',
-      'bind' => array(
+      'bind'       => [
         'exam' => $eid,
-      ),
-    )))) {
+      ],
+    ]))) {
       throw new Exception("Failed find target exam", Error::PRECONDITION_FAILED);
     }
 
@@ -768,10 +767,10 @@ class ExamController extends GuiController {
     //
     // Set data for view:
     //
-    $this->view->setVars(array(
-      "exam" => $exam,
+    $this->view->setVars([
+      "exam"    => $exam,
       "domains" => $this->catalog->getDomains(),
-    ));
+    ]);
   }
 
   /**
@@ -793,9 +792,9 @@ class ExamController extends GuiController {
     //
     // Check route access:
     //
-    $this->checkAccess(array(
+    $this->checkAccess([
       'eid' => $eid,
-    ));
+    ]);
 
     //
     // Try to find exam in request parameter:
@@ -835,9 +834,9 @@ class ExamController extends GuiController {
     //
     // Check route access:
     //
-    $this->checkAccess(array(
+    $this->checkAccess([
       'eid' => $eid,
-    ));
+    ]);
 
     //
     // Try to find exam in request parameter:
@@ -849,12 +848,12 @@ class ExamController extends GuiController {
     //
     // Set data for view:
     //
-    $this->view->setVars(array(
+    $this->view->setVars([
       "active" => $this->location->getActive($eid),
       "system" => $this->location->getSystem(),
       "recent" => $this->location->getRecent(),
-      "exam" => $exam,
-    ));
+      "exam"   => $exam,
+    ]);
   }
 
   /**
@@ -869,18 +868,18 @@ class ExamController extends GuiController {
     //
     // Check route access:
     //
-    $this->checkAccess(array(
+    $this->checkAccess([
       'eid' => $exam->id,
-    ));
+    ]);
 
     //
     // Set view data:
     //
-    $this->view->setVars(array(
-      'exam' => $exam,
-      'icon' => $this->url->get('/img/clock.png'),
+    $this->view->setVars([
+      'exam'  => $exam,
+      'icon'  => $this->url->get('/img/clock.png'),
       'retry' => $this->url->get('/exam/' . $exam->id . '/question/1'),
-    ));
+    ]);
   }
 
   /**
@@ -900,9 +899,9 @@ class ExamController extends GuiController {
     //
     // Check route access:
     //
-    $this->checkAccess(array(
+    $this->checkAccess([
       'eid' => $eid,
-    ));
+    ]);
 
     //
     // Try to find exam in request parameter:
@@ -914,11 +913,11 @@ class ExamController extends GuiController {
     //
     // Set view data:
     //
-    $this->view->setVars(array(
-      'exam' => $exam,
-      'phase' => new Phase($exam->getState()),
+    $this->view->setVars([
+      'exam'     => $exam,
+      'phase'    => new Phase($exam->getState()),
       'datetime' => new DateTime($exam->starttime, $exam->endtime),
-    ));
+    ]);
   }
 
   /**
@@ -934,16 +933,16 @@ class ExamController extends GuiController {
     // Get exams since one week ago. Add a special case for exams
     // without endtime set.
     //
-    if (!($exams = Exam::find(array(
+    if (!($exams = Exam::find([
       'conditions' => "published = 'Y' AND "
       . "("
       . " OpenExam\Models\Exam.endtime > :endtime: OR "
       . " OpenExam\Models\Exam.endtime IS NULL"
       . ")",
-      'bind' => array(
+      'bind'       => [
         'endtime' => strftime("%F", time() - 604800),
-      ),
-    )))) {
+      ],
+    ]))) {
       throw new Exception("Failed query student exams");
     }
 
@@ -961,17 +960,17 @@ class ExamController extends GuiController {
     // Bypass exam selection if only one active exam.
     //
     if (count($exams) == 1) {
-      $this->dispatcher->forward(array(
+      $this->dispatcher->forward([
         'action' => 'instruction',
-        'params' => array(
+        'params' => [
           'eid' => $exams[0]->id,
-        ),
-      ));
+        ],
+      ]);
     } else {
-      $this->dispatcher->forward(array(
+      $this->dispatcher->forward([
         'controller' => 'task',
-        'action' => 'upcoming',
-      ));
+        'action'     => 'upcoming',
+      ]);
     }
 
     //
@@ -1010,9 +1009,9 @@ class ExamController extends GuiController {
     //
     // Check route access:
     //
-    $this->checkAccess(array(
+    $this->checkAccess([
       'eid' => $eid,
-    ));
+    ]);
 
     //
     // Try to find exam in request parameter:
@@ -1062,10 +1061,10 @@ class ExamController extends GuiController {
     //
     // Set variables for view:
     //
-    $this->view->setVars(array(
+    $this->view->setVars([
       'lock' => $lock,
       'stud' => $sid,
-    ));
+    ]);
   }
 
   /**
@@ -1075,7 +1074,7 @@ class ExamController extends GuiController {
    * @param bool $download Should archive be downloaded?
    */
   public function archiveAction($eid, $download = false, $correct = false, $cleanup = false) {
-    $data = array();
+    $data = [];
 
     //
     // Display correct answers or not:
@@ -1101,9 +1100,9 @@ class ExamController extends GuiController {
     //
     // Check route access:
     //
-    $this->checkAccess(array(
+    $this->checkAccess([
       'eid' => $eid,
-    ));
+    ]);
 
     //
     // Get exam data:
@@ -1119,7 +1118,7 @@ class ExamController extends GuiController {
     if (!$handler->accessable()) {
       throw new ModelException("You are not allowed to access exam archive.", Error::FORBIDDEN);
     }
-
+    // var_dump($handler->create());exit;
     //
     // Send archive if requested.
     //
@@ -1144,8 +1143,8 @@ class ExamController extends GuiController {
     //
     // Fetch question data:
     //
-    $data = array('examScore' => 0);
-    $questions = $exam->getQuestions(array("order" => "slot", 'conditions' => "status = 'active'"));
+    $data      = ['examScore' => 0];
+    $questions = $exam->getQuestions(["order" => "slot", 'conditions' => "status = 'active'"]);
 
     foreach ($questions as $question) {
 
@@ -1182,7 +1181,7 @@ class ExamController extends GuiController {
     //
     $grades = preg_split('/[\r\n]+/', $exam->grades);
     foreach ($grades as $grade) {
-      $t = explode(":", $grade);
+      $t                         = explode(":", $grade);
       $data['examGrades'][$t[0]] = $t[1];
     }
     arsort($data['examGrades']);
@@ -1198,11 +1197,11 @@ class ExamController extends GuiController {
       );
     }
 
-    $this->view->setVars(array(
-      'exam' => $exam,
-      'data' => $data,
+    $this->view->setVars([
+      'exam'    => $exam,
+      'data'    => $data,
       'correct' => $correct,
-    )
+    ]
     );
     $this->view->setRenderLevel(View::LEVEL_ACTION_VIEW);
   }
@@ -1225,9 +1224,9 @@ class ExamController extends GuiController {
     //
     // Check route access:
     //
-    $this->checkAccess(array(
+    $this->checkAccess([
       'eid' => $eid,
-    ));
+    ]);
 
     //
     // Get exam data:

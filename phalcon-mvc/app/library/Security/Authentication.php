@@ -45,7 +45,7 @@ class Authentication implements Authenticator, Restrictor {
    * The array of service groups and authenticator chains.
    * @var array
    */
-  private $_chains = array('soap' => array(), 'rest' => array(), 'web' => array(), '*' => array());
+  private $_chains = ['soap' => [], 'rest' => [], 'web' => [], '*' => []];
   /**
    * Current selected authenticator.
    * @var AuthenticatorBase
@@ -66,10 +66,10 @@ class Authentication implements Authenticator, Restrictor {
    * Constructor.
    * @param array $chains The array of service groups and authenticator chains.
    */
-  public function __construct($chains = array()) {
-    $this->_chains = array_merge($this->_chains, $chains);
+  public function __construct($chains = []) {
+    $this->_chains        = array_merge($this->_chains, $chains);
     $this->_authenticator = new NullAuthenticator();
-    $this->_service = null;
+    $this->_service       = null;
   }
 
   /**

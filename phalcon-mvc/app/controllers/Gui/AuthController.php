@@ -48,9 +48,9 @@ class AuthController extends GuiController {
    * Index action.
    */
   public function indexAction() {
-    $this->dispatcher->forward(array(
+    $this->dispatcher->forward([
       'action' => 'select',
-    ));
+    ]);
   }
 
   /**
@@ -139,10 +139,10 @@ class AuthController extends GuiController {
 
     $this->view->setTemplateBefore('cardbox');
 
-    $this->view->setVars(array(
+    $this->view->setVars([
       'auth' => $auth,
       'icon' => $icon,
-    ));
+    ]);
   }
 
   /**
@@ -154,32 +154,32 @@ class AuthController extends GuiController {
 
     $this->view->disable();
 
-    $result = array();
-    $chain = $this->auth->getChain($service);
+    $result = [];
+    $chain  = $this->auth->getChain($service);
 
     foreach ($chain as $name => $plugin) {
       $auth = $plugin['method']();
 
       if ($auth instanceof RemoteLogin) {
-        $result[$name] = $chain[$name];
+        $result[$name]           = $chain[$name];
         $result[$name]['method'] = "remote";
-        $result[$name]['login'] = $this->url->get(sprintf('/auth/login/%s', $name));
-        $result[$name]['params'] = array(
+        $result[$name]['login']  = $this->url->get(sprintf('/auth/login/%s', $name));
+        $result[$name]['params'] = [
           'host' => $auth->hostname(),
           'port' => $auth->port(),
           'path' => $auth->path(),
-        );
+        ];
       }
 
       if ($auth instanceof FormLogin) {
-        $result[$name] = $chain[$name];
+        $result[$name]           = $chain[$name];
         $result[$name]['method'] = "form";
-        $result[$name]['login'] = $this->url->get(sprintf('/auth/login/%s', $name));
-        $result[$name]['params'] = array(
+        $result[$name]['login']  = $this->url->get(sprintf('/auth/login/%s', $name));
+        $result[$name]['params'] = [
           'form' => $auth->form(),
           'user' => $auth->user(),
           'pass' => $auth->pass(),
-        );
+        ];
       }
 
       unset($auth);

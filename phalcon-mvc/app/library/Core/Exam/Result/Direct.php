@@ -161,7 +161,7 @@ class Direct extends Store {
     //
     // Page(s) that goes into generated PDF:
     //
-    $settings = array(array('page' => $source));
+    $settings = [['page' => $source]];
 
     //
     // Retry on HTTP 400 (Bad Request).
@@ -250,10 +250,10 @@ class Direct extends Store {
       $date = strftime("%Y-%m-%d %H:%M:%S", $date);
     }
 
-    if (($exams = Exam::find(array(
+    if (($exams = Exam::find([
       'conditions' => "endtime > :date: AND decoded = 'Y'",
-      'bind' => array('date' => $date),
-    ))) == false) {
+      'bind'       => ['date' => $date],
+    ])) == false) {
       throw new ModelException("Failed get exam models.", Error::INTERNAL_SERVER_ERROR);
     }
 

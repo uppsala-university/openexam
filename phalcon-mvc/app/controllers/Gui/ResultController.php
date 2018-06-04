@@ -325,7 +325,6 @@ class ResultController extends GuiController {
     $this->checkAccess(array(
       'eid' => $eid,
     ));
-
     //
     // Get exam data:
     //
@@ -359,7 +358,6 @@ class ResultController extends GuiController {
     $compress = new Compress();
     $compress->setName($name);
     $compress->setPath($path);
-
     //
     // Add all render jobs to archive:
     //
@@ -374,6 +372,7 @@ class ResultController extends GuiController {
       $compress->create();
     }
 
+    // var_dump($compress);exit;
     //
     // Return download URL:
     //

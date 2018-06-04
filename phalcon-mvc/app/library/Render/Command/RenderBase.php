@@ -66,7 +66,7 @@ abstract class RenderBase {
    * The global options.
    * @var array
    */
-  protected $_globals = array();
+  protected $_globals = [];
 
   /**
    * Constructor.
@@ -104,7 +104,7 @@ abstract class RenderBase {
     $options = $this->getOptions();
 
     $execute = sprintf("%s %s %s %s", $this->_command, $options, $settings['in'], $filename);
-
+    // var_dump($execute);
     $command = new Command($execute);
     $command->setBuffered(false);
 
@@ -116,7 +116,7 @@ abstract class RenderBase {
    * @return string
    */
   private function getOptions() {
-    $options = array();
+    $options = [];
 
     foreach ($this->_globals as $key => $val) {
       if (is_bool($val) && $val == true) {

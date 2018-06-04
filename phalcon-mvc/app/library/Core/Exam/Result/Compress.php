@@ -53,7 +53,7 @@ class Compress extends Component {
    * The array of files.
    * @var array
    */
-  private $_files = array();
+  private $_files = [];
   /**
    * The target path.
    * @var string

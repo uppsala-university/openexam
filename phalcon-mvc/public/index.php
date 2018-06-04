@@ -56,14 +56,14 @@ define('CONFIG_PHP', CONFIG_SYS . '/config.php');
 function log_errors_on_shutdown() {
   $last_error = error_get_last();
 
-  if (!is_null($last_error)) { // if there has been an error at some point
+  if (!is_null($last_error)) {
+    // if there has been an error at some point
     // do something with the error
     file_put_contents(
       PROJ_DIR . '/logs/error.log', print_r($last_error, true) . "\n", FILE_APPEND
     );
   }
 }
-
 register_shutdown_function('log_errors_on_shutdown');
 
 //
@@ -78,7 +78,7 @@ if ($config->application->release) {
   error_reporting(E_ALL ^ E_NOTICE & ~E_DEPRECATED ^ E_STRICT);
   ini_set('display_errors', 0);
 } else {
-  error_reporting(E_ALL | E_STRICT);
+  error_reporting(E_ALL & ~E_NOTICE);
   ini_set('display_errors', 1);
   ini_set('display_startup_errors', 1);
 }
@@ -90,5 +90,8 @@ ini_set('session.cookie_lifetime', 0);
 
 include CONFIG_SYS . "/loader.php";
 include CONFIG_SYS . "/services.php";
+
 $application = new \Phalcon\Mvc\Application($di);
-echo $application->handle()->getContent();
+$handled     = $application->handle();
+// exit;
+echo $handled->getContent();

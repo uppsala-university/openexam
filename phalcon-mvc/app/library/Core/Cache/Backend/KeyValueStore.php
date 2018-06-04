@@ -50,7 +50,7 @@ class KeyValueStore {
    * The key/value store.
    * @var array
    */
-  private $_store = array();
+  private $_store = [];
 
   /**
    * Constructor.
@@ -100,7 +100,7 @@ class KeyValueStore {
       return $this->_store[$keyName];
     }
 
-    $content = $this->_backend->get($keyName, $lifetime);
+    $content                = $this->_backend->get($keyName, $lifetime);
     $this->_store[$keyName] = $content;
 
     return $content;
@@ -163,5 +163,4 @@ class KeyValueStore {
       $this->_store[$keyName] = $content;
     }
   }
-
 }
