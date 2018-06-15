@@ -1,0 +1,2 @@
+#!/bin/bash
+PHINX_MIGRATION_CATALOG_PREFIX='audit-' PHINX_DATABASE_SURFIX='2audit' phinx $1

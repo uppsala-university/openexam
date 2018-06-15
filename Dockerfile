@@ -51,7 +51,7 @@ COPY phalcon-mvc/app/config/apache.conf /etc/apache2/sites-enabled/000-default.c
 
 WORKDIR /var/www/open-exam
 
-ENV PATH="/var/www/open-exam/vendor/robmorgan/phinx/bin/:${PATH}"
+ENV PATH="/var/www/open-exam/bin/cli/:/var/www/open-exam/vendor/robmorgan/phinx/bin/:${PATH}"
 
 COPY . /var/www/open-exam
 

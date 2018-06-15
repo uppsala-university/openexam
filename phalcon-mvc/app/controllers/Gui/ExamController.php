@@ -229,6 +229,14 @@ class ExamController extends GuiController {
       $builder->andWhere("$key = '$val'");
     }
 
+    if($role == ROLES::INVIGILATOR) {
+      // today midnight
+      $midnight_yesterday = date('Y-m-d H:i:s', strtotime('today midnight'));
+      $builder->andWhere("Exam.starttime >= '$midnight_yesterday'");
+      $midnight_in_two_weeks = date('Y-m-d H:i:s', strtotime('+8 days midnight'));
+      $builder->andWhere("Exam.starttime <= '$midnight_in_two_weeks'");
+    }
+
     //
     // Execute PHQL query statement:
     //
