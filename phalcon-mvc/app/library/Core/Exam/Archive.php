@@ -224,7 +224,7 @@ class Archive extends Component {
    * @return string
    */
   private function getSource($token, $correct = false) {
-    $expand = $this->url->get(sprintf("exam/archive/%d", $this->_exam->id));
+    $expand = $this->url->get(sprintf("exam/archive/%d.zip", $this->_exam->id));
     $source = sprintf("http://%s%s?token=%s&user=%s&render=archive&correct=%s", $this->config->render->server, $expand, $token, $this->_exam->creator, $correct ? 'true' : 'false');
     return $source;
   }

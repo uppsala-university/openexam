@@ -41,10 +41,10 @@ fi
 touch $lock
 
 # Cleanup old result files:
-/usr/bin/sudo -u $user php $script --result --delete --days=90 $options $*
+php $script --result --delete --days=90 $options $*
 
 # Generate new result files:
-/usr/bin/sudo -u $user php $script --result --create --days=30 $options $*
+php $script --result --create --days=30 $options $*
 
 # Cleanup lock file:
 rm -f $lock
