@@ -61,7 +61,7 @@ class SessionAccess extends ObjectAccess {
       // The data is serialized in a special format (key1|data1;key2|data2;...)
       // and should be treated as opaque, however the username can never be the key
       // so this should be safe.
-      //
+      // 
       if (strpos($model->data, $user->getUser()) === false) {
         throw new Exception("The session is private and only the owner have access", Exception::ACTION);
       }

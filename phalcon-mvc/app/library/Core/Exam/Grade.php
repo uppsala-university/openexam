@@ -348,7 +348,6 @@ class Grade {
         $this->_data[$key] = $match[1];
       }
     }
-
     if (count($match) == 3 && strlen($match[2]) != 0) {
       switch ($match[2]) {
       case 'p':

@@ -186,6 +186,9 @@ class Compress extends Component {
     //
     // Create new ZIP-archive:
     //
+    if (!preg_match('/\.zip$/', $this->_path)) {
+      $this->_path .= $this->_path . '.zip';
+    }
     if (!($zip->open($this->_path, ZipArchive::CREATE))) {
       throw new Exception($zip->getStatusString());
     }

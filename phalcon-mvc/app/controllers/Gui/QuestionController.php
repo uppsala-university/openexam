@@ -423,7 +423,6 @@ class QuestionController extends GuiController {
     } else {
       $exam->show_code = false;
     }
-
     //
     // Show correction table or view:
     //

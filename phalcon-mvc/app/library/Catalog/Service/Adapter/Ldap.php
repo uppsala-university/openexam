@@ -478,7 +478,6 @@ class Ldap extends AttributeService {
       }
     }
     $groups['count'] = count($groups);
-
     //
     // Collect group data in result object:
     //
