@@ -13,7 +13,7 @@ RUN curl -sSL "https://codeload.github.com/phalcon/cphalcon/tar.gz/v${PHALCON_VE
 ############################
 
 RUN apt-get update -y \
-    && apt-get install -y openssl zip unzip git mysql-client gettext-base libldap2-dev \
+    && apt-get install -y openssl zip unzip git mysql-client gettext-base libldap2-dev locales vim \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/
 
@@ -32,6 +32,12 @@ RUN pecl install \
     # && echo "xdebug.remote_host=192.168.1.236" >> /usr/local/etc/php/conf.d/xdebug.ini \
     # && echo "xdebug.remote_port=9000" >> /usr/local/etc/php/conf.d/xdebug.ini \
     # && echo "xdebug.remote_autostart=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
+
+RUN locale-gen sv_SE.UTF-8
+ENV LANG sv_SE.UTF-8
+ENV LANGUAGE sv_SE:sv
+ENV LC_TIME sv_SE.UTF-8
+ENV LC_CTYPE sv_SE.UTF-8
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 

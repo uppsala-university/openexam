@@ -20,12 +20,12 @@ use Phalcon\Tag;
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    students.phtml
-// 
+//
 // Author:  Ahsan Shahzad (Medfarm DoIT)
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
 ?>
 
@@ -93,11 +93,11 @@ foreach ($exam->students as $student) {
 
             var studentList = <?= json_encode($stList) ?>;
 
-            // 
+            //
             // Called after students has been added to exam.
-            // 
+            //
             // @param int examId The exam ID.
-            // 
+            //
             var onStudentInserted = function (examId) {
 
                 $.ajax({
@@ -105,14 +105,14 @@ foreach ($exam->students as $student) {
                     data: {exam_id: examId},
                     url: baseURL + 'exam/students/',
                     success: function (content) {
-                        // 
+                        //
                         // Replace dialog content:
-                        // 
+                        //
                         $("#manage-students").html(content);
 
-                        // 
+                        //
                         // Switch to second tab:
-                        // 
+                        //
                         $(".tabs").tabs("option", "active", 1);
                         $('#no-student-msg').hide();
                     }
@@ -140,9 +140,9 @@ foreach ($exam->students as $student) {
                 return;
             }
 
-            // 
+            //
             // Edit student properties inline.
-            // 
+            //
             $(document).on('click', '.st-exam-item-edit', function () {
                 if ($(this).attr("contenteditable")) {
                     return false; // Already editing.
@@ -164,9 +164,9 @@ foreach ($exam->students as $student) {
                 }
             });
 
-            // 
+            //
             // Refresh display and update attribute values.
-            // 
+            //
             $(document).on('blur', '.st-exam-item-edit', function () {
                 $(this).removeAttr("contenteditable");
 
@@ -175,9 +175,9 @@ foreach ($exam->students as $student) {
                 if (type === 'starttime' || type === 'endtime') {
                     var part = $(this).text().split(" ");
 
-                    // 
+                    //
                     // Check if date is invalid:
-                    // 
+                    //
                     if (part.length > 1) {
                         if (isNaN(Date.parse($(this).text()))) {
                             $(this).text($(this).attr('data-stud-date') + ' ' + $(this).attr('data-stud-time'));
@@ -225,17 +225,17 @@ foreach ($exam->students as $student) {
                 }
             });
 
-            // 
+            //
             // Save student properties.
-            // 
+            //
             $(document).on('click', '.st-exam-item-save', function () {
                 var data = {};
                 var button = $(this).find("span.btn");
                 var tblrow = $(this).parent();
 
-                // 
+                //
                 // Add editable item values to data object:
-                // 
+                //
                 $(this).parent().find(".st-exam-item-edit[data-modified=true]").each(function () {
                     var type = $(this).attr('data-name');
 
@@ -250,14 +250,14 @@ foreach ($exam->students as $student) {
                     data[type] = data[type].trim();
                 });
 
-                // 
+                //
                 // Get student ID from data-id attribute:
-                // 
+                //
                 data.id = $(this).parent().find(".st-exam-detail").attr("data-id");
 
-                // 
+                //
                 // Send AJAX request. Hide save button on success.
-                // 
+                //
                 ajax(
                         baseURL + 'ajax/core/invigilator/student/update',
                         JSON.stringify(data),
@@ -272,9 +272,9 @@ foreach ($exam->students as $student) {
                 );
             });
 
-            // 
+            //
             // Unlock exam lock preventing student from using another computer.
-            // 
+            //
             $(document).on("click", "#unlock-student", function () {
                 var dataId = $(this).attr('data-id');
                 var studId = $(this).attr('stud-id');
@@ -286,9 +286,9 @@ foreach ($exam->students as $student) {
                         });
             });
 
-            // 
+            //
             // Approve prending student connection on exam.
-            // 
+            //
             $(document).on("click", "#approve-student", function () {
                 var dataId = $(this).attr('data-id');
                 var studId = $(this).attr('stud-id');
@@ -301,9 +301,9 @@ foreach ($exam->students as $student) {
                 );
             });
 
-            // 
+            //
             // Reload exam lock status panel.
-            // 
+            //
             $(document).on("click", "#lock-status-refresh", function () {
                 $('a[data-id="' + $(this).attr('data-id') + '"]').click();
             });
@@ -365,9 +365,9 @@ foreach ($exam->students as $student) {
                                     }
                                 });
 
-                                // 
+                                //
                                 // Hide from list:
-                                // 
+                                //
                                 $(student).parent().slideUp('500', function () {
                                     $(this).remove();
                                 });
@@ -389,7 +389,7 @@ foreach ($exam->students as $student) {
 
                     //
                     // Prepare data object:
-                    // 
+                    //
                     $.each(stList, function (i, val) {
                         if (jQuery.trim(val) !== '') {
                             st = jQuery.trim(val).split(/\s/g);
@@ -407,9 +407,9 @@ foreach ($exam->students as $student) {
                         }
                     });
 
-                    // 
+                    //
                     // Send AJAX request to add these students to the exam:
-                    // 
+                    //
                     ajax(
                             baseURL + 'ajax/core/invigilator/student/create',
                             JSON.stringify(stData),
@@ -420,18 +420,18 @@ foreach ($exam->students as $student) {
                 }
             });
 
-            // 
+            //
             // On select file type (file import):
-            // 
+            //
             $(document).on('click', 'ul.dropdown-menu > li > a', function () {
                 var target = $("div#file-type");
                 target.children().first().text($(this).text()); // Display
                 target.attr('type', $(this).attr('type')); // Save type
             });
 
-            // 
+            //
             // Handle students file upload:
-            // 
+            //
             $(document).on('click', '#import-students-by-file', function () {
 
                 var data = new FormData($('form#student-file-import')[0]);
@@ -454,9 +454,9 @@ foreach ($exam->students as $student) {
                 });
             });
 
-            // 
+            //
             // Handle student group import:
-            // 
+            //
             $(document).on('click', '#import-students-by-group', function () {
 
                 var data = new FormData($('form#student-group-import')[0]);
@@ -480,24 +480,24 @@ foreach ($exam->students as $student) {
                 });
             });
 
-            // 
+            //
             // Import students from table data (file or group import):
-            // 
+            //
             $(document).on('click', '#import-students-by-table', function () {
 
                 var examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
                 var stdata = [], sthead = [];
 
-                // 
+                //
                 // Create column type lookup table:
-                // 
+                //
                 $('#table-import-students thead tr th').each(function (i) {
                     sthead[i] = $(this).attr("value");
                 });
 
-                // 
+                //
                 // Process table body. Add students to object array:
-                // 
+                //
                 $('#table-import-students tbody tr').each(function () {
                     var stuobj = {
                         exam_id: examId
@@ -536,9 +536,9 @@ foreach ($exam->students as $student) {
                     return;
                 }
 
-                // 
+                //
                 // Send AJAX request to add students:
-                // 
+                //
                 ajax(
                         baseURL + 'ajax/core/invigilator/student/create',
                         JSON.stringify(stdata),
@@ -547,9 +547,9 @@ foreach ($exam->students as $student) {
                         });
             });
 
-            // 
+            //
             // Attach event for student deletion button
-            // 
+            //
             $(document).on('change', 'input[name="students[]"], #select_all_students', function () {
                 if ($('input[name="students[]"]:checked').length) {
                     $('#del-st-btn > span').html("Delete selected students (" + $('input[name="students[]"]:checked').length + ")").parent().show();
@@ -558,9 +558,9 @@ foreach ($exam->students as $student) {
                 }
             });
 
-            // 
+            //
             // Delete selected student:
-            // 
+            //
             $(document).on('click', '#del-st-btn', function () {
 
                 if (confirm("Are you sure you want to " + $('#del-st-btn > span').text().toLowerCase() + "?")) {
@@ -581,9 +581,9 @@ foreach ($exam->students as $student) {
                 return false;
             });
 
-            // 
+            //
             // Handle print student list.
-            // 
+            //
             $(document).on("click", "#print-students-list", function () {
                 var examId = $(this).closest('#st-mng-wrapper').attr('exam-id');
                 window.location.href = baseURL + 'utility/export/students/' + examId + '/download';
