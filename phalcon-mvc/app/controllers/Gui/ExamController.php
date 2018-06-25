@@ -678,6 +678,8 @@ class ExamController extends GuiController {
     //
     if ($this->user->roles->acquire(Roles::CREATOR, $eid)) {
       $this->user->setPrimaryRole(Roles::CREATOR);
+    } else if ($this->user->roles->acquire(Roles::CONTRIBUTOR, $eid)) {
+      $this->user->setPrimaryRole(Roles::CONTRIBUTOR);
     } else {
       $this->user->setPrimaryRole(Roles::STUDENT);
     }
@@ -701,7 +703,7 @@ class ExamController extends GuiController {
     //
     // Set test mode if exam creator:
     //
-    if ($this->user->getPrimaryRole() == Roles::CREATOR) {
+    if (in_array($this->user->getPrimaryRole(), [Roles::CREATOR, Roles::CONTRIBUTOR])) {
       $this->view->setVar('testMode', true);
     } else {
       $this->view->setVar('testMode', false);
