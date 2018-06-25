@@ -9,3 +9,6 @@ simplesamlphp
 phinx.yml
 .phpintel/
 *.sublime-*
+ldap-test.php
+login-ish
+wkhtmltox*
