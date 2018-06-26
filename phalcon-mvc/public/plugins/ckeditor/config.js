@@ -36,7 +36,7 @@ CKEDITOR.editorConfig = function (config) {
     config.removeDialogTabs = 'image:advanced;link:advanced';
 
     // Don't load these plugins:
-    config.removePlugins = 'elementspath,texzilla,image,save,font,pastefromword,sourcearea,eqneditor,scayt,wsc';
+    config.removePlugins = 'elementspath,texzilla,image,save,font,pastefromword,sourcearea,eqneditor,wsc';
 
     // Always load these plugins:
     config.extraPlugins = 'confighelper,wordcount,notification,maximize';
@@ -44,15 +44,15 @@ CKEDITOR.editorConfig = function (config) {
     // Display notifications for 2 sec:
     config.notification_duration = 2000;
 
-    // 
+    //
     // Load some nice looking skin:
-    // 
+    //
     //    config.skin = 'office2013';
     //    config.skin = 'minimalist';
     //    config.skin = 'moono-dark';
     //    config.skin = 'moono';
     //    config.skin = 'moonocolor';
-    // 
+    //
     config.skin = 'moono_blue';
 
     config.baseFloatZIndex = 9000;
@@ -68,4 +68,6 @@ CKEDITOR.editorConfig = function (config) {
     config.entities = false;
 
     config.mathJaxLib = baseURL + '/plugins/mathjax/MathJax.js?config=TeX-AMS_HTML';
+
+    config.disableNativeSpellChecker = false;
 };

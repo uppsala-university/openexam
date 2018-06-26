@@ -6,7 +6,7 @@ services:
     volumes:
       - .:/var/www/open-exam
     ports:
-      - "8080:80"
+      - "80:80"
     links:
       - db
     # env_file:

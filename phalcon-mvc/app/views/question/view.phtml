@@ -20,12 +20,12 @@ use Phalcon\Tag;
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    view.phtml
-// 
+//
 // Author:  Ahsan Shahzad (MedfarmDoIT)
 // Author:  Anders Lövgren (QNET/BMC CompDept)
-// 
+//
 
 ?>
 
@@ -53,11 +53,11 @@ use Phalcon\Tag;
 
     <!-- Question title row -->
     <?php if ($testMode): ?>
-            <div class="alert alert-info clearfix" style="margin:15px 0px;">  
+            <div class="alert alert-info clearfix" style="margin:15px 0px;">
                 <strong>Test mode activated.</strong> <br/>
                 You are currently previewing the student view in test mode. Please note that answers will <strong>not</strong> be saved.<br/>
                 <a href="<?= $this->url->get('exam/index') ?>" class="btn btn-primary pull-right">
-                    <i class="icon-ok-circle"> 
+                    <i class="icon-ok-circle">
                         <span>Finished</span>
                     </i>
                 </a>
@@ -65,7 +65,7 @@ use Phalcon\Tag;
     <?php endif; ?>
 
     <?php if (!$testMode && $viewMode == 'all'): ?>
-            <div class="alert alert-info alert-dismissable" style="margin:15px 0px;">  
+            <div class="alert alert-info alert-dismissable" style="margin:15px 0px;">
                 <a href="#" data-dismiss="alert" class="close">×</a>
                 <p><strong>Careful preview all of your answers before quitting!</strong></p>
                 <p>
@@ -76,17 +76,17 @@ use Phalcon\Tag;
     <?php endif; ?>
 
     <?php if (!$testMode && $viewMode == 'none') : ?>
-            <div class="alert alert-warning" style="margin:15px 0px;">  
+            <div class="alert alert-warning" style="margin:15px 0px;">
                 <strong>Question is missing.</strong> <br/>
                 This exam seems to have no questions. Please inform the invigilator about this problem to get it fixed.
             </div>
     <?php endif; ?>
 
     <?php
-    // 
-    // This is a mess: The $quest parameter is sometimes an object and sometimes an array depending 
+    //
+    // This is a mess: The $quest parameter is sometimes an object and sometimes an array depending
     // on from where the view is used :-( (AL).
-    // 
+    //
     $qSize = count($quest);
     $unanswered = 0;
 
@@ -94,10 +94,10 @@ use Phalcon\Tag;
     $qNumber = 0;
     $qIndexes = array();
 
-    // 
-    // Set ID of previous and next question. Random access is only supported 
+    //
+    // Set ID of previous and next question. Random access is only supported
     // if result set is an array.
-    // 
+    //
     if (count($quest) == 1) {
             foreach ($questions as $index => $question) {
                     $qIndexes[$index] = $question->id;
@@ -144,7 +144,7 @@ use Phalcon\Tag;
                             <?php foreach ($qParts as $qPart => $qPartData): ?>
 
                                     <?php if (count($qParts) > 1): ?>
-                                            <span class="q-part-title"><?= $qPart ?>.</span>                                        	
+                                            <span class="q-part-title"><?= $qPart ?>.</span>
                                     <?php endif; ?>
 
                                     <?php if ($qPartData['q_points']) : ?>
@@ -167,7 +167,7 @@ use Phalcon\Tag;
                                                                                 <li><?= $qPartOpt ?></li>
                                                                         <?php endforeach; ?>
                                                                     </ul>
-                                                                </div>                                                                        
+                                                                </div>
                                                         <?php endif; ?>
 
                                                         <?php if (!empty($answerData[$qPart]['ans'][0])): ?>
@@ -213,7 +213,7 @@ use Phalcon\Tag;
 
                                                                     ?>
                                                                     <div id="<?= $elementId ?>" class="literally changeable"></div>
-                                                                    <button class="fullscreen btn btn-block" isfor="<?= $elementId ?>" style="background-color: ghostwhite">Fullscreen</button>    
+                                                                    <button class="fullscreen btn btn-block" isfor="<?= $elementId ?>" style="background-color: ghostwhite">Fullscreen</button>
                                                                     <script language="javascript">canvasInit('<?= $elementId ?>', '<?= $drawingJson ?>', '<?= $imageUrl ?>');</script>
                                                             <?php elseif ($qPartData['ans_area']['type'] == 'choicebox'): ?>
                                                                     <?php $type = (count(array_filter($qPartData['ans_area']['data'])) == 1) ? 'radio' : 'checkbox'; ?>
@@ -228,7 +228,7 @@ use Phalcon\Tag;
                                                                                 </div>
                                                                                 <?php $i++; ?>
                                                                         <?php endforeach; ?>
-                                                                    </div>                                                                        
+                                                                    </div>
                                                             <?php else: ?>
                                                                     <div id="ansBkp<?= $qPart ?>" style="display:none"><?= $answerData[$qPart]['ans'][0] ?></div>
                                                                     <textarea id="q-<?= $qObj->slot ?>_part-<?= $qPart ?>" class="form-control changeable ckeditor" word-count-limit="<?= $qPartData['ans_area']['word_count'] ?>" native-spell-check="<?= $qPartData['ans_area']['spell_check'] ?>" style="display: none"><?= $answerData[$qPart]['ans'][0] ?></textarea>
@@ -239,8 +239,8 @@ use Phalcon\Tag;
                                             <?php if (count($qPartData['resources'])): ?>
                                                     <div class="q-part-resource-area col-sm-2">
                                                         <div class="box">
-                                                            <div class="lead" style="font-size:15px"> 
-                                                                <i class="icon-file-text-alt text-contrast resource-file" style="cursor: pointer" title="Hide resource files"></i> Supplementary material 
+                                                            <div class="lead" style="font-size:15px">
+                                                                <i class="icon-file-text-alt text-contrast resource-file" style="cursor: pointer" title="Hide resource files"></i> Supplementary material
                                                             </div>
 
                                                             <?php
@@ -251,9 +251,9 @@ use Phalcon\Tag;
                                                                     $href = $this->url->get($resUrl);
                                                                     $name = $resTitle;
 
-                                                                    // 
+                                                                    //
                                                                     // Use resource viewer:
-                                                                    // 
+                                                                    //
                                                                     $this->partial('partials/resource-file-viewer', array(
                                                                             'type' => $type, 'path' => $path,
                                                                             'href' => $href, 'name' => $name,
@@ -264,8 +264,8 @@ use Phalcon\Tag;
                                                             ?>
 
                                                         </div>
-                                                    </div>                                            
-                                            <?php endif; ?>            
+                                                    </div>
+                                            <?php endif; ?>
                                         </fieldset>
                                         <?php if ($partCount++ != count($qParts)): ?>
                                                 <hr class="q-part-seprator hr-normal" />
@@ -305,7 +305,7 @@ use Phalcon\Tag;
                                 </div>
                             </div>
                         </div>
-                    </div>        
+                    </div>
 
                 </div>
             </div>
@@ -317,7 +317,7 @@ use Phalcon\Tag;
 
     ?>
     <?php if ($unanswered > 0) : ?>
-            <div class="alert alert-warning alert-dismissable" style="margin:15px 0px;">  
+            <div class="alert alert-warning alert-dismissable" style="margin:15px 0px;">
                 <a href="#" data-dismiss="alert" class="close">×</a>
                 <p><strong>Missed to answer some questions?</strong></p>
                 <p>One or more questions are not yet answered. Please go back and answer all parts if you have missed one.</p>
@@ -339,8 +339,8 @@ use Phalcon\Tag;
     <h2 style="color: #c2100c">General exam instructions: <?= $exam->name ?></h2>
     <hr>
     <div class="alert alert-info">
-        Use the buttons in the heading to minimize the left pane or increase the text size 
-        Under Exam info. You may again read the instructions, access a preview of all your answers and log out when you are done. 
+        Use the buttons in the heading to minimize the left pane or increase the text size
+        Under Exam info. You may again read the instructions, access a preview of all your answers and log out when you are done.
         You can hover over images (in supplementary material) to zoom. You can see full size image by clicking on it.
     </div>
     <div style="padding-bottom:10px">
@@ -348,9 +348,9 @@ use Phalcon\Tag;
         <strong>Important to know:</strong><br><br>
         <ul>
             <li>All your answers are continuously saved every 10 seconds if changed or when switching between question.</li><br>
-            <li>It is highly recommended that you <u>don't</u> use "back" and "forward" buttons in the browser to navigate between questions. Always use the 
-                <button class="btn btn-xs" disabled="disabled"><i class="icon-arrow-left"></i> Prev. Question </button> and 
-                <button class="btn btn-xs btn-success" disabled="disabled"> Next Question <i class="icon-arrow-right"></i></button> 
+            <li>It is highly recommended that you <u>don't</u> use "back" and "forward" buttons in the browser to navigate between questions. Always use the
+                <button class="btn btn-xs" disabled="disabled"><i class="icon-arrow-left"></i> Prev. Question </button> and
+                <button class="btn btn-xs btn-success" disabled="disabled"> Next Question <i class="icon-arrow-right"></i></button>
                 buttons or question links in left hand side menu.</li><br>
             <li>Please report to invigilator immediately if any button or link do not work. In such a case, please don't close/refresh web browser otherwise we may loose your answer. If you see any error message from system, it is highly important that you <u>don't</u> refresh/close the web page before you report. </li><br>
         </ul>
@@ -361,7 +361,31 @@ use Phalcon\Tag;
 <?= Tag::javascriptInclude('js/jquery.elevatezoom.js?ver=3.0.8'); ?>
 <?= Tag::javascriptInclude('plugins/ckeditor/ckeditor.js?ver=4'); ?>
 <?= Tag::javascriptInclude('plugins/ckeditor/adapters/jquery.js?ver=4'); ?>
+<script language="javascript" type="text/javascript">
+    $(document).ready(function(){
+        CKEDITOR.once("instanceReady", function(event) {
+            for(var instanceName in CKEDITOR.instances) {
+                var editor = CKEDITOR.instances[instanceName];
+                var wordCountLimit = $('#'+instanceName).attr('word-count-limit');
 
+                if (editor) {
+                    editor.destroy(true);
+                    editor = null;
+                }
+
+                var config = {
+                    wordcount: {
+                        maxWordCount: wordCountLimit
+                    },
+                    removePlugins: 'elementspath,texzilla,image,save,font,pastefromword,sourcearea,eqneditor,wsc',
+                    skin: 'moono_blue'
+                }
+                CKEDITOR.config = Object.assign({}, CKEDITOR.config, config);
+                CKEDITOR.replace(instanceName, CKEDITOR.config);
+            }
+        });
+    });
+</script>
 <script language="javascript" type="text/javascript">
 <?php if (!$testMode && $viewMode == 'single'): ?>
                 var qName = '<?= $qObj->slot ?>';
@@ -376,4 +400,4 @@ use Phalcon\Tag;
         setInterval(function () {
             $('.cke_button__maximize').hide();
         }, 350);
-</script> 
+</script>
