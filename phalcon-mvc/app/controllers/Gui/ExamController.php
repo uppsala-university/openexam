@@ -1161,7 +1161,7 @@ class ExamController extends GuiController
         throw new Exception(sprintf("
             Failed generate/verify PDF archive.
             <a href='/exam/archive/%d/download?correct=%s'/>
-            Try again here</a>", (int) $exam->id, (string) $correct)
+            Try again</a>", (int) $exam->id, (string) $correct)
         );
       } else {
         $handler->send();
