@@ -92,6 +92,6 @@ include CONFIG_SYS . "/loader.php";
 include CONFIG_SYS . "/services.php";
 $application = new \Phalcon\Mvc\Application($di);
 $handled     = $application->handle();
-//exit;
+// exit;
 echo $handled->getContent();
 

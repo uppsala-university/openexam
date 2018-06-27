@@ -436,6 +436,8 @@ class ExamController extends GuiController {
         );
       }
 
+      $this->session->set('draft-exam-creator', $newExam->creator);
+
       //
       // Proceed as creator of the new exam:
       //
