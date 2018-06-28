@@ -35,7 +35,7 @@ RUN pecl install \
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN docker-php-ext-install pdo pdo_mysql mbstring ldap gettext
+RUN docker-php-ext-install pdo pdo_mysql mbstring ldap gettext pcntl
 
 RUN echo extension=gettext.so > /usr/local/etc/php/conf.d/gettext.ini
 
