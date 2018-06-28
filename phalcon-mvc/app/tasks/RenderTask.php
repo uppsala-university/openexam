@@ -40,333 +40,329 @@ use OpenExam\Models\Render;
  * Render service task.
  * @author Anders Lövgren (QNET/BMC CompDept)
  */
-class RenderTask extends MainTask implements TaskInterface
-{
+class RenderTask extends MainTask implements TaskInterface {
 
-        /**
-         * Command line options.
-         * @var array 
-         */
-        private $_options;
+  /**
+   * Command line options.
+   * @var array
+   */
+  private $_options;
 
-        public static function getUsage()
-        {
-                return array(
-                        'header'   => 'Render service for HTML -> PDF/Image',
-                        'action'   => '--render',
-                        'usage'    => array(
-                                '--pdf|--image --output=file --page=url',
-                                '--worker [--output=file] [--pidfile=path] [--sleep=sec] [--level=num]',
-                                '--queue --page=url --exam=id [--poll]'
-                        ),
-                        'options'  => array(
-                                '--pdf'          => 'Render PDF document',
-                                '--image'        => 'Render image file',
-                                '--output=file'  => 'Save output to file.',
-                                '--page=url'     => 'Render local file or URL (can be used multiple times if --type=pdf).',
-                                '--globals'      => 'Start input of global render options (can be used multiple times).',
-                                '--type=mime'    => 'Type of image (png, jpg, bmp or svg).',
-                                '--method=type'  => 'Use render method (command, extension or service).',
-                                '--worker'       => 'Run render queue worker process.',
-                                '--pidfile=path' => 'Write PID to path (for --worker only).',
-                                '--sleep=sec'    => 'Sleep interval between polling.',
-                                '--level=num'    => 'Set log level (0 => none, 1 => info, 2 => notice, 3 => debug)',
-                                '--queue'        => 'Add render queue job.',
-                                '--exam=id'      => 'Use exam (for --queue only).',
-                                '--poll'         => 'Poll for completion (for --queue only).',
-                                '--force'        => 'Force action even if already applied.',
-                                '--verbose'      => 'Be more verbose.',
-                                '--dry-run'      => 'Just print whats going to be done.'
-                        ),
-                        'aliases'  => array(
-                                '--png'       => 'Same as --type=png',
-                                '--jpg'       => 'Same as --type=jpg',
-                                '--jpeg'      => 'Same as --type=jpg',
-                                '--bmp'       => 'Same as --type=bmp',
-                                '--svg'       => 'Same as --type=svg',
-                                '--command'   => 'Same as --method=command',
-                                '--extension' => 'Same as --method=extension',
-                                '--service'   => 'Same as --method=service',
-                                '--quiet'     => 'Same as --level=0',
-                                '--notice'    => 'Same as --level=1',
-                                '--info'      => 'Same as --level=2',
-                                '--debug'     => 'Same as --level=3',
-                        ),
-                        'examples' => array(
-                                array(
-                                        'descr'   => 'Render local file as PNG image',
-                                        'command' => '--image --type=png --output=result.png --page=input.html'
-                                ),
-                                array(
-                                        'descr'   => 'Render pages as PDF document',
-                                        'command' => '--pdf --page=input1.html --page=input2.html --globals --p1=v1 --p2=v2 --output=result.pdf'
-                                ),
-                                array(
-                                        'descr'   => 'Render Google using the system render service',
-                                        'command' => '--pdf --page=http://www.google.se --output=google.pdf --globals --page-size a4 --grayscale'
-                                ),
-                                array(
-                                        'descr'   => 'Start a render queue worker process',
-                                        'command' => '--worker --output=file.log'
-                                ),
-                                array(
-                                        'descr'   => 'Log notice level worker events to stderr',
-                                        'command' => '--worker --output=php://stderr --notice'
-                                ),
-                                array(
-                                        'descr'   => 'Add job to render queue',
-                                        'command' => '--queue --page=http://www.google.se'
-                                ),
-                        )
-                );
+  public static function getUsage() {
+    return array(
+      'header' => 'Render service for HTML -> PDF/Image',
+      'action' => '--render',
+      'usage' => array(
+        '--pdf|--image --output=file --page=url',
+        '--worker [--output=file] [--pidfile=path] [--sleep=sec] [--level=num]',
+        '--queue --page=url --exam=id [--poll]',
+      ),
+      'options' => array(
+        '--pdf' => 'Render PDF document',
+        '--image' => 'Render image file',
+        '--output=file' => 'Save output to file.',
+        '--page=url' => 'Render local file or URL (can be used multiple times if --type=pdf).',
+        '--globals' => 'Start input of global render options (can be used multiple times).',
+        '--type=mime' => 'Type of image (png, jpg, bmp or svg).',
+        '--method=type' => 'Use render method (command, extension or service).',
+        '--worker' => 'Run render queue worker process.',
+        '--pidfile=path' => 'Write PID to path (for --worker only).',
+        '--sleep=sec' => 'Sleep interval between polling.',
+        '--level=num' => 'Set log level (0 => none, 1 => error, 2 => info, 3 => notice, 4 => success, 5 => debug)',
+        '--queue' => 'Add render queue job.',
+        '--exam=id' => 'Use exam (for --queue only).',
+        '--poll' => 'Poll for completion (for --queue only).',
+        '--force' => 'Force action even if already applied.',
+        '--verbose' => 'Be more verbose.',
+        '--dry-run' => 'Just print whats going to be done.',
+      ),
+      'aliases' => array(
+        '--png' => 'Same as --type=png',
+        '--jpg' => 'Same as --type=jpg',
+        '--jpeg' => 'Same as --type=jpg',
+        '--bmp' => 'Same as --type=bmp',
+        '--svg' => 'Same as --type=svg',
+        '--command' => 'Same as --method=command',
+        '--extension' => 'Same as --method=extension',
+        '--service' => 'Same as --method=service',
+        '--quiet' => 'Same as --level=0',
+        '--error' => 'Same as --level=1',
+        '--notice' => 'Same as --level=2',
+        '--info' => 'Same as --level=3',
+        '--success' => 'Same as --level=4',
+        '--debug' => 'Same as --level=5',
+      ),
+      'examples' => array(
+        array(
+          'descr' => 'Render local file as PNG image',
+          'command' => '--image --type=png --output=result.png --page=input.html',
+        ),
+        array(
+          'descr' => 'Render pages as PDF document',
+          'command' => '--pdf --page=input1.html --page=input2.html --globals --p1=v1 --p2=v2 --output=result.pdf',
+        ),
+        array(
+          'descr' => 'Render Google using the system render service',
+          'command' => '--pdf --page=http://www.google.se --output=google.pdf --globals --page-size a4 --grayscale',
+        ),
+        array(
+          'descr' => 'Start a render queue worker process',
+          'command' => '--worker --output=file.log',
+        ),
+        array(
+          'descr' => 'Log notice level worker events to stderr',
+          'command' => '--worker --output=php://stderr --notice',
+        ),
+        array(
+          'descr' => 'Add job to render queue',
+          'command' => '--queue --page=http://www.google.se',
+        ),
+      ),
+    );
+  }
+
+  /**
+   * Display usage information.
+   */
+  public function helpAction() {
+    parent::showUsage(self::getUsage());
+  }
+
+  /**
+   * Render image file action.
+   * @param array $params
+   */
+  public function imageAction($params = array()) {
+    $this->setOptions($params, 'image');
+
+    if ($this->_options['extension']) {
+      $render = new RenderImageExtension($this->_options['globals']);
+      $render->save($this->_options['output'], array('in' => $this->_options['page'][0]['page']));
+    }
+    if ($this->_options['command']) {
+      $render = new RenderImageCommand("wkhtmltoimage");
+      $render->setOptions($this->_options['globals']);
+      $render->save($this->_options['output'], array('in' => $this->_options['page'][0]['page']));
+    }
+    if ($this->_options['service']) {
+      $render = $this->render->getRender('image');
+      $render->setOptions($this->_options['globals']);
+      $render->save($this->_options['output'], array('in' => $this->_options['page'][0]['page']));
+    }
+  }
+
+  /**
+   * Render PDF document action.
+   * @param array $params
+   */
+  public function pdfAction($params = array()) {
+    $this->setOptions($params, 'pdf');
+
+    if ($this->_options['extension']) {
+      $render = new RenderPdfDocumentExtension($this->_options['globals']);
+      $render->save($this->_options['output'], $this->_options['page']);
+    }
+    if ($this->_options['command']) {
+      $render = new RenderPdfDocumentCommand("wkhtmltopdf");
+      $render->setOptions($this->_options['globals']);
+      $render->save($this->_options['output'], $this->_options['page']);
+    }
+    if ($this->_options['service']) {
+      $render = $this->render->getRender('pdf');
+      $render->setOptions($this->_options['globals']);
+      $render->save($this->_options['output'], $this->_options['page']);
+    }
+  }
+
+  /**
+   * Render worker process action.
+   * @param array $params
+   */
+  public function workerAction($params = array()) {
+    $this->setOptions($params, 'worker');
+
+    $service = $this->render->getRender(Renderer::FORMAT_PDF);
+    $logfile = $this->_options['output'];
+
+    $worker = new RenderWorker($service, $logfile);
+    if ($this->_options['sleep']) {
+      $worker->setInterval($this->_options['sleep']);
+    }
+    if ($this->_options['level']) {
+      $worker->setLogLevel($this->_options['level']);
+    }
+    if ($this->_options['pidfile']) {
+      $worker->writePid($this->_options['pidfile']);
+    }
+    $worker->process();
+  }
+
+  /**
+   * Render queue action.
+   * @param array $params
+   */
+  public function queueAction($params = array()) {
+    $this->setOptions($params, 'queue');
+
+    $page = $this->_options['page'][0]['page'];
+    $exam = $this->_options['exam'];
+
+    $this->user->setPrimaryRole('render');
+
+    $queue = new RenderQueue();
+    $jobid = $queue->addJob($exam, Render::TYPE_EXTERN, $page);
+
+    if ($this->_options['poll']) {
+      pollJobResult($jobid);
+    }
+  }
+
+  /**
+   * Poll for render job to complete.
+   * @param int $jobid The job ID.
+   */
+  private function pollJobResult($jobid) {
+    $done = false;
+
+    while (!$done) {
+      if (!($status = $queue->getStatus($jobid))) {
+        $this->flash->error("Failed get status of job $jobid");
+        break;
+      }
+
+      if ($this->_options['verbose']) {
+        $this->flash->notice(print_r($status->dump(), true));
+      }
+
+      switch ($status->status) {
+      case Render::STATUS_FAILED:
+        $this->flash->notice("The job has failed");
+        $done = true;
+        break;
+      case Render::STATUS_FINISH:
+        $this->flash->notice("The job has finished");
+        $done = true;
+        break;
+      case Render::STATUS_MISSING:
+        $this->flash->notice("The job is missing");
+        $done = true;
+        break;
+      case Render::STATUS_QUEUED:
+        $this->flash->notice("The job has been queued");
+        break;
+      case Render::STATUS_RENDER:
+        $this->flash->notice("The job is rendering");
+        break;
+      default:
+        $this->flash->warning(sprintf("Unhandled status %s of job $jobid", $status->status));
+      }
+
+      sleep($this->_options['sleep']);
+      $this->flash->notice("Polling...");
+    }
+
+    if ($this->_options['verbose']) {
+      $this->flash->success(print_r($status->dump(), true));
+    }
+  }
+
+  /**
+   * Set options from task action parameters.
+   * @param array $params The task action parameters.
+   * @param string $action The calling action.
+   */
+  private function setOptions($params, $action = null) {
+    //
+    // Default options.
+    //
+    $this->_options = array(
+      'verbose' => false,
+      'force' => false,
+      'dry-run' => false,
+      'page' => array(),
+      'globals' => array(),
+      'command' => true,
+      'level' => 3,
+      'sleep' => 5,
+    );
+
+    //
+    // Supported options.
+    //
+    $options = array(
+      'verbose', 'force', 'dry-run', 'type', 'page', 'output',
+      'globals', 'png', 'jpg', 'jpeg', 'bmp', 'svg',
+      'method', 'extension', 'command', 'service', 'worker',
+      'queue', 'exam', 'poll', 'sleep', 'level', 'pidfile',
+      'none', 'notice', 'info', 'debug',
+    );
+    $current = $action;
+
+    //
+    // Set defaults.
+    //
+    foreach ($options as $option) {
+      if (!isset($this->_options[$option])) {
+        $this->_options[$option] = false;
+      }
+    }
+
+    //
+    // Include action in options (for multitarget actions).
+    //
+    if (isset($action)) {
+      $this->_options[$action] = true;
+    }
+
+    //
+    // Scan params for both --key and --key=val options.
+    //
+    while (($option = array_shift($params))) {
+      if (in_array($option, $options)) {
+        if (!is_array($this->_options[$option])) {
+          $this->_options[$option] = true;
         }
-
-        /**
-         * Display usage information.
-         */
-        public function helpAction()
-        {
-                parent::showUsage(self::getUsage());
+        $current = $option;
+      } elseif (in_array($current, $options)) {
+        if ($current == 'page') {
+          $this->_options[$current][][$current] = $option;
+        } elseif ($current == 'globals') {
+          $this->_options[$current][$option] = array_shift($params);
+        } else {
+          $this->_options[$current] = $option;
         }
+      } else {
+        throw new Exception("Unknown task action/parameters '$option'");
+      }
+    }
 
-        /**
-         * Render image file action.
-         * @param array $params
-         */
-        public function imageAction($params = array())
-        {
-                $this->setOptions($params, 'image');
+    if ($this->_options['extension']) {
+      $this->_options['command'] = false;
+      $this->_options['service'] = false;
+    }
+    if ($this->_options['service']) {
+      $this->_options['command'] = false;
+      $this->_options['extension'] = false;
+    }
 
-                if ($this->_options['extension']) {
-                        $render = new RenderImageExtension($this->_options['globals']);
-                        $render->save($this->_options['output'], array('in' => $this->_options['page'][0]['page']));
-                }
-                if ($this->_options['command']) {
-                        $render = new RenderImageCommand("wkhtmltoimage");
-                        $render->setOptions($this->_options['globals']);
-                        $render->save($this->_options['output'], array('in' => $this->_options['page'][0]['page']));
-                }
-                if ($this->_options['service']) {
-                        $render = $this->render->getRender('image');
-                        $render->setOptions($this->_options['globals']);
-                        $render->save($this->_options['output'], array('in' => $this->_options['page'][0]['page']));
-                }
-        }
-
-        /**
-         * Render PDF document action.
-         * @param array $params
-         */
-        public function pdfAction($params = array())
-        {
-                $this->setOptions($params, 'pdf');
-
-                if ($this->_options['extension']) {
-                        $render = new RenderPdfDocumentExtension($this->_options['globals']);
-                        $render->save($this->_options['output'], $this->_options['page']);
-                }
-                if ($this->_options['command']) {
-                        $render = new RenderPdfDocumentCommand("wkhtmltopdf");
-                        $render->setOptions($this->_options['globals']);
-                        $render->save($this->_options['output'], $this->_options['page']);
-                }
-                if ($this->_options['service']) {
-                        $render = $this->render->getRender('pdf');
-                        $render->setOptions($this->_options['globals']);
-                        $render->save($this->_options['output'], $this->_options['page']);
-                }
-        }
-
-        /**
-         * Render worker process action.
-         * @param array $params
-         */
-        public function workerAction($params = array())
-        {
-                $this->setOptions($params, 'worker');
-
-                $service = $this->render->getRender(Renderer::FORMAT_PDF);
-                $logfile = $this->_options['output'];
-
-                $worker = new RenderWorker($service, $logfile);
-                if ($this->_options['sleep']) {
-                        $worker->setInterval($this->_options['sleep']);
-                }
-                if ($this->_options['level']) {
-                        $worker->setLogLevel($this->_options['level']);
-                }
-                if ($this->_options['pidfile']) {
-                        $worker->writePid($this->_options['pidfile']);
-                }
-                $worker->process();
-        }
-
-        /**
-         * Render queue action.
-         * @param array $params
-         */
-        public function queueAction($params = array())
-        {
-                $this->setOptions($params, 'queue');
-
-                $page = $this->_options['page'][0]['page'];
-                $exam = $this->_options['exam'];
-
-                $this->user->setPrimaryRole('render');
-
-                $queue = new RenderQueue();
-                $jobid = $queue->addJob($exam, Render::TYPE_EXTERN, $page);
-
-                if ($this->_options['poll']) {
-                        pollJobResult($jobid);
-                }
-        }
-
-        /**
-         * Poll for render job to complete.
-         * @param int $jobid The job ID.
-         */
-        private function pollJobResult($jobid)
-        {
-                $done = false;
-
-                while (!$done) {
-                        if (!($status = $queue->getStatus($jobid))) {
-                                $this->flash->error("Failed get status of job $jobid");
-                                break;
-                        }
-
-                        if ($this->_options['verbose']) {
-                                $this->flash->notice(print_r($status->dump(), true));
-                        }
-
-                        switch ($status->status) {
-                                case Render::STATUS_FAILED:
-                                        $this->flash->notice("The job has failed");
-                                        $done = true;
-                                        break;
-                                case Render::STATUS_FINISH:
-                                        $this->flash->notice("The job has finished");
-                                        $done = true;
-                                        break;
-                                case Render::STATUS_MISSING:
-                                        $this->flash->notice("The job is missing");
-                                        $done = true;
-                                        break;
-                                case Render::STATUS_QUEUED:
-                                        $this->flash->notice("The job has been queued");
-                                        break;
-                                case Render::STATUS_RENDER:
-                                        $this->flash->notice("The job is rendering");
-                                        break;
-                                default:
-                                        $this->flash->warning(sprintf("Unhandled status %s of job $jobid", $status->status));
-                        }
-
-                        sleep($this->_options['sleep']);
-                        $this->flash->notice("Polling...");
-                }
-
-                if ($this->_options['verbose']) {
-                        $this->flash->success(print_r($status->dump(), true));
-                }
-        }
-
-        /**
-         * Set options from task action parameters.
-         * @param array $params The task action parameters.
-         * @param string $action The calling action.
-         */
-        private function setOptions($params, $action = null)
-        {
-                // 
-                // Default options.
-                // 
-                $this->_options = array(
-                        'verbose' => false,
-                        'force'   => false,
-                        'dry-run' => false,
-                        'page'    => array(),
-                        'globals' => array(),
-                        'command' => true,
-                        'level'   => 3,
-                        'sleep'   => 5
-                );
-
-                // 
-                // Supported options.
-                // 
-                $options = array(
-                        'verbose', 'force', 'dry-run', 'type', 'page', 'output',
-                        'globals', 'png', 'jpg', 'jpeg', 'bmp', 'svg',
-                        'method', 'extension', 'command', 'service', 'worker',
-                        'queue', 'exam', 'poll', 'sleep', 'level', 'pidfile',
-                        'none', 'notice', 'info', 'debug'
-                );
-                $current = $action;
-
-                // 
-                // Set defaults.
-                // 
-                foreach ($options as $option) {
-                        if (!isset($this->_options[$option])) {
-                                $this->_options[$option] = false;
-                        }
-                }
-
-                // 
-                // Include action in options (for multitarget actions).
-                // 
-                if (isset($action)) {
-                        $this->_options[$action] = true;
-                }
-
-                // 
-                // Scan params for both --key and --key=val options.
-                // 
-                while (($option = array_shift($params))) {
-                        if (in_array($option, $options)) {
-                                if (!is_array($this->_options[$option])) {
-                                        $this->_options[$option] = true;
-                                }
-                                $current = $option;
-                        } elseif (in_array($current, $options)) {
-                                if ($current == 'page') {
-                                        $this->_options[$current][][$current] = $option;
-                                } elseif ($current == 'globals') {
-                                        $this->_options[$current][$option] = array_shift($params);
-                                } else {
-                                        $this->_options[$current] = $option;
-                                }
-                        } else {
-                                throw new Exception("Unknown task action/parameters '$option'");
-                        }
-                }
-
-                if ($this->_options['extension']) {
-                        $this->_options['command'] = false;
-                        $this->_options['service'] = false;
-                }
-                if ($this->_options['service']) {
-                        $this->_options['command'] = false;
-                        $this->_options['extension'] = false;
-                }
-
-                if ($this->_options['none']) {
-                        $this->_options['level'] = 0;
-                }
-                if ($this->_options['error']) {
-                        $this->_options['level'] = 1;
-                }
-                if ($this->_options['notice']) {
-                        $this->_options['level'] = 2;
-                }
-                if ($this->_options['info']) {
-                        $this->_options['level'] = 3;
-                }
-                if ($this->_options['debug']) {
-                        $this->_options['level'] = 4;
-                }
-        }
+    if ($this->_options['quite']) {
+      $this->_options['level'] = 0;
+    }
+    if ($this->_options['error']) {
+      $this->_options['level'] = 1;
+    }
+    if ($this->_options['notice']) {
+      $this->_options['level'] = 2;
+    }
+    if ($this->_options['info']) {
+      $this->_options['level'] = 3;
+    }
+    if ($this->_options['success']) {
+      $this->_options['level'] = 4;
+    }
+    if ($this->_options['debug']) {
+      $this->_options['level'] = 5;
+    }
+  }
 
 }

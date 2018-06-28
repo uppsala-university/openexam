@@ -39,153 +39,228 @@ use Phalcon\Mvc\User\Component;
  *
  * @author Anders Lövgren (QNET)
  */
-class RenderConsumer extends Component
-{
+class RenderConsumer extends Component {
 
-        /**
-         * Number of seconds for render job to complete.
-         */
-        const MISSING_RENDER_TIME = 600;
+  /**
+   * Don't log anything.
+   */
+  const LEVEL_NONE = 0;
+  /**
+   * The error condition log level.
+   */
+  const LEVEL_ERROR = 1;
+  /**
+   * The notice log level.
+   */
+  const LEVEL_NOTICE = 2;
+  /**
+   * The info log level.
+   */
+  const LEVEL_INFO = 3;
+  /**
+   * The successful log level.
+   */
+  const LEVEL_SUCCESS = 4;
+  /**
+   * The debug log level.
+   */
+  const LEVEL_DEBUG = 5;
+  /**
+   * Number of seconds for render job to complete.
+   */
+  const MISSING_RENDER_TIME = 600;
 
-        /**
-         * Check if missing render job exists.
-         * @return boolean
-         */
-        public function hasMissing()
-        {
-                // 
-                // Find missing render job:
-                // 
-                if ((Render::count("status = 'render' AND finish IS NOT NULL") > 0)) {
-                        return true;
-                } else {
-                        return false;
-                }
-        }
+  /**
+   * The log level.
+   * @var int
+   */
+  private $_level = self::LEVEL_INFO;
+  /**
+   * Write processing to log file.
+   * @var string
+   */
+  private $_logfile;
 
-        /**
-         * Add missing render job as queued.
-         */
-        public function addMissing()
-        {
-                // 
-                // Find missing render job:
-                // 
-                if (!($jobs = Render::find("status = 'render' AND finish IS NOT NULL"))) {
-                        return false;
-                }
+  /**
+   * Constructor.
+   * @param Renderer $service The render service.
+   */
+  public function __construct($logfile, $loglevel) {
+    $this->_logfile = $logfile;
+    $this->_level = $loglevel;
+  }
 
-                // 
-                // Add missing job as queued:
-                // 
-                foreach ($jobs as $job) {
-                        $job->status = Render::STATUS_QUEUED;
-                        $job->finish = null;
+  /**
+   * Add missing render job as queued.
+   */
+  public function addMissing() {
+    //
+    // Because queued updates on every save, it's basicly lastChanged.
+    // Find missing render job:
+    //
+    if (!($jobs = Render::find(sprintf("status = 'render' AND queued > %s", time() - self::MISSING_RENDER_TIME)))) {
+      return false;
+    }
 
-                        $job->file = sprintf("%s/%s", $this->config->application->cacheDir, $job->path);
-                        $job->lock = sprintf("%s/%s.lock", $this->config->application->cacheDir, $job->path);
+    //
+    // Add missing job as queued:
+    //
+    foreach ($jobs as $job) {
+      $job->status = Render::STATUS_QUEUED;
+      $job->finish = null;
 
-                        if (strtotime($job->queued) > time() - self::MISSING_RENDER_TIME) {
-                                continue;
-                        }
-                        if (file_exists($job->lock)) {
-                                unlink($job->lock);
-                        }
-                        if (!$job->save()) {
-                                throw new Exception($job->getMessages()[0]);
-                        }
-                }
-        }
+      $job->file = sprintf("%s/%s", $this->config->application->cacheDir, $job->path);
+      $job->lock = sprintf("%s/%s.lock", $this->config->application->cacheDir, $job->path);
 
-        /**
-         * Check if queued render job exists.
-         * @return boolean
-         */
-        public function hasNext()
-        {
-                // 
-                // Find next queued render job:
-                // 
-                if ((Render::count("status = 'queued'") > 0)) {
-                        return true;
-                } else {
-                        return false;
-                }
-        }
+      if (file_exists($job->lock)) {
+        unlink($job->lock);
+      }
+      if (!$job->save()) {
+        throw new Exception($job->getMessages()[0]);
+      }
+    }
+  }
 
-        /**
-         * Get next render job.
-         * @return Render
-         */
-        public function getNext()
-        {
-                // 
-                // Find next queued render job:
-                // 
-                if (!($job = Render::findFirst("status = 'queued'"))) {
-                        return false;
-                }
+  /**
+   * Check if queued render job exists.
+   * @return boolean
+   */
+  public function hasNext() {
+    //
+    // Find next queued render job:
+    //
+    if ((Render::count("status = 'queued'") > 0)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-                // 
-                // Set render status, destination and lock properties:
-                // 
-                $job->status = Render::STATUS_RENDER;
-                $job->file = sprintf("%s/%s", $this->config->application->cacheDir, $job->path);
-                $job->lock = sprintf("%s/%s.lock", $this->config->application->cacheDir, $job->path);
+  /**
+   * Get next render job.
+   * @return Render
+   */
+  public function getNext() {
+    //
+    // Find next queued render job:
+    //
+    if (!($job = Render::findFirst("status = 'queued'"))) {
+      return false;
+    }
 
-                // 
-                // Check if job is locked by another render host:
-                // 
-                if (file_exists($job->lock)) {
-                        return false;
-                } else {
-                        touch($job->lock);
-                }
+    //
+    // Set render status, destination and lock properties:
+    //
+    $job->status = Render::STATUS_RENDER;
+    $job->file = sprintf("%s/%s", $this->config->application->cacheDir, $job->path);
+    $job->lock = sprintf("%s/%s.lock", $this->config->application->cacheDir, $job->path);
 
-                // 
-                // Refresh job status, but remove lock if failed:
-                // 
-                // 
-                if (!$job->save()) {
-                        unlink($job->lock);
-                        throw new Exception($job->getMessages()[0]);
-                }
+    //
+    // Check if job is locked by another render host:
+    //
+    if (file_exists($job->lock)) {
+      $job->save();
+      return false;
+    } else {
+      touch($job->lock);
+    }
 
-                return $job;
-        }
+    //
+    // Refresh job status, but remove lock if failed:
+    //
+    //
+    if (!$job->save()) {
+      unlink($job->lock);
+      throw new Exception($job->getMessages()[0]);
+    }
 
-        /**
-         * Set render result.
-         * @param Render $job The render job.
-         */
-        public function setResult($job)
-        {
-                // 
-                // Update job status:
-                // 
-                if ($job->status != Render::STATUS_FINISH &&
-                    $job->status != Render::STATUS_FAILED) {
-                        $job->status = Render::STATUS_FINISH;
-                }
+    return $job;
+  }
 
-                // 
-                // Use proper database timestamp:
-                // 
-                $job->finish = strftime("%Y-%m-%d %T");
+  /**
+   * Set render result.
+   * @param Render $job The render job.
+   */
+  public function setResult($job) {
+    //
+    // Update job status:
+    //
+    if ($job->status != Render::STATUS_FINISH &&
+      $job->status != Render::STATUS_FAILED) {
+      $job->status = Render::STATUS_FINISH;
+    }
 
-                // 
-                // Cleanup existing lock:
-                // 
-                if (file_exists($job->lock)) {
-                        unlink($job->lock);
-                }
+    //
+    // Use proper database timestamp:
+    //
+    $job->finish = strftime("%Y-%m-%d %T");
 
-                // 
-                // Refresh job status:
-                // 
-                if (!$job->save()) {
-                        throw new Exception($job->getMessages()[0]);
-                }
-        }
+    //
+    // Cleanup existing lock:
+    //
+    if (file_exists($job->lock)) {
+      unlink($job->lock);
+    }
+
+    //
+    // Refresh job status:
+    //
+    if (!$job->save()) {
+      throw new Exception($job->getMessages()[0]);
+    }
+  }
+
+
+  /**
+   * Write log message.
+   *
+   * @param int $level The log level.
+   * @param string $message The log message.
+   */
+  private function log($level, $message) {
+    if (empty($this->_logfile)) {
+      return;
+    }
+    if ($level > $this->_level) {
+      return;
+    }
+
+    if (!file_put_contents($this->_logfile, self::format($level, $message), FILE_APPEND)) {
+      trigger_error("Failed write message");
+    }
+  }
+
+  /**
+   * Format log message.
+   *
+   * @param int $level The log level.
+   * @param string $message The log message.
+   * @return string
+   */
+  private static function format($level, $message) {
+    return sprintf("%s [%d] (%s) %s\n", strftime("%Y-%m-%d %H:%M:%S"), getmypid(), self::level($level), $message);
+  }
+
+  /**
+   * Get log level identifier.
+   * @param int $level The log level.
+   * @return string
+   */
+  private static function level($level) {
+    switch ($level) {
+    case self::LEVEL_ERROR:
+      return '-';
+    case self::LEVEL_NOTICE:
+      return '!';
+    case self::LEVEL_INFO:
+      return 'i';
+    case self::LEVEL_SUCCESS;
+      return '+';
+    case self::LEVEL_DEBUG:
+      return 'd';
+    }
+  }
+
+
 
 }
