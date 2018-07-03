@@ -68,7 +68,7 @@ class RenderTask extends MainTask implements TaskInterface {
         '--worker' => 'Run render queue worker process.',
         '--pidfile=path' => 'Write PID to path (for --worker only).',
         '--sleep=sec' => 'Sleep interval between polling.',
-        '--level=num' => 'Set log level (0 => none, 1 => info, 2 => notice, 3 => debug)',
+        '--level=num' => 'Set log level (0 => none, 1 => error, 2 => info, 3 => notice, 4 => success, 5 => debug)',
         '--queue' => 'Add render queue job.',
         '--exam=id' => 'Use exam (for --queue only).',
         '--poll' => 'Poll for completion (for --queue only).',
@@ -86,9 +86,11 @@ class RenderTask extends MainTask implements TaskInterface {
         '--extension' => 'Same as --method=extension',
         '--service' => 'Same as --method=service',
         '--quiet' => 'Same as --level=0',
-        '--notice' => 'Same as --level=1',
-        '--info' => 'Same as --level=2',
-        '--debug' => 'Same as --level=3',
+        '--error' => 'Same as --level=1',
+        '--notice' => 'Same as --level=2',
+        '--info' => 'Same as --level=3',
+        '--success' => 'Same as --level=4',
+        '--debug' => 'Same as --level=5',
       ),
       'examples' => array(
         array(
@@ -343,7 +345,7 @@ class RenderTask extends MainTask implements TaskInterface {
       $this->_options['extension'] = false;
     }
 
-    if ($this->_options['none']) {
+    if ($this->_options['quite']) {
       $this->_options['level'] = 0;
     }
     if ($this->_options['error']) {
@@ -355,9 +357,11 @@ class RenderTask extends MainTask implements TaskInterface {
     if ($this->_options['info']) {
       $this->_options['level'] = 3;
     }
-    if ($this->_options['debug']) {
+    if ($this->_options['success']) {
       $this->_options['level'] = 4;
     }
+    if ($this->_options['debug']) {
+      $this->_options['level'] = 5;
+    }
   }
-
 }
