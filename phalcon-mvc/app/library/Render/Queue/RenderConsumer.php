@@ -98,7 +98,7 @@ class RenderConsumer extends Component {
     // Because queued updates on every save, it's basicly lastChanged.
     // Find missing render job:
     //
-    if (!($jobs = Render::find(sprintf("status = 'render' AND queued > %s", time() - self::MISSING_RENDER_TIME)))) {
+    if (!($jobs = Render::find(sprintf("status = 'render' AND queued < %s", time() - self::MISSING_RENDER_TIME)))) {
       return false;
     }
 
