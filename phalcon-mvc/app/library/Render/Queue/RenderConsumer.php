@@ -112,7 +112,9 @@ class RenderConsumer extends Component {
       $job->file = sprintf("%s/%s", $this->config->application->cacheDir, $job->path);
       $job->lock = sprintf("%s/%s.lock", $this->config->application->cacheDir, $job->path);
 
-      @unlink($job->lock);
+      if(file_exists($job->lock)) {
+        unlink($job->lock);
+      }
       if (!$job->save()) {
         throw new Exception($job->getMessages()[0]);
       }

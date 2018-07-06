@@ -227,6 +227,11 @@ class RenderWorker extends Component {
   private function consume() {
     $consumer = new RenderConsumer($this->_logfile, $this->_level);
 
+    //
+    // Clear cache for file_exists since this is a service and file_exists caches during the same run.
+    //
+    clearstatcache();
+
     $consumer->addMissing();
 
     if (!$consumer->hasNext()) {
