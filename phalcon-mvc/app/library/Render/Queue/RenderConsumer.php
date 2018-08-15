@@ -112,7 +112,7 @@ class RenderConsumer extends Component {
       $job->file = sprintf("%s/%s", $this->config->application->cacheDir, $job->path);
       $job->lock = sprintf("%s/%s.lock", $this->config->application->cacheDir, $job->path);
 
-      if(file_exists($job->lock)) {
+      if (file_exists($job->lock)) {
         unlink($job->lock);
       }
       if (!$job->save()) {
@@ -261,7 +261,4 @@ class RenderConsumer extends Component {
       return 'd';
     }
   }
-
-
-
 }

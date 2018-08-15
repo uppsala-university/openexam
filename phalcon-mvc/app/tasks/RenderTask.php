@@ -364,5 +364,4 @@ class RenderTask extends MainTask implements TaskInterface {
       $this->_options['level'] = 5;
     }
   }
-
 }
