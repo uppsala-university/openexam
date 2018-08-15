@@ -33,8 +33,8 @@ use OpenExam\Models\Corrector;
 use OpenExam\Models\Decoder;
 use OpenExam\Models\Exam;
 use OpenExam\Models\Invigilator;
-use OpenExam\Models\SuperInvigilator;
 use OpenExam\Models\Student;
+use OpenExam\Models\SuperInvigilator;
 use OpenExam\Models\Teacher;
 use Phalcon\Mvc\User\Component;
 use ReflectionClass;
@@ -359,11 +359,11 @@ class Roles extends Component {
           "id" => $id,
         ),
       )) > 0 || SuperInvigilator::count(array(
-         "user = :user:",
-         "bind" => array(
-           "user" => $this->user->getPrincipalName(),
-         ),
-       )) > 0;
+        "user = :user:",
+        "bind" => array(
+          "user" => $this->user->getPrincipalName(),
+        ),
+      )) > 0;
     } else {
       return Invigilator::count(array(
         "user = :user:",
@@ -371,14 +371,13 @@ class Roles extends Component {
           "user" => $this->user->getPrincipalName(),
         ),
       )) > 0 || SuperInvigilator::count(array(
-         "user = :user:",
-         "bind" => array(
-           "user" => $this->user->getPrincipalName(),
-         ),
-       )) > 0;
+        "user = :user:",
+        "bind" => array(
+          "user" => $this->user->getPrincipalName(),
+        ),
+      )) > 0;
     }
   }
-
 
   /**
    * Check if caller is student.
