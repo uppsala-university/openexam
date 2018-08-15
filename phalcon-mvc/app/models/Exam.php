@@ -651,7 +651,7 @@ class Exam extends ModelBase {
     $user = $dependencyInjector->get('user');
     $role = $user->getPrimaryRole();
     $isSuperInvigilator = false;
-    if(
+    if (
       $role == ROLES::INVIGILATOR &&
       SuperInvigilator::count(array(
         "user = :user:",
@@ -767,11 +767,11 @@ class Exam extends ModelBase {
       (
         $role == ROLES::INVIGILATOR &&
         SuperInvigilator::count(array(
-         "user = :user:",
-         "bind" => array(
-           "user" => $user->getPrincipalName(),
-         ),
-       )) > 0
+          "user = :user:",
+          "bind" => array(
+            "user" => $user->getPrincipalName(),
+          ),
+        )) > 0
       )
     ) {
       $builder
@@ -869,7 +869,6 @@ class Exam extends ModelBase {
 
     $qs = trim($qs);
     $qe = trim($qe);
-
 
     if (strlen($qe) == 0) {
       $result = sprintf("%s %s", $qs, $relations);
