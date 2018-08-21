@@ -219,7 +219,7 @@ class MediaController extends GuiController
 
     if (!in_array($fileType, $allowedTypes)) {
       $fileTypes = implode(", ", $allowedTypes);
-      throw new Exception(sprintf("{$fileType} file extension is not allowed. Allowed file types: %s", $fileTypes));
+      throw new Exception(sprintf("Failed to upload file (allowed file types are %s)", $fileTypes));
     }
 
     preg_match('/(.*)\/.*/', $files[0]->getRealType(), $media);
@@ -321,7 +321,6 @@ class MediaController extends GuiController
     return [
       'application/pdf',
       'image/jpeg',
-      'image/jpg',
       'image/png',
       'image/tiff',
       'image/bnp',
