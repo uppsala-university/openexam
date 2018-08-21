@@ -218,7 +218,7 @@ class MediaController extends GuiController
     $allowedTypes = $this->fileValidationRules();
 
     if (!in_array($fileType, $allowedTypes)) {
-      $fileTypes = implode(", ", $allowedTypes);
+      $fileTypes = implode(", ", $this->getAllowedExtensions());
       throw new Exception(sprintf("{$fileType} file extension is not allowed. Allowed file types: %s", $fileTypes));
     }
 
@@ -314,6 +314,17 @@ class MediaController extends GuiController
     //
     $this->response->send();
     readfile($path);
+  }
+  private function getAllowedExtensions()
+  {
+    return [
+      'jpeg',
+      'jpg',
+      'png',
+      'tiff',
+      'bnp',
+      'pdf',
+    ];
   }
 
   private function fileValidationRules()
