@@ -20,12 +20,12 @@ use Phalcon\Tag;
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    library.phtml
-// 
+//
 // Author:  Ahsan Shahzad (Medfarm DoIT)
 // Author:  Anders Lövgren (QNET)
-// 
+//
 
 function set_resource_defaults($type, $resource, $url)
 {
@@ -96,11 +96,11 @@ function set_resource_defaults($type, $resource, $url)
     }
     .lib-item.appended {
         width: 100%;
-        height: 100%;        
+        height: 100%;
     }
     .lib-item.expanded {
         width: 100%;
-        height: 100%;        
+        height: 100%;
     }
     .lib-item.expanded .image,
     .lib-item.appended .image {
@@ -148,7 +148,7 @@ function set_resource_defaults($type, $resource, $url)
 
 <div class="alert alert-info alert-dismissable">
     <a class='close' data-dismiss='alert' href='#'>&times;</a>
-    Select resource files from the media library containing your personal files from previous uploads or files shared by other people. 
+    Select resource files from the media library containing your personal files from previous uploads or files shared by other people.
     You can choose to share your personal files with others if you like or keep them private.
 </div>
 
@@ -162,7 +162,7 @@ function set_resource_defaults($type, $resource, $url)
     </div>
     <div class="lib-item-save" id="lib-item-share" style="display: none">
         <label>
-            This resource can be used                
+            This resource can be used
             <select class="form-control update-lib-item-shared">
                 <option value="private">Only by me</option>
                 <option value="exam">By co-workers on this exam</option>
@@ -177,10 +177,10 @@ function set_resource_defaults($type, $resource, $url)
 
 <!-- Template for library item -->
 <div id="lib-item-template">
-    <div class="lib-item" media-id="" style="display:none"> 
+    <div class="lib-item" media-id="" style="display:none">
         <div class="image">
-            <a class="select-resource" href="#"> 
-                <img src="" class="lib-resource-image"> 
+            <a class="select-resource" href="#">
+                <img src="" class="lib-resource-image">
             </a>
         </div>
         <div class="tools">
@@ -232,16 +232,25 @@ function set_resource_defaults($type, $resource, $url)
                         <!-- Shared resources -->
                         <div class="lib-tab-area">
                             <?php if (!count($sres[$type])): ?>
-                                    <div class="lib-missing-msg">No shared <?= $type ?> resources was found. </div>
+                                  <?php if($type === 'image'): ?>
+                                    <div class="lib-missing-msg">Allowed file types:<strong> jpeg jpg png tiff bnp</strong>
+                                      <br> No shared <?= $type ?> resources was found.
+                                    </div>
+                                  <?php endif; ?>
+                                  <?php if($type === 'other'): ?>
+                                     <div class="lib-missing-msg">
+                                     Allowed file types:<strong>PDF</strong>
+                                     <br>No shared <?= $type ?> resources was found. </div>
+                                  <?php endif; ?>
                             <?php endif; ?>
 
                             <?php foreach ($sres[$type] as $resource): ?>
                                     <?php set_resource_defaults($type, $resource, $this->url) ?>
 
-                                    <div class="lib-item" media-id="<?= $resource->id ?>"> 
+                                    <div class="lib-item" media-id="<?= $resource->id ?>">
                                         <div class="image">
-                                            <a class="select-resource" href="<?= $resource->path ?>"> 
-                                                <img src="<?= $resource->img ?>" class="lib-resource-image"> 
+                                            <a class="select-resource" href="<?= $resource->path ?>">
+                                                <img src="<?= $resource->img ?>" class="lib-resource-image">
                                             </a>
                                         </div>
                                         <div class="tools">
@@ -276,10 +285,10 @@ function set_resource_defaults($type, $resource, $url)
                             <?php foreach ($pres[$type] as $resource): ?>
                                     <?php set_resource_defaults($type, $resource, $this->url) ?>
 
-                                    <div class="lib-item" media-id="<?= $resource->id ?>"> 
+                                    <div class="lib-item" media-id="<?= $resource->id ?>">
                                         <div class="image">
-                                            <a class="select-resource" href="<?= $resource->path ?>"> 
-                                                <img src="<?= $resource->img ?>" class="lib-resource-image"> 
+                                            <a class="select-resource" href="<?= $resource->path ?>">
+                                                <img src="<?= $resource->img ?>" class="lib-resource-image">
                                             </a>
                                         </div>
                                         <div class="tools">
@@ -316,10 +325,10 @@ function set_resource_defaults($type, $resource, $url)
 
         <div class="btn btn-success fileinput-button">
             <i class="fa fa-plus-square fa-2x"></i>
-            <span style="white-space: normal"><p>Drag and drop or click to upload files from your computer</p></span> 
+            <span style="white-space: normal"><p>Drag and drop or click to upload files from your computer</p></span>
             <!-- The file input field used as target for the file upload widget -->
             <input class="form-control" type="file" multiple="" name="files[]" id="fileupload">
-        </div> 
+        </div>
 
         <div id="lib-selected-list">
             <div id="lib-default-msg">
