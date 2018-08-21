@@ -134,7 +134,6 @@ class CoreHandler extends ServiceHandler {
     // Handler request thru core handler:
     //
     $handler = new BackendHandler($role);
-
     //
     // Handle single or multiple models:
     //

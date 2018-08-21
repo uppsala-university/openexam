@@ -2,7 +2,7 @@ FROM php:7.1-apache
 
 ### Phalcon installation ###
 # Taken from: https://github.com/phalcon/dockerfiles/blob/master/php-fpm/7.1-min/Dockerfile
-ENV PHALCON_VERSION=3.2.4
+ENV PHALCON_VERSION=3.3.1
 
 RUN curl -sSL "https://codeload.github.com/phalcon/cphalcon/tar.gz/v${PHALCON_VERSION}" | tar -xz \
     && cd cphalcon-${PHALCON_VERSION}/build \
