@@ -45,7 +45,8 @@ require_once EXTERN_DIR . 'UploadHandler.php';
  *
  * @author Ahsan Shahzad (MedfarmDoIT)
  */
-class MediaController extends GuiController {
+class MediaController extends GuiController
+{
 
   /**
    * Shows media library interface to upload / select lib resources
@@ -53,7 +54,8 @@ class MediaController extends GuiController {
    *
    * @param int $exam_id The exam ID (POST).
    */
-  public function libraryAction() {
+  public function libraryAction()
+  {
     //
     // Sanitize:
     //
@@ -80,16 +82,16 @@ class MediaController extends GuiController {
                                     (shared = :group: AND user = ?3)
                                         OR
                                     (shared = :global:)",
-      'bind' => [
+      'bind'       => [
         'private' => Resource::NOT_SHARED,
-        'exam' => Resource::SHARED_EXAM,
-        'group' => Resource::SHARED_GROUP,
-        'global' => Resource::SHARED_GLOBAL,
-        1 => $eid,
-        2 => $this->user->getPrincipalName(),
-        3 => $this->user->getPrincipalName(),
+        'exam'    => Resource::SHARED_EXAM,
+        'group'   => Resource::SHARED_GROUP,
+        'global'  => Resource::SHARED_GLOBAL,
+        1         => $eid,
+        2         => $this->user->getPrincipalName(),
+        3         => $this->user->getPrincipalName(),
       ],
-      'order' => 'shared,id desc',
+      'order'      => 'shared,id desc',
     ]))) {
       throw new Exception("Failed fetch shared resources", Error::BAD_REQUEST);
     }
@@ -99,11 +101,11 @@ class MediaController extends GuiController {
     //
     if (!($pres = Resource::find([
       'conditions' => "user = :user: AND exam_id != :exam:",
-      'bind' => [
+      'bind'       => [
         'user' => $this->user->getPrincipalName(),
         'exam' => $eid,
       ],
-      'order' => 'id desc',
+      'order'      => 'id desc',
     ]))) {
       throw new Exception("Failed fetch personal resources", Error::BAD_REQUEST);
     }
@@ -181,7 +183,8 @@ class MediaController extends GuiController {
    * Upload media resources
    * utility/media/upload
    */
-  public function uploadAction() {
+  public function uploadAction()
+  {
     $this->view->disable();
 
     //
@@ -216,7 +219,7 @@ class MediaController extends GuiController {
 
     if (!in_array($fileType, $allowedTypes)) {
       $fileTypes = implode(", ", $allowedTypes);
-      throw new Exception(sprintf("Failed to upload file (allowed file types are %s)", $fileTypes));
+      throw new Exception(sprintf("{$fileType} file extension is not allowed. Allowed file types: %s", $fileTypes));
     }
 
     preg_match('/(.*)\/.*/', $files[0]->getRealType(), $media);
@@ -243,7 +246,8 @@ class MediaController extends GuiController {
    * @param string $file The file name.
    * @throws Exception
    */
-  public function viewAction($type, $file) {
+  public function viewAction($type, $file)
+  {
 
     //
     // Sanity check:
@@ -312,10 +316,12 @@ class MediaController extends GuiController {
     readfile($path);
   }
 
-  private function fileValidationRules() {
+  private function fileValidationRules()
+  {
     return [
       'application/pdf',
       'image/jpeg',
+      'image/jpg',
       'image/png',
       'image/tiff',
       'image/bnp',
