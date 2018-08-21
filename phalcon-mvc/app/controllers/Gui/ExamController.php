@@ -229,7 +229,7 @@ class ExamController extends GuiController {
       $builder->andWhere("$key = '$val'");
     }
 
-    if($role == ROLES::INVIGILATOR) {
+    if ($role == ROLES::INVIGILATOR) {
       // today midnight
       $midnight_yesterday = date('Y-m-d H:i:s', strtotime('today midnight'));
       $builder->andWhere("Exam.starttime >= '$midnight_yesterday'");
