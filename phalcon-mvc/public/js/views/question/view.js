@@ -18,25 +18,25 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-// 
+//
 // File:    view.js
-// 
+//
 // Author:  Ahsan Shahzad (Medfarm DoIT)
 // Author:  Anders Lövgren (Computing Department at BMC, Uppsala University)
-// 
+//
 
-// 
-// The question view. Use in question preview and student view for displaying questions. 
+//
+// The question view. Use in question preview and student view for displaying questions.
 
 var dirtybit = 0;
-var syncEvery = 10000; // Save every 10 seconds 
+var syncEvery = 10000; // Save every 10 seconds
 var ansJson = {};
 var totalSyncs = 0;
 var canvasElem = [];
 
-// 
+//
 // Schedule synchronize of answer.
-// 
+//
 setInterval(function () {
     if (dirtybit) {
         dirtybit = 0;
@@ -44,9 +44,9 @@ setInterval(function () {
     }
 }, syncEvery);
 
-// 
+//
 // Synchronize answers to server side.
-// 
+//
 function syncAnswers(async, redirectToAfterSync)
 {
     redirectToAfterSync = typeof redirectToAfterSync !== 'undefined' ? redirectToAfterSync : false;
@@ -65,25 +65,25 @@ function syncAnswers(async, redirectToAfterSync)
             var ansType = $(qPart).find('.q-part-ans-type').attr('data-id');
             var answers = $(qPart).find('.q-part-ans-type').find('.changeable');
 
-            // 
+            //
             // The answer type should be explicit set, but assume it's a textarea if missing:
-            // 
+            //
             if (ansType === undefined || ansType.length === 0) {
                 ansType = "textarea";
                 console.log("empty answer type (assuming textarea)");
             }
 
-            // 
+            //
             // Initialize JSON object attributes:
-            // 
+            //
             ansJson[qPartName] = {
                 type: ansType,
                 ans: []
             };
 
-            // 
+            //
             // Set answer data for each question part:
-            // 
+            //
             if (ansType === 'textbox') {
                 var ansData = $(answers).val();
                 if (ansData.trim()) {
@@ -185,9 +185,9 @@ function syncAnswers(async, redirectToAfterSync)
     }
 }
 
-// 
+//
 // Create canvas for markup on background image.
-// 
+//
 var canvasGetMarker = function (elementId, backgroundImage) {
     var painter = LC.init(
             document.getElementById(elementId),
@@ -212,9 +212,9 @@ var canvasGetMarker = function (elementId, backgroundImage) {
     var wzoom = painter.containerEl.children[0].width / backgroundImage.width;
     var zstep = Math.abs(wzoom - hzoom);
 
-    // 
+    //
     // Ensure zoom step isn't to large if image height > width:
-    // 
+    //
     while (zstep > 1) {
         zstep /= 2;
     }
@@ -230,9 +230,9 @@ var canvasGetMarker = function (elementId, backgroundImage) {
     return painter;
 };
 
-// 
+//
 // Create canvas for drawing.
-// 
+//
 var canvasGetDrawer = function (elementId) {
     var painter = LC.init(
             document.getElementById(elementId),
@@ -247,13 +247,13 @@ var canvasGetDrawer = function (elementId) {
     return painter;
 };
 
-// 
+//
 // Setup canvas for simple drawing or markup on background image.
-// 
+//
 var canvasSetup = function (elementId, canvasJson, backgroundImage) {
-    // 
+    //
     // Get literally canvas painter:
-    // 
+    //
     if (backgroundImage === undefined) {
         var painter = canvasGetDrawer(elementId);
     } else {
@@ -261,14 +261,14 @@ var canvasSetup = function (elementId, canvasJson, backgroundImage) {
 
     }
 
-    // 
+    //
     // Keep referens for later use during scheduled save:
-    // 
+    //
     canvasElem[elementId] = painter;
 
-    // 
+    //
     // Style paint application:
-    // 
+    //
     var container = document.getElementById(elementId);
 
     container.style.backgroundColor = "white";
@@ -277,10 +277,10 @@ var canvasSetup = function (elementId, canvasJson, backgroundImage) {
     container.querySelector(".lc-options").style.backgroundColor = "ghostwhite";
     container.querySelector(".lc-drawing").style.backgroundColor = "whitesmoke";
 
-    // 
+    //
     // Local storage should always be most up to date. If missing and called
     // with canvas JSON data (from database), then load it instead.
-    // 
+    //
     if (localStorage.getItem(elementId)) {
         painter.loadSnapshot(JSON.parse(localStorage.getItem(elementId)));
     } else if (canvasJson !== undefined) {
@@ -288,31 +288,31 @@ var canvasSetup = function (elementId, canvasJson, backgroundImage) {
         localStorage.setItem(elementId, canvasJson);
     }
 
-    // 
+    //
     // Set local storage on change for scheduled save to read back:
-    // 
+    //
     painter.on('drawingChange', function () {
         dirtybit = 1;
         localStorage.setItem(elementId, JSON.stringify(painter.getSnapshot()));
     });
 };
 
-// 
+//
 // Initialize canvas (the drawing area).
-// 
+//
 var canvasInit = function (elementId, canvasJson, imageUrl) {
 
-    // 
+    //
     // Setup canvas for painting:
-    // 
+    //
     if (!imageUrl) {
         canvasSetup(elementId, canvasJson);
         return;
     }
 
-    // 
+    //
     // Setup canvas for markup on background image:
-    // 
+    //
     var backgroundImage = new Image();
     backgroundImage.onload = function () {
         canvasSetup(elementId, canvasJson, this);
@@ -321,9 +321,9 @@ var canvasInit = function (elementId, canvasJson, imageUrl) {
     backgroundImage.src = imageUrl;
 };
 
-// 
+//
 // Event binding area.
-// 
+//
 $(function () {
 
     $('#highlight_q').on('click', function () {
@@ -350,14 +350,14 @@ $(function () {
         return false;
     });
 
-    // 
+    //
     // Disable some editor buttons:
-    // 
+    //
     CKEDITOR.config.removeButtons = 'Link,Unlink';
 
-    // 
+    //
     // Remove standard characters, add greek alphabeth instead:
-    // 
+    //
     CKEDITOR.config.specialChars = [
         "Α", "Β", "Γ", "Δ", "Ε", "Ζ", "Η", "Θ", "Ι", "Κ", "Λ", "Μ", "Ν", "Ξ", "Ο", "Π", "Ρ", "Σ", "Τ", "Υ", "Φ", "Χ", "Ψ", "Ω",
         "α", "β", "γ", "δ", "ε", "ζ", "η", "θ", "ι", "κ", "λ", "μ", "ν", "ξ", "ο", "π", "ρ", "σ", "τ", "υ", "φ", "χ", "ψ", "ω",
@@ -369,9 +369,9 @@ $(function () {
 
     $('textarea.ckeditor').each(function (index, element) {
 
-        // 
+        //
         // Check if already attached:
-        // 
+        //
         for (var i in CKEDITOR.instances) {
             if (CKEDITOR.instances[i].name === element.id) {
                 return false;
@@ -400,9 +400,9 @@ $(function () {
         });
 
         if (spell) {
-            // 
+            //
             // Add spell check dialog:
-            // 
+            //
             CKEDITOR.dialog.add('nativespellcheck', function (api) {
 
                 var dialogDefinition = {
@@ -447,21 +447,21 @@ keyboard shortcut \'&lt;ctrl&gt; + &lt;alt&gt; + s\'.\n\
                 return dialogDefinition;
             });
 
-            // 
+            //
             // Add two commands: One for open dialog, the other for toggle spell check on/off:
-            // 
+            //
             editor.addCommand("nativespellcheck", new CKEDITOR.dialogCommand('nativespellcheck'));
             editor.addCommand("togglespellcheck", {
                 exec: function (edt) {
-                    // 
+                    //
                     // Get editor content node (not the textarea):
-                    // 
+                    //
                     var body = edt.document.getElementsByTag('body').getItem(0);
                     var enabled = false;
 
-                    // 
+                    //
                     // Get current spell check status:
-                    // 
+                    //
                     if (body.hasAttribute('spellcheck') === 'false') {
                         enabled = false;
                     } else if (body.getAttribute('spellcheck') === 'true') {
@@ -470,14 +470,14 @@ keyboard shortcut \'&lt;ctrl&gt; + &lt;alt&gt; + s\'.\n\
                         enabled = false;
                     }
 
-                    // 
+                    //
                     // Toogle spell check on/off:
-                    // 
+                    //
                     body.setAttribute('spellcheck', !enabled);
 
-                    // 
+                    //
                     // Display auto-hiding notification:
-                    // 
+                    //
                     if (!enabled) {
                         edt.showNotification('Spellchecking is now enabled', 'success');
                     } else {
@@ -487,15 +487,15 @@ keyboard shortcut \'&lt;ctrl&gt; + &lt;alt&gt; + s\'.\n\
                 }
             });
 
-            // 
+            //
             // Custom keyboard shortcuts ( ctrl + S ):
-            // 
+            //
             editor.setKeystroke(CKEDITOR.ALT + CKEDITOR.CTRL + 83, 'togglespellcheck');
             editor.setKeystroke(CKEDITOR.ALT + CKEDITOR.CTRL + 115, 'togglespellcheck');
 
-            // 
+            //
             // Append button to editing toolbar:
-            // 
+            //
             editor.ui.addButton('SuperButton', {
                 label: "Spell check",
                 toolbar: "editing",
@@ -544,23 +544,23 @@ keyboard shortcut \'&lt;ctrl&gt; + &lt;alt&gt; + s\'.\n\
         return false;
     });
 
-    // 
+    //
     // Media plugin related settings and initializations:
-    // 
+    //
     $.fn.media.defaults.flvPlayer = baseURL + 'swf/mediaplayer.swf';
     $.fn.media.defaults.mp3Player = baseURL + 'swf/mediaplayer.swf';
     $('a.media').media();
 
-    // 
+    //
     // Handle question menu show/hide:
-    // 
+    //
     if ($.cookie('qs-menu')) {
         $(document).trigger($.cookie('qs-menu'));
     }
 
-    // 
+    //
     // Handle resource file display on/off:
-    // 
+    //
     $('.resource-file').on('click', function () {
         $('.resource-file-box').toggle();
         if ($('.resource-file-box').is(':visible')) {
