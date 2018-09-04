@@ -83,7 +83,7 @@ class Archive extends Component {
   public function __construct($exam, $correct = false) {
     $this->_exam = $exam;
 
-    $this->_path = sprintf("%s/archive", $this->config->application->cacheDir);
+    $this->_path = sprintf("%sarchive", $this->config->application->cacheDir);
     $this->_file = sprintf("%s/%d.pdf", $this->_path, $this->_exam->id);
     $this->_name = sprintf("%s.pdf", $this->_exam->name);
 
@@ -223,7 +223,7 @@ class Archive extends Component {
    * @return string
    */
   private function getSource($token, $correct = false) {
-    $expand = $this->url->get(sprintf("exam/archive/%d", $this->_exam->id));
+    $expand = $this->url->get(sprintf("exam/archive/%d.zip", $this->_exam->id));
     $source = sprintf("http://%s%s?token=%s&user=%s&render=archive&correct=%s", $this->config->render->server, $expand, $token, $this->_exam->creator, $correct ? 'true' : 'false');
     return $source;
   }

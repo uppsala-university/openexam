@@ -103,6 +103,9 @@ class Compress extends Component {
    * @param string $path The file path.
    */
   public function setPath($path) {
+    if (!preg_match('/\.zip$/', $path)) {
+      $path .= $path . '.zip';
+    }
     $this->_path = $this->getAbsolute($path);
   }
 
