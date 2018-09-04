@@ -64,14 +64,14 @@ class MediaController extends GuiController {
     //
     // Check route access:
     //
-    $this->checkAccess(array(
+    $this->checkAccess([
       'eid' => $eid,
-    ));
+    ]);
 
     //
     // Fetch shared resources filtered on sharing levels:
     //
-    if (!($sres = Resource::find(array(
+    if (!($sres = Resource::find([
       'conditions' => "
                                     (shared = :private: AND user = ?2)
                                         OR
@@ -80,7 +80,7 @@ class MediaController extends GuiController {
                                     (shared = :group: AND user = ?3)
                                         OR
                                     (shared = :global:)",
-      'bind' => array(
+      'bind' => [
         'private' => Resource::NOT_SHARED,
         'exam' => Resource::SHARED_EXAM,
         'group' => Resource::SHARED_GROUP,
@@ -88,23 +88,23 @@ class MediaController extends GuiController {
         1 => $eid,
         2 => $this->user->getPrincipalName(),
         3 => $this->user->getPrincipalName(),
-      ),
+      ],
       'order' => 'shared,id desc',
-    )))) {
+    ]))) {
       throw new Exception("Failed fetch shared resources", Error::BAD_REQUEST);
     }
 
     //
     // Fetch personal resource files:
     //
-    if (!($pres = Resource::find(array(
+    if (!($pres = Resource::find([
       'conditions' => "user = :user: AND exam_id != :exam:",
-      'bind' => array(
+      'bind' => [
         'user' => $this->user->getPrincipalName(),
         'exam' => $eid,
-      ),
+      ],
       'order' => 'id desc',
-    )))) {
+    ]))) {
       throw new Exception("Failed fetch personal resources", Error::BAD_REQUEST);
     }
 
@@ -127,7 +127,7 @@ class MediaController extends GuiController {
       }
     });
     $sother = $sres->filter(function ($resource) {
-      if (!in_array($resource->type, array('image', 'video', 'audio'))) {
+      if (!in_array($resource->type, ['image', 'video', 'audio'])) {
         return $resource;
       }
     });
@@ -151,24 +151,24 @@ class MediaController extends GuiController {
       }
     });
     $pother = $pres->filter(function ($resource) {
-      if (!in_array($resource->type, array('image', 'video', 'audio'))) {
+      if (!in_array($resource->type, ['image', 'video', 'audio'])) {
         return $resource;
       }
     });
 
-    $this->view->setVar('sres', array(
+    $this->view->setVar('sres', [
       "image" => $simage,
-      "video" => $svideo,
-      "audio" => $saudio,
+      // "video" => $svideo,
+      // "audio" => $saudio,
       "other" => $sother,
-    ));
+    ]);
 
-    $this->view->setVar('pres', array(
+    $this->view->setVar('pres', [
       "image" => $pimage,
-      "video" => $pvideo,
-      "audio" => $paudio,
+      // "video" => $pvideo,
+      // "audio" => $paudio,
       "other" => $pother,
-    ));
+    ]);
 
     //
     // No views can handle exceptions, so reset primary role:
@@ -192,27 +192,35 @@ class MediaController extends GuiController {
     //
     // Find media type of this file to set file upload directory:
     //
-    $files = $this->request->getUploadedFiles(true);
-    $media = array();
+    $files = $this->request->getUploadedFiles();
+
+    if (count($files) == 0) {
+      throw new RuntimeException("No files were uploaded.");
+    }
 
     //
     // Check number of uploaded files:
     //
     if (count($files) == 0) {
-      $maxsize = Size::minimum(array(
+      $maxsize = Size::minimum([
         ini_get('post_max_size'),
         ini_get('upload_max_filesize'),
-      ));
+      ]);
 
       throw new RuntimeException(sprintf("Failed upload file (maximum allowed filesize size is %s)", $maxsize));
     }
 
-    //
-    // Extract MIME type:
-    //
+    $fileType = $files[0]->getRealType();
+
+    $allowedTypes = $this->fileValidationRules();
+
+    if (!in_array($fileType, $allowedTypes)) {
+      $fileTypes = implode(", ", $this->getAllowedExtensions());
+      throw new Exception(sprintf("{$fileType} file extension is not allowed. Allowed file types: %s", $fileTypes));
+    }
+
     preg_match('/(.*)\/.*/', $files[0]->getRealType(), $media);
-    var_dump($media);
-    die();
+
     //
     // Set target URL and path:
     //
@@ -222,10 +230,10 @@ class MediaController extends GuiController {
     //
     // Upload file:
     //
-    $handler = new UploadHandler(array(
+    $handler = new UploadHandler([
       'upload_dir' => $uploadDir . "/",
       'upload_url' => $uploadUrl . "/",
-    ));
+    ]);
   }
 
   /**
@@ -236,6 +244,7 @@ class MediaController extends GuiController {
    * @throws Exception
    */
   public function viewAction($type, $file) {
+
     //
     // Sanity check:
     //
@@ -302,5 +311,25 @@ class MediaController extends GuiController {
     $this->response->send();
     readfile($path);
   }
+  private function getAllowedExtensions() {
+    return [
+      'jpeg',
+      'jpg',
+      'png',
+      'tiff',
+      'bnp',
+      'pdf',
+    ];
+  }
 
+  private function fileValidationRules() {
+    return [
+      'application/pdf',
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/tiff',
+      'image/bnp',
+    ];
+  }
 }

@@ -42,23 +42,52 @@ use Phalcon\Mvc\User\Component;
 class RenderConsumer extends Component {
 
   /**
+   * Don't log anything.
+   */
+  const LEVEL_NONE = 0;
+  /**
+   * The error condition log level.
+   */
+  const LEVEL_ERROR = 1;
+  /**
+   * The notice log level.
+   */
+  const LEVEL_NOTICE = 2;
+  /**
+   * The info log level.
+   */
+  const LEVEL_INFO = 3;
+  /**
+   * The successful log level.
+   */
+  const LEVEL_SUCCESS = 4;
+  /**
+   * The debug log level.
+   */
+  const LEVEL_DEBUG = 5;
+  /**
    * Number of seconds for render job to complete.
    */
   const MISSING_RENDER_TIME = 600;
 
   /**
-   * Check if missing render job exists.
-   * @return boolean
+   * The log level.
+   * @var int
    */
-  public function hasMissing() {
-    //
-    // Find missing render job:
-    //
-    if ((Render::count("status = 'render' AND finish IS NOT NULL") > 0)) {
-      return true;
-    } else {
-      return false;
-    }
+  private $_level = self::LEVEL_INFO;
+  /**
+   * Write processing to log file.
+   * @var string
+   */
+  private $_logfile;
+
+  /**
+   * Constructor.
+   * @param Renderer $service The render service.
+   */
+  public function __construct($logfile, $loglevel) {
+    $this->_logfile = $logfile;
+    $this->_level = $loglevel;
   }
 
   /**
@@ -66,9 +95,10 @@ class RenderConsumer extends Component {
    */
   public function addMissing() {
     //
+    // Because queued updates on every save, it's basicly lastChanged.
     // Find missing render job:
     //
-    if (!($jobs = Render::find("status = 'render' AND finish IS NOT NULL"))) {
+    if (!($jobs = Render::find(sprintf("status = 'render' AND queued < '%s' ", strftime("%Y-%m-%d %T", time() - self::MISSING_RENDER_TIME))))) {
       return false;
     }
 
@@ -82,9 +112,6 @@ class RenderConsumer extends Component {
       $job->file = sprintf("%s/%s", $this->config->application->cacheDir, $job->path);
       $job->lock = sprintf("%s/%s.lock", $this->config->application->cacheDir, $job->path);
 
-      if (strtotime($job->queued) > time() - self::MISSING_RENDER_TIME) {
-        continue;
-      }
       if (file_exists($job->lock)) {
         unlink($job->lock);
       }
@@ -132,8 +159,10 @@ class RenderConsumer extends Component {
     // Check if job is locked by another render host:
     //
     if (file_exists($job->lock)) {
+      $job->save();
       return false;
     } else {
+      $this->log(self::LEVEL_DEBUG, "Creating lockfile: " . $job->lock);
       touch($job->lock);
     }
 
@@ -182,4 +211,54 @@ class RenderConsumer extends Component {
     }
   }
 
+
+  /**
+   * Write log message.
+   *
+   * @param int $level The log level.
+   * @param string $message The log message.
+   */
+  private function log($level, $message) {
+    if (empty($this->_logfile)) {
+      return;
+    }
+    if ($level > $this->_level) {
+      return;
+    }
+
+    if (!file_put_contents($this->_logfile, self::format($level, $message), FILE_APPEND)) {
+      trigger_error("Failed write message");
+    }
+  }
+
+  /**
+   * Format log message.
+   *
+   * @param int $level The log level.
+   * @param string $message The log message.
+   * @return string
+   */
+  private static function format($level, $message) {
+    return sprintf("%s [%d] (%s) %s\n", strftime("%Y-%m-%d %H:%M:%S"), getmypid(), self::level($level), $message);
+  }
+
+  /**
+   * Get log level identifier.
+   * @param int $level The log level.
+   * @return string
+   */
+  private static function level($level) {
+    switch ($level) {
+    case self::LEVEL_ERROR:
+      return '-';
+    case self::LEVEL_NOTICE:
+      return '!';
+    case self::LEVEL_INFO:
+      return 'i';
+    case self::LEVEL_SUCCESS;
+      return '+';
+    case self::LEVEL_DEBUG:
+      return 'd';
+    }
+  }
 }

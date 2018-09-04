@@ -191,7 +191,6 @@ class RenderWorker extends Component {
     $this->setupErrorHandler();
 
     $this->log(self::LEVEL_INFO, "Starting");
-
     while (!$this->_done) {
       if (!$this->fetch()) {
         $this->reconnect();
@@ -226,18 +225,23 @@ class RenderWorker extends Component {
    * @return boolean
    */
   private function consume() {
-    $consumer = new RenderConsumer();
+    $consumer = new RenderConsumer($this->_logfile, $this->_level);
 
-    if ($consumer->hasMissing()) {
-      $consumer->addMissing();
-    }
+    //
+    // Clear cache for file_exists since this is a service and file_exists caches during the same run.
+    //
+    clearstatcache();
+
+    $consumer->addMissing();
 
     if (!$consumer->hasNext()) {
+      $this->log(self::LEVEL_DEBUG, "No new jobs found...");
       unset($consumer);
       return false;
     }
 
     if (!($job = $consumer->getNext())) {
+      $this->log(self::LEVEL_DEBUG, "Unable to start jobs...");
       unset($consumer);
       return false;
     }

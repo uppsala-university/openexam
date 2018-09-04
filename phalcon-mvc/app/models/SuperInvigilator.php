@@ -27,8 +27,6 @@
 
 namespace OpenExam\Models;
 
-use OpenExam\Library\Model\Guard\Exam as ExamModelGuard;
-
 /**
  * The invigilator model.
  *

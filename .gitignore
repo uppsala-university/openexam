@@ -7,7 +7,7 @@ logs/
 simplesamlphp
 .DS_Store
 phinx.yml
-.phpintel/
+.phpintel
 *.sublime-*
 ldap-test.php
 login-ish

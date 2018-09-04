@@ -2,7 +2,7 @@ FROM php:7.1-apache
 
 ### Phalcon installation ###
 # Taken from: https://github.com/phalcon/dockerfiles/blob/master/php-fpm/7.1-min/Dockerfile
-ENV PHALCON_VERSION=3.2.4
+ENV PHALCON_VERSION=3.3.1
 
 RUN curl -sSL "https://codeload.github.com/phalcon/cphalcon/tar.gz/v${PHALCON_VERSION}" | tar -xz \
     && cd cphalcon-${PHALCON_VERSION}/build \
@@ -13,8 +13,13 @@ RUN curl -sSL "https://codeload.github.com/phalcon/cphalcon/tar.gz/v${PHALCON_VE
 ############################
 
 RUN apt-get update -y \
-    && apt-get install -y openssl zip unzip git mysql-client gettext-base libldap2-dev \
+    && apt-get install -y openssl zip unzip git mysql-client gettext-base libldap2-dev locales vim libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libmcrypt-dev \
+        libpng-dev \
     && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install gd \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/
 
 RUN pecl install \
@@ -33,9 +38,15 @@ RUN pecl install \
     # && echo "xdebug.remote_port=9000" >> /usr/local/etc/php/conf.d/xdebug.ini \
     # && echo "xdebug.remote_autostart=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
 
+RUN locale-gen sv_SE.UTF-8
+ENV LANG sv_SE.UTF-8
+ENV LANGUAGE sv_SE:sv
+ENV LC_TIME sv_SE.UTF-8
+ENV LC_CTYPE sv_SE.UTF-8
+
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN docker-php-ext-install pdo pdo_mysql mbstring ldap gettext
+RUN docker-php-ext-install pdo pdo_mysql mbstring ldap gettext pcntl
 
 RUN echo extension=gettext.so > /usr/local/etc/php/conf.d/gettext.ini
 
@@ -50,8 +61,6 @@ RUN a2enmod rewrite
 COPY phalcon-mvc/app/config/apache.conf /etc/apache2/sites-enabled/000-default.conf
 
 WORKDIR /var/www/open-exam
-
-ENV PATH="/var/www/open-exam/bin/cli/:/var/www/open-exam/vendor/robmorgan/phinx/bin/:${PATH}"
 
 COPY . /var/www/open-exam
 

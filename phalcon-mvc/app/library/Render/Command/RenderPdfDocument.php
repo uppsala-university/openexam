@@ -100,7 +100,7 @@ class RenderPdfDocument extends RenderBase implements Renderer {
    */
   public function send($filename, $objects, $headers = true) {
     if ($headers) {
-      header(sprintf('Content-Type: %s', 'application/pdf; UTF-8'));
+      header(sprintf('Content-Type: %s', 'application/pdf; charset=utf-8'));
       header(sprintf("Content-Disposition: attachment; filename=\"%s\"", $filename));
     }
 
@@ -119,7 +119,7 @@ class RenderPdfDocument extends RenderBase implements Renderer {
       $pages .= " \"" . $obj['page'] . "\"";
     }
 
-    return array('in' => $pages);
+    return ['in' => $pages];
   }
 
 }

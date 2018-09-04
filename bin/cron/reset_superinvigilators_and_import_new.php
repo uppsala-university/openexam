@@ -11,7 +11,7 @@ $service = $catalogConfig['msad']['service']();
 $service->setCacheLifetime(0);
 
 $superInvigilators = OpenExam\Models\SuperInvigilator::find();
-foreach($superInvigilators as $superInvigilator) {
+foreach ($superInvigilators as $superInvigilator) {
   $superInvigilator->delete();
 }
 

@@ -325,21 +325,21 @@ class ModelBase extends Model {
    * @param ModelInterface[] $related
    * @return bool
    */
-  protected function _preSaveRelatedRecords(AdapterInterface $connection, $related) {
+  protected function _preSaveRelatedRecords($connection, $related) {
     //
     // Get database adapter if using cache mediator:
     //
     if ($connection instanceof Mediator) {
       $adapter = $connection->getHandler()->getAdapter();
-    } else {
+    } else if ($connection instanceof AdapterInterface) {
       $adapter = $connection;
-    }
-
-    //
-    // Get underlying adapter from deferred:
-    //
-    if ($adapter instanceof DeferredAdapter) {
-      $adapter = $adapter->getAdapter();
+    } else if ($connection instanceof DeferredAdapter) {
+      $adapter = $connection->getAdapter();
+    } else {
+      throw new \Exception(
+        "Argument 1 passed to OpenExam\Models\ModelBase::_preSaveRelatedRecords() must implement interface Phalcon\Db\AdapterInterface, instance of " . get_class($connection) . " given",
+        1
+      );
     }
 
     //
