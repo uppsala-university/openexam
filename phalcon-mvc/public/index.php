@@ -81,12 +81,15 @@ function log_errors_on_shutdown($log_path) {
   if (!is_null($last_error)) { // if there has been an error at some point
     // do something with the error
     file_put_contents(
-      $config->application->logsDir . '/shutdown_error.log', print_r($last_error, true) . "\n", FILE_APPEND
+      $log_path . '/shutdown_error.log', print_r($last_error, true) . "\n", FILE_APPEND
     );
   }
 }
 
 register_shutdown_function('log_errors_on_shutdown', $config->application->logsDir);
+
+throw new \Exception("BLAH!", 1);
+
 
 include CONFIG_SYS . "/loader.php";
 include CONFIG_SYS . "/services.php";
