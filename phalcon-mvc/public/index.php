@@ -88,9 +88,6 @@ function log_errors_on_shutdown($log_path) {
 
 register_shutdown_function('log_errors_on_shutdown', $config->application->logsDir);
 
-throw new \Exception("BLAH!", 1);
-
-
 include CONFIG_SYS . "/loader.php";
 include CONFIG_SYS . "/services.php";
 $application = new \Phalcon\Mvc\Application($di);
