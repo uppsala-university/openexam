@@ -51,12 +51,12 @@
         "bmc/uup-auth": ">=2.3.17",
         "bmc/uup-mail": ">=1.0.4",
         "phalcon/incubator": "^3.2",
-        "phpoffice/phpexcel": "~1.8"
+        "phpoffice/phpexcel": "~1.8",
+        "robmorgan/phinx": "^0.10.0"
     },
     "require-dev": {
         "phalcon/devtools": "^3.2",
-        "phpunit/phpunit": "3.7.*",
-        "robmorgan/phinx": "^0.9.2"
+        "phpunit/phpunit": "3.7.*"
     },
     "suggest": {
         "bartlett/php-compatinfo": "For static code compatibility checks.",
