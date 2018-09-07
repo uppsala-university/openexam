@@ -81,11 +81,20 @@ class Compress extends Component {
       $this->_path = $path;
     }
 
+    if (!preg_match('/\.zip$/', $this->_path)) {
+      $this->_path .= '.zip';
+    }
+
     if (!isset($path)) {
       $this->_name = md5($path);
     } else {
       $this->_name = $name;
     }
+
+    if (!preg_match('/\.zip$/', $this->_name)) {
+      $this->_name .= '.zip';
+    }
+
   }
 
   /**
@@ -104,8 +113,9 @@ class Compress extends Component {
    */
   public function setPath($path) {
     if (!preg_match('/\.zip$/', $path)) {
-      $path .= $path . '.zip';
+      $path .= '.zip';
     }
+
     $this->_path = $this->getAbsolute($path);
   }
 
@@ -114,6 +124,9 @@ class Compress extends Component {
    * @return string
    */
   public function getPath() {
+    if (!preg_match('/\.zip$/', $this->_path)) {
+      $this->_path .= '.zip';
+    }
     return $this->_path;
   }
 
@@ -122,6 +135,9 @@ class Compress extends Component {
    * @param string $name The archive name.
    */
   public function setName($name) {
+    if (!preg_match('/\.zip$/', $name)) {
+      $name .= '.zip';
+    }
     $this->_name = $name;
   }
 
@@ -130,6 +146,9 @@ class Compress extends Component {
    * @return string
    */
   public function getName() {
+    if (!preg_match('/\.zip$/', $this->_name)) {
+      $this->_name .= '.zip';
+    }
     return $this->_name;
   }
 
@@ -185,6 +204,14 @@ class Compress extends Component {
     // Add files to archive using student code.
     //
     $zip = new ZipArchive();
+
+
+    //
+    // Double check that the file-ending is in place.
+    //
+    if (!preg_match('/\.zip$/', $this->_path)) {
+      $this->_path .= '.zip';
+    }
 
     //
     // Create new ZIP-archive:
