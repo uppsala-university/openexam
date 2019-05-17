@@ -586,18 +586,18 @@ class RenderController extends GuiController {
     //
     // Check that caller is permitted to submit render jobs:
     //
-    if ($this->config->render->submit) {
-      if (is_string($this->config->render->submit)) {
-        if ($this->request->getClientAddress() != $this->config->render->submit) {
-          throw new Exception("You are not permitted to submit render job", Error::METHOD_NOT_ALLOWED);
-        }
-      }
-      if (is_array($this->config->render->submit)) {
-        if (!in_array($this->request->getClientAddress(), $this->config->render->submit)) {
-          throw new Exception("You are not permitted to submit render job", Error::METHOD_NOT_ALLOWED);
-        }
-      }
-    }
+//    if ($this->config->render->submit) {
+//      if (is_string($this->config->render->submit)) {
+//        if ($this->request->getClientAddress() != $this->config->render->submit) {
+//          throw new Exception("You are not permitted to submit render job", Error::METHOD_NOT_ALLOWED);
+//        }
+//      }
+//      if (is_array($this->config->render->submit)) {
+//        if (!in_array($this->request->getClientAddress(), $this->config->render->submit)) {
+//          throw new Exception("You are not permitted to submit render job", Error::METHOD_NOT_ALLOWED);
+//        }
+//      }
+//    }
 
     //
     // Create render object:
